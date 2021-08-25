@@ -13,6 +13,11 @@
 =========================================================
 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. -->
+<cfoutput>
+<cfquery name="getPlayers" datasource="roundleague">
+  SELECT *
+  FROM players
+</cfquery>
 
 <!DOCTYPE html>
 
@@ -33,6 +38,7 @@ The above copyright notice and this permission notice shall be included in all c
   <!-- CSS Files -->
   <link href="../assets/css/bootstrap.min.css" rel="stylesheet" />
   <link href="../assets/css/paper-kit.css?v=2.2.0" rel="stylesheet" />
+  <link href="profile-page.css" rel="stylesheet" />
   <!-- CSS Just for demo purpose, don't include it in your project -->
   <link href="../assets/demo/demo.css" rel="stylesheet" />
 </head>
@@ -45,7 +51,7 @@ The above copyright notice and this permission notice shall be included in all c
         <a class="navbar-brand" href="https://demos.creative-tim.com/paper-kit/index.html" rel="tooltip" title="Coded by Creative Tim" data-placement="bottom" target="_blank">
           Paper Kit 2
         </a>
-        <button class="navbar-toggler navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler navbar-toggler" type="button" data-toggle="collapse" data-target="##navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-bar bar1"></span>
           <span class="navbar-toggler-bar bar2"></span>
           <span class="navbar-toggler-bar bar3"></span>
@@ -93,33 +99,35 @@ The above copyright notice and this permission notice shall be included in all c
   </div>
   <div class="section profile-content">
     <div class="container">
-      <div class="owner">
-        <div class="avatar">
-          <img src="../assets/img/faces/joe-gardner-2.jpg" alt="Circle Image" class="img-circle img-no-padding img-responsive">
+      <cfloop query="getPlayers">
+        <div class="owner">
+          <div class="avatar">
+            <img src="../assets/img/faces/joe-gardner-2.jpg" alt="Circle Image" class="img-circle img-no-padding img-responsive">
+          </div>
+          <div class="name">
+            <h4 class="title">#getPlayers.firstName# #getPlayers.lastName#
+              <br />
+            </h4>
+            <h6 class="description">#getPlayers.position#</h6>
+          </div>
         </div>
-        <div class="name">
-          <h4 class="title">Jane Faker
+        <div class="row bottomProfile">
+          <div class="col-md-6 ml-auto mr-auto text-center">
+            <p>An artist of considerable range, Jane Faker — the name taken by Melbourne-raised, Brooklyn-based Nick Murphy — writes, performs and records all of his own music, giving it a warm, intimate feel with a solid groove structure. </p>
             <br />
-          </h4>
-          <h6 class="description">Music Producer</h6>
+            <btn class="btn btn-outline-default btn-round"><i class="fa fa-cog"></i> Settings</btn>
+          </div>
         </div>
-      </div>
-      <div class="row">
-        <div class="col-md-6 ml-auto mr-auto text-center">
-          <p>An artist of considerable range, Jane Faker — the name taken by Melbourne-raised, Brooklyn-based Nick Murphy — writes, performs and records all of his own music, giving it a warm, intimate feel with a solid groove structure. </p>
-          <br />
-          <btn class="btn btn-outline-default btn-round"><i class="fa fa-cog"></i> Settings</btn>
-        </div>
-      </div>
-      <br/>
+        <br/>
+      </cfloop>
       <div class="nav-tabs-navigation">
         <div class="nav-tabs-wrapper">
           <ul class="nav nav-tabs" role="tablist">
             <li class="nav-item">
-              <a class="nav-link active" data-toggle="tab" href="#follows" role="tab">Follows</a>
+              <a class="nav-link active" data-toggle="tab" href="##follows" role="tab">Follows</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" data-toggle="tab" href="#following" role="tab">Following</a>
+              <a class="nav-link" data-toggle="tab" href="##following" role="tab">Following</a>
             </li>
           </ul>
         </div>
@@ -229,3 +237,4 @@ The above copyright notice and this permission notice shall be included in all c
 </body>
 
 </html>
+</cfoutput>
