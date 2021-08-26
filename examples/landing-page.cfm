@@ -1,41 +1,4 @@
-
-<!--
-=========================================================
- Paper Kit 2 - v2.2.0
-=========================================================
-
- Product Page: https://www.creative-tim.com/product/paper-kit-2
- Copyright 2019 Creative Tim (https://www.creative-tim.com)
- Licensed under MIT (https://github.com/creativetimofficial/paper-kit-2/blob/master/LICENSE.md)
-
- Coded by Creative Tim
-
-=========================================================
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. -->
-
-<!DOCTYPE html>
-
-<html lang="en">
-
-<head>
-  <meta charset="utf-8" />
-  <link rel="apple-touch-icon" sizes="76x76" href="../assets/img//apple-icon.png">
-  <link rel="icon" type="image/png" href="../assets/img//favicon.png">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-  <title>
-    Paper Kit by Creative Tim
-  </title>
-  <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
-  <!--     Fonts and icons     -->
-  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
-  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
-  <!-- CSS Files -->
-  <link href="../assets/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="../assets/css/paper-kit.css?v=2.2.0" rel="stylesheet" />
-  <!-- CSS Just for demo purpose, don't include it in your project -->
-  <link href="../assets/demo/demo.css" rel="stylesheet" />
-</head>
+<cfinclude template="/header.cfm">
 
 <body class="landing-page sidebar-collapse">
   <!-- Navbar -->
@@ -54,49 +17,62 @@ The above copyright notice and this permission notice shall be included in all c
       <div class="collapse navbar-collapse justify-content-end" id="navigation">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a href="../index.html" class="nav-link"><i class="nc-icon nc-layout-11"></i> Components</a>
-          </li>
-          <li class="nav-item">
-            <a href="https://demos.creative-tim.com/paper-kit-2/docs/1.0/getting-started/introduction.html" target="_blank" class="nav-link"><i class="nc-icon nc-book-bookmark"></i> Documentation</a>
-          </li>
-          <li class="nav-item">
             <a class="nav-link" rel="tooltip" title="Follow us on Twitter" data-placement="bottom" href="https://twitter.com/CreativeTim" target="_blank">
-              <i class="fa fa-twitter"></i>
-              <p class="d-lg-none">Twitter</p>
+              Home
             </a>
           </li>
           <li class="nav-item">
             <a class="nav-link" rel="tooltip" title="Like us on Facebook" data-placement="bottom" href="https://www.facebook.com/CreativeTim" target="_blank">
-              <i class="fa fa-facebook-square"></i>
-              <p class="d-lg-none">Facebook</p>
+              Standings
             </a>
           </li>
           <li class="nav-item">
             <a class="nav-link" rel="tooltip" title="Follow us on Instagram" data-placement="bottom" href="https://www.instagram.com/CreativeTimOfficial" target="_blank">
-              <i class="fa fa-instagram"></i>
-              <p class="d-lg-none">Instagram</p>
+              Schedule
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" rel="tooltip" title="Star on GitHub" data-placement="bottom" href="https://www.github.com/CreativeTimOfficial" target="_blank">
-              <i class="fa fa-github"></i>
-              <p class="d-lg-none">GitHub</p>
+            <a class="nav-link" rel="tooltip" title="Follow us on Instagram" data-placement="bottom" href="https://www.instagram.com/CreativeTimOfficial" target="_blank">
+              Teams
             </a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" rel="tooltip" title="Follow us on Instagram" data-placement="bottom" href="https://www.instagram.com/CreativeTimOfficial" target="_blank">
+              Register
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" rel="tooltip" title="Follow us on Instagram" data-placement="bottom" href="https://www.instagram.com/CreativeTimOfficial" target="_blank">
+              League Rules
+            </a>
+          </li>
+            <div class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" data-toggle="dropdown" id="dropdownMenuButton" href="#pk" role="button" aria-haspopup="true" aria-expanded="false">More</a>
+              <ul class="dropdown-menu dropdown-info" aria-labelledby="dropdownMenuButton">
+                <li class="dropdown-header">Stats</li>
+                <a class="dropdown-item" href="#pk">Summer League 2021 Player Stats</a>
+                <a class="dropdown-item" href="#pk">Spring League 2021 Player Stats</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#pk">Gallery</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#pk">Contact</a>
+              </ul>
+            </div>
         </ul>
       </div>
     </div>
   </nav>
   <!-- End Navbar -->
-  <div class="page-header" data-parallax="true" style="background-image: url('../assets/img/daniel-olahh.jpg');">
+  <div class="page-header" data-parallax="true" style="background-image: url('https://image.shutterstock.com/shutterstock/photos/331179770/display_1500/stock-photo-wooden-floor-basketball-court-with-light-effect-331179770.jpg');">
     <div class="filter"></div>
     <div class="container">
       <div class="motto text-center">
-        <h1>Example page</h1>
-        <h3>Start designing your landing page here.</h3>
+        <!--- <h1 class="presentation-title">The Round League</h1> --->
+        <img src="https://static.wixstatic.com/media/b16829_f3a215a62a9f485990b0e43a0a993d3d~mv2.png/v1/fill/w_909,h_335,al_c,q_85,usm_0.66_1.00_0.01/4_edited.webp" alt="The Round League Logo">
+        <h2 class="presentation-subtitle text-center">Official Home of The Round League </h2>
         <br />
-        <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="btn btn-outline-neutral btn-round"><i class="fa fa-play"></i>Watch video</a>
-        <button type="button" class="btn btn-outline-neutral btn-round">Download</button>
+        <!--- <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="btn btn-outline-neutral btn-round"><i class="fa fa-play"></i>Watch video</a>
+        <button type="button" class="btn btn-outline-neutral btn-round">Download</button> --->
       </div>
     </div>
   </div>
@@ -105,8 +81,8 @@ The above copyright notice and this permission notice shall be included in all c
       <div class="container">
         <div class="row">
           <div class="col-md-8 ml-auto mr-auto">
-            <h2 class="title">Let's talk product</h2>
-            <h5 class="description">This is the paragraph where you can write more details about your product. Keep you user engaged by providing meaningful information. Remember that by this time, the user is curious, otherwise he wouldn't scroll to get here. Add a button if you want the user to see more.</h5>
+            <h2 class="title">A Higher Quality League</h2>
+            <h5 class="description">We provide a high-quality interactive basketball experience to participants of all levels accompanied by comprehensive stat tracking, social media coverage, championship trophies, individual and team awards, and much more.</h5>
             <br>
             <a href="#paper-kit" class="btn btn-danger btn-round">See Details</a>
           </div>
@@ -117,11 +93,11 @@ The above copyright notice and this permission notice shall be included in all c
           <div class="col-md-3">
             <div class="info">
               <div class="icon icon-danger">
-                <i class="nc-icon nc-album-2"></i>
+                <i class="nc-icon nc-circle-10"></i>
               </div>
               <div class="description">
-                <h4 class="info-title">Beautiful Gallery</h4>
-                <p class="description">Spend your time generating new ideas. You don't have to think of implementing.</p>
+                <h4 class="info-title">Team Profiles</h4>
+                <p class="description">Show off your roster with team pages that list each player profile with professional photography headshots.</p>
                 <a href="javascript:;" class="btn btn-link btn-danger">See more</a>
               </div>
             </div>
@@ -132,8 +108,8 @@ The above copyright notice and this permission notice shall be included in all c
                 <i class="nc-icon nc-bulb-63"></i>
               </div>
               <div class="description">
-                <h4 class="info-title">New Ideas</h4>
-                <p>Larger, yet dramatically thinner. More powerful, but remarkably power efficient.</p>
+                <h4 class="info-title">Innovation</h4>
+                <p>A league that strives to bring new fresh ideas to provide the best basketball league possible. You're the pro now.</p>
                 <a href="javascript:;" class="btn btn-link btn-danger">See more</a>
               </div>
             </div>
@@ -145,7 +121,7 @@ The above copyright notice and this permission notice shall be included in all c
               </div>
               <div class="description">
                 <h4 class="info-title">Statistics</h4>
-                <p>Choose from a veriety of many colors resembling sugar paper pastels.</p>
+                <p>Get in-depth player and team statistics. View box scores, player averages, schedules, all in one place.</p>
                 <a href="javascript:;" class="btn btn-link btn-danger">See more</a>
               </div>
             </div>
@@ -153,11 +129,11 @@ The above copyright notice and this permission notice shall be included in all c
           <div class="col-md-3">
             <div class="info">
               <div class="icon icon-danger">
-                <i class="nc-icon nc-sun-fog-29"></i>
+                <i class="nc-icon nc-trophy"></i>
               </div>
               <div class="description">
-                <h4 class="info-title">Delightful design</h4>
-                <p>Find unique and handmade delightful designs related items directly from our sellers.</p>
+                <h4 class="info-title">Championship Pedigree</h4>
+                <p>Play for something worth holding onto. Championship trophies and T-shirts awarded to the last team standing.</p>
                 <a href="javascript:;" class="btn btn-link btn-danger">See more</a>
               </div>
             </div>

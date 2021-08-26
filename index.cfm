@@ -90,7 +90,8 @@ The above copyright notice and this permission notice shall be included in all c
     <div class="content-center">
       <div class="container">
         <div class="title-brand">
-          <h1 class="presentation-title">The Round League</h1>
+          <!--- <h1 class="presentation-title">The Round League</h1> --->
+        <img src="https://static.wixstatic.com/media/b16829_f3a215a62a9f485990b0e43a0a993d3d~mv2.png/v1/fill/w_909,h_335,al_c,q_85,usm_0.66_1.00_0.01/4_edited.webp" alt="The Round League Logo">
         </div>
         <h2 class="presentation-subtitle text-center">Official Home of The Round League </h2>
       </div>
