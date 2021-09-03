@@ -1,6 +1,5 @@
 <cfinclude template="/header.cfm">
 <cfoutput>
-  <!-- End Navbar -->
   <div class="main" style="background-color: white; margin-top: 50px;">
     <div class="section text-center">
       <div class="container">
