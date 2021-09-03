@@ -39,20 +39,11 @@ LIMIT 5
               Schedule
             </a>
           </li>
-            <div class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" data-toggle="dropdown" id="dropdownMenuButton" href="##pk" role="button" aria-haspopup="true" aria-expanded="false">Teams</a>
-              <ul class="dropdown-menu dropdown-info" aria-labelledby="dropdownMenuButton">
-                <li class="dropdown-header">Western Conference</li>
-                <cfloop query="getTeams">
-                  <a class="dropdown-item" href="##pk">#getTeams.TeamName#</a>
-                </cfloop>
-                <a class="dropdown-item" href="##pk">Summer League 2021 Player Stats</a>
-                <li class="dropdown-header">Eastern Conference</li>
-                <cfloop query="getTeams">
-                  <a class="dropdown-item" href="##pk">#getTeams.TeamName#</a>
-                </cfloop>
-              </ul>
-            </div>
+          <li class="nav-item">
+            <a class="nav-link" rel="tooltip" title="Follow us on Instagram" data-placement="bottom" href="https://www.instagram.com/CreativeTimOfficial" target="_blank">
+              Teams
+            </a>
+          </li>
           <li class="nav-item">
             <a class="nav-link" rel="tooltip" title="Follow us on Instagram" data-placement="bottom" href="https://www.instagram.com/CreativeTimOfficial" target="_blank">
               Register

@@ -1,14 +1,16 @@
 <cfinclude template="/header.cfm">
 
+<cfoutput>
+
 <body class="landing-page sidebar-collapse">
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg fixed-top navbar-transparent " color-on-scroll="300">
     <div class="container">
       <div class="navbar-translate">
         <a class="navbar-brand" href="https://demos.creative-tim.com/paper-kit/index.html" rel="tooltip" title="Coded by Creative Tim" data-placement="bottom" target="_blank">
-          Paper Kit 2
+          The Round League
         </a>
-        <button class="navbar-toggler navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler navbar-toggler" type="button" data-toggle="collapse" data-target="##navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-bar bar1"></span>
           <span class="navbar-toggler-bar bar2"></span>
           <span class="navbar-toggler-bar bar3"></span>
@@ -47,15 +49,15 @@
             </a>
           </li>
             <div class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" data-toggle="dropdown" id="dropdownMenuButton" href="#pk" role="button" aria-haspopup="true" aria-expanded="false">More</a>
+              <a class="nav-link dropdown-toggle" data-toggle="dropdown" id="dropdownMenuButton" href="##pk" role="button" aria-haspopup="true" aria-expanded="false">More</a>
               <ul class="dropdown-menu dropdown-info" aria-labelledby="dropdownMenuButton">
                 <li class="dropdown-header">Stats</li>
-                <a class="dropdown-item" href="#pk">Summer League 2021 Player Stats</a>
-                <a class="dropdown-item" href="#pk">Spring League 2021 Player Stats</a>
+                <a class="dropdown-item" href="##pk">Summer League 2021 Player Stats</a>
+                <a class="dropdown-item" href="##pk">Spring League 2021 Player Stats</a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#pk">Gallery</a>
+                <a class="dropdown-item" href="##pk">Gallery</a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#pk">Contact</a>
+                <a class="dropdown-item" href="##pk">Contact</a>
               </ul>
             </div>
         </ul>
@@ -63,7 +65,7 @@
     </div>
   </nav>
   <!-- End Navbar -->
-  <div class="page-header" data-parallax="true" style="background-image: url('https://image.shutterstock.com/shutterstock/photos/331179770/display_1500/stock-photo-wooden-floor-basketball-court-with-light-effect-331179770.jpg');">
+  <div class="page-header" data-parallax="true" style="background-image: url('../assets/img/Backgrounds/bball_court_1.jpg');">
     <div class="filter"></div>
     <div class="container">
       <div class="motto text-center">
@@ -84,7 +86,7 @@
             <h2 class="title">A Higher Quality League</h2>
             <h5 class="description">We provide a high-quality interactive basketball experience to participants of all levels accompanied by comprehensive stat tracking, social media coverage, championship trophies, individual and team awards, and much more.</h5>
             <br>
-            <a href="#paper-kit" class="btn btn-danger btn-round">See Details</a>
+            <a href="##paper-kit" class="btn btn-danger btn-round">See Details</a>
           </div>
         </div>
         <br/>
@@ -192,3 +194,4 @@
 </body>
 
 </html>
+</cfoutput>
