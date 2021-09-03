@@ -6,14 +6,14 @@
             <div class="card card-profile card-plain">
               <div class="card-avatar">
                 <a href="#avatar">
-                  <img src="../assets/img/faces/clem-onojeghuo-3.jpg" alt="...">
+                  <img src="../assets/img/Directors/tim.png" alt="...">
                 </a>
               </div>
               <div class="card-body">
                 <a href="#paper-kit">
                   <div class="author">
-                    <h4 class="card-title">Henry Ford</h4>
-                    <h6 class="card-category">Product Manager</h6>
+                    <h4 class="card-title">Tim Huynh</h4>
+                    <h6 class="card-category">Directory Of Technology Innovation</h6>
                   </div>
                 </a>
                 <p class="card-description text-center">

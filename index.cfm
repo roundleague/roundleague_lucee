@@ -25,7 +25,7 @@ The above copyright notice and this permission notice shall be included in all c
   <link rel="icon" type="image/png" href="./assets/img//favicon.png">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <title>
-    Paper Kit by Creative Tim
+    Portland's Premiere Basketball League | The Round League
   </title>
   <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
   <!--     Fonts and icons     -->
@@ -1042,9 +1042,9 @@ The above copyright notice and this permission notice shall be included in all c
       <div class="container">
         <div class="row example-page">
           <div class="col-md-6 text-center">
-            <a href="examples/landing.html" target="_blank">
+            <a href="examples/landing-page.cfm" target="_blank">
               <img src="./assets/img/examples/landing-page.png" alt="Rounded Image" class="img-rounded img-responsive" style="width: 100%">
-              <a href="./examples/landing-page.html" class="btn btn-outline-neutral btn-round" target="_blank">Landing Page</a>
+              <a href="./examples/landing-page.cfm" class="btn btn-outline-neutral btn-round" target="_blank">Landing Page</a>
             </a>
           </div>
           <div class="col-md-6 text-center">

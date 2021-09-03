@@ -35,4 +35,5 @@ The above copyright notice and this permission notice shall be included in all c
   <link href="../assets/css/paper-kit.css?v=2.2.0" rel="stylesheet" />
   <!-- CSS Just for demo purpose, don't include it in your project -->
   <link href="../assets/demo/demo.css" rel="stylesheet" />
+  <link href="landing-page.css" rel="stylesheet" />
 </head>
