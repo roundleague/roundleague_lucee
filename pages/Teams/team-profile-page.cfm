@@ -4,7 +4,7 @@
 <link href="/pages/Teams/teams.css" rel="stylesheet" />
 
 <cfquery name="getTeamData" datasource="roundleague">
-	SELECT lastName, firstName, teamName, position, height, weight, hometown, school, s.seasonName, d.divisionName
+	SELECT p.playerID, lastName, firstName, teamName, position, height, weight, hometown, school, s.seasonName, d.divisionName
 	FROM players p
 	JOIN roster r ON r.PlayerID = p.playerID
 	JOIN teams t ON t.teamId = r.teamID
@@ -37,7 +37,7 @@
           <tbody>
           	<cfloop query="getTeamData">
 	            <tr>
-	            	<td>#firstName# #lastName#</td>
+	            	<td><a href="Player_Profiles/player-profile.cfm?playerID=#playerID#">#firstName# #lastName#</a></td>
 	            	<td>#Position#</td>
 	            	<td>#Height#</td>
 	            	<td>#Weight#</td>
@@ -47,6 +47,7 @@
         	</cfloop>
           </tbody>
         </table>
+        
       </div>
     </div>
 </div>

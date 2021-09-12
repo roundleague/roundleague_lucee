@@ -31,6 +31,10 @@ table th {
   text-transform: uppercase;
 }
 
+.mobileHeaders {
+  display: none;
+}
+
 @media screen and (max-width: 600px) {
   table {
     border: 0;
@@ -77,6 +81,10 @@ table th {
   
   table td:last-child {
     border-bottom: 0;
+  }
+
+  .mobileHeaders {
+    display: flex;
   }
 }
 
