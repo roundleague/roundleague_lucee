@@ -26,7 +26,7 @@
 		<div class="row">
 		  <div class="column">
 		    <div class="card">
-		      <img src="/assets/img/PlayerProfiles/21.JPG" alt="Jane" style="width:100%">
+		      <img src="/assets/img/PlayerProfiles/#url.playerID#.JPG" alt="Player Photo" style="width:100%">
 		      <div class="container">
 		        <h2>#getPlayerData.firstName# #getPlayerData.LastName#</h2>
 		        #getPlayerData.position#<br>
@@ -50,13 +50,13 @@
 	          <tbody>
 	          	<cfloop query="getPlayerStats">
 		            <tr>
-		            	<td><span class="mobileHeaders">Season:</span> #getPlayerStats.SeasonName#</td>
-		            	<td><span class="mobileHeaders">Points:</span> #getPlayerStats.Points#</td>
-		            	<td><span class="mobileHeaders">Rebounds:</span> #getPlayerStats.Rebounds#</td>
-		            	<td><span class="mobileHeaders">Assists:</span> #getPlayerStats.Assists#</td>
-		            	<td><span class="mobileHeaders">Steals:</span> #getPlayerStats.Steals#</td>
-		            	<td><span class="mobileHeaders">Blocks:</span> #getPlayerStats.Blocks#</td>
-		            	<td><span class="mobileHeaders">Turnovers:</span> #getPlayerStats.Turnovers#</td>
+		            	<td data-label="Season"> #getPlayerStats.SeasonName#</td>
+		            	<td data-label="Points"> #getPlayerStats.Points#</td>
+		            	<td data-label="Rebounds"> #getPlayerStats.Rebounds#</td>
+		            	<td data-label="Assists"> #getPlayerStats.Assists#</td>
+		            	<td data-label="Steals"> #getPlayerStats.Steals#</td>
+		            	<td data-label="Blocks"> #getPlayerStats.Blocks#</td>
+		            	<td data-label="Turnovers"> #getPlayerStats.Turnovers#</td>
 		            </tr>
 	        	</cfloop>
 	          </tbody>
