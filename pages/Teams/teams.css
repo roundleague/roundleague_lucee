@@ -19,6 +19,14 @@ table tr {
   padding: .35em;
 }
 
+tr:nth-child(even) {
+  background-color: #FFFFFF;
+}
+
+tr.headers {
+  background-color: #dfdede;
+}
+
 table th,
 table td {
   padding: .625em;

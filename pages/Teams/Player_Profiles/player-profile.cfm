@@ -17,6 +17,13 @@
 	WHERE PlayerID = <cfqueryparam cfsqltype="INTEGER" value="#url.playerID#">
 </cfquery>
 
+<!--- Career Totals --->
+<cfinvoke component="player-profile"
+	method="getCareerStats"
+	returnvariable="careerStats">
+    <cfinvokeargument name="playerID" value="#url.playerID#">
+</cfinvoke>
+
 <cfoutput>
 <div class="main" style="background-color: white; margin-top: 50px;">
     <div class="section text-center">
@@ -30,6 +37,7 @@
 		      <div class="container">
 		        <h2>#getPlayerData.firstName# #getPlayerData.LastName#</h2>
 		        #getPlayerData.position#<br>
+		        #getPlayerStats.recordCount# Seasons
 		      </div>
 		    </div>
 		  </div>
@@ -37,7 +45,7 @@
 	        <table>
 	          <caption>Career Stats</caption>
 	          <thead>
-	            <tr>
+	            <tr class="headers">
 	            	<td>Season</td>
 	            	<td>Points</td>
 	            	<td>Rebounds</td>
@@ -50,15 +58,24 @@
 	          <tbody>
 	          	<cfloop query="getPlayerStats">
 		            <tr>
-		            	<td data-label="Season"> #getPlayerStats.SeasonName#</td>
-		            	<td data-label="Points"> #getPlayerStats.Points#</td>
-		            	<td data-label="Rebounds"> #getPlayerStats.Rebounds#</td>
-		            	<td data-label="Assists"> #getPlayerStats.Assists#</td>
-		            	<td data-label="Steals"> #getPlayerStats.Steals#</td>
-		            	<td data-label="Blocks"> #getPlayerStats.Blocks#</td>
-		            	<td data-label="Turnovers"> #getPlayerStats.Turnovers#</td>
+		            	<td data-label="Season">#getPlayerStats.SeasonName#</td>
+		            	<td data-label="Points">#val(getPlayerStats.Points)#</td>
+		            	<td data-label="Rebounds">#val(getPlayerStats.Rebounds)#</td>
+		            	<td data-label="Assists">#val(getPlayerStats.Assists)#</td>
+		            	<td data-label="Steals">#val(getPlayerStats.Steals)#</td>
+		            	<td data-label="Blocks">#val(getPlayerStats.Blocks)#</td>
+		            	<td data-label="Turnovers">#val(getPlayerStats.Turnovers)#</td>
 		            </tr>
 	        	</cfloop>
+	            <tr class="headers">
+	            	<td data-label="Career">Career</td>
+	            	<td data-label="Points">#val(careerStats.Points)#</td>
+	            	<td data-label="Rebounds">#val(careerStats.Rebounds)#</td>
+	            	<td data-label="Assists">#val(careerStats.Assists)#</td>
+	            	<td data-label="Steals">#val(careerStats.Steals)#</td>
+	            	<td data-label="Blocks">#val(careerStats.Blocks)#</td>
+	            	<td data-label="Turnovers">#val(careerStats.Turnovers)#</td>
+	            </tr>
 	          </tbody>
 	        </table>
 
