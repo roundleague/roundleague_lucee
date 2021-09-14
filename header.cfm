@@ -1,18 +1,4 @@
 
-<!--
-=========================================================
- Paper Kit 2 - v2.2.0
-=========================================================
-
- Product Page: https://www.creative-tim.com/product/paper-kit-2
- Copyright 2019 Creative Tim (https://www.creative-tim.com)
- Licensed under MIT (https://github.com/creativetimofficial/paper-kit-2/blob/master/LICENSE.md)
-
- Coded by Creative Tim
-
-=========================================================
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. -->
 <!DOCTYPE html>
 
 <html lang="en">
@@ -32,6 +18,7 @@ The above copyright notice and this permission notice shall be included in all c
   <!-- CSS Files -->
   <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
   <link href="/assets/css/paper-kit.css?v=2.2.0" rel="stylesheet" />
+  <link href="/assets/css/shared/responsive_tables.css" rel="stylesheet" />
   <!-- CSS Just for demo purpose, don't include it in your project -->
   <link href="/assets/demo/demo.css" rel="stylesheet" />
   <link href="/pages/landing-page.css" rel="stylesheet" />
@@ -62,7 +49,7 @@ The above copyright notice and this permission notice shall be included in all c
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" rel="tooltip" title="Like us on Facebook" data-placement="bottom" href="https://www.facebook.com/CreativeTim" target="_blank">
+            <a class="nav-link" rel="tooltip" title="Like us on Facebook" data-placement="bottom" href="/pages/Standings/standings.cfm">
               Standings
             </a>
           </li>

@@ -2,7 +2,6 @@
 
 <!--- Page Specific CSS/JS Here --->
 <link href="/pages/Teams/Player_Profiles/player-profile.css" rel="stylesheet" />
-<link href="/pages/Teams/teams.css" rel="stylesheet" />
 
 <cfquery name="getPlayerData" datasource="roundleague">
 	SELECT lastName, firstName, position, height, weight, hometown, school
@@ -37,7 +36,7 @@
 		      <div class="container">
 		        <h2>#getPlayerData.firstName# #getPlayerData.LastName#</h2>
 		        #getPlayerData.position#<br>
-		        #getPlayerStats.recordCount# Seasons
+		        Seasons: #getPlayerStats.recordCount#
 		      </div>
 		    </div>
 		  </div>
