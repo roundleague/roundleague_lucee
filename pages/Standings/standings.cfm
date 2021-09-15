@@ -39,20 +39,20 @@
         <table>
           <caption>Standings</caption>
           <thead>
-            <tr>
+            <th>
             	<td>Rank</td>
             	<td>Team</td>
             	<td>Wins</td>
             	<td>Losses</td>
-            </tr>
+            </th>
           </thead>
           <tbody>
           	<cfloop query="getStandings">
 	            <tr>
-	            	<td>#getStandings.currentRow#</td>
-	            	<td>#TeamName#</td>
-	            	<td>#Wins#</td>
-	            	<td>#Losses#</td>
+	            	<td data-label="Rank">#getStandings.currentRow#</td>
+	            	<td data-label="Team">#TeamName#</td>
+	            	<td data-label="Wins">#Wins#</td>
+	            	<td data-label="Losses">#Losses#</td>
 	            </tr>
         	</cfloop>
           </tbody>
