@@ -20,7 +20,7 @@
 	JOIN roster r ON r.PlayerID = p.playerID
 	JOIN teams t ON t.teamId = r.teamID
 	JOIN divisions d ON d.divisionID = r.DivisionID
-	JOIN seasons s ON s.seasonID = s.seasonID
+	JOIN seasons s ON s.seasonID = t.seasonID
 	WHERE r.seasonID = s.seasonID
 	AND t.teamID = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#">
 </cfquery>

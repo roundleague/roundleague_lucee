@@ -16,6 +16,12 @@
 	WHERE PlayerID = <cfqueryparam cfsqltype="INTEGER" value="#url.playerID#">
 </cfquery>
 
+<cfquery name="getPlayerAwards" datasource="roundleague">
+	SELECT AwardName
+	FROM Awards
+	WHERE PlayerID = <cfqueryparam cfsqltype="INTEGER" value="#url.playerID#">
+</cfquery>
+
 <!--- Career Totals --->
 <cfinvoke component="player-profile"
 	method="getCareerStats"
@@ -29,14 +35,39 @@
       <div class="container">
 
         <!--- Content Here --->
-		<div class="row">
+		<div class="row" style="align-items: center">
 		  <div class="column">
 		    <div class="card">
-		      <img src="/assets/img/PlayerProfiles/#url.playerID#.JPG" alt="Player Photo" style="width:100%">
+		      <cfset imgPath = "/assets/img/PlayerProfiles/#url.playerID#.JPG">
+		      <cfif FileExists(imgPath)>
+		      	<img src="/assets/img/PlayerProfiles/#url.playerID#.JPG" alt="Player Photo" style="width:100%">
+		      <cfelse>
+		      	<img src="/assets/img/PlayerProfiles/default.JPG" alt="Player Photo" style="width:100%">
+		      </cfif>
 		      <div class="container">
 		        <h2>#getPlayerData.firstName# #getPlayerData.LastName#</h2>
-		        #getPlayerData.position#<br>
-		        Seasons: #getPlayerStats.recordCount#
+		      </div>
+		    </div>
+		  </div>
+
+		  <div class="column">
+		    <div class="card">
+		      <div class="container">
+		        <h2>Player Bio</h2>
+		        <strong>Position:</strong> #getPlayerData.position#<br>
+		        <strong>Height:</strong> #getPlayerData.height#<br>
+		        <strong>Weight:</strong> #getPlayerData.weight#<br>
+		        <strong>Hometown:</strong> #getPlayerData.hometown#<br>
+		        <strong>School:</strong> #getPlayerData.school#<br>
+		        <strong>Seasons:</strong> #getPlayerStats.recordCount#<br>
+		      </div>
+		    </div>
+		    <div class="card">
+		      <div class="container">
+		        <h2>Career Awards</h2>
+		        <cfloop query="getPlayerAwards">
+		        	#getPlayerAwards.AwardName#<br>
+		        </cfloop>
 		      </div>
 		    </div>
 		  </div>
@@ -45,13 +76,13 @@
 	          <caption>Career Stats</caption>
 	          <thead>
 	            <tr class="headers">
-	            	<td>Season</td>
-	            	<td>Points</td>
-	            	<td>Rebounds</td>
-	            	<td>Assists</td>
-	            	<td>Steals</td>
-	            	<td>Blocks</td>
-	            	<td>Turnovers</td>
+	            	<th>Season</th>
+	            	<th>Points</th>
+	            	<th>Rebounds</th>
+	            	<th>Assists</th>
+	            	<th>Steals</th>
+	            	<th>Blocks</th>
+	            	<th>Turnovers</th>
 	            </tr>
 	          </thead>
 	          <tbody>

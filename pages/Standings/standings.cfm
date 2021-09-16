@@ -39,12 +39,12 @@
         <table>
           <caption>Standings</caption>
           <thead>
-            <th>
-            	<td>Rank</td>
-            	<td>Team</td>
-            	<td>Wins</td>
-            	<td>Losses</td>
-            </th>
+            <tr>
+            	<th>Rank</th>
+            	<th>Team</th>
+            	<th>Wins</th>
+            	<th>Losses</th>
+            </tr>
           </thead>
           <tbody>
           	<cfloop query="getStandings">
