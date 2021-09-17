@@ -4,9 +4,11 @@
 <link href="/pages/Teams/Player_Profiles/player-profile.css" rel="stylesheet" />
 
 <cfquery name="getPlayerData" datasource="roundleague">
-	SELECT lastName, firstName, position, height, weight, hometown, school
-	FROM Players
-	WHERE PlayerID = <cfqueryparam cfsqltype="INTEGER" value="#url.playerID#">
+	SELECT lastName, firstName, position, height, weight, hometown, school, t.teamName
+	FROM Players p
+	JOIN Roster r on r.playerID = p.playerID
+	JOIN Teams t on r.teamID = t.teamID
+	WHERE p.PlayerID = <cfqueryparam cfsqltype="INTEGER" value="#url.playerID#">
 </cfquery>
 
 <cfquery name="getPlayerStats" datasource="roundleague">
@@ -39,10 +41,13 @@
 		  <div class="column">
 		    <div class="card">
 		      <cfset imgPath = "/assets/img/PlayerProfiles/#url.playerID#.JPG">
+		      <cfset altPath = "/assets/img/PlayerProfiles/#getPlayerData.teamName#/#getPlayerData.FirstName# #getPlayerData.lastName# - 1.JPG"> <!--- Alt Path so we don't have to reorder pictures for now lol --->
 		      <cfif FileExists(imgPath)>
 		      	<img src="/assets/img/PlayerProfiles/#url.playerID#.JPG" alt="Player Photo" style="width:100%">
+		      <cfelseif FileExists(altPath)>
+		      	<img src="/assets/img/PlayerProfiles/#getPlayerData.teamName#/#getPlayerData.FirstName# #getPlayerData.lastName# - 1.JPG" alt="Player Photo" style="width:100%">
 		      <cfelse>
-		      	<img src="/assets/img/PlayerProfiles/default.JPG" alt="Player Photo" style="width:100%">
+				<img src="/assets/img/PlayerProfiles/default.JPG" alt="Player Photo" style="width:100%">
 		      </cfif>
 		      <div class="container">
 		        <h2>#getPlayerData.firstName# #getPlayerData.LastName#</h2>
