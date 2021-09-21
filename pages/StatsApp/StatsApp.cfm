@@ -35,6 +35,7 @@
     JOIN seasons s ON s.seasonID = s.seasonID
     WHERE r.seasonID = s.seasonID
     AND t.teamID = 1
+    LIMIT 5
 </cfquery>
 
 <body>
@@ -65,28 +66,44 @@
                         <button class="button-error pure-button">-1</button>
                     </td>
                     <td>
-                        0
+                        <span class="fieldValue">0</span><br>
+                        <button class="button-success pure-button">+1</button>
+                        <button class="button-error pure-button">-1</button>
                     </td>
                     <td>
-                        0
+                        <span class="fieldValue">0</span><br>
+                        <button class="button-success pure-button">+1</button>
+                        <button class="button-error pure-button">-1</button>
                     </td>
                     <td>
-                        0
+                        <span class="fieldValue">0</span><br>
+                        <button class="button-success pure-button">+1</button>
+                        <button class="button-error pure-button">-1</button>
                     </td>
                     <td>
-                        0
+                        <span class="fieldValue">0</span><br>
+                        <button class="button-success pure-button">+1</button>
+                        <button class="button-error pure-button">-1</button>
                     </td>
                     <td>
-                        0
+                        <span class="fieldValue">0</span><br>
+                        <button class="button-success pure-button">+1</button>
+                        <button class="button-error pure-button">-1</button>
                     </td>
                     <td>
-                        0
+                        <span class="fieldValue">0</span><br>
+                        <button class="button-success pure-button">+1</button>
+                        <button class="button-error pure-button">-1</button>
                     </td>
                     <td>
-                        0
+                        <span class="fieldValue">0</span><br>
+                        <button class="button-success pure-button">+1</button>
+                        <button class="button-error pure-button">-1</button>
                     </td>
                     <td>
-                        0
+                        <span class="fieldValue">0</span><br>
+                        <button class="button-success pure-button">+1</button>
+                        <button class="button-error pure-button">-1</button>
                     </td>
                 </tr>
             </cfloop>
@@ -94,6 +111,8 @@
     </table>
     <!--- Scripts --->
     <script src="https://kit.fontawesome.com/356f7c17e2.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
+    <script src="StatsApp.js"></script>
 </body>
 </html>
 </cfoutput>
