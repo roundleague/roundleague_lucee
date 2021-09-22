@@ -19,6 +19,13 @@ $( document ).ready(function() {
 			addToValue("3FGA", 1, playerID);
 			addToValue("PTS", 3, playerID);
 		}
+		else if($(this).hasClass("3FGA")){
+			addToValue("FGA", 1, playerID);
+		}
+		else if($(this).hasClass("FTM")){
+			addToValue("PTS", 1, playerID);
+			addToValue("FTA", 1, playerID);
+		}
 	});
 
 	$( ".button-error" ).click(function() {
