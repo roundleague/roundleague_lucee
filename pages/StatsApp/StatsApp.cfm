@@ -27,7 +27,7 @@
 
 <!--- Queries --->
 <cfquery name="getPlayers" datasource="roundleague">
-    SELECT lastName, firstName, teamName, s.seasonName, d.divisionName, position
+    SELECT p.playerID, lastName, firstName, teamName, s.seasonName, d.divisionName, position
     FROM players p
     JOIN roster r ON r.PlayerID = p.playerID
     JOIN teams t ON t.teamId = r.teamID
@@ -56,54 +56,54 @@
         </thead>
         <tbody>
             <cfloop query="getPlayers">
-                <tr>
+                <tr id="Player_#getPlayers.playerID#">
                     <td>
                         #getPlayers.firstName# #getPlayers.LastName#
                     </td>
                     <td>
-                        <span class="fieldValue">0</span><br>
-                        <button class="button-success pure-button">+1</button>
-                        <button class="button-error pure-button">-1</button>
+                        <span id="FGM" class="fieldValue">0</span><br>
+                        <button class="button-success pure-button FGM">+1</button>
+                        <button class="button-error pure-button FGM">-1</button>
                     </td>
                     <td>
-                        <span class="fieldValue">0</span><br>
-                        <button class="button-success pure-button">+1</button>
-                        <button class="button-error pure-button">-1</button>
+                        <span id="FGA" class="fieldValue">0</span><br>
+                        <button class="button-success pure-button FGA">+1</button>
+                        <button class="button-error pure-button FGA">-1</button>
                     </td>
                     <td>
-                        <span class="fieldValue">0</span><br>
-                        <button class="button-success pure-button">+1</button>
-                        <button class="button-error pure-button">-1</button>
+                        <span id="3FGM" class="fieldValue">0</span><br>
+                        <button class="button-success pure-button 3FGM">+1</button>
+                        <button class="button-error pure-button 3FGM">-1</button>
                     </td>
                     <td>
-                        <span class="fieldValue">0</span><br>
-                        <button class="button-success pure-button">+1</button>
-                        <button class="button-error pure-button">-1</button>
+                        <span id="3FGA" class="fieldValue">0</span><br>
+                        <button class="button-success pure-button 3FGA">+1</button>
+                        <button class="button-error pure-button 3FGA">-1</button>
                     </td>
                     <td>
-                        <span class="fieldValue">0</span><br>
-                        <button class="button-success pure-button">+1</button>
-                        <button class="button-error pure-button">-1</button>
+                        <span id="FTM" class="fieldValue">0</span><br>
+                        <button class="button-success pure-button FTM">+1</button>
+                        <button class="button-error pure-button FTM">-1</button>
                     </td>
                     <td>
-                        <span class="fieldValue">0</span><br>
-                        <button class="button-success pure-button">+1</button>
-                        <button class="button-error pure-button">-1</button>
+                        <span id="FTA" class="fieldValue">0</span><br>
+                        <button class="button-success pure-button FTA">+1</button>
+                        <button class="button-error pure-button FTA">-1</button>
                     </td>
                     <td>
-                        <span class="fieldValue">0</span><br>
-                        <button class="button-success pure-button">+1</button>
-                        <button class="button-error pure-button">-1</button>
+                        <span id="PTS" class="fieldValue">0</span><br>
+                        <button class="button-success pure-button PTS">+1</button>
+                        <button class="button-error pure-button PTS">-1</button>
                     </td>
                     <td>
-                        <span class="fieldValue">0</span><br>
-                        <button class="button-success pure-button">+1</button>
-                        <button class="button-error pure-button">-1</button>
+                        <span id="REBS" class="fieldValue">0</span><br>
+                        <button class="button-success pure-button REBS">+1</button>
+                        <button class="button-error pure-button REBS">-1</button>
                     </td>
                     <td>
-                        <span class="fieldValue">0</span><br>
-                        <button class="button-success pure-button">+1</button>
-                        <button class="button-error pure-button">-1</button>
+                        <span id="ASTS" class="fieldValue">0</span><br>
+                        <button class="button-success pure-button ASTS">+1</button>
+                        <button class="button-error pure-button ASTS">-1</button>
                     </td>
                 </tr>
             </cfloop>
