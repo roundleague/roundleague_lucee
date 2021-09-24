@@ -5,9 +5,9 @@ $( document ).ready(function() {
 		var playerID = $(this).closest('tr').attr('id');
 		console.log("playerID" + playerID);
 		var fieldValueSpan = $(this).siblings(".fieldValue");
-		var fieldValue = parseInt($(this).siblings(".fieldValue").text());
+		var fieldValue = parseInt($(this).siblings(".fieldValue").val());
 		var newFieldValue = fieldValue + 1;
-		fieldValueSpan.text(newFieldValue);
+		fieldValueSpan.val(newFieldValue);
 
 		if($(this).hasClass("FGM")){
 			addToValue("FGA", 1, playerID);
@@ -30,10 +30,10 @@ $( document ).ready(function() {
 
 	$( ".button-error" ).click(function() {
 		var fieldValueSpan = $(this).siblings(".fieldValue");
-		var fieldValue = parseInt($(this).siblings(".fieldValue").text());
+		var fieldValue = parseInt($(this).siblings(".fieldValue").val());
 		var newFieldValue = fieldValue - 1;
 		if(newFieldValue >= 0) {
-			fieldValueSpan.text(newFieldValue);
+			fieldValueSpan.val(newFieldValue);
 
 			if($(this).hasClass("FGM")){
 				addToValue("PTS", -2);
@@ -46,9 +46,9 @@ $( document ).ready(function() {
 		console.log("playerID: " + playerID);
 		console.log("id: " + id);
 		console.log(fieldValueSpan);
-		var fieldValue = parseInt(fieldValueSpan.text());
+		var fieldValue = parseInt(fieldValueSpan.val());
 		var newFieldValue = fieldValue + addValue;
-		fieldValueSpan.text(newFieldValue);
+		fieldValueSpan.val(newFieldValue);
 	}
 
 });

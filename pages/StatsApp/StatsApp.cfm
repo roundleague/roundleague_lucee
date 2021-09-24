@@ -38,77 +38,85 @@
     LIMIT 5
 </cfquery>
 
+<cfif IsDefined("form.saveBoxScore")>
+    <cfinclude template="StatsApp-Save.cfm">
+</cfif>
+
 <body>
-    <table class="pure-table pure-table-horizontal">
-        <thead>
-            <tr>
-                <th>Player</th>
-                <th>FGM</th>
-                <th>FGA</th>
-                <th>3FGM</th>
-                <th>3FGA</th>
-                <th>FTM</th>
-                <th>FTA</th>
-                <th>PTS</th>
-                <th>REBS</th>
-                <th>ASTS</th>
-            </tr>
-        </thead>
-        <tbody>
-            <cfloop query="getPlayers">
-                <tr id="Player_#getPlayers.playerID#">
-                    <td>
-                        #getPlayers.firstName# #getPlayers.LastName#
-                    </td>
-                    <td>
-                        <span id="FGM" class="fieldValue">0</span><br>
-                        <button class="button-success pure-button FGM">+1</button>
-                        <button class="button-error pure-button FGM">-1</button>
-                    </td>
-                    <td>
-                        <span id="FGA" class="fieldValue">0</span><br>
-                        <button class="button-success pure-button FGA">+1</button>
-                        <button class="button-error pure-button FGA">-1</button>
-                    </td>
-                    <td>
-                        <span id="3FGM" class="fieldValue">0</span><br>
-                        <button class="button-success pure-button 3FGM">+1</button>
-                        <button class="button-error pure-button 3FGM">-1</button>
-                    </td>
-                    <td>
-                        <span id="3FGA" class="fieldValue">0</span><br>
-                        <button class="button-success pure-button 3FGA">+1</button>
-                        <button class="button-error pure-button 3FGA">-1</button>
-                    </td>
-                    <td>
-                        <span id="FTM" class="fieldValue">0</span><br>
-                        <button class="button-success pure-button FTM">+1</button>
-                        <button class="button-error pure-button FTM">-1</button>
-                    </td>
-                    <td>
-                        <span id="FTA" class="fieldValue">0</span><br>
-                        <button class="button-success pure-button FTA">+1</button>
-                        <button class="button-error pure-button FTA">-1</button>
-                    </td>
-                    <td>
-                        <span id="PTS" class="fieldValue">0</span><br>
-                        <button class="button-success pure-button PTS">+1</button>
-                        <button class="button-error pure-button PTS">-1</button>
-                    </td>
-                    <td>
-                        <span id="REBS" class="fieldValue">0</span><br>
-                        <button class="button-success pure-button REBS">+1</button>
-                        <button class="button-error pure-button REBS">-1</button>
-                    </td>
-                    <td>
-                        <span id="ASTS" class="fieldValue">0</span><br>
-                        <button class="button-success pure-button ASTS">+1</button>
-                        <button class="button-error pure-button ASTS">-1</button>
-                    </td>
+    <form name="gameLogForm" method="POST">
+        <table class="pure-table pure-table-horizontal">
+            <thead>
+                <tr>
+                    <th>Player</th>
+                    <th>FGM</th>
+                    <th>FGA</th>
+                    <th>3FGM</th>
+                    <th>3FGA</th>
+                    <th>FTM</th>
+                    <th>FTA</th>
+                    <th>PTS</th>
+                    <th>REBS</th>
+                    <th>ASTS</th>
                 </tr>
-            </cfloop>
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                <cfloop query="getPlayers">
+                    <tr id="Player_#getPlayers.playerID#">
+                        <td>
+                            #getPlayers.firstName# #getPlayers.LastName#
+                        </td>
+                        <td>
+                            <input type="number" name="FGM_#playerID#" id="FGM" class="fieldValue" value="0"><br>
+                            <button type="button" class="button-success pure-button FGM">+1</button>
+                            <button type="button" class="button-error pure-button FGM">-1</button>
+                        </td>
+                        <td>
+                            <input type="number" name="FGA_#playerID#" id="FGA" class="fieldValue" value="0"><br>
+                            <button type="button" class="button-success pure-button FGA">+1</button>
+                            <button type="button" class="button-error pure-button FGA">-1</button>
+                        </td>
+                        <td>
+                            <input type="number" name="3FGM_#playerID#" id="3FGM" class="fieldValue" value="0"><br>
+                            <button type="button" class="button-success pure-button 3FGM">+1</button>
+                            <button type="button" class="button-error pure-button 3FGM">-1</button>
+                        </td>
+                        <td>
+                            <input type="number" name="3FGA_#playerID#" id="3FGA" class="fieldValue" value="0"><br>
+                            <button type="button" class="button-success pure-button 3FGA">+1</button>
+                            <button type="button" class="button-error pure-button 3FGA">-1</button>
+                        </td>
+                        <td>
+                            <input type="number" name="FTM_#playerID#" id="FTM" class="fieldValue" value="0"><br>
+                            <button type="button" class="button-success pure-button FTM">+1</button>
+                            <button type="button" class="button-error pure-button FTM">-1</button>
+                        </td>
+                        <td>
+                            <input type="number" name="FTA_#playerID#" id="FTA" class="fieldValue" value="0"><br>
+                            <button type="button" class="button-success pure-button FTA">+1</button>
+                            <button type="button" class="button-error pure-button FTA">-1</button>
+                        </td>
+                        <td>
+                            <input type="number" name="PTS_#playerID#" id="PTS" class="fieldValue" value="0"><br>
+                            <button type="button" class="button-success pure-button PTS">+1</button>
+                            <button type="button" class="button-error pure-button PTS">-1</button>
+                        </td>
+                        <td>
+                            <input type="number" name="REBS_#playerID#" id="REBS" class="fieldValue" value="0"><br>
+                            <button type="button" class="button-success pure-button REBS">+1</button>
+                            <button type="button" class="button-error pure-button REBS">-1</button>
+                        </td>
+                        <td>
+                            <input type="number" name="ASTS_#playerID#" id="ASTS" class="fieldValue" value="0"><br>
+                            <button type="button" class="button-success pure-button ASTS">+1</button>
+                            <button type="button" class="button-error pure-button ASTS">-1</button>
+                        </td>
+                    </tr>
+                </cfloop>
+            </tbody>
+        </table>
+        <br>
+        <input type="submit" name="saveBoxScore" style="margin-left: 25px;" value="Save">
+    </form>
     <!--- Scripts --->
     <script src="https://kit.fontawesome.com/356f7c17e2.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>

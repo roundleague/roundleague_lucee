@@ -49,7 +49,7 @@
           	<cfloop query="getTeamData">
 	            <tr>
 	            	<td>
-                  <a href="Player_Profiles/player-profile.cfm?playerID=#playerID#">
+                  <a href="Player_Profiles/player-profile-2.cfm?playerID=#playerID#">
                     #firstName# #lastName# <cfif getTeamData.captainPlayerID EQ getTeamData.playerID>(C)</cfif>
                   </a>
                 </td>
