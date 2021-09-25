@@ -55,12 +55,14 @@ input[type=number] {
   -moz-appearance: textfield;
 }
 
-.ui-sortable-handle:hover{
+.dragdrop{
     cursor: grab;
 }
 
-[data-toggle="toggle"] {
-    display: none;
+.dragdrop:active {
+    cursor: grabbing;
+    cursor: -moz-grabbing;
+    cursor: -webkit-grabbing;
 }
 
 .ui-state-hover {
@@ -68,4 +70,8 @@ input[type=number] {
 }
 .ui-state-active {
     background: lightgray !important;
+}
+
+#benchToggle:hover {
+    cursor: pointer;
 }
