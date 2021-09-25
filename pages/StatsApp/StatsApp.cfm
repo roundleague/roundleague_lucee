@@ -20,6 +20,7 @@
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
+
 <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.6/build/pure-min.css" integrity="sha384-Uu6IeWbM+gzNVXJcM9XV3SohHtmWE+3VGi496jvgX1jyvDTXfdK+rfZc8C1Aehk5" crossorigin="anonymous">
 <link rel="stylesheet" href="StatsApp.css">
 
@@ -35,7 +36,6 @@
     JOIN seasons s ON s.seasonID = s.seasonID
     WHERE r.seasonID = s.seasonID
     AND t.teamID = 1
-    LIMIT 5
 </cfquery>
 
 <cfif IsDefined("form.saveBoxScore")>
@@ -44,7 +44,7 @@
 
 <body>
     <form name="gameLogForm" method="POST">
-        <table class="pure-table pure-table-horizontal">
+        <table id="sort" class="grid pure-table pure-table-horizontal">
             <thead>
                 <tr>
                     <th>Player</th>
@@ -61,7 +61,14 @@
             </thead>
             <tbody>
                 <cfloop query="getPlayers">
-                    <tr id="Player_#getPlayers.playerID#">
+                    <cfif getPlayers.currentRow EQ 6>
+                        <tr id="benchToggle">
+                            <td colspan="10">
+                                Bench (Click To Show/Hide)
+                            </td>
+                        </tr>
+                    </cfif>
+                    <tr class="dragdrop" id="Player_#getPlayers.playerID#">
                         <td>
                             #getPlayers.firstName# #getPlayers.LastName#
                         </td>
@@ -118,8 +125,9 @@
         <input type="submit" name="saveBoxScore" style="margin-left: 25px;" value="Save">
     </form>
     <!--- Scripts --->
-    <script src="https://kit.fontawesome.com/356f7c17e2.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/356f7c17e2.js" crossorigin="anonymous"></script>
     <script src="StatsApp.js"></script>
 </body>
 </html>

@@ -54,3 +54,18 @@ input::-webkit-inner-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
 }
+
+.ui-sortable-handle:hover{
+    cursor: grab;
+}
+
+[data-toggle="toggle"] {
+    display: none;
+}
+
+.ui-state-hover {
+    background: lightyellow !important;   
+}
+.ui-state-active {
+    background: lightgray !important;
+}
