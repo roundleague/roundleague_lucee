@@ -54,7 +54,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" rel="tooltip" data-placement="bottom" href="/pages/schedule/schedule.cfm">
+            <a class="nav-link" rel="tooltip" data-placement="bottom" href="/pages/schedule/schedule-2.cfm">
               Schedule
             </a>
           </li>
