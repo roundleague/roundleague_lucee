@@ -9,7 +9,7 @@
   LEFT JOIN teams as a ON s.hometeamID = a.teamID
   LEFT JOIN teams as b ON s.awayTeamID = b.teamID
   WHERE s.seasonID = 3 /* CHANGE LATER */
-  ORDER BY WEEK, startTime
+  ORDER BY WEEK, date, startTime
 </cfquery>
 
 <cfoutput>
