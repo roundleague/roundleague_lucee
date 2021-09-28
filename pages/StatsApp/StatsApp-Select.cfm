@@ -29,23 +29,57 @@
 
 </head>
 
+<cfparam name="form.teamID" default="0">
+<cfparam name="form.scheduleID" default="0">
+
+<cfquery name="getTeams" datasource="roundleague">
+  SELECT teamID, teamName
+  FROM teams
+  Where Status = 'Active'
+</cfquery>
+
 <!--- Queries --->
 <cfquery name="getTeamMatchups" datasource="roundleague">
     SELECT scheduleID, hometeamID, awayteamID, WEEK, a.teamName AS Home, b.teamName AS Away
     FROM schedule s
     LEFT JOIN teams as a ON s.hometeamID = a.teamID
     LEFT JOIN teams as b ON s.awayTeamID = b.teamID
-    WHERE a.teamID = 1
+    WHERE a.teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.teamID#">
+    OR b.teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.teamID#">
 </cfquery>
 
 <body>
-    <!--- Content Here --->
-    <label for="seasonID">Select Week</label>
-    <select name="scheduleID" id="Schedule" onchange="this.form.submit()">
-        <cfloop query="getTeamMatchups">
-            <option value="#getTeamMatchups.scheduleID#">Week #getTeamMatchups.Week# VS #getTeamMatchups.away#</option>
-        </cfloop>
-    </select>
+    <form name="selectForm" method="POST">
+      <!--- Content Here --->
+      <label for="seasonID">Select Team</label>
+      <select name="teamID" id="Team" onchange="this.form.submit()">
+          <option value=""></option>
+          <cfloop query="getTeams">
+              <option value="#getTeams.teamID#" <cfif form.teamID EQ getTeams.TeamID>selected</cfif>>#getTeams.teamName#</option>
+          </cfloop>
+      </select>
+      <br>
+      <cfif isDefined("form.teamID")>
+        <label for="seasonID">Select Week</label>
+        <select name="scheduleID" id="Schedule">
+            <cfloop query="getTeamMatchups">
+                <cfif form.teamID EQ getTeamMatchups.hometeamID>
+                  <cfset opponentTeam = getTeamMatchups.away>
+                <cfelse>
+                  <cfset opponentTeam = getTeamMatchups.home>
+                </cfif>
+                <option value="#getTeamMatchups.scheduleID#"<cfif form.scheduleID EQ getTeamMatchups.scheduleID>selected</cfif>>Week #getTeamMatchups.Week# VS #opponentTeam#</option>
+            </cfloop>
+        </select>
+      </cfif>
+      <br>
+      <input type="submit" value="Submit">
+    </form>
+
+    <cfif form.scheduleID>
+      <cflocation url="StatsApp.cfm?teamID=#form.teamID#&scheduleID=#form.scheduleID#">
+    </cfif>
+
     <!--- Scripts --->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" crossorigin="anonymous"></script>

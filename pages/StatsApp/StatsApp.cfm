@@ -35,7 +35,7 @@
     JOIN divisions d ON d.divisionID = r.DivisionID
     JOIN seasons s ON s.seasonID = s.seasonID
     WHERE r.seasonID = s.seasonID
-    AND t.teamID = 1
+    AND t.teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.teamID#">
 </cfquery>
 
 <cfif IsDefined("form.saveBoxScore")>
@@ -43,6 +43,7 @@
 </cfif>
 
 <body>
+
     <form name="gameLogForm" method="POST">
         <table id="sort" class="grid pure-table pure-table-horizontal">
             <thead>
