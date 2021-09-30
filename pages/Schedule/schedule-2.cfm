@@ -2,6 +2,8 @@
 
 <!--- Page Specific CSS/JS Here --->
 <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.6/build/pure-min.css" integrity="sha384-Uu6IeWbM+gzNVXJcM9XV3SohHtmWE+3VGi496jvgX1jyvDTXfdK+rfZc8C1Aehk5" crossorigin="anonymous">
+<!--- Scripts --->
+<script src="/pages/Schedule/schedule-2.js"></script>
 
 <cfquery name="getSchedule" datasource="roundleague">
   SELECT scheduleID, WEEK, a.teamName AS Home, b.teamName AS Away, s.startTime, s.date
@@ -17,8 +19,9 @@
     <div class="section text-center">
       <div class="container">
 
+        <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for teams.." title="Type in a team">
         <!--- Content Here --->
-        <table class="grid pure-table pure-table-horizontal">
+        <table id="myTable" class="grid pure-table pure-table-horizontal">
             <thead>
                 <tr>
                     <th>Home</th>
@@ -32,7 +35,7 @@
                 <cfloop query="getSchedule">
                   <cfif currentWeek NEQ getSchedule.week OR getSchedule.currentRow EQ 1>
                     <cfset currentWeek = getSchedule.week>
-                    <tr>
+                    <tr class="weekRow">
                       <td colspan="4">Week #currentWeek#</td>
                     </tr>
                   </cfif>
@@ -50,5 +53,5 @@
     </div>
 </div>
 </cfoutput>
-<cfinclude template="/footer.cfm">
 
+<cfinclude template="/footer.cfm">
