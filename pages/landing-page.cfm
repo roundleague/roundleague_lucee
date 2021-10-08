@@ -7,7 +7,7 @@
       <div class="motto text-center">
         <!--- <h1 class="presentation-title">The Round League</h1> --->
         <img src="https://static.wixstatic.com/media/b16829_f3a215a62a9f485990b0e43a0a993d3d~mv2.png/v1/fill/w_909,h_335,al_c,q_85,usm_0.66_1.00_0.01/4_edited.webp" alt="The Round League Logo">
-        <h2 class="presentation-subtitle text-center">Official Home of The Round League </h2>
+        <h2 class="presentation-subtitle text-center">Official Home of The Round League Tim Test</h2>
         <br />
         <!--- <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="btn btn-outline-neutral btn-round"><i class="fa fa-play"></i>Watch video</a>
         <button type="button" class="btn btn-outline-neutral btn-round">Download</button> --->

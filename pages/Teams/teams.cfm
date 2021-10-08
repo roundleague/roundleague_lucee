@@ -8,7 +8,7 @@
   SELECT teamName, DivisionName, teamID
   FROM teams t
   JOIN divisions d ON t.DivisionID = d.DivisionID
-  WHERE DIVISIONNAME = 'Eastern Conference'
+  WHERE t.DivisionID IN (4,6)
   ORDER BY divisionName
 </cfquery>
 
@@ -16,7 +16,7 @@
   SELECT teamName, DivisionName, teamID
   FROM teams t
   JOIN divisions d ON t.DivisionID = d.DivisionID
-  WHERE DIVISIONNAME = 'Western Conference'
+  WHERE t.DivisionID IN (3,5)
   ORDER BY divisionName
 </cfquery>
 
@@ -25,7 +25,7 @@
       <div class="container">
 
         <table>
-          <caption>Eastern Conference</caption>
+          <caption>South / East Divisions</caption>
           <tbody>
             <tr>
               <cfloop query="getEastDivisionTeams">
@@ -36,7 +36,7 @@
         </table>
 
         <table>
-          <caption>Western Conference</caption>
+          <caption>North / West Divisions</caption>
           <tbody>
             <tr>
               <cfloop query="getWestDivisionTeams">
