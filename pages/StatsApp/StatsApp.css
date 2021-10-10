@@ -75,3 +75,11 @@ input[type=number] {
 #benchToggle:hover {
     cursor: pointer;
 }
+
+.jerseyNumber {
+    width: 30px;
+}
+
+.statsAppTable td {
+    padding: 5px;
+}

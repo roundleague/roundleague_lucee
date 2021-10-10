@@ -45,7 +45,7 @@
 <body>
 
     <form name="gameLogForm" method="POST">
-        <table id="sort" class="grid pure-table pure-table-horizontal">
+        <table id="sort" class="grid pure-table pure-table-horizontal statsAppTable">
             <thead>
                 <tr>
                     <th>Player</th>
@@ -58,6 +58,10 @@
                     <th>PTS</th>
                     <th>REBS</th>
                     <th>ASTS</th>
+                    <th>STLS</th>
+                    <th>BLKS</th>
+                    <th>TO</th>
+                    <th>FOULS</th>
                 </tr>
             </thead>
             <tbody>
@@ -71,7 +75,7 @@
                     </cfif>
                     <tr class="dragdrop" id="Player_#getPlayers.playerID#">
                         <td>
-                            #getPlayers.firstName# #getPlayers.LastName#
+                            #getPlayers.firstName# #getPlayers.LastName# <input class="jerseyNumber" type="number" name="Jersey_#playerID#">
                         </td>
                         <td>
                             <input type="number" name="FGM_#playerID#" id="FGM" class="fieldValue" value="0"><br>
@@ -117,6 +121,26 @@
                             <input type="number" name="ASTS_#playerID#" id="ASTS" class="fieldValue" value="0"><br>
                             <button type="button" class="button-success pure-button ASTS">+1</button>
                             <button type="button" class="button-error pure-button ASTS">-1</button>
+                        </td>
+                        <td>
+                            <input type="number" name="STLS_#playerID#" id="STLS" class="fieldValue" value="0"><br>
+                            <button type="button" class="button-success pure-button STLS">+1</button>
+                            <button type="button" class="button-error pure-button STLS">-1</button>
+                        </td>
+                        <td>
+                            <input type="number" name="BLKS_#playerID#" id="BLKS" class="fieldValue" value="0"><br>
+                            <button type="button" class="button-success pure-button BLKS">+1</button>
+                            <button type="button" class="button-error pure-button BLKS">-1</button>
+                        </td>
+                        <td>
+                            <input type="number" name="TO_#playerID#" id="TO" class="fieldValue" value="0"><br>
+                            <button type="button" class="button-success pure-button TO">+1</button>
+                            <button type="button" class="button-error pure-button TO">-1</button>
+                        </td>
+                        <td>
+                            <input type="number" name="FOULS_#playerID#" id="FOULS" class="fieldValue" value="0"><br>
+                            <button type="button" class="button-success pure-button FOULS">+1</button>
+                            <button type="button" class="button-error pure-button FOULS">-1</button>
                         </td>
                     </tr>
                 </cfloop>

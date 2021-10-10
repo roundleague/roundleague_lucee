@@ -11,7 +11,10 @@
                 FTA,
                 Points,
                 Rebounds,
-                Assists
+                Assists,
+                Steals,
+                Blocks,
+                Turnovers
                 )
             VALUES
             <cfloop list="#playerIDList#" index="count" item="i">
@@ -25,7 +28,10 @@
                     <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form["FTA_" & i]#">,
                     <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form["PTS_" & i]#">,
                     <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form["REBS_" & i]#">,
-                    <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form["ASTS_" & i]#">
+                    <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form["ASTS_" & i]#">,
+                    <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form["STLS_" & i]#">,
+                    <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form["BLKS_" & i]#">,
+                    <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form["TO_" & i]#">
                 )<cfif count NEQ ListLen(playerIDList)>,</cfif>
             </cfloop>
 
