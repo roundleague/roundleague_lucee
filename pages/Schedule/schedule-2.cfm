@@ -6,7 +6,7 @@
 <script src="/pages/Schedule/schedule-2.js"></script>
 
 <cfquery name="getSchedule" datasource="roundleague">
-  SELECT scheduleID, WEEK, a.teamName AS Home, b.teamName AS Away, s.startTime, s.date
+  SELECT scheduleID, WEEK, a.teamName AS Home, b.teamName AS Away, s.startTime, s.date, s.homeTeamID, s.awayTeamID, s.seasonID, s.homeScore, s.awayScore
   FROM schedule s
   LEFT JOIN teams as a ON s.hometeamID = a.teamID
   LEFT JOIN teams as b ON s.awayTeamID = b.teamID
@@ -40,7 +40,19 @@
                     </tr>
                   </cfif>
                     <tr>
-                      <td>#getSchedule.Home#</td>
+                      <!--- <cfif FileExists(imgPath)>
+                        <img src="/assets/img/PlayerProfiles/#url.playerID#.JPG" alt="Player Photo" style="width:100%">
+                      <cfelseif FileExists(altPath)>
+                        <img src="/assets/img/PlayerProfiles/#getPlayerData.teamName#/#getPlayerData.FirstName# #getPlayerData.lastName# - 1.JPG" alt="Player Photo" style="width:100%">
+                      <cfelse>
+                    <img src="/assets/img/PlayerProfiles/default.JPG" alt="Player Photo" style="width:100%">
+                      </cfif> --->
+                      <cfset imgPath = "/boxscores/#getSchedule.homeTeamID#_#getSchedule.week#_#getSchedule.seasonID#.pdf">
+                      <cfif FileExists("#imgPath#")>
+                        <td><a href="#imgPath#" target="_blank">#getSchedule.Home# #getSchedule.HomeScore#</a></td>
+                      <cfelse>
+                        <td>#getSchedule.Home# #getSchedule.HomeScore#</td>
+                      </cfif>
                       <td>#getSchedule.Away#</td>
                       <td>#DateFormat(getSchedule.Date, "mm/dd/yyyy")#</td>
                       <td>#DateTimeFormat(getSchedule.startTime, "h:nn")# PM</td>
