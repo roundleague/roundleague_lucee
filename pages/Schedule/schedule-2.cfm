@@ -40,20 +40,21 @@
                     </tr>
                   </cfif>
                     <tr>
-                      <!--- <cfif FileExists(imgPath)>
-                        <img src="/assets/img/PlayerProfiles/#url.playerID#.JPG" alt="Player Photo" style="width:100%">
-                      <cfelseif FileExists(altPath)>
-                        <img src="/assets/img/PlayerProfiles/#getPlayerData.teamName#/#getPlayerData.FirstName# #getPlayerData.lastName# - 1.JPG" alt="Player Photo" style="width:100%">
-                      <cfelse>
-                    <img src="/assets/img/PlayerProfiles/default.JPG" alt="Player Photo" style="width:100%">
-                      </cfif> --->
+
                       <cfset imgPath = "/boxscores/#getSchedule.homeTeamID#_#getSchedule.week#_#getSchedule.seasonID#.pdf">
                       <cfif FileExists("#imgPath#")>
                         <td><a href="#imgPath#" target="_blank">#getSchedule.Home# #getSchedule.HomeScore#</a></td>
                       <cfelse>
                         <td>#getSchedule.Home# #getSchedule.HomeScore#</td>
                       </cfif>
-                      <td>#getSchedule.Away#</td>
+
+                      <cfset awayImgPath = "/boxscores/#getSchedule.awayTeamID#_#getSchedule.week#_#getSchedule.seasonID#.pdf">
+                      <cfif FileExists("#awayImgPath#")>
+                        <td><a href="#awayImgPath#" target="_blank">#getSchedule.away# #getSchedule.awayScore#</a></td>
+                      <cfelse>
+                        <td>#getSchedule.Away# #getSchedule.AwayScore#</td>
+                      </cfif>
+                      
                       <td>#DateFormat(getSchedule.Date, "mm/dd/yyyy")#</td>
                       <td>#DateTimeFormat(getSchedule.startTime, "h:nn")# PM</td>
                     </tr>

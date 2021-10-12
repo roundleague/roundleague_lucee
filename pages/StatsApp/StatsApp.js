@@ -1,6 +1,12 @@
 // A $( document ).ready() block.
 $( document ).ready(function() {
 
+	$(".saveBtn").click(function(){
+		$("#id01").show();
+		console.log("tim test");
+		return false;
+	});
+
 	$( ".button-success" ).click(function() {
 		var playerID = $(this).closest('tr').attr('id');
 		console.log("playerID" + playerID);

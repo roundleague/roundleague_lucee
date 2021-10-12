@@ -20,7 +20,7 @@
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
-
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.6/build/pure-min.css" integrity="sha384-Uu6IeWbM+gzNVXJcM9XV3SohHtmWE+3VGi496jvgX1jyvDTXfdK+rfZc8C1Aehk5" crossorigin="anonymous">
 <link rel="stylesheet" href="StatsApp.css">
 
@@ -45,6 +45,27 @@
 <body>
 
     <form name="gameLogForm" method="POST">
+
+        <!-- The Modal -->
+          <div id="id01" class="w3-modal">
+            <div class="w3-modal-content w3-animate-top w3-card-4">
+              <header class="w3-container w3-teal"> 
+                <span onclick="document.getElementById('id01').style.display='none'" 
+                class="w3-button w3-display-topright">&times;</span>
+                <h2>Modal Header</h2>
+              </header>
+              <div class="w3-container">
+                <p>Some text..</p>
+                <p>Some text..</p>
+                <input type="submit" name="saveBoxScore" style="margin-left: 25px;" value="Save">
+              </div>
+              <footer class="w3-container w3-teal">
+                <p>Modal Footer</p>
+              </footer>
+            </div>
+          </div>
+        </div>
+
         <table id="sort" class="grid pure-table pure-table-horizontal statsAppTable">
             <thead>
                 <tr>
@@ -147,7 +168,7 @@
             </tbody>
         </table>
         <br>
-        <input type="submit" name="saveBoxScore" style="margin-left: 25px;" value="Save">
+        <input class="saveBtn" type="button" name="openModal" style="margin-left: 25px;" value="Save">
     </form>
     <!--- Scripts --->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>

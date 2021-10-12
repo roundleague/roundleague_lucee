@@ -1,5 +1,5 @@
 <cfoutput>
-    <cfset playerIDList = ValueList(getPlayers.playerID)>
+<!---     <cfset playerIDList = ValueList(getPlayers.playerID)>
     <cfquery name="savePlayerLogs" datasource="roundleague">
             INSERT INTO PlayerGameLog (
                 PlayerID, 
@@ -35,7 +35,7 @@
                 )<cfif count NEQ ListLen(playerIDList)>,</cfif>
             </cfloop>
 
-    </cfquery>
+    </cfquery> --->
 
     Saved.
 </cfoutput>
