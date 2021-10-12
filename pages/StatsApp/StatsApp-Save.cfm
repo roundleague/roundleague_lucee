@@ -37,5 +37,13 @@
 
     </cfquery> --->
 
+    <cfquery name="updateScheduleScore" datasource="roundleague">
+        UPDATE schedule 
+        SET 
+                homeScore = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.homeScore#">, 
+                awayScore = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.awayScore#">
+        WHERE scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">
+    </cfquery>
+
     Saved.
 </cfoutput>

@@ -38,6 +38,14 @@
     AND t.teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.teamID#">
 </cfquery>
 
+<cfquery name="getTeamsPlaying" datasource="roundleague">
+    SELECT scheduleID, hometeamID, awayteamID, WEEK, a.teamName AS Home, b.teamName AS Away
+    FROM schedule s
+    LEFT JOIN teams as a ON s.hometeamID = a.teamID
+    LEFT JOIN teams as b ON s.awayTeamID = b.teamID
+    WHERE s.scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">
+</cfquery>
+
 <cfif IsDefined("form.saveBoxScore")>
     <cfinclude template="StatsApp-Save.cfm">
 </cfif>
@@ -52,15 +60,15 @@
               <header class="w3-container w3-teal"> 
                 <span onclick="document.getElementById('id01').style.display='none'" 
                 class="w3-button w3-display-topright">&times;</span>
-                <h2>Modal Header</h2>
+                <h2>Enter the final scores</h2>
               </header>
-              <div class="w3-container">
-                <p>Some text..</p>
-                <p>Some text..</p>
+              <div class="w3-container" style="padding: 30px;">
+                #getTeamsPlaying.home# (Home): <input type="number" name="homeScore" value="0"><br>
+                #getTeamsPlaying.away# (Away): <input type="number" name="awayScore" value="0">
                 <input type="submit" name="saveBoxScore" style="margin-left: 25px;" value="Save">
               </div>
               <footer class="w3-container w3-teal">
-                <p>Modal Footer</p>
+                <!---   Modal Footer  --->
               </footer>
             </div>
           </div>
@@ -89,7 +97,7 @@
                 <cfloop query="getPlayers">
                     <cfif getPlayers.currentRow EQ 6>
                         <tr id="benchToggle">
-                            <td colspan="10">
+                            <td colspan="14">
                                 Bench (Click To Show/Hide)
                             </td>
                         </tr>
