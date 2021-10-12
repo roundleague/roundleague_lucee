@@ -39,7 +39,7 @@
 </cfquery>
 
 <cfquery name="getTeamsPlaying" datasource="roundleague">
-    SELECT scheduleID, hometeamID, awayteamID, WEEK, a.teamName AS Home, b.teamName AS Away
+    SELECT scheduleID, hometeamID, awayteamID, WEEK, a.teamName AS Home, b.teamName AS Away, s.seasonID, s.divisionID
     FROM schedule s
     LEFT JOIN teams as a ON s.hometeamID = a.teamID
     LEFT JOIN teams as b ON s.awayTeamID = b.teamID

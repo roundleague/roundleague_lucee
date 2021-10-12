@@ -45,5 +45,59 @@
         WHERE scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">
     </cfquery>
 
+    <!--- home team section --->
+    <cfquery name="checkHomeStandings" datasource="roundleague">
+        SELECT teamID
+        FROM standings
+        WHERE teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.homeTeamID#">
+        AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.seasonID#">
+    </cfquery>
+    <cfif checkHomeStandings.recordCount>
+        <cfquery name="updateStandings" datasource="roundleague">
+            UPDATE Standings
+            SET <cfif form.homeScore GT form.awayScore>WINS<cfelse>LOSSES</cfif> = <cfif form.homeScore GT form.awayScore>WINS<cfelse>LOSSES</cfif> + 1
+            WHERE teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.homeTeamID#">
+        </cfquery>
+    <cfelse>
+        <cfquery name="insertStandings" datasource="roundleague">
+            INSERT INTO Standings (TeamID, Wins, Losses, SeasonID, DivisionID)
+            VALUES 
+            (
+                <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.homeTeamID#">,
+                <cfif form.homeScore GT form.awayScore>1<cfelse>0</cfif>,
+                <cfif form.homeScore LT form.awayScore>1<cfelse>0</cfif>,
+                <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.SeasonID#">,
+                <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.DivisionID#">
+            )
+        </cfquery>
+    </cfif>
+
+    <!--- away team section --->
+    <cfquery name="checkAwayStandings" datasource="roundleague">
+        SELECT teamID
+        FROM standings
+        WHERE teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.AwayTeamID#">
+        AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.seasonID#">
+    </cfquery>
+    <cfif checkAwayStandings.recordCount>
+        <cfquery name="updateStandings" datasource="roundleague">
+            UPDATE Standings
+            SET <cfif form.awayScore GT form.homeScore>WINS<cfelse>LOSSES</cfif> = <cfif form.awayScore GT form.homeScore>WINS<cfelse>LOSSES</cfif> + 1
+            WHERE teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.awayTeamID#">
+        </cfquery>
+    <cfelse>
+        <cfquery name="insertStandings" datasource="roundleague">
+            INSERT INTO Standings (TeamID, Wins, Losses, SeasonID, DivisionID)
+            VALUES 
+            (
+                <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.awayTeamID#">,
+                <cfif form.awayScore GT form.homeScore>1<cfelse>0</cfif>,
+                <cfif form.awayScore LT form.homeScore>1<cfelse>0</cfif>,
+                <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.SeasonID#">,
+                <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.DivisionID#">
+            )
+        </cfquery>
+    </cfif>
+
     Saved.
 </cfoutput>
