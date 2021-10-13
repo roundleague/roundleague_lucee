@@ -1,3 +1,6 @@
+<cfif FindNoCase("testing.theroundleague.com", CGI.REQUEST_URL)>
+  <cfdump var="Access Denied." /><cfabort />
+</cfif>
 
 <!DOCTYPE html>
 
