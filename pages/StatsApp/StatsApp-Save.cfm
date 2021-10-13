@@ -99,5 +99,10 @@
         </cfquery>
     </cfif>
 
+    <!--- Player Stats Update Section --->
+    <cfquery name="team" datasource="roundleague">
+        
+    </cfquery>
+
     Saved.
 </cfoutput>
