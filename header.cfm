@@ -83,8 +83,10 @@
                 <a class="dropdown-item" href="##pk">Gallery</a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="##pk">Contact</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="/pages/StatsApp/StatsApp-Select.cfm">StatsApp</a>
+                <cfif !FindNoCase("testing.theroundleague.com", CGI.REQUEST_URL)>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="/pages/StatsApp/StatsApp-Select.cfm">StatsApp</a>
+                </cfif>
               </ul>
             </div>
         </ul>
