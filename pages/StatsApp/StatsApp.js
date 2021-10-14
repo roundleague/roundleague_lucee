@@ -38,6 +38,13 @@ $( document ).ready(function() {
 		}
 	});
 
+	$(document).keydown(function(e){
+		if( e.which === 90 && e.ctrlKey )
+		{
+	        $('.undoBtn').trigger("click"); 
+	    }          
+	}); 
+
 	$( ".undoBtn" ).click(function() {
 		var undoAction = globalHistory.pop();
 		$(undoAction).trigger("click");
