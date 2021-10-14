@@ -52,6 +52,10 @@
 
 <body>
 
+    <div style="position:relative;min-width:960px">
+        <button type="button" class="pure-button undoBtn">Undo</button>
+    </div>
+
     <form name="gameLogForm" method="POST">
 
         <!-- The Modal -->

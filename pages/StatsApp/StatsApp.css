@@ -1,7 +1,8 @@
 .button-success,
 .button-error,
 .button-warning,
-.button-secondary {
+.button-secondary,
+.undoBtn {
     color: white;
     border-radius: 4px;
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
@@ -15,6 +16,7 @@
 
 .button-error {
     background: rgb(202, 60, 60);
+    display: none;
     /* this is a maroon */
 }
 
@@ -89,6 +91,13 @@ input[type=number] {
 }
 
 .statsAppTable td {
-    padding: 5px;
+    padding: 20px;
 }
 
+button.undoBtn {
+    background: rgb(202, 60, 60);
+    display: block;
+    position: fixed;
+    right: 41px;
+    top: 0px;
+}
