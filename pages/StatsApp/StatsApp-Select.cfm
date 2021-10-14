@@ -75,10 +75,15 @@
       </cfif>
       <br>
       <input type="submit" value="Submit">
+      <input type="submit" value="Scrimmage Game" name="scrimmage">
     </form>
 
     <cfif form.scheduleID>
       <cflocation url="StatsApp.cfm?teamID=#form.teamID#&scheduleID=#form.scheduleID#">
+    </cfif>
+
+    <cfif isDefined("form.scrimmage")>
+      <cflocation url="StatsApp-Scrimmage.cfm?teamID=#form.teamID#&scheduleID=#form.scheduleID#">
     </cfif>
 
     <!--- Scripts --->

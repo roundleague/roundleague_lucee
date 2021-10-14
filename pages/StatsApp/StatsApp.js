@@ -41,6 +41,7 @@ $( document ).ready(function() {
 	$(document).keydown(function(e){
 		if( e.which === 90 && e.ctrlKey )
 		{
+			e.preventDefault();
 	        $('.undoBtn').trigger("click"); 
 	    }          
 	}); 
