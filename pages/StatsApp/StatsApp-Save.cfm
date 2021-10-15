@@ -1,5 +1,5 @@
 <cfoutput>
-<!---     <cfset playerIDList = ValueList(getPlayers.playerID)>
+    <cfset playerIDList = ValueList(getPlayers.playerID)>
     <cfquery name="savePlayerLogs" datasource="roundleague">
             INSERT INTO PlayerGameLog (
                 PlayerID, 
@@ -14,7 +14,8 @@
                 Assists,
                 Steals,
                 Blocks,
-                Turnovers
+                Turnovers,
+                SeasonID
                 )
             VALUES
             <cfloop list="#playerIDList#" index="count" item="i">
@@ -31,13 +32,14 @@
                     <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form["ASTS_" & i]#">,
                     <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form["STLS_" & i]#">,
                     <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form["BLKS_" & i]#">,
-                    <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form["TO_" & i]#">
+                    <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form["TO_" & i]#">,
+                    <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="3"> <!--- Change This SeasonID later --->
                 )<cfif count NEQ ListLen(playerIDList)>,</cfif>
             </cfloop>
 
-    </cfquery> --->
+    </cfquery>
 
-    <cfquery name="updateScheduleScore" datasource="roundleague">
+<!---     <cfquery name="updateScheduleScore" datasource="roundleague">
         UPDATE schedule 
         SET 
                 homeScore = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.homeScore#">, 
@@ -97,12 +99,26 @@
                 <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.DivisionID#">
             )
         </cfquery>
-    </cfif>
+    </cfif> --->
 
     <!--- Player Stats Update Section --->
     <cfquery name="team" datasource="roundleague">
-        
+        SELECT p.playerID
+        FROM players p
+        JOIN roster r ON r.PlayerID = p.playerID
+        JOIN teams t ON t.teamId = r.teamID
+        WHERE t.teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.teamID#">
     </cfquery>
+
+    <cfloop list="#ValueList(team.playerID)#" index="i">
+        <!--- Change this seasonID later --->
+        <cfquery name="updateStats" datasource="roundleague" result="updateResult">
+            UPDATE playerStats
+            SET Points = (SELECT CAST(AVG(POINTS) AS DECIMAL(10,1)) FROM PlayerGameLog WHERE playerID = #i# AND SeasonID = 3)
+            WHERE playerID = #i#
+            AND SeasonID = 3
+        </cfquery>
+    </cfloop>
 
     Saved.
 </cfoutput>

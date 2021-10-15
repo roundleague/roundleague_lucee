@@ -28,7 +28,7 @@
 
 <!--- Queries --->
 <cfquery name="getPlayers" datasource="roundleague">
-    SELECT p.playerID, lastName, firstName, teamName, s.seasonName, d.divisionName, position
+    SELECT p.playerID, lastName, firstName, teamName, s.seasonName, s.seasonID, d.divisionName, position
     FROM players p
     JOIN roster r ON r.PlayerID = p.playerID
     JOIN teams t ON t.teamId = r.teamID
