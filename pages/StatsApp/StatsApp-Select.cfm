@@ -24,6 +24,7 @@
 
 <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.6/build/pure-min.css" integrity="sha384-Uu6IeWbM+gzNVXJcM9XV3SohHtmWE+3VGi496jvgX1jyvDTXfdK+rfZc8C1Aehk5" crossorigin="anonymous">
 <link rel="stylesheet" href="StatsApp.css">
+<link rel="stylesheet" href="StatsApp-Select.css">
 
 <!--- Page Specific CSS/JS Here --->
 <link href="/pages/Standings/purekitpro.css" rel="stylesheet" />
@@ -51,31 +52,42 @@
 
 <body>
     <form name="selectForm" method="POST">
-      <!--- Content Here --->
-      <label for="seasonID">Select Team</label>
-      <select name="teamID" id="Team" onchange="this.form.submit()">
-          <option value=""></option>
-          <cfloop query="getTeams">
-              <option value="#getTeams.teamID#" <cfif form.teamID EQ getTeams.TeamID>selected</cfif>>#getTeams.teamName#</option>
-          </cfloop>
-      </select>
-      <br>
-      <cfif isDefined("form.teamID")>
-        <label for="seasonID">Select Week</label>
-        <select name="scheduleID" id="Schedule">
-            <cfloop query="getTeamMatchups">
-                <cfif form.teamID EQ getTeamMatchups.hometeamID>
-                  <cfset opponentTeam = getTeamMatchups.away>
-                <cfelse>
-                  <cfset opponentTeam = getTeamMatchups.home>
-                </cfif>
-                <option value="#getTeamMatchups.scheduleID#"<cfif form.scheduleID EQ getTeamMatchups.scheduleID>selected</cfif>>Week #getTeamMatchups.Week# VS #opponentTeam#</option>
+      <div class="gameSelect">
+        <label for="seasonID">Select Team: </label>
+        <select name="teamID" id="Team" onchange="this.form.submit()">
+            <option value=""></option>
+            <cfloop query="getTeams">
+                <option value="#getTeams.teamID#" <cfif form.teamID EQ getTeams.TeamID>selected</cfif>>#getTeams.teamName#</option>
             </cfloop>
         </select>
-      </cfif>
-      <br>
-      <input type="submit" value="Submit">
-      <input type="submit" value="Scrimmage Game" name="scrimmage">
+        <br>
+        <cfif isDefined("form.teamID")>
+          <label for="seasonID">Select Week: </label>
+          <select name="scheduleID" id="Schedule">
+              <cfloop query="getTeamMatchups">
+                  <cfif form.teamID EQ getTeamMatchups.hometeamID>
+                    <cfset opponentTeam = getTeamMatchups.away>
+                  <cfelse>
+                    <cfset opponentTeam = getTeamMatchups.home>
+                  </cfif>
+                  <option value="#getTeamMatchups.scheduleID#"<cfif form.scheduleID EQ getTeamMatchups.scheduleID>selected</cfif>>Week #getTeamMatchups.Week# VS #opponentTeam#</option>
+              </cfloop>
+          </select>
+        </cfif>
+        <br>
+        <br>
+        <input type="submit" value="Submit">
+      </div>
+
+      <div class="scrimmageSelect">
+        <br>
+        <br>
+        OR
+        <br>
+        Player Count: <input type="number" value="0" name="playerCount"><br>
+        <br>
+        <input type="submit" value="Scrimmage Game" name="scrimmage">
+      </div>
     </form>
 
     <cfif form.scheduleID>
@@ -83,7 +95,7 @@
     </cfif>
 
     <cfif isDefined("form.scrimmage")>
-      <cflocation url="StatsApp-Scrimmage.cfm?teamID=#form.teamID#&scheduleID=#form.scheduleID#">
+      <cflocation url="StatsApp-Scrimmage.cfm?teamID=#form.teamID#&players=#form.playerCount#">
     </cfif>
 
     <!--- Scripts --->

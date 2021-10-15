@@ -26,18 +26,19 @@
 
 </head>
 
-<!--- Queries --->
-<cfscript>
-getPlayers = queryNew("playerID, lastName, firstName","integer, VarChar, VarChar",
-    [ 
-        {"playerID":1,"lastName":"", "firstName":""}, 
-        {"playerID":2,"lastName":"", "firstName":""},
-        {"playerID":3,"lastName":"", "firstName":""},
-        {"playerID":4,"lastName":"", "firstName":""},
-        {"playerID":5,"lastName":"", "firstName":""},
-        {"playerID":6,"lastName":"", "firstName":""},
-    ]);
-</cfscript>
+<cfif url.players GT 10>
+    <cfset playerCount = 10>
+<cfelse>
+    <cfset playerCount = url.players>
+</cfif>
+
+<cfset getPlayers = queryNew("playerID, lastName, firstName", "integer, varchar, varchar")>
+<cfloop from="1" to="#playerCount#" index="i">
+    <cfset queryAddRow(getPlayers)>
+    <cfset querySetCell(getPlayers, "playerID", i)>
+    <cfset querySetCell(getPlayers, "lastName", "")>
+    <cfset querySetCell(getPlayers, "firstName", "")>
+</cfloop>
 
 <cfif IsDefined("form.saveBoxScore")>
     <cfinclude template="StatsApp-Save.cfm">
