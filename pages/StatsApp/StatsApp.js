@@ -8,6 +8,23 @@ $( document ).ready(function() {
 		return false;
 	});
 
+	$(".playerBox").each(function() {
+	  $(this).on('click', function() {
+	     var row = $(this).parent('tr').index(),
+	             column = $(this).index();
+	     console.log(row, column);
+	  });
+	})
+
+	// $(document).keydown(function(e){
+	// 	if( e.which === 90 && e.ctrlKey )
+	// 	{
+	// 		e.preventDefault();
+	//         $('.undoBtn').trigger("click"); 
+	//     }          
+	// }); 
+
+
 	$( ".button-success" ).click(function() {
 		// Push to globalHistory
 		var undoNode = $(this).siblings('.button-error');

@@ -107,7 +107,7 @@
                         </tr>
                     </cfif>
                     <tr class="dragdrop" id="Player_#getPlayers.playerID#">
-                        <td>
+                        <td class="playerBox">
                             #getPlayers.firstName# #getPlayers.LastName# <input class="jerseyNumber" type="number" name="Jersey_#playerID#">
                         </td>
                         <td>
