@@ -21,9 +21,9 @@
 </cfquery>
 
 <cfoutput>
-<div class="main" style="background-color: white; margin-top: 50px;">
+<div class="main" style="background-color: white;">
 <form method="POST">
-    <div class="section text-center">
+    <div class="section text-center" style="padding-top: 30px;">
       <div class="container">
 
         <!--- Content Here --->
