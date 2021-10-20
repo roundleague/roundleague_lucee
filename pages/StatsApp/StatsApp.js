@@ -2,18 +2,58 @@
 $( document ).ready(function() {
 
 	var globalHistory = [];
+	var playerFlag = false;
+	var playerNode;
+	var playerNodeRow;
 
 	$(".saveBtn").click(function(){
 		$("#id01").show();
 		return false;
 	});
 
-	$(".playerBox").each(function() {
-	  $(this).on('click', function() {
-	     var row = $(this).parent('tr').index(),
-	             column = $(this).index();
-	     console.log(row, column);
-	  });
+	 $(document).keypress(function(e) {
+	 	if(playerNode.hasClass("playerHighlight")){
+			switch (e.which) {
+			 case 49:
+			 	hotKeyAdd("FGM");
+			   	break;
+			 case 50:
+			   	hotKeyAdd("FGA");; //up arrow key
+			   	break;
+			 case 51:
+			 	hotKeyAdd("3FGM");
+			   	break;
+			 case 52:
+			   	hotKeyAdd("3FGA");; //up arrow key
+			   	break;
+			 case 53:
+			 	hotKeyAdd("REBS");
+			   	break;
+			 case 54:
+			   	hotKeyAdd("ASTS");; //up arrow key
+			   	break;
+			 case 55:
+			 	hotKeyAdd("STLS");
+			   	break;
+			 case 56:
+			   	hotKeyAdd("BLKS");; //up arrow key
+			   	break;
+			 case 57:
+			   	hotKeyAdd("TO");; //up arrow key
+			   	break;
+			}
+	 	}
+	 });
+
+	$(".playerBox").click(function() {
+	     // var row = $(this).parent('tr').index(),
+	     //         column = $(this).index();
+	     // console.log(row, column);
+
+	     $("td").not(this).removeClass("playerHighlight");
+	     $(this).toggleClass("playerHighlight");
+	     playerNode = $(this);
+	     playerNodeRow = $(this).parent('tr');
 	})
 
 	// $(document).keydown(function(e){
@@ -23,6 +63,39 @@ $( document ).ready(function() {
 	//         $('.undoBtn').trigger("click"); 
 	//     }          
 	// }); 
+
+	function hotKeyAdd(category){
+
+		var addNode = $(playerNodeRow).find('.'+ category).not('.button-error')
+
+		// Push to globalHistory
+		var undoNode = $(addNode).siblings('.button-error');
+		globalHistory.push(undoNode);
+
+		var playerID = $(addNode).closest('tr').attr('id');
+		var fieldValueSpan = $(addNode).siblings(".fieldValue");
+		var fieldValue = parseInt($(addNode).siblings(".fieldValue").val());
+		var newFieldValue = fieldValue + 1;
+		fieldValueSpan.val(newFieldValue);
+
+		if($(addNode).hasClass("FGM")){
+			addToValue("FGA", 1, playerID);
+			addToValue("PTS", 2, playerID);
+		}
+		else if($(addNode).hasClass("3FGM")){
+			addToValue("FGM", 1, playerID);
+			addToValue("FGA", 1, playerID);
+			addToValue("3FGA", 1, playerID);
+			addToValue("PTS", 3, playerID);
+		}
+		else if($(addNode).hasClass("3FGA")){
+			addToValue("FGA", 1, playerID);
+		}
+		else if($(addNode).hasClass("FTM")){
+			addToValue("PTS", 1, playerID);
+			addToValue("FTA", 1, playerID);
+		}
+	}
 
 
 	$( ".button-success" ).click(function() {

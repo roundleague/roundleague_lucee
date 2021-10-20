@@ -82,19 +82,19 @@
             <thead>
                 <tr>
                     <th>Player</th>
-                    <th>FGM</th>
-                    <th>FGA</th>
-                    <th>3FGM</th>
-                    <th>3FGA</th>
+                    <th>FGM(1)</th>
+                    <th>FGA(2)</th>
+                    <th>3FGM(3)</th>
+                    <th>3FGA(4)</th>
+                    <th>REBS(5)</th>
+                    <th>ASTS(6)</th>
+                    <th>STLS(7)</th>
+                    <th>BLKS(8)</th>
+                    <th>TO(9)</th>
+                    <th>FOULS</th>
                     <th>FTM</th>
                     <th>FTA</th>
                     <th>PTS</th>
-                    <th>REBS</th>
-                    <th>ASTS</th>
-                    <th>STLS</th>
-                    <th>BLKS</th>
-                    <th>TO</th>
-                    <th>FOULS</th>
                 </tr>
             </thead>
             <tbody>
@@ -131,21 +131,6 @@
                             <button type="button" class="button-error pure-button 3FGA">-1</button>
                         </td>
                         <td>
-                            <input type="number" name="FTM_#playerID#" id="FTM" class="fieldValue" value="0"><br>
-                            <button type="button" class="button-success pure-button FTM">+1</button>
-                            <button type="button" class="button-error pure-button FTM">-1</button>
-                        </td>
-                        <td>
-                            <input type="number" name="FTA_#playerID#" id="FTA" class="fieldValue" value="0"><br>
-                            <button type="button" class="button-success pure-button FTA">+1</button>
-                            <button type="button" class="button-error pure-button FTA">-1</button>
-                        </td>
-                        <td>
-                            <input type="number" name="PTS_#playerID#" id="PTS" class="fieldValue" value="0"><br>
-                            <button type="button" class="button-success pure-button PTS">+1</button>
-                            <button type="button" class="button-error pure-button PTS">-1</button>
-                        </td>
-                        <td>
                             <input type="number" name="REBS_#playerID#" id="REBS" class="fieldValue" value="0"><br>
                             <button type="button" class="button-success pure-button REBS">+1</button>
                             <button type="button" class="button-error pure-button REBS">-1</button>
@@ -174,6 +159,21 @@
                             <input type="number" name="FOULS_#playerID#" id="FOULS" class="fieldValue" value="0"><br>
                             <button type="button" class="button-success pure-button FOULS">+1</button>
                             <button type="button" class="button-error pure-button FOULS">-1</button>
+                        </td>
+                        <td>
+                            <input type="number" name="FTM_#playerID#" id="FTM" class="fieldValue" value="0"><br>
+                            <button type="button" class="button-success pure-button FTM">+1</button>
+                            <button type="button" class="button-error pure-button FTM">-1</button>
+                        </td>
+                        <td>
+                            <input type="number" name="FTA_#playerID#" id="FTA" class="fieldValue" value="0"><br>
+                            <button type="button" class="button-success pure-button FTA">+1</button>
+                            <button type="button" class="button-error pure-button FTA">-1</button>
+                        </td>
+                        <td>
+                            <input type="number" name="PTS_#playerID#" id="PTS" class="fieldValue" value="0"><br>
+                            <button type="button" class="button-success pure-button PTS">+1</button>
+                            <button type="button" class="button-error pure-button PTS">-1</button>
                         </td>
                     </tr>
                 </cfloop>

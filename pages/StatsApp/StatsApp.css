@@ -101,3 +101,7 @@ button.undoBtn {
     right: 41px;
     top: 0px;
 }
+
+.pure-table td.playerHighlight {
+    background-color: rgb(28, 184, 65);
+}
