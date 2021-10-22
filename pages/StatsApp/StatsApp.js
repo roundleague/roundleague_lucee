@@ -5,42 +5,66 @@ $( document ).ready(function() {
 	var playerFlag = false;
 	var playerNode;
 	var playerNodeRow;
+	var playerNodeIndex;
 
 	$(".saveBtn").click(function(){
 		$("#id01").show();
 		return false;
 	});
 
-	 $(document).keypress(function(e) {
+	 $(document).keydown(function(e) {
 	 	if(playerNode.hasClass("playerHighlight")){
 			switch (e.which) {
+			 case 97:
 			 case 49:
 			 	hotKeyAdd("FGM");
 			   	break;
+			 case 98:
 			 case 50:
-			   	hotKeyAdd("FGA");; //up arrow key
+			   	hotKeyAdd("FGA");
 			   	break;
+			 case 99:
 			 case 51:
 			 	hotKeyAdd("3FGM");
 			   	break;
+			 case 100:  	
 			 case 52:
-			   	hotKeyAdd("3FGA");; //up arrow key
+			   	hotKeyAdd("3FGA");
 			   	break;
+			 case 101: 
 			 case 53:
 			 	hotKeyAdd("REBS");
 			   	break;
+			 case 102: 
 			 case 54:
-			   	hotKeyAdd("ASTS");; //up arrow key
+			   	hotKeyAdd("ASTS");
 			   	break;
+			 case 103: 
 			 case 55:
 			 	hotKeyAdd("STLS");
 			   	break;
+			 case 104: 
 			 case 56:
-			   	hotKeyAdd("BLKS");; //up arrow key
+			   	hotKeyAdd("BLKS");
 			   	break;
+			 case 105: 
 			 case 57:
-			   	hotKeyAdd("TO");; //up arrow key
+			   	hotKeyAdd("TO");
 			   	break;
+			 case 83: // s
+			   	playerNodeIndex = $(playerNode).parent().index() + 1;
+			   	// console.log("DOWN - playerNodeIndex: " + playerNodeIndex);
+			   	if(playerNodeIndex < 5){
+				   	var newPlayerNode = $("tr").find(".playerBox")[playerNodeIndex];
+				   	$(newPlayerNode).trigger('click');
+			   	}
+			   	break;
+			 case 87: // w
+			   	playerNodeIndex = $(playerNode).parent().index() - 1;
+			   	// console.log("UP - playerNodeIndex: " + playerNodeIndex);
+			   	var newPlayerNode = $("tr").find(".playerBox")[playerNodeIndex];
+			   	$(newPlayerNode).trigger('click');
+			   	break;		   	
 			}
 	 	}
 	 });
