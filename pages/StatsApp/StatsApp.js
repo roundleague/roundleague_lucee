@@ -197,6 +197,13 @@ $( document ).ready(function() {
 		var fieldValue = parseInt(fieldValueSpan.val());
 		var newFieldValue = fieldValue + addValue;
 		fieldValueSpan.val(newFieldValue);
+
+		 if(id=="PTS"){
+			var currentNum = parseFloat($('.teamTotalPts').html());
+			console.log(currentNum);
+			currentNum += addValue;
+			$('.teamTotalPts').html(currentNum);
+		 }
 	}
 
 	/* Drag and drop section */

@@ -101,8 +101,11 @@
                 <cfloop query="getPlayers">
                     <cfif getPlayers.currentRow EQ 6>
                         <tr id="benchToggle">
-                            <td colspan="14">
+                            <td colspan="13">
                                 Bench (Click To Show/Hide)
+                            </td>
+                            <td colspan="13">
+                                Total: <span class="teamTotalPts">0</span>
                             </td>
                         </tr>
                     </cfif>
