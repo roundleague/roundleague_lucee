@@ -23,6 +23,8 @@
 	JOIN seasons s ON s.seasonID = t.seasonID
 	WHERE r.seasonID = s.seasonID
 	AND t.teamID = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#">
+  AND p.PermissionToShare != 'No'
+  GROUP BY lastName, firstName
 </cfquery>
 
 <cfoutput>
@@ -49,9 +51,10 @@
           	<cfloop query="getTeamData">
 	            <tr>
 	            	<td>
-                  <a href="Player_Profiles/player-profile-2.cfm?playerID=#playerID#">
+                  <!--- <a href="Player_Profiles/player-profile-2.cfm?playerID=#playerID#">
                     #firstName# #lastName# <cfif getTeamData.captainPlayerID EQ getTeamData.playerID>(C)</cfif>
-                  </a>
+                  </a> --->
+                  #firstName# #lastName# <cfif getTeamData.captainPlayerID EQ getTeamData.playerID>(C)</cfif>
                 </td>
 	            	<td>#Position#</td>
 	            	<td>#Height#</td>
