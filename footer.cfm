@@ -16,7 +16,7 @@
         </nav>
         <div class="credits ml-auto">
           <span class="copyright">
-            ©
+            &copy;
             <script>
               document.write(new Date().getFullYear())
             </script>, made with <i class="fa fa-heart heart"></i> by Creative Tim
@@ -38,8 +38,6 @@
   <script src="/assets/js/plugins/bootstrap-datepicker.js" type="text/javascript"></script>
   <!-- Control Center for Paper Kit: parallax effects, scripts for the example pages etc -->
   <script src="/assets/js/paper-kit.js?v=2.2.0" type="text/javascript"></script>
-  <!--  Google Maps Plugin    -->
-  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
 </body>
 
 </html>

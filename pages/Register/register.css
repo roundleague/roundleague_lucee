@@ -1,0 +1,11 @@
+.registerRadio {
+	transform: scale(1.5); 
+}
+
+.firstRadio{
+	margin-left: 20px;
+}
+
+.secondRadio{
+	margin-left: 10px;
+}
