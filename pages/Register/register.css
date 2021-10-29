@@ -9,3 +9,15 @@
 .secondRadio{
 	margin-left: 10px;
 }
+
+.nonTextQuestions{
+	padding: 10px;
+}
+
+.modalBtn{
+	margin-bottom: 20px;
+}
+
+.biggerLabel{
+	font-size: large;
+}
