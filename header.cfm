@@ -1,6 +1,7 @@
 <cfif FindNoCase("testing.theroundleague.com", CGI.REQUEST_URL)>
-  <cfdump var="#cgi#" />
-  <cfdump var="Access Denied." /><cfabort />
+  <cfif !FindNoCase("50.126.101.19", CGI.remote_addr)>
+    <cfdump var="Access Denied." /><cfabort />
+  </cfif>
 </cfif>
 
 <!DOCTYPE html>
