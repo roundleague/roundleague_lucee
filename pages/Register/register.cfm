@@ -16,6 +16,10 @@
 <cfset bballPosition = 'Point Guard, Shooting Guard, Small Forward, Power Forward, Center'>
 <cfset heightOptions = "4'11, 5'1, 5'2, 5'3, 5'4', 5'5, 5'6, 5'7, 5'8, 5'9, 5'10, 5'11, 6'0, 6'1, 6'2, 6'3, 6'4, 6'5, 6'6, 6'7, 6'8, 6'9, 6'10, 6'11, 7'0, 7'1, 7'2, 7'3, 7'4, 7'5">
 
+<cfif isDefined("form.athleticWaiver") and isDefined("form.photoWaiver")>
+	<cfinclude template="register-save.cfm">
+</cfif>
+
 <cfoutput>
 <div class="main" style="background-color: white;">
     <div class="section text-center">
@@ -83,7 +87,7 @@ I, for myself and on behalf of my heirs, assigns, personal representatives and n
 		      <div class="container">
 		        <div class="row">
 		          <div class="col-md-6 ml-auto mr-auto">
-		            <form class="settings-form">
+		            <form class="settings-form" method="POST">
 		              <div class="form-group">
 		                <label>Email</label>
 		                <input type="text" required class="form-control border-input" placeholder="Email" name="email">
@@ -112,7 +116,7 @@ I, for myself and on behalf of my heirs, assigns, personal representatives and n
 		                <div class="col-md-6 col-sm-6">
 		                  <div class="form-group">
 		                    <label>Phone Number</label>
-		                    <input type="tel" required class="form-control border-input" name="phone" placeholder="123-45-678" pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}" required>
+		                    <input type="tel" required id="phoneField" class="form-control border-input" name="phone" placeholder="123-45-678" required>
 		                  </div>
 		                </div>
 		              </div>
@@ -226,29 +230,52 @@ I, for myself and on behalf of my heirs, assigns, personal representatives and n
 		                <textarea class="form-control textarea-limited" placeholder="This is a textarea limited to 150 characters." rows="3" maxlength="150"></textarea>
 		                <h5><small><span id="textarea-limited-message" class="pull-right">150 characters left</span></small></h5>
 		              </div>
-		              <label>Notifications</label>
+		              <label>Notifications</label> ---> 
 		              <ul class="notifications">
 		                <li class="notification-item">
-		                  Updates regarding platform changes
-		                  <input type="checkbox" data-toggle="switch" checked="" data-on-color="info" data-off-color="info"><span class="toggle"></span>
+		                  Are you over 18?
+		                  <input type="checkbox" name="over18" data-toggle="switch" checked="" data-on-color="info" data-off-color="info"><span class="toggle"></span>
 		                </li>
 		                <li class="notification-item">
-		                  Updates regarding product changes
-		                  <input type="checkbox" data-toggle="switch" checked="" data-on-color="info" data-off-color="info"><span class="toggle"></span>
+		                  Are you a free agent?
+		                  <input type="checkbox" name="freeAgent" data-toggle="switch" checked="" data-on-color="info" data-off-color="info"><span class="toggle"></span>
 		                </li>
 		                <li class="notification-item">
-		                  Weekly newsletter
-		                  <input type="checkbox" data-toggle="switch" checked="" data-on-color="info" data-off-color="info"><span class="toggle"></span>
+		                  Do we have your permission to share above information on our website for Player Profiles?
+		                  <input type="checkbox" name="permissionToShare" data-toggle="switch" checked="" data-on-color="info" data-off-color="info"><span class="toggle"></span>
 		                </li>
-		              </ul> --->
+		                <li class="notification-item">
+		                	<!--- Divider --->
+		                </li>
+		              </ul>
 		            <button type="button" class="btn btn-outline-danger btn-round modalBtn" data-toggle="modal" data-target="##waiverModal">
 		              Athletic Waiver
 		            </button>
 		            <button type="button" class="btn btn-outline-danger btn-round modalBtn" data-toggle="modal" data-target="##photoModal">
 		              Photo/Video Waiver
 		            </button>
+		              <ul class="notifications acknowledged">
+		                <li class="notification-item">
+		                  I have acknowledged, read, and agreed to the terms of the Athletic Waiver.
+				            <div class="form-check">
+				              <label class="form-check-label">
+				                <input class="form-check-input waiverCheck" type="checkbox" value="1" name="athleticWaiver">
+				                <span class="form-check-sign"></span>
+				              </label>
+				            </div>
+		                </li>
+		                <li class="notification-item">
+		                  I have acknowledged, read, and agreed to the terms of the Photo/Video Waiver.
+				            <div class="form-check">
+				              <label class="form-check-label">
+				                <input class="form-check-input waiverCheck" type="checkbox" value="1" name="photoWaiver">
+				                <span class="form-check-sign"></span>
+				              </label>
+				            </div>
+		                </li>
+		              </ul>
 		              <div class="text-center">
-		                <button type="submit" class="btn btn-wd btn-info btn-round">Save</button>
+		                <button type="submit" class="btn btn-wd btn-info btn-round saveBtn" disabled>Save</button>
 		              </div>
 		            </form>
 		          </div>
@@ -263,3 +290,4 @@ I, for myself and on behalf of my heirs, assigns, personal representatives and n
 </cfoutput>
 
 <cfinclude template="/footer.cfm">
+<script src="../Register/register.js"></script>
