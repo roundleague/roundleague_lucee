@@ -4,6 +4,8 @@
 <link href="https://demos.creative-tim.com/paper-kit-2-pro/assets/css/paper-kit.min.css?v=2.3.1" rel="stylesheet">
 <link href="../Register/register.css" rel="stylesheet">
 
+<cfoutput>
+
 <cfquery name="getTeams" datasource="roundleague">
 	SELECT teamID, teamName
 	FROM Teams
@@ -11,16 +13,18 @@
 	AND seasonID = (SELECT SeasonID FROM Seasons Where Status = 'Active')
 </cfquery>
 
-<cfset basketballExp = 'Recreational, High School Varsity, College, D-1 University, Professional'>
-<cfset vaccinationStatus = 'Yes, No, Prefer Not To Say'>
-<cfset bballPosition = 'Point Guard, Shooting Guard, Small Forward, Power Forward, Center'>
-<cfset heightOptions = "4'11, 5'1, 5'2, 5'3, 5'4', 5'5, 5'6, 5'7, 5'8, 5'9, 5'10, 5'11, 6'0, 6'1, 6'2, 6'3, 6'4, 6'5, 6'6, 6'7, 6'8, 6'9, 6'10, 6'11, 7'0, 7'1, 7'2, 7'3, 7'4, 7'5">
+<cfset basketballExp = 'Recreational,High School Varsity,College,D-1 University,Professional'>
+<cfset vaccinationStatus = 'Yes,No,Prefer Not To Say'>
+<cfset bballPosition = 'Point Guard,Shooting Guard,Small Forward,Power Forward,Center'>
+<cfset heightOptions = "4'11,5'1,5'2,5'3,5'4',5'5,5'6,5'7,5'8,5'9,5'10,5'11,6'0,6'1,6'2,6'3,6'4,6'5,6'6,6'7,6'8,6'9,6'10,6'11,7'0,7'1,7'2,7'3,7'4,7'5">
 
 <cfif isDefined("form.athleticWaiver") and isDefined("form.photoWaiver")>
 	<cfinclude template="register-save.cfm">
+	<!--- <div id="snackbar" class="show">#toastMessage#</div> --->
+	<cfexit>
 </cfif>
 
-<cfoutput>
+
 <div class="main" style="background-color: white;">
     <div class="section text-center">
       <div class="container">
@@ -110,7 +114,7 @@ I, for myself and on behalf of my heirs, assigns, personal representatives and n
 		                <div class="col-md-6 col-sm-6">
 		                  <div class="form-group">
 		                    <label>Birth Date</label>
-		                    <input type="date" class="form-control border-input" placeholder="Birth Date" name="birthDate">
+		                    <input type="date" required class="form-control border-input" placeholder="Birth Date" name="birthDate">
 		                  </div>
 		                </div>
 		                <div class="col-md-6 col-sm-6">
@@ -132,7 +136,7 @@ I, for myself and on behalf of my heirs, assigns, personal representatives and n
 			              <div class="col-md-6 ml-auto mr-auto nonTextQuestions">
 			                  <div class="form-group">
 			                    <label>Select Team (Will be verified by Team Captain)</label><br>
-								<select name="team" style="padding: 7px;">
+								<select name="teamID" style="padding: 7px;">
 								  <option value="0">I am signing up as a free agent</option>
 								  <cfloop query="getTeams">
 								  	<option value="#getTeams.TeamID#">#getTeams.TeamName#</option>
@@ -184,7 +188,7 @@ I, for myself and on behalf of my heirs, assigns, personal representatives and n
 			              <div class="col-md-6 ml-auto mr-auto nonTextQuestions">
 			                  <div class="form-group">
 			                    <label>Height</label><br>
-								<select name="team" style="padding: 7px;">
+								<select name="height" style="padding: 7px;">
 								  <cfloop list="#heightOptions#" index="i" item="x">
 								  	<option value="#x#">#x#</option>
 								  </cfloop>
