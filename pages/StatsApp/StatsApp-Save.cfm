@@ -1,4 +1,11 @@
 <cfoutput>
+    <cftry>
+    <!--- Get the active seasonID --->
+    <cfquery name="getActiveSeasonID" datasource="roundleague">
+        SELECT SeasonID
+        FROM Seasons
+        WHERE Status = 'Active'
+    </cfquery>
     <cfset playerIDList = ValueList(getPlayers.playerID)>
     <cfquery name="savePlayerLogs" datasource="roundleague">
             INSERT INTO PlayerGameLog (
@@ -33,7 +40,7 @@
                     <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form["STLS_" & i]#">,
                     <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form["BLKS_" & i]#">,
                     <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form["TO_" & i]#">,
-                    <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="3"> <!--- Change This SeasonID later --->
+                    <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getActiveSeasonID.seasonID#"> <!--- Change This SeasonID later --->
                 )<cfif count NEQ ListLen(playerIDList)>,</cfif>
             </cfloop>
 
@@ -101,24 +108,51 @@
         </cfquery>
     </cfif> --->
 
-    <!--- Player Stats Update Section --->
-    <cfquery name="team" datasource="roundleague">
-        SELECT p.playerID
-        FROM players p
-        JOIN roster r ON r.PlayerID = p.playerID
-        JOIN teams t ON t.teamId = r.teamID
-        WHERE t.teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.teamID#">
-    </cfquery>
-
-    <cfloop list="#ValueList(team.playerID)#" index="i">
-        <!--- Change this seasonID later --->
-        <cfquery name="updateStats" datasource="roundleague" result="updateResult">
-            UPDATE playerStats
-            SET Points = (SELECT CAST(AVG(POINTS) AS DECIMAL(10,1)) FROM PlayerGameLog WHERE playerID = #i# AND SeasonID = 3)
-            WHERE playerID = #i#
-            AND SeasonID = 3
-        </cfquery>
-    </cfloop>
+        <cfloop list="#playerIDList#" index="i">
+            <cfquery name="checkExistingPlayerStats" datasource="roundleague">
+                SELECT playerID
+                FROM PlayerStats
+                Where SeasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getActiveSeasonID.seasonID#">
+                AND PlayerID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#i#">
+            </cfquery>
+            <cfif checkExistingPlayerStats.recordCount>
+                <cfquery name="updateStats" datasource="roundleague" result="updateResult">
+                    UPDATE playerStats
+                    SET 
+                        Points = (SELECT CAST(AVG(POINTS) AS DECIMAL(10,1)) FROM PlayerGameLog WHERE playerID = #i# AND SeasonID = #getActiveSeasonID.seasonID#),
+                        Rebounds = (SELECT CAST(AVG(Rebounds) AS DECIMAL(10,1)) FROM PlayerGameLog WHERE playerID = #i# AND SeasonID = #getActiveSeasonID.seasonID#),
+                        Assists = (SELECT CAST(AVG(Assists) AS DECIMAL(10,1)) FROM PlayerGameLog WHERE playerID = #i# AND SeasonID = #getActiveSeasonID.seasonID#)
+                    WHERE playerID = #i#
+                    AND SeasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getActiveSeasonID.seasonID#">
+                </cfquery>
+            <cfelse>
+                <cfquery name="savePlayerLogs" datasource="roundleague">
+                        INSERT INTO PlayerStats (
+                            PlayerID,
+                            Points,
+                            Rebounds,
+                            Assists,
+                            Steals,
+                            Blocks,
+                            Turnovers,
+                            SeasonID
+                            )
+                        VALUES
+                             (
+                                <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#i#">, 
+                                <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form["PTS_" & i]#">,
+                                <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form["REBS_" & i]#">,
+                                <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form["ASTS_" & i]#">,
+                                <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form["STLS_" & i]#">,
+                                <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form["BLKS_" & i]#">,
+                                <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form["TO_" & i]#">,
+                                <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getActiveSeasonID.seasonID#">
+                            )
+                </cfquery>
+            </cfif>
+        </cfloop>
 
     Saved.
+    <cfcatch><cfdump var="#cfcatch#" /></cfcatch>
+    </cftry>
 </cfoutput>

@@ -35,7 +35,9 @@
     JOIN divisions d ON d.divisionID = r.DivisionID
     JOIN seasons s ON s.seasonID = s.seasonID
     WHERE r.seasonID = s.seasonID
+    AND s.seasonID = (SELECT SeasonID From Seasons Where Status = 'Active')
     AND t.teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.teamID#">
+    GROUP BY lastName, firstName
 </cfquery>
 
 <cfquery name="getTeamsPlaying" datasource="roundleague">
