@@ -46,15 +46,15 @@
     FROM schedule s
     LEFT JOIN teams as a ON s.hometeamID = a.teamID
     LEFT JOIN teams as b ON s.awayTeamID = b.teamID
-    WHERE a.teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.teamID#">
-    OR b.teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.teamID#">
+    WHERE (a.teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.teamID#"> OR b.teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.teamID#">)
+    AND (s.homeScore IS NULL OR s.awayScore IS NULL)
 </cfquery>
 
 <body>
-    <form name="selectForm" method="POST">
+    <form id="mainForm" name="selectForm" method="POST">
       <div class="gameSelect">
         <label for="seasonID">Select Team: </label>
-        <select name="teamID" id="Team" onchange="this.form.submit()">
+        <select name="teamID" id="Team" class="teamSelect">
             <option value=""></option>
             <cfloop query="getTeams">
                 <option value="#getTeams.teamID#" <cfif form.teamID EQ getTeams.TeamID>selected</cfif>>#getTeams.teamName#</option>
@@ -63,7 +63,7 @@
         <br>
         <cfif isDefined("form.teamID")>
           <label for="seasonID">Select Week: </label>
-          <select name="scheduleID" id="Schedule">
+          <select name="scheduleID" id="Schedule" class="scheduleSelect">
               <cfloop query="getTeamMatchups">
                   <cfif form.teamID EQ getTeamMatchups.hometeamID>
                     <cfset opponentTeam = getTeamMatchups.away>
@@ -103,6 +103,7 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" crossorigin="anonymous"></script>
     <script src="https://kit.fontawesome.com/356f7c17e2.js" crossorigin="anonymous"></script>
     <script src="StatsApp.js"></script>
+    <script src="StatsApp-Select.js"></script>
 </body>
 </html>
 </cfoutput>
