@@ -9,14 +9,14 @@
 	ORDER BY SeasonID desc
 </cfquery>
 
-<cfparam name="form.seasonID" default="#getSeasons.seasonID#">
+<cfparam name="form.seasonID" default="#session.currentSeasonID#">
 
 <cfquery name="getStandings" datasource="roundleague">
 	SELECT teamName, t.TeamID, Wins, Losses, t.DivisionID, sea.SeasonName
 	FROM teams t
 	JOIN standings s ON t.teamId = s.teamID
 	JOIN seasons sea on sea.seasonID = s.seasonID
-	WHERE s.SeasonID = <cfqueryparam cfsqltype="cf_sql_integer" value="#form.seasonID#">
+	WHERE s.SeasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.seasonID#">
 	ORDER BY wins desc
 </cfquery>
 
@@ -30,7 +30,7 @@
 		<label for="seasonID">Season</label>
 		<select name="seasonID" id="Seasons" onchange="this.form.submit()">
 			<cfloop query="getSeasons">
-				<option value="#getSeasons.SeasonID#"<cfif form.seasonID EQ getSeasons.seasonID> selected</cfif>>#getSeasons.SeasonName#</option>
+				<option value="#getSeasons.SeasonID#"<cfif getSeasons.SeasonID EQ form.seasonID> selected</cfif>>#getSeasons.SeasonName#</option>
 			</cfloop>
 		</select>
 
