@@ -12,12 +12,12 @@
 <cfparam name="form.seasonID" default="#session.currentSeasonID#">
 
 <cfquery name="getStandings" datasource="roundleague">
-	SELECT teamName, t.TeamID, Wins, Losses, t.DivisionID, sea.SeasonName
+	SELECT teamName, t.TeamID, Wins, Losses, t.DivisionID, sea.SeasonName, s.PointDifferential
 	FROM teams t
 	JOIN standings s ON t.teamId = s.teamID
 	JOIN seasons sea on sea.seasonID = s.seasonID
 	WHERE s.SeasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.seasonID#">
-	ORDER BY wins desc
+	ORDER BY wins desc, PointDifferential
 </cfquery>
 
 <cfoutput>
@@ -44,6 +44,7 @@
             	<th>Team</th>
             	<th>Wins</th>
             	<th>Losses</th>
+            	<th>Point Differential</th>
             </tr>
           </thead>
           <tbody>
@@ -53,6 +54,7 @@
 	            	<td data-label="Team">#TeamName#</td>
 	            	<td data-label="Wins">#Wins#</td>
 	            	<td data-label="Losses">#Losses#</td>
+	            	<td data-label="PointDiff">#PointDifferential#</td>
 	            </tr>
         	</cfloop>
           </tbody>
