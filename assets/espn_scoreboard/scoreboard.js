@@ -41,4 +41,8 @@ $( document ).ready(function() {
 		fieldValueSpan.text(newFieldValue);
 	}
 
+	$('.resetBtn').on('click', function(){
+	    resetTimer();
+	});
+
 });

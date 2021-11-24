@@ -1,5 +1,8 @@
 var myTimer;
-var start, remaining;
+var start;
+var clockStatus = 'Paused';
+var minutesSelected = 25 * 60;
+var remaining = minutesSelected;
 
 function startTimer(duration, display) {
     var timer = duration, minutes, seconds;
@@ -13,6 +16,10 @@ function startTimer(duration, display) {
 
         display.textContent = minutes + ":" + seconds;
 
+        if(timer==0){
+            pauseTimer();
+        }
+
         remaining = timer;
 
         if (--timer < 0) {
@@ -21,21 +28,29 @@ function startTimer(duration, display) {
     }, 1000);
 }
 
-window.onload = function () {
-    var minutesSelect = 60 * 25,
-        display = document.querySelector('#time');
-    startTimer(minutesSelect, display);
-};
+// window.onload = function () {
+//     display = document.querySelector('#time');
+//     // startTimer(minutesSelect, display);
+// };
 
 function pauseTimer(){
+    $('.clockStatus').text('Paused');
     window.clearTimeout(myTimer);
-    console.log("pause");
 }
 
 function resumeTimer(){
     start = Date.now();
     window.clearTimeout(myTimer);
     var displayTimer = document.querySelector('#time');
-    startTimer(remaining, displayTimer);
-    console.log("resume");
+    startTimer(remaining-1, displayTimer);
+    $('.clockStatus').text('Active');
+}
+
+function resetTimer(){
+    var displayTimer = document.querySelector('#time');
+    window.clearTimeout(myTimer);
+    console.log("reset timer");
+    displayTimer.textContent = "25:00";
+    remaining = minutesSelected;
+    pauseTimer();
 }

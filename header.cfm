@@ -100,6 +100,10 @@
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item" href="/pages/StatsApp/StatsApp-Select.cfm">StatsApp</a>
                 </cfif>
+                <cfif !FindNoCase("testing.theroundleague.com", CGI.REQUEST_URL)>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="/assets/espn_scoreboard/scoreboard.html">Scoreboard</a>
+                </cfif>
               </ul>
             </div>
         </ul>
