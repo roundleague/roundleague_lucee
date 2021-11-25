@@ -1,7 +1,7 @@
 var myTimer;
 var start;
 var clockStatus = 'Paused';
-var minutesSelected = 25 * 60;
+var minutesSelected = 60 * 24.5;
 var remaining = minutesSelected;
 
 function startTimer(duration, display) {
@@ -53,4 +53,13 @@ function resetTimer(){
     displayTimer.textContent = "25:00";
     remaining = minutesSelected;
     pauseTimer();
+}
+
+function modifyTimer(){
+    var displayTimer = document.querySelector('#time');
+    pauseTimer();
+    var minutes = prompt("Minutes: ");
+    var seconds = prompt("Seconds: ");
+    remaining = (parseInt(minutes) * 60) + parseInt(seconds);
+    displayTimer.textContent = minutes + ":" + seconds;
 }

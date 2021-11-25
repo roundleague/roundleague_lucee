@@ -28,7 +28,7 @@ $( document ).ready(function() {
 		   	break;
 		 case 103:  	
 		 case 55:
-		   	addToValue("quarterNum", 1); // 7
+		   	changeHalf(); // 7
 		   	break;
 		}
 	 });
@@ -41,8 +41,16 @@ $( document ).ready(function() {
 		fieldValueSpan.text(newFieldValue);
 	}
 
+	function changeHalf(){
+		$('.halfNum').text('2nd Half');
+	}
+
 	$('.resetBtn').on('click', function(){
 	    resetTimer();
+	});
+
+	$('.modifyBtn').on('click', function(){
+	    modifyTimer();
 	});
 
 });
