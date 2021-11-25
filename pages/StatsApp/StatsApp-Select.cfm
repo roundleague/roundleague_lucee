@@ -38,6 +38,7 @@
   SELECT teamID, teamName
   FROM teams
   Where Status = 'Active'
+  AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
 </cfquery>
 
 <!--- Queries --->

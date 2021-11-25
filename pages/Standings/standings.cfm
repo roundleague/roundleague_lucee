@@ -17,7 +17,7 @@
 	JOIN standings s ON t.teamId = s.teamID
 	JOIN seasons sea on sea.seasonID = s.seasonID
 	WHERE s.SeasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.seasonID#">
-	ORDER BY wins desc, PointDifferential
+	ORDER BY wins desc, PointDifferential desc
 </cfquery>
 
 <cfoutput>

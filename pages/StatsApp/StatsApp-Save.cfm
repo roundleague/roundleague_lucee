@@ -57,7 +57,7 @@
     </cfquery>
 
     <!--- Scores / Standings have already been updated --->
-    <cfif homeScore EQ ''>
+    <cfif scoresExist.homeScore EQ ''>
 
         <cfquery name="updateScheduleScore" datasource="roundleague">
             UPDATE schedule 

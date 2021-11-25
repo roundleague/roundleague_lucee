@@ -50,16 +50,16 @@
                     </thead>
                 </cfif>
     			<tr>
-    				<td>#getPlayerLogs.firstName# #getPlayerLogs.LastName#</td>
-    				<td>#getPlayerLogs.FGM# - #getPlayerLogs.FGA#</td>
-    				<td>#getPlayerLogs.3FGM# - #getPlayerLogs.3FGA#</td>
-    				<td>#getPlayerLogs.FTM# - #getPlayerLogs.FTA#</td>
-    				<td>#getPlayerLogs.Rebounds#</td>
-    				<td>#getPlayerLogs.Assists#</td>
-    				<td>#getPlayerLogs.Steals#</td>
-    				<td>#getPlayerLogs.Blocks#</td>
-    				<td>#getPlayerLogs.Turnovers#</td>
-    				<td>#getPlayerLogs.Points#</td>
+    				<td data-label="Player">#getPlayerLogs.firstName# #getPlayerLogs.LastName#</td>
+    				<td data-label="FG">#getPlayerLogs.FGM# - #getPlayerLogs.FGA#</td>
+    				<td data-label="3FG">#getPlayerLogs.3FGM# - #getPlayerLogs.3FGA#</td>
+    				<td data-label="FT">#getPlayerLogs.FTM# - #getPlayerLogs.FTA#</td>
+    				<td data-label="REBS">#getPlayerLogs.Rebounds#</td>
+    				<td data-label="ASTS">#getPlayerLogs.Assists#</td>
+    				<td data-label="STLS">#getPlayerLogs.Steals#</td>
+    				<td data-label="BLKS">#getPlayerLogs.Blocks#</td>
+    				<td data-label="TO">#getPlayerLogs.Turnovers#</td>
+    				<td data-label="PTS">#getPlayerLogs.Points#</td>
     			</tr>
                 <cfset currentTeamID = getPlayerlogs.teamID>
         		</cfloop>
