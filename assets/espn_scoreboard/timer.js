@@ -1,7 +1,7 @@
 var myTimer;
 var start;
 var clockStatus = 'Paused';
-var minutesSelected = 60 * 24.5;
+var minutesSelected = 60 * 25;
 var remaining = minutesSelected;
 
 function startTimer(duration, display) {

@@ -27,6 +27,7 @@ body {
   display: flex;
   flex-direction: row;
   color: white; 
+  width: 350px;
 }
 
 .team-detail {
@@ -68,6 +69,7 @@ body {
   flex-direction: column;
   justify-content: center;
   background-color: #222; 
+  width: 169px;
 }
 
 .timer-container {
