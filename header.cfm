@@ -90,8 +90,7 @@
               <a class="nav-link dropdown-toggle" data-toggle="dropdown" id="dropdownMenuButton" href="##pk" role="button" aria-haspopup="true" aria-expanded="false">More</a>
               <ul class="dropdown-menu dropdown-info" aria-labelledby="dropdownMenuButton">
                 <li class="dropdown-header">Stats</li>
-                <a class="dropdown-item" href="##pk">Summer League 2021 Player Stats</a>
-                <a class="dropdown-item" href="##pk">Spring League 2021 Player Stats</a>
+                <a class="dropdown-item" href="/pages/stats/leagueLeaders.cfm">League Leaders</a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="##pk">Gallery</a>
                 <div class="dropdown-divider"></div>
