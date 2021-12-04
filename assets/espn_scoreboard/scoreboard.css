@@ -75,6 +75,7 @@ body {
 .timer-container {
   display: flex;
   flex-direction: row; 
+  width: 193px;
 }
 
 .timer-container > * {
