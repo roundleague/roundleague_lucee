@@ -4,6 +4,10 @@ body{
   font-family: 'Source Sans Pro', sans-serif;
 }
 
+.playerPic {
+  max-height: 247px;
+}
+
 .noTopSpace {
   margin-top: 0px;
 }

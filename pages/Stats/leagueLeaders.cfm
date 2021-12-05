@@ -3,6 +3,33 @@
 <!--- Page Specific CSS/JS Here --->
 <link href="/pages/Stats/leagueLeaders.css" rel="stylesheet" />
 
+<cfquery name="getPointsLeaders" datasource="roundleague">
+	SELECT ps.playerID, ps.points, p.firstName, p.lastName
+	FROM playerstats ps
+	JOIN players p ON p.playerID = ps.playerID
+	WHERE seasonID = 2 <!--- Change this to active seasonID later --->
+	ORDER BY points desc
+	LIMIT 10
+</cfquery>
+
+<cfquery name="getReboundsLeaders" datasource="roundleague">
+	SELECT ps.playerID, ps.Rebounds, p.firstName, p.lastName
+	FROM playerstats ps
+	JOIN players p ON p.playerID = ps.playerID
+	WHERE seasonID = 2 <!--- Change this to active seasonID later --->
+	ORDER BY Rebounds desc
+	LIMIT 10
+</cfquery>
+
+<cfquery name="getAssistsLeaders" datasource="roundleague">
+	SELECT ps.playerID, ps.Assists, p.firstName, p.lastName
+	FROM playerstats ps
+	JOIN players p ON p.playerID = ps.playerID
+	WHERE seasonID = 2 <!--- Change this to active seasonID later --->
+	ORDER BY Assists desc
+	LIMIT 10
+</cfquery>
+
 <cfoutput>
 <div class="main" style="background-color: white;">
     <div class="section text-center">
@@ -12,65 +39,56 @@
 <div class="hover-table-layout">
     <div class="listing-item">
         <div class="image">
-        	<cfset imgPath = "/assets/img/PlayerProfiles/21.JPG">
-            <img src="#imgPath#" alt="image">
+        	<cfset imgPath = "/assets/img/PlayerProfiles/#getPointsLeaders.playerID#.JPG">
+		    <cfif FileExists(imgPath)>
+            	<img class="playerPic" src="#imgPath#" alt="image">
+            <cfelse>
+            	<img class="playerPic" src="/assets/img/PlayerProfiles/default.JPG">
+            </cfif>
               <div class="caption">
                 <h1 class="noTopSpace catTitle">Points</h1>
               </div>
         </div>
         <div class="listing">
-        	<h4 class="noTopSpace">1. James Harden - 25.6</h4>
-            <h4 class="noTopSpace">2. Kevin Durant - 25.6</h4>
-            <h4 class="noTopSpace">3. Kevin Love - 25.6</h4>
-            <h4 class="noTopSpace">4. Ricky Rubio - 25.6</h4>
-            <h4 class="noTopSpace">5. LeBron James - 25.6</h4>
-            <h4 class="noTopSpace">6. Damian Lillard - 25.6</h4>
-            <h4 class="noTopSpace">7. CJ McCollum - 25.6</h4>
-            <h4 class="noTopSpace">8. Devin Booker - 25.6</h4>
-            <h4 class="noTopSpace">9. Chris Paul - 25.6</h4>
-            <h4 class="noTopSpace">10. Zion Williamson - 25.6</h4>
+        	<cfloop query="getPointsLeaders">
+        		<h4 class="noTopSpace">#getPointsLeaders.currentRow#. #getPointsLeaders.FirstName# #getPointsLeaders.LastName# - #getPointsLeaders.Points#</h4>
+        	</cfloop>
         </div>
     </div>
     <div class="listing-item">
         <div class="image">
-        	<cfset imgPath = "/assets/img/PlayerProfiles/116.JPG">
-            <img src="#imgPath#" alt="image">
+        	<cfset imgPath = "/assets/img/PlayerProfiles/#getReboundsLeaders.playerID#.JPG">
+		    <cfif FileExists(imgPath)>
+            	<img class="playerPic" src="#imgPath#" alt="image">
+            <cfelse>
+            	<img class="playerPic" src="/assets/img/PlayerProfiles/default.JPG">
+            </cfif>
               <div class="caption">
                 <h1 class="noTopSpace catTitle">Rebounds</h1>
               </div>
         </div>
         <div class="listing">
-        	<h4 class="noTopSpace">1. James Harden - 25.6</h4>
-            <h4 class="noTopSpace">2. Kevin Durant - 25.6</h4>
-            <h4 class="noTopSpace">3. Kevin Love - 25.6</h4>
-            <h4 class="noTopSpace">4. Ricky Rubio - 25.6</h4>
-            <h4 class="noTopSpace">5. LeBron James - 25.6</h4>
-            <h4 class="noTopSpace">6. Damian Lillard - 25.6</h4>
-            <h4 class="noTopSpace">7. CJ McCollum - 25.6</h4>
-            <h4 class="noTopSpace">8. Devin Booker - 25.6</h4>
-            <h4 class="noTopSpace">9. Chris Paul - 25.6</h4>
-            <h4 class="noTopSpace">10. Zion Williamson - 25.6</h4>
+        	<cfloop query="getReboundsLeaders">
+        		<h4 class="noTopSpace">#getReboundsLeaders.currentRow#. #getReboundsLeaders.FirstName# #getReboundsLeaders.LastName# - #getReboundsLeaders.Rebounds#</h4>
+        	</cfloop>
         </div>
     </div>
     <div class="listing-item">
         <div class="image">
-        	<cfset imgPath = "/assets/img/PlayerProfiles/114.JPG">
-            <img src="#imgPath#" alt="image">
+        	<cfset imgPath = "/assets/img/PlayerProfiles/#getAssistsLeaders.playerID#.JPG">
+		    <cfif FileExists(imgPath)>
+            	<img class="playerPic" src="#imgPath#" alt="image">
+            <cfelse>
+            	<img class="playerPic" src="/assets/img/PlayerProfiles/default.JPG">
+            </cfif>
               <div class="caption">
                 <h1 class="noTopSpace catTitle">Assists</h1>
               </div>
         </div>
         <div class="listing">
-        	<h4 class="noTopSpace">1. James Harden - 25.6</h4>
-            <h4 class="noTopSpace">2. Kevin Durant - 25.6</h4>
-            <h4 class="noTopSpace">3. Kevin Love - 25.6</h4>
-            <h4 class="noTopSpace">4. Ricky Rubio - 25.6</h4>
-            <h4 class="noTopSpace">5. LeBron James - 25.6</h4>
-            <h4 class="noTopSpace">6. Damian Lillard - 25.6</h4>
-            <h4 class="noTopSpace">7. CJ McCollum - 25.6</h4>
-            <h4 class="noTopSpace">8. Devin Booker - 25.6</h4>
-            <h4 class="noTopSpace">9. Chris Paul - 25.6</h4>
-            <h4 class="noTopSpace">10. Zion Williamson - 25.6</h4>
+        	<cfloop query="getAssistsLeaders">
+        		<h4 class="noTopSpace">#getAssistsLeaders.currentRow#. #getAssistsLeaders.FirstName# #getAssistsLeaders.LastName# - #getAssistsLeaders.Assists#</h4>
+        	</cfloop>
         </div>
     </div>
 </div>
