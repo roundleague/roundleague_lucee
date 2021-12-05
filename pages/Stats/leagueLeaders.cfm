@@ -11,72 +11,66 @@
  <h2 id="title" style="color: black;">League Leaders</h2> 
 <div class="hover-table-layout">
     <div class="listing-item">
-        <figure class="image">
+        <div class="image">
         	<cfset imgPath = "/assets/img/PlayerProfiles/21.JPG">
             <img src="#imgPath#" alt="image">
-            <figcaption>
               <div class="caption">
-                <h1 class="noTopSpace">Points Leaders</h1>
-                <p>James Harden</p>
-                </div>
-            </figcaption>
-        </figure>
+                <h1 class="noTopSpace catTitle">Points</h1>
+              </div>
+        </div>
         <div class="listing">
-            <h4 class="noTopSpace">2. Kevin Durant</h4>
-            <h4 class="noTopSpace">3. Kevin Love</h4>
-            <h4 class="noTopSpace">4. Ricky Rubio</h4>
-            <h4 class="noTopSpace">5. LeBron James</h4>
-            <h4 class="noTopSpace">6. Damian Lillard</h4>
-            <h4 class="noTopSpace">7. CJ McCollum</h4>
-            <h4 class="noTopSpace">8. Devin Booker</h4>
-            <h4 class="noTopSpace">9. Chris Paul</h4>
-            <h4 class="noTopSpace">10. Zion Williamson</h4>
+        	<h4 class="noTopSpace">1. James Harden - 25.6</h4>
+            <h4 class="noTopSpace">2. Kevin Durant - 25.6</h4>
+            <h4 class="noTopSpace">3. Kevin Love - 25.6</h4>
+            <h4 class="noTopSpace">4. Ricky Rubio - 25.6</h4>
+            <h4 class="noTopSpace">5. LeBron James - 25.6</h4>
+            <h4 class="noTopSpace">6. Damian Lillard - 25.6</h4>
+            <h4 class="noTopSpace">7. CJ McCollum - 25.6</h4>
+            <h4 class="noTopSpace">8. Devin Booker - 25.6</h4>
+            <h4 class="noTopSpace">9. Chris Paul - 25.6</h4>
+            <h4 class="noTopSpace">10. Zion Williamson - 25.6</h4>
         </div>
     </div>
     <div class="listing-item">
-        <figure class="image">
+        <div class="image">
         	<cfset imgPath = "/assets/img/PlayerProfiles/116.JPG">
             <img src="#imgPath#" alt="image">
-            <figcaption>
               <div class="caption">
-                <h1 class="noTopSpace">Points Leaders</h1>
-                <p>James Harden</p>
-                </div>
-            </figcaption>
-        </figure>
+                <h1 class="noTopSpace catTitle">Rebounds</h1>
+              </div>
+        </div>
         <div class="listing">
-            <h4 class="noTopSpace">2. Kevin Durant</h4>
-            <h4 class="noTopSpace">3. Kevin Love</h4>
-            <h4 class="noTopSpace">4. Ricky Rubio</h4>
-            <h4 class="noTopSpace">5. LeBron James</h4>
-            <h4 class="noTopSpace">6. Damian Lillard</h4>
-            <h4 class="noTopSpace">7. CJ McCollum</h4>
-            <h4 class="noTopSpace">8. Devin Booker</h4>
-            <h4 class="noTopSpace">9. Chris Paul</h4>
-            <h4 class="noTopSpace">10. Zion Williamson</h4>
+        	<h4 class="noTopSpace">1. James Harden - 25.6</h4>
+            <h4 class="noTopSpace">2. Kevin Durant - 25.6</h4>
+            <h4 class="noTopSpace">3. Kevin Love - 25.6</h4>
+            <h4 class="noTopSpace">4. Ricky Rubio - 25.6</h4>
+            <h4 class="noTopSpace">5. LeBron James - 25.6</h4>
+            <h4 class="noTopSpace">6. Damian Lillard - 25.6</h4>
+            <h4 class="noTopSpace">7. CJ McCollum - 25.6</h4>
+            <h4 class="noTopSpace">8. Devin Booker - 25.6</h4>
+            <h4 class="noTopSpace">9. Chris Paul - 25.6</h4>
+            <h4 class="noTopSpace">10. Zion Williamson - 25.6</h4>
         </div>
     </div>
     <div class="listing-item">
-        <figure class="image">
+        <div class="image">
         	<cfset imgPath = "/assets/img/PlayerProfiles/114.JPG">
             <img src="#imgPath#" alt="image">
-            <figcaption>
               <div class="caption">
-                <h1 class="noTopSpace">Points Leaders</h1>
-                <p>James Harden</p>
-                </div>
-            </figcaption>
-        </figure>
+                <h1 class="noTopSpace catTitle">Assists</h1>
+              </div>
+        </div>
         <div class="listing">
-            <h4 class="noTopSpace">2. Kevin Durant</h4>
-            <h4 class="noTopSpace">3. Kevin Love</h4>
-            <h4 class="noTopSpace">4. Ricky Rubio</h4>
-            <h4 class="noTopSpace">5. LeBron James</h4>
-            <h4 class="noTopSpace">6. Damian Lillard</h4>
-            <h4 class="noTopSpace">7. CJ McCollum</h4>
-            <h4 class="noTopSpace">8. Devin Booker</h4>
-            <h4 class="noTopSpace">9. Chris Paul</h4>
-            <h4 class="noTopSpace">10. Zion Williamson</h4>
+        	<h4 class="noTopSpace">1. James Harden - 25.6</h4>
+            <h4 class="noTopSpace">2. Kevin Durant - 25.6</h4>
+            <h4 class="noTopSpace">3. Kevin Love - 25.6</h4>
+            <h4 class="noTopSpace">4. Ricky Rubio - 25.6</h4>
+            <h4 class="noTopSpace">5. LeBron James - 25.6</h4>
+            <h4 class="noTopSpace">6. Damian Lillard - 25.6</h4>
+            <h4 class="noTopSpace">7. CJ McCollum - 25.6</h4>
+            <h4 class="noTopSpace">8. Devin Booker - 25.6</h4>
+            <h4 class="noTopSpace">9. Chris Paul - 25.6</h4>
+            <h4 class="noTopSpace">10. Zion Williamson - 25.6</h4>
         </div>
     </div>
 </div>
