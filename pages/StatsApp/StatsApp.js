@@ -13,6 +13,10 @@ $( document ).ready(function() {
 	});
 
 	 $(document).keydown(function(e) {
+	 	var currentFocus = $(':focus');
+	 	if(currentFocus.hasClass('playerName') || currentFocus.hasClass('jerseyNumber')){
+	 		return;
+	 	}
 	 	if(playerNode.hasClass("playerHighlight")){
 			switch (e.which) {
 			 case 97:
@@ -200,7 +204,6 @@ $( document ).ready(function() {
 
 		 if(id=="PTS"){
 			var currentNum = parseFloat($('.teamTotalPts').html());
-			console.log(currentNum);
 			currentNum += addValue;
 			$('.teamTotalPts').html(currentNum);
 		 }
