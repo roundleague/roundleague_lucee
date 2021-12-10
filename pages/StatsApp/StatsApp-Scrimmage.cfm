@@ -24,6 +24,7 @@
 <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.6/build/pure-min.css" integrity="sha384-Uu6IeWbM+gzNVXJcM9XV3SohHtmWE+3VGi496jvgX1jyvDTXfdK+rfZc8C1Aehk5" crossorigin="anonymous">
 <link rel="stylesheet" href="StatsApp.css">
 
+
 </head>
 
 <cfif url.players GT 10>
@@ -179,11 +180,14 @@
         <br>
         <!--- <input class="saveBtn" type="button" name="openModal" style="margin-left: 25px;" value="Save"> --->
     </form>
+
+    <input type="button" id="btnExport" value="Export" />
     <!--- Scripts --->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" crossorigin="anonymous"></script>
     <script src="https://kit.fontawesome.com/356f7c17e2.js" crossorigin="anonymous"></script>
     <script src="StatsApp.js"></script>
+    <script src="StatsApp-Export.js"></script>
 </body>
 </html>
 </cfoutput>
