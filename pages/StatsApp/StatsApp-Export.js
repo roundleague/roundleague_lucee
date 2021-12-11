@@ -13,6 +13,8 @@ function ExportHTMLTableToExcel($table) {
     var index = $table.find("tbody tr").length;
     if (Number(index) > 0) {
         $.each($table, function (index, item) {
+            // console.log('index, item', index, item);
+            // return;
             var element = $(item);
             var headertext = $("#" + element[0].id).closest
                              (":has(label.HeaderLabel)").find('label').text().trim();

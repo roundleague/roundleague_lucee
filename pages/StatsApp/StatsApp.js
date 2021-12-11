@@ -12,6 +12,11 @@ $( document ).ready(function() {
 		return false;
 	});
 
+	$('.jerseyNumber').keyup(function() {
+	    var exportJerseyNode = $(this).parent().next();
+	    exportJerseyNode.html($(this).val());
+	});
+
 	 $(document).keydown(function(e) {
 	 	var currentFocus = $(':focus');
 	 	if(currentFocus.hasClass('playerName') || currentFocus.hasClass('jerseyNumber')){

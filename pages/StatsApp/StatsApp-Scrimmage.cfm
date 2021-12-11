@@ -76,6 +76,7 @@
             <thead>
                 <tr>
                     <th>Player</th>
+                    <th class="noDisplay">Jersey</th>
                     <th>FGM(1)</th>
                     <th>FGA(2)</th>
                     <th>3FGM(3)</th>
@@ -108,6 +109,7 @@
                             <input class="playerName" name="playerName" style="width: 170px"> 
                             <input class="jerseyNumber" type="number" name="Jersey_#playerID#">
                         </td>
+                        <td class="noDisplay"></td>
                         <td>
                             <input type="number" name="FGM_#playerID#" id="FGM" class="fieldValue" value="0"><br>
                             <button type="button" class="button-success pure-button FGM">+1</button>
