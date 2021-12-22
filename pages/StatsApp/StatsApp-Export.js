@@ -5,7 +5,7 @@
    });
 
 function ExportHTMLTableToExcel($table) {
-    var tab_text = ""
+    var tab_text = "";
     var final_text = "";
     var filename = $table.attr('export-excel-filename'); // attribute to be 
                                                          // applied on Table tag

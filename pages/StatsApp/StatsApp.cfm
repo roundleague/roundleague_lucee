@@ -84,6 +84,7 @@
             <thead>
                 <tr>
                     <th>Player</th>
+                    <th class="noDisplay">Jersey</th>
                     <th>FGM(1)</th>
                     <th>FGA(2)</th>
                     <th>3FGM(3)</th>
@@ -112,9 +113,10 @@
                         </tr>
                     </cfif>
                     <tr class="dragdrop" id="Player_#getPlayers.playerID#">
-                        <td class="playerBox">
+                        <td class="playerBox ExportLabelTD">
                             #getPlayers.firstName# #getPlayers.LastName# <input class="jerseyNumber" type="number" name="Jersey_#playerID#">
                         </td>
+                        <td class="noDisplay ExportLabelTD"></td>
                         <td>
                             <input type="number" name="FGM_#playerID#" id="FGM" class="fieldValue" value="0"><br>
                             <button type="button" class="button-success pure-button FGM">+1</button>
@@ -185,13 +187,15 @@
             </tbody>
         </table>
         <br>
-        <input class="saveBtn" type="button" name="openModal" style="margin-left: 25px;" value="Save">
+        <input class="saveBtn" type="button" name="openModal" style="margin-left: 25px; margin-bottom: 25px;" value="Save">
+        <input type="button" id="btnExport" style="margin-left: 25px; margin-bottom: 25px;" value="Export" />
     </form>
     <!--- Scripts --->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" crossorigin="anonymous"></script>
     <script src="https://kit.fontawesome.com/356f7c17e2.js" crossorigin="anonymous"></script>
     <script src="StatsApp.js"></script>
+    <script src="StatsApp-Export.js"></script>
 </body>
 </html>
 </cfoutput>
