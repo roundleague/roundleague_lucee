@@ -94,7 +94,7 @@ I, for myself and on behalf of my heirs, assigns, personal representatives and n
 		            <form class="settings-form" method="POST">
 		              <div class="form-group">
 		                <label>Email</label>
-		                <input type="text" required class="form-control border-input" placeholder="Email" name="email">
+		                <input type="email" required class="form-control border-input" placeholder="Email" name="email">
 		              </div>
 		              <div class="row">
 		                <div class="col-md-6 col-sm-6">
