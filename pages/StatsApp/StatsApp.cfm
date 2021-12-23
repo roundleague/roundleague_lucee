@@ -104,10 +104,13 @@
                 <cfloop query="getPlayers">
                     <cfif getPlayers.currentRow EQ 6>
                         <tr id="benchToggle">
-                            <td colspan="13">
+                            <td colspan="10">
                                 Bench (Click To Show/Hide)
                             </td>
-                            <td colspan="13">
+                            <td colspan="3">
+                                #getPlayers.teamName#
+                            </td>
+                            <td colspan="1">
                                 Total: <span class="teamTotalPts">0</span>
                             </td>
                         </tr>
@@ -196,6 +199,7 @@
     <script src="https://kit.fontawesome.com/356f7c17e2.js" crossorigin="anonymous"></script>
     <script src="StatsApp.js"></script>
     <script src="StatsApp-Export.js"></script>
+    <script src="ConfirmExit.js"></script>
 </body>
 </html>
 </cfoutput>

@@ -9,6 +9,10 @@ $( document ).ready(function() {
 
 	$(".saveBtn").click(function(){
 		$("#id01").show();
+
+		// Remove the player highlight to prevent any numbers from updating stats
+		$("td").removeClass("playerHighlight");
+
 		return false;
 	});
 

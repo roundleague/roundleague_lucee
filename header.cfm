@@ -97,7 +97,7 @@
                 <a class="dropdown-item" href="##pk">Contact</a>
                 <cfif !FindNoCase("testing.theroundleague.com", CGI.REQUEST_URL)>
                   <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="/pages/StatsApp/StatsApp-Select.cfm">StatsApp</a>
+                  <a target="_blank" class="dropdown-item" href="/pages/StatsApp/StatsApp-Select.cfm">StatsApp</a>
                 </cfif>
                 <cfif !FindNoCase("testing.theroundleague.com", CGI.REQUEST_URL)>
                   <div class="dropdown-divider"></div>
