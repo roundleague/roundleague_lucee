@@ -7,19 +7,45 @@ $( document ).ready(function() {
 	var playerNodeRow;
 	var playerNodeIndex;
 
+	var dnpPlayerId;
+
 	$(".saveBtn").click(function(){
-		$("#id01").show();
+		$("#saveScoresModal").show();
 
 		// Remove the player highlight to prevent any numbers from updating stats
-		$("td").removeClass("playerHighlight");
+		$("td.playerBox").removeClass("playerHighlight");
 
 		return false;
 	});
 
+	// Hidden Jersey Column for export
 	$('.jerseyNumber').keyup(function() {
 	    var exportJerseyNode = $(this).parent().next();
 	    exportJerseyNode.html($(this).val());
 	});
+
+	$('.dnpIcon').click(function(){
+		// Get the Player name to display in confirmation
+		var playerName = $(this).next('.playerName').text();
+		$('.dnpPlayer').text(playerName);
+
+		$("#dnpModal").show();
+
+		// Get/Set the Player's ID to remove later
+		var rowPlayerID = $(this).parent().parent();
+		dnpPlayerId = parseInt($(rowPlayerID).attr('id').replace(/[^\d]/g, ''), 10);
+
+		setTimeout(function() {
+			$("td.playerBox").removeClass("playerHighlight");
+		   }, 100);
+
+	});
+
+	// DNP Remove Player Row
+	$('.dnpConfirm').click(function(){
+		$('#Player_'+dnpPlayerId).remove();
+		$("#dnpModal").hide();
+	})
 
 	 $(document).keydown(function(e) {
 	 	var currentFocus = $(':focus');

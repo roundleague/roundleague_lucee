@@ -6,7 +6,7 @@
         FROM Seasons
         WHERE Status = 'Active'
     </cfquery>
-    <cfset playerIDList = ValueList(getPlayers.playerID)>
+    <cfset playerIDList = form.playerIDList>
     <cfquery name="savePlayerLogs" datasource="roundleague">
             INSERT INTO PlayerGameLog (
                 PlayerID, 

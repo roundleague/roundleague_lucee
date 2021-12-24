@@ -109,3 +109,12 @@ button.undoBtn {
 .noDisplay {
     display: none;
 }
+
+.legend {
+    margin-left: 40px;
+}
+
+svg.dnpIcon:hover{
+    background-color: coral;
+    cursor: pointer;
+}

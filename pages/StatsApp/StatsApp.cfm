@@ -26,6 +26,13 @@
 
 </head>
 
+<cfsavecontent variable="dnpIcon">
+    <svg class="dnpIcon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person-x" viewBox="0 0 16 16">
+      <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H1s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+      <path fill-rule="evenodd" d="M12.146 5.146a.5.5 0 0 1 .708 0L14 6.293l1.146-1.147a.5.5 0 0 1 .708.708L14.707 7l1.147 1.146a.5.5 0 0 1-.708.708L14 7.707l-1.146 1.147a.5.5 0 0 1-.708-.708L13.293 7l-1.147-1.146a.5.5 0 0 1 0-.708z"/>
+    </svg>
+</cfsavecontent>
+
 <!--- Queries --->
 <cfquery name="getPlayers" datasource="roundleague">
     SELECT p.playerID, lastName, firstName, teamName, s.seasonName, s.seasonID, d.divisionName, position
@@ -60,11 +67,11 @@
 
     <form name="gameLogForm" method="POST">
 
-        <!-- The Modal -->
-          <div id="id01" class="w3-modal">
+        <!-- Final Scores Modal -->
+          <div id="saveScoresModal" class="w3-modal">
             <div class="w3-modal-content w3-animate-top w3-card-4">
               <header class="w3-container w3-teal"> 
-                <span onclick="document.getElementById('id01').style.display='none'" 
+                <span onclick="document.getElementById('saveScoresModal').style.display='none'" 
                 class="w3-button w3-display-topright">&times;</span>
                 <h2>Enter the final scores</h2>
               </header>
@@ -72,6 +79,27 @@
                 #getTeamsPlaying.home# (Home): <input type="number" name="homeScore" value="0"><br>
                 #getTeamsPlaying.away# (Away): <input type="number" name="awayScore" value="0">
                 <input type="submit" name="saveBoxScore" style="margin-left: 25px;" value="Save">
+              </div>
+              <footer class="w3-container w3-teal">
+                <!---   Modal Footer  --->
+                Please remember to mark any players that did not play!
+              </footer>
+            </div>
+          </div>
+        </div>
+
+        <!-- Confirm DNP Modal -->
+          <div id="dnpModal" class="w3-modal">
+            <div class="w3-modal-content w3-animate-top w3-card-4">
+              <header class="w3-container w3-teal"> 
+                <span onclick="document.getElementById('dnpModal').style.display='none'" 
+                class="w3-button w3-display-topright">&times;</span>
+                <h2><span class="dnpPlayer"></span> - Did Not Play</h2>
+              </header>
+              <div class="w3-container" style="padding: 30px;">
+                <!--- Input fields --->
+                Are you sure you wish to mark this player as "Did Not Play"? Their stats for this game will not be counted.<br><br>
+                <button type="button" class="dnpConfirm">Yes</button>
               </div>
               <footer class="w3-container w3-teal">
                 <!---   Modal Footer  --->
@@ -117,7 +145,8 @@
                     </cfif>
                     <tr class="dragdrop" id="Player_#getPlayers.playerID#">
                         <td class="playerBox ExportLabelTD">
-                            #getPlayers.firstName# #getPlayers.LastName# <input class="jerseyNumber" type="number" name="Jersey_#playerID#">
+                            #dnpIcon#
+                            <span class="playerName">#getPlayers.firstName# #getPlayers.LastName#</span> <input class="jerseyNumber" type="number" name="Jersey_#playerID#">
                         </td>
                         <td class="noDisplay ExportLabelTD"></td>
                         <td>
@@ -185,6 +214,8 @@
                             <button type="button" class="button-success pure-button PTS">+1</button>
                             <button type="button" class="button-error pure-button PTS">-1</button>
                         </td>
+                        <!--- Use this to see which players were active, needed for DNP function --->
+                        <input type="hidden" name="playerIDList" value="#playerID#">
                     </tr>
                 </cfloop>
             </tbody>
@@ -192,6 +223,7 @@
         <br>
         <input class="saveBtn" type="button" name="openModal" style="margin-left: 25px; margin-bottom: 25px;" value="Save">
         <input type="button" id="btnExport" style="margin-left: 25px; margin-bottom: 25px;" value="Export" />
+        <span class="legend">#dnpIcon# - At the end of the game, click to toggle player as Did Not Play. Use W (Up) and S (Down) to navigate through the active 5 players.</span>
     </form>
     <!--- Scripts --->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
