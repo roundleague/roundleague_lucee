@@ -278,6 +278,9 @@ I, for myself and on behalf of my heirs, assigns, personal representatives and n
 				            </div>
 		                </li>
 		              </ul>
+		              <div class="text-center errorDiv">
+		                <span class="errorMessage"></span>
+		              </div>
 		              <div class="text-center">
 		                <button type="submit" class="btn btn-wd btn-info btn-round saveBtn" disabled>Save</button>
 		              </div>

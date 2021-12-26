@@ -69,3 +69,9 @@ ul.acknowledge{
   to {bottom: 0; opacity: 0;}
 }
 /* End Snackbar */
+
+.errorDiv {
+  padding: 20px;
+  font-weight: bold;
+  color: red;
+}
