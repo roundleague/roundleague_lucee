@@ -1,4 +1,10 @@
 ﻿component {
+    this.name = "RoundLeague";
+    this.datasource = "roundleague";
+    this.sessionManagement = true;
 
-	this.Name = "Lucee";
-}
+    // Need to come back to this
+    function onApplicationStart() {
+        session.LoggedIn = false;
+    }
+ }
