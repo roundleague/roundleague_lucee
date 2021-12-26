@@ -201,7 +201,8 @@
             </cfif>
         </cfloop>
 
-    Saved.
+        <cflocation url="StatsApp-Select.cfm?saved=true">
+
     <cfcatch><cfdump var="#cfcatch#" /></cfcatch>
     </cftry>
 </cfoutput>

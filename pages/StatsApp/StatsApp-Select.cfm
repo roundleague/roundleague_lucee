@@ -51,6 +51,12 @@
     -- AND (s.homeScore IS NULL OR s.awayScore IS NULL)
 </cfquery>
 
+<!--- If coming after saving a game --->
+<cfif isDefined("url.saved")>
+  <!-- The actual snackbar -->
+  <div id="snackbar">Saved! Check the standings and scores to verify.</div>
+</cfif>
+
 <body>
     <form id="mainForm" name="selectForm" method="POST">
       <div class="gameSelect">
