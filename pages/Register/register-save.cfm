@@ -9,7 +9,7 @@
 	FROM Players
 	WHERE Email = <cfqueryparam cfsqltype="cf_sql_varchar" value="#form.email#">
 </cfquery>
-<cfset toastMessage = "Email already found">
+<cfset toastMessage = "Email already found.">
 <cfif checkDuplicate.recordCount EQ 0>
 	<cfquery name="addPlayer" datasource="roundleague" result="playerAdd">
 		INSERT INTO Players 
@@ -62,7 +62,7 @@
 			(SELECT DivisionID From Teams Where TeamID = #form.teamID#)
 		)
 	</cfquery>
-	<cfset toastMessage = "Player Registration info successfully submitted">
+	<cfset toastMessage = "Player Registration info successfully submitted! Note: If you signed up as a free agent, you will be contacted if a free agent spot opens up.">
 </cfif>
 
 <div class="main" style="background-color: white; margin-top: 50px;">
@@ -70,7 +70,7 @@
       <div class="container">
 
         <!--- Content Here --->
-        <p>#toastMessage#</p>
+        <p class="toastMessage">#toastMessage#</p>
 
       </div>
     </div>
