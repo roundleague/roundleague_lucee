@@ -76,7 +76,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" rel="tooltip" data-placement="bottom" href="/pages/Register/register.cfm">
+            <a class="nav-link" rel="tooltip" data-placement="bottom" href="/pages/register/register.cfm">
               Register
             </a>
           </li>
