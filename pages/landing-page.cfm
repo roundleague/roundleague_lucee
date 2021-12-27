@@ -80,7 +80,7 @@
       </div>
     </div>
 
-    <cfinclude template="player-profiles.cfm">
+    <cfinclude template="socialMediaFeed.cfm">
 
     <cfinclude template="contact.cfm">
   </div>
