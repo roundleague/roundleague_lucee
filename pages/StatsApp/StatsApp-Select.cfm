@@ -48,6 +48,7 @@
     LEFT JOIN teams as a ON s.hometeamID = a.teamID
     LEFT JOIN teams as b ON s.awayTeamID = b.teamID
     WHERE (a.teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.teamID#"> OR b.teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.teamID#">)
+    AND s.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#"> 
     -- AND (s.homeScore IS NULL OR s.awayScore IS NULL)
 </cfquery>
 
