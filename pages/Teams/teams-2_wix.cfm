@@ -41,7 +41,9 @@
     <div class="section text-center" style="padding-top: 20px">
       <div class="container">
 
-        <div class="standingsContainer">
+        Check back later for the 2021 Winter Season Teams!
+
+<!---         <div class="standingsContainer">
             <div class="standingsDiv flex-item">
               <h4 class="standingsh4">North Division</h4>
               <ul class="standingsUl">
@@ -81,7 +83,7 @@
                 </cfloop>
               </ul>
             </div>
-        </div>
+        </div> --->
 
       </div>
     </div>

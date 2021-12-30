@@ -20,7 +20,7 @@ a, td {
   FROM schedule s
   LEFT JOIN teams as a ON s.hometeamID = a.teamID
   LEFT JOIN teams as b ON s.awayTeamID = b.teamID
-  WHERE s.seasonID = (SELECT seasonID From seasons WHERE status = 'Active')
+  WHERE s.seasonID = 3
   ORDER BY WEEK, date, startTime
 </cfquery>
 
