@@ -1,6 +1,6 @@
   <footer class="footer   footer-white ">
     <div class="container">
-      <div class="row">
+      <!--- <div class="row">
         <nav class="footer-nav">
           <ul>
             <li>
@@ -23,7 +23,7 @@
           </span>
         </div>
       </div>
-    </div>
+    </div> --->
   </footer>
   <!--   Core JS Files   -->
   <script src="/assets/js/core/jquery.min.js" type="text/javascript"></script>
