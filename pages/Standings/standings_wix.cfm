@@ -26,7 +26,8 @@
     <div class="section text-center" style="padding-top: 30px;">
       <div class="container">
 
-        <!--- Content Here --->
+        Check back later for the 2021 Winter Season Teams!
+<!---         <!--- Content Here --->
 		<label for="seasonID">Season</label>
 		<select name="seasonID" id="Seasons" onchange="this.form.submit()">
 			<cfloop query="getSeasons">
@@ -56,7 +57,7 @@
 	            </tr>
         	</cfloop>
           </tbody>
-        </table>
+        </table> --->
 
       </div>
     </div>
