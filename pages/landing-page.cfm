@@ -4,7 +4,7 @@
 
 
   <div class="page-header video-container" data-parallax="true">
-    <video autoplay muted loop>
+    <video playsinline autoplay muted loop>
         <source src="/assets/video/roundleague_promo.mp4" type="video/mp4" />
     </video>
     <div class="filter"></div>
