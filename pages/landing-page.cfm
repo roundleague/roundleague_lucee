@@ -1,7 +1,12 @@
 <cfinclude template="/header.cfm">
 
 <cfoutput>
-  <div class="page-header" data-parallax="true" style="background-image: url('../assets/img/Backgrounds/bball_court_1.jpg');">
+
+
+  <div class="page-header video-container" data-parallax="true">
+    <video autoplay muted loop>
+        <source src="/assets/video/roundleague_promo.mp4" type="video/mp4" />
+    </video>
     <div class="filter"></div>
     <div class="container">
       <div class="motto text-center">
@@ -81,8 +86,6 @@
     </div>
 
     <cfinclude template="socialMediaFeed.cfm">
-
-    <cfinclude template="contact.cfm">
   </div>
 </cfoutput>
 <cfinclude template="/footer.cfm">

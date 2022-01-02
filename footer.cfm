@@ -1,16 +1,13 @@
   <footer class="footer   footer-white ">
     <div class="container">
-      <!--- <div class="row">
+      <div class="row">
         <nav class="footer-nav">
           <ul>
             <li>
-              <a href="https://www.creative-tim.com" target="_blank">Creative Tim</a>
+              <a href="https://www.instagram.com/theroundleague/" target="_blank"><i class="fa fa-instagram" aria-hidden="true"></i></a>
             </li>
             <li>
-              <a href="http://blog.creative-tim.com/" target="_blank">Blog</a>
-            </li>
-            <li>
-              <a href="https://www.creative-tim.com/license" target="_blank">Licenses</a>
+              <a href="https://goo.gl/maps/tUs7Jvvfgn4hi4HY8" target="_blank">4150 SW Watson Ave, Beaverton, OR 97005</a>
             </li>
           </ul>
         </nav>
@@ -19,11 +16,11 @@
             &copy;
             <script>
               document.write(new Date().getFullYear())
-            </script>, made with <i class="fa fa-heart heart"></i> by Creative Tim
+            </script> The Round League
           </span>
         </div>
       </div>
-    </div> --->
+    </div>
   </footer>
   <!--   Core JS Files   -->
   <script src="/assets/js/core/jquery.min.js" type="text/javascript"></script>

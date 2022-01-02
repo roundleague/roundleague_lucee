@@ -81,7 +81,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" rel="tooltip" data-placement="bottom" href="https://www.instagram.com/CreativeTimOfficial" target="_blank">
+            <a class="nav-link" rel="tooltip" data-placement="bottom" href="https://docs.google.com/document/d/e/2PACX-1vSAgkeAcc_34PTnJmDjb6HyDuPRYyNfGmLdywFtEB_ePATrRs0ficHVOlW50n8SiPUvApGp1OV6Kaw4/pub" target="_blank">
               League Rules
             </a>
           </li>
@@ -91,7 +91,7 @@
                 <li class="dropdown-header">Stats</li>
                 <a class="dropdown-item" href="/pages/stats/leagueLeaders.cfm">League Leaders</a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="##pk">Contact</a>
+                <a class="dropdown-item" href="/pages/Contact/contact.cfm">Contact</a>
                 <div class="dropdown-divider"></div>
                 <a target="_blank" class="dropdown-item" href="/pages/login/login.cfm">StatsApp</a>
                 <cfif !FindNoCase("testing.theroundleague.com", CGI.REQUEST_URL)>
