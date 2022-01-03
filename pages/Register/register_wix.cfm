@@ -26,7 +26,7 @@
 
 
 <div class="main" style="background-color: white;">
-    <div class="section text-center">
+    <div class="section text-center" style="padding-top: 0px;">
       <div class="container">
 
       	<!--- Waiver Modal --->
@@ -87,7 +87,7 @@ I, for myself and on behalf of my heirs, assigns, personal representatives and n
 
         <!--- Content Here --->
 		<div class="wrapper">
-		    <div class="profile-content section">
+		    <div class="profile-content section" style="padding-top: 20px;">
 		      <div class="container">
 		        <div class="row">
 		          <div class="col-md-6 ml-auto mr-auto">
