@@ -9,7 +9,6 @@
 	FROM Players
 	WHERE Email = <cfqueryparam cfsqltype="cf_sql_varchar" value="#form.email#">
 </cfquery>
-<cfset toastMessage = "Email already found.">
 <cfif checkDuplicate.recordCount EQ 0>
 	<cfquery name="addPlayer" datasource="roundleague" result="playerAdd">
 		INSERT INTO Players 
@@ -58,11 +57,45 @@
 		(
 			<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#newPlayerId#">,
 			<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.teamID#">,
-			(SELECT SeasonID From Seasons WHERE status = 'Active'),
-			(SELECT DivisionID From Teams Where TeamID = #form.teamID#)
+			<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">,
+			(
+				SELECT DivisionID 
+				From Teams 
+				Where TeamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.teamID#">
+			)
 		)
 	</cfquery>
 	<cfset toastMessage = "Player Registration info successfully submitted! Note: If you signed up as a free agent, you will be contacted if a free agent spot opens up.">
+<cfelse>
+	<!--- We use the duplicate playerID email to Insert Into Roster --->
+	<cfquery name="checkRosterDuplicate" datasource="roundleague">
+		SELECT playerID
+		FROM Roster
+		Where playerID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#checkDuplicate.PlayerID#">
+		AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+	</cfquery>	
+	<cfif checkRosterDuplicate.recordCount EQ 0>
+		<!--- User has a record in player table but not current roster, season --->
+		<cfquery name="addToRoster" datasource="roundleague">
+			INSERT INTO Roster (PlayerID, TeamID, SeasonID, DivisionID, Jersey)
+			VALUES
+			(
+				<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#checkDuplicate.PlayerID#">,
+				<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.teamID#">,
+				<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">,
+				(
+					SELECT DivisionID 
+					From Teams 
+					Where TeamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.teamID#">
+				),
+				<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.currentJersey#">
+			)
+		</cfquery>
+		<cfset toastMessage = "Player Registration info successfully submitted! Note: If you signed up as a free agent, you will be contacted if a free agent spot opens up.">
+	<cfelse>
+		<!--- User has a record in current roster, season --->
+		<cfset toastMessage = "Player with email has already been added for this season.">
+	</cfif>
 </cfif>
 
 <div class="main" style="background-color: white; margin-top: 50px;">

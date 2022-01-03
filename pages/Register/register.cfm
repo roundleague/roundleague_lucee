@@ -10,7 +10,7 @@
 	SELECT teamID, teamName
 	FROM Teams
 	Where Status = 'Active'
-	AND seasonID = (SELECT SeasonID FROM Seasons Where Status = 'Active')
+	AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
 </cfquery>
 
 <cfset basketballExp = 'Recreational,High School Varsity,College,D-1 University,Professional'>
@@ -129,6 +129,14 @@ I, for myself and on behalf of my heirs, assigns, personal representatives and n
 		                  <div class="form-group">
 		                    <label>Instagram Handle (No @ Needed)</label>
 		                    <input type="text" class="form-control border-input" placeholder="IG Handle (N/A if none)" name="instagram">
+		                  </div>
+		                </div>
+		              </div>
+		              <div class="row">
+		                <div class="col-md-6 ml-auto mr-auto nonTextQuestions">
+		                  <div class="form-group">
+		                    <label>Confirmed Jersey Number (Only fill out if you currently have an existing jersey)</label>
+		                    <input type="text" class="form-control border-input" name="currentJersey">
 		                  </div>
 		                </div>
 		              </div>
