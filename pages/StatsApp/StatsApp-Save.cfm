@@ -199,6 +199,13 @@
                             )
                 </cfquery>
             </cfif>
+            <!--- Update jerseys each time (we could optimize later on and check) --->
+            <cfquery name="jerseyUpdates" datasource="roundleague">
+                UPDATE ROSTER
+                SET Jersey = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form["Jersey_" & i]#">
+                WHERE playerID = #i#
+                AND SeasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getActiveSeasonID.seasonID#">
+            </cfquery>
         </cfloop>
 
         <cflocation url="StatsApp-Select.cfm?saved=true">

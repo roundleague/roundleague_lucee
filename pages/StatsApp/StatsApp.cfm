@@ -35,7 +35,7 @@
 
 <!--- Queries --->
 <cfquery name="getPlayers" datasource="roundleague">
-    SELECT p.playerID, lastName, firstName, teamName, s.seasonName, s.seasonID, d.divisionName, position
+    SELECT p.playerID, lastName, firstName, teamName, s.seasonName, s.seasonID, d.divisionName, position, r.Jersey
     FROM players p
     JOIN roster r ON r.PlayerID = p.playerID
     JOIN teams t ON t.teamId = r.teamID
@@ -146,7 +146,7 @@
                     <tr class="dragdrop" id="Player_#getPlayers.playerID#">
                         <td class="playerBox ExportLabelTD">
                             #dnpIcon#
-                            <span class="playerName">#getPlayers.firstName# #getPlayers.LastName#</span> <input class="jerseyNumber" type="number" name="Jersey_#playerID#">
+                            <span class="playerName">#getPlayers.firstName# #getPlayers.LastName#</span> <input class="jerseyNumber" type="number" name="Jersey_#playerID#" value="#getPlayers.Jersey#">
                         </td>
                         <td class="noDisplay ExportLabelTD"></td>
                         <td>
