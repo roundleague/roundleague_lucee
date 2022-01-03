@@ -10,7 +10,7 @@
 	SELECT teamID, teamName
 	FROM Teams
 	Where Status = 'Active'
-	AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+	AND seasonID = (SELECT seasonID From seasons WHERE status = 'Active')
 </cfquery>
 
 <cfset basketballExp = 'Recreational,High School Varsity,College,D-1 University,Professional'>
