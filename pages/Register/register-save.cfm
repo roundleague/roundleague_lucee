@@ -58,7 +58,7 @@
 		(
 			<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#newPlayerId#">,
 			<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.teamID#">,
-			<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">,
+			(SELECT seasonID From seasons WHERE status = 'Active'),
 			(
 				SELECT DivisionID 
 				From Teams 
@@ -73,7 +73,7 @@
 		SELECT playerID
 		FROM Roster
 		Where playerID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#checkDuplicate.PlayerID#">
-		AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+		AND seasonID = (SELECT seasonID From seasons WHERE status = 'Active')
 	</cfquery>	
 	<cfif checkRosterDuplicate.recordCount EQ 0>
 		<!--- User has a record in player table but not current roster, season --->
@@ -83,7 +83,7 @@
 			(
 				<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#checkDuplicate.PlayerID#">,
 				<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.teamID#">,
-				<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">,
+				(SELECT seasonID From seasons WHERE status = 'Active'),
 				(
 					SELECT DivisionID 
 					From Teams 
