@@ -91,7 +91,7 @@
                 <li class="dropdown-header">Stats</li>
                 <a class="dropdown-item" href="/pages/stats/leagueLeaders.cfm">League Leaders</a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="/pages/Contact/contact.cfm">Contact</a>
+                <a class="dropdown-item" href="https://forms.gle/a4cMnMnUH4botPWr6" target="_blank">Contact</a>
                 <div class="dropdown-divider"></div>
                 <a target="_blank" class="dropdown-item" href="/pages/login/login.cfm">StatsApp</a>
                 <cfif !FindNoCase("testing.theroundleague.com", CGI.REQUEST_URL)>

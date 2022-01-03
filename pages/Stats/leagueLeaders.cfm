@@ -7,7 +7,7 @@
 	SELECT ps.playerID, ps.points, p.firstName, p.lastName
 	FROM playerstats ps
 	JOIN players p ON p.playerID = ps.playerID
-	WHERE seasonID = 2 <!--- Change this to active seasonID later --->
+	WHERE seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
 	ORDER BY points desc
 	LIMIT 10
 </cfquery>
@@ -16,7 +16,7 @@
 	SELECT ps.playerID, ps.Rebounds, p.firstName, p.lastName
 	FROM playerstats ps
 	JOIN players p ON p.playerID = ps.playerID
-	WHERE seasonID = 2 <!--- Change this to active seasonID later --->
+	WHERE seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
 	ORDER BY Rebounds desc
 	LIMIT 10
 </cfquery>
@@ -25,7 +25,7 @@
 	SELECT ps.playerID, ps.Assists, p.firstName, p.lastName
 	FROM playerstats ps
 	JOIN players p ON p.playerID = ps.playerID
-	WHERE seasonID = 2 <!--- Change this to active seasonID later --->
+	WHERE seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
 	ORDER BY Assists desc
 	LIMIT 10
 </cfquery>
