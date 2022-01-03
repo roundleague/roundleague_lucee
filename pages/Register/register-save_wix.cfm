@@ -1,4 +1,4 @@
-<cfinclude template="/header-wix.cfm">
+<cfinclude template="/header_wix.cfm">
 
 <!--- Page Specific CSS/JS Here --->
 
@@ -109,4 +109,4 @@
     </div>
 </div>
 </cfoutput>
-<cfinclude template="/footer-wix.cfm">
+<cfinclude template="/footer_wix.cfm">
