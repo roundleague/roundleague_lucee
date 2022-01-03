@@ -8,6 +8,7 @@
 	SELECT PlayerID
 	FROM Players
 	WHERE Email = <cfqueryparam cfsqltype="cf_sql_varchar" value="#form.email#">
+	ORDER BY playerID DESC
 </cfquery>
 <cfif checkDuplicate.recordCount EQ 0>
 	<cfquery name="addPlayer" datasource="roundleague" result="playerAdd">
