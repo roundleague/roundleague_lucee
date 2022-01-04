@@ -9,7 +9,7 @@
   SELECT teamName, DivisionName, teamID
   FROM teams t
   JOIN divisions d ON t.DivisionID = d.DivisionID
-  WHERE t.DivisionID = 5
+  WHERE t.DivisionID = 8
   ORDER BY divisionName
 </cfquery>
 
@@ -17,7 +17,7 @@
   SELECT teamName, DivisionName, teamID
   FROM teams t
   JOIN divisions d ON t.DivisionID = d.DivisionID
-  WHERE t.DivisionID = 6
+  WHERE t.DivisionID = 9
   ORDER BY divisionName
 </cfquery>
 
@@ -25,7 +25,7 @@
   SELECT teamName, DivisionName, teamID
   FROM teams t
   JOIN divisions d ON t.DivisionID = d.DivisionID
-  WHERE t.DivisionID = 4
+  WHERE t.DivisionID = 10
   ORDER BY divisionName
 </cfquery>
 
@@ -33,7 +33,7 @@
   SELECT teamName, DivisionName, teamID
   FROM teams t
   JOIN divisions d ON t.DivisionID = d.DivisionID
-  WHERE t.DivisionID = 3
+  WHERE t.DivisionID = 11
   ORDER BY divisionName
 </cfquery>
 
