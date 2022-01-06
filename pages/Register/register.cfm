@@ -136,7 +136,7 @@ I, for myself and on behalf of my heirs, assigns, personal representatives and n
 		                <div class="col-md-6 ml-auto mr-auto nonTextQuestions">
 		                  <div class="form-group">
 		                    <label>Confirmed Jersey Number (Only fill out if you currently have an existing jersey)</label>
-		                    <input type="text" class="form-control border-input" name="currentJersey">
+		                    <input type="number" class="form-control border-input" name="currentJersey">
 		                  </div>
 		                </div>
 		              </div>
