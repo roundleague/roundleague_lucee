@@ -9,7 +9,7 @@
   SELECT teamName, DivisionName, teamID
   FROM teams t
   JOIN divisions d ON t.DivisionID = d.DivisionID
-  WHERE t.DivisionID = 5
+  WHERE t.DivisionID = 8
   ORDER BY divisionName
 </cfquery>
 
@@ -17,7 +17,7 @@
   SELECT teamName, DivisionName, teamID
   FROM teams t
   JOIN divisions d ON t.DivisionID = d.DivisionID
-  WHERE t.DivisionID = 6
+  WHERE t.DivisionID = 9
   ORDER BY divisionName
 </cfquery>
 
@@ -25,7 +25,7 @@
   SELECT teamName, DivisionName, teamID
   FROM teams t
   JOIN divisions d ON t.DivisionID = d.DivisionID
-  WHERE t.DivisionID = 4
+  WHERE t.DivisionID = 10
   ORDER BY divisionName
 </cfquery>
 
@@ -33,7 +33,7 @@
   SELECT teamName, DivisionName, teamID
   FROM teams t
   JOIN divisions d ON t.DivisionID = d.DivisionID
-  WHERE t.DivisionID = 3
+  WHERE t.DivisionID = 11
   ORDER BY divisionName
 </cfquery>
 
@@ -41,9 +41,7 @@
     <div class="section text-center" style="padding-top: 20px">
       <div class="container">
 
-        Check back later for the 2021 Winter Season Teams!
-
-<!---         <div class="standingsContainer">
+        <div class="standingsContainer">
             <div class="standingsDiv flex-item">
               <h4 class="standingsh4">North Division</h4>
               <ul class="standingsUl">
@@ -83,7 +81,7 @@
                 </cfloop>
               </ul>
             </div>
-        </div> --->
+        </div>
 
       </div>
     </div>

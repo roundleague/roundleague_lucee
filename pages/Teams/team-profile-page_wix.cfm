@@ -23,7 +23,7 @@
 	JOIN seasons s ON s.seasonID = t.seasonID
 	WHERE r.seasonID = s.seasonID
 	AND t.teamID = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#">
-  AND p.PermissionToShare != 'No'
+  <!--- AND p.PermissionToShare != 'No' --->
   GROUP BY lastName, firstName
 </cfquery>
 
