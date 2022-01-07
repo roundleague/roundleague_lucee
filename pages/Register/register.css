@@ -79,3 +79,9 @@ ul.acknowledge{
 .toastMessage{
   font-weight: bold;
 }
+
+.teamSelect{
+  font-size: large;
+  color: red;
+  font-weight: 800;
+}
