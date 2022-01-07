@@ -2,7 +2,7 @@
 
 <!--- Page Specific CSS/JS Here --->
 <link href="https://demos.creative-tim.com/paper-kit-2-pro/assets/css/paper-kit.min.css?v=2.3.1" rel="stylesheet">
-<link href="../Register/register.css" rel="stylesheet">
+<link href="../Register/register.css?version=1.0" rel="stylesheet">
 
 <cfoutput>
 
