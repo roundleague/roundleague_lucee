@@ -61,18 +61,16 @@ a, td {
                   </cfif>
                     <tr>
 
-                      <cfset imgPath = "/boxscores/#getSchedule.homeTeamID#_#getSchedule.week#_#getSchedule.seasonID#.pdf">
-                      <cfif FileExists("#imgPath#")>
-                        <td><a class="#homeBoldClass#" href="#imgPath#" target="_blank">#getSchedule.Home# #getSchedule.HomeScore#</a></td>
+                      <cfif getSchedule.homeScore NEQ ''>
+                        <td><a class="#homeBoldClass#" href="/pages/boxscore/boxscore.cfm?scheduleID=#getSchedule.scheduleID#">#getSchedule.Home# #getSchedule.HomeScore#</a></td>
                       <cfelse>
-                        <td><span class="#homeBoldClass#">#getSchedule.Home# #getSchedule.HomeScore#</span></td>
+                        <td>#getSchedule.Home# #getSchedule.HomeScore#</td>
                       </cfif>
 
-                      <cfset awayImgPath = "/boxscores/#getSchedule.awayTeamID#_#getSchedule.week#_#getSchedule.seasonID#.pdf">
-                      <cfif FileExists("#awayImgPath#")>
-                        <td><a class="#awayBoldClass#" href="#awayImgPath#" target="_blank">#getSchedule.away# #getSchedule.awayScore#</a></td>
+                      <cfif getSchedule.AwayScore NEQ ''>
+                        <td><a class="#awayBoldClass#" href="/pages/boxscore/boxscore.cfm?scheduleID=#getSchedule.scheduleID#">#getSchedule.Away# #getSchedule.AwayScore#</a></td>
                       <cfelse>
-                        <td><span class="#awayBoldClass#">#getSchedule.Away# #getSchedule.AwayScore#</span></td>
+                        <td>#getSchedule.Away# #getSchedule.AwayScore#</td>
                       </cfif>
                       
                       <td>#DateFormat(getSchedule.Date, "mm/dd/yyyy")#</td>
