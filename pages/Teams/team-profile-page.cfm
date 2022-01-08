@@ -15,7 +15,8 @@
     school, 
     s.seasonName, 
     d.divisionName,
-    t.captainPlayerID
+    t.captainPlayerID,
+    r.jersey
 	FROM players p
 	JOIN roster r ON r.PlayerID = p.playerID
 	JOIN teams t ON t.teamId = r.teamID
@@ -40,6 +41,7 @@
           <thead>
             <tr>
             	<td>Name</td>
+              <td>Jersey</td>
             	<td>Position</td>
             	<td>Height</td>
             	<td>Weight</td>
@@ -56,6 +58,7 @@
                   </a> --->
                   #firstName# #lastName# <cfif getTeamData.captainPlayerID EQ getTeamData.playerID>(C)</cfif>
                 </td>
+                <td>#Jersey#</td>
 	            	<td>#Position#</td>
 	            	<td>#Height#</td>
 	            	<td>#Weight#</td>

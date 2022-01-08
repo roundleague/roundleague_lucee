@@ -143,7 +143,7 @@ I, for myself and on behalf of my heirs, assigns, personal representatives and n
 		              <div class="row">
 			              <div class="col-md-6 ml-auto mr-auto nonTextQuestions">
 			                  <div class="form-group">
-			                    <label>Select Team (Will be verified by Team Captain)</label><br>
+			                    <label class="teamSelect">Select Team (Will be verified by Team Captain)</label><br>
 								<select name="teamID" style="padding: 7px;">
 								  <option value="0">I am signing up as a free agent</option>
 								  <cfloop query="getTeams">
