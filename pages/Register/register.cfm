@@ -145,7 +145,7 @@ I, for myself and on behalf of my heirs, assigns, personal representatives and n
 			                  <div class="form-group">
 			                    <label class="teamSelect">Select Team (Will be verified by Team Captain)</label><br>
 								<select name="teamID" style="padding: 7px;">
-								  <option value="0">I am signing up as a free agent</option>
+								  <!--- <option value="0">I am signing up as a free agent</option> --->
 								  <cfloop query="getTeams">
 								  	<option value="#getTeams.TeamID#">#getTeams.TeamName#</option>
 								  </cfloop>
