@@ -92,6 +92,7 @@ I, for myself and on behalf of my heirs, assigns, personal representatives and n
 		        <div class="row">
 		          <div class="col-md-6 ml-auto mr-auto">
 		            <form class="settings-form" method="POST">
+					<div class="registerNote">Note: We are currently not taking free agent sign ups. Please only register if you have verified with your team captain!</div class="registerNote">
 		              <div class="form-group">
 		                <label>Email</label>
 		                <input type="email" required class="form-control border-input" placeholder="Email" name="email">
