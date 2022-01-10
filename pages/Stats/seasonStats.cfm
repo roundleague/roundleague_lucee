@@ -27,13 +27,13 @@
 		                <th>FGM</th>
 		                <th>3FGM</th>
 		                <!--- <th>FG%</th> --->
-		                <th>Points</th>
-		                <th>Rebounds</th>
-		                <th>Assists</th>
-		                <th>Steals</th>
-		                <th>Blocks</th>
+		                <th>PTS</th>
+		                <th>REBS</th>
+		                <th>ASTS</th>
+		                <th>STLS</th>
+		                <th>BLKS</th>
 		                <th>TO</th>
-		                <th>Games Played</th>
+		                <th>GP</th>
 		            </tr>
 		        </thead>
 		        <tbody>
