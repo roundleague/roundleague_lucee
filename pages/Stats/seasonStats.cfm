@@ -29,10 +29,10 @@
 		        <tbody>
 		        	<cfloop query="getPlayerStats">
 		        		<tr>
-			        		<td>#getPlayerStats.firstName# #getPlayerStats.lastName#</td>
-			        		<td>#getPlayerStats.Points#</td>
-			        		<td>#getPlayerStats.Rebounds#</td>
-			        		<td>#getPlayerStats.Assists#</td>
+			        		<td data-label="Name">#getPlayerStats.firstName# #getPlayerStats.lastName#</td>
+			        		<td data-label="Points">#getPlayerStats.Points#</td>
+			        		<td data-label="Rebounds">#getPlayerStats.Rebounds#</td>
+			        		<td data-label="Assists">#getPlayerStats.Assists#</td>
 		        		</tr>
 		        	</cfloop>
 		        </tbody>
