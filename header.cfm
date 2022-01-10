@@ -21,7 +21,7 @@
   <link rel="icon" type="image/png" href="/assets/img/Logos/favicon.png">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <title>
-    Portland's Premiere Basketball League | The Round League
+    Portland's Premier Basketball League | The Round League
   </title>
   <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
   <!--     Fonts and icons     -->
@@ -94,7 +94,7 @@
                 <a class="dropdown-item" href="https://forms.gle/a4cMnMnUH4botPWr6" target="_blank">Contact</a>
                 <div class="dropdown-divider"></div>
                 <a target="_blank" class="dropdown-item" href="/pages/login/login.cfm">StatsApp</a>
-                <cfif !FindNoCase("testing.theroundleague.com", CGI.REQUEST_URL)>
+                <cfif !FindNoCase("theroundleague.com", CGI.REQUEST_URL)>
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item" href="/assets/espn_scoreboard/scoreboard.html">Scoreboard</a>
                 </cfif>
