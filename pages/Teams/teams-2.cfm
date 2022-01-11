@@ -37,6 +37,14 @@
   ORDER BY divisionName
 </cfquery>
 
+<cfquery name="getWomensDivision" datasource="roundleague">
+  SELECT teamName, DivisionName, teamID
+  FROM teams t
+  JOIN divisions d ON t.DivisionID = d.DivisionID
+  WHERE t.DivisionID = 12
+  ORDER BY divisionName
+</cfquery>
+
 <div class="main" style="background-color: white; margin-top: 50px;">
     <div class="section text-center">
       <div class="container">
@@ -74,6 +82,14 @@
               <ul class="standingsUl">
                 <cfloop query="getWestDivision">
                   <li><a href="team-profile-page.cfm?teamID=#getWestDivision.teamID#">#getWestDivision.teamName#</a></li>
+                </cfloop>
+              </ul>
+            </div>
+            <div class="standingsDiv flex-item">
+              <h4 class="standingsh4">Women's Division</h4>
+              <ul class="standingsUl">
+                <cfloop query="getWomensDivision">
+                  <li><a href="team-profile-page.cfm?teamID=#getWomensDivision.teamID#">#getWomensDivision.teamName#</a></li>
                 </cfloop>
               </ul>
             </div>
