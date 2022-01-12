@@ -1,5 +1,12 @@
 <cfoutput>
 
+<!--- Check session logged in, prevent users from directly accessing through a link --->
+<!--- Too risky to do on statsapp right now, let's try with Player Info Page first --->
+<!--- <cfif !isDefined("session.loggedIn")>
+  Access Denied.
+  <cfabort />
+</cfif> --->
+
 <!doctype html>
 
 <html lang="en">
