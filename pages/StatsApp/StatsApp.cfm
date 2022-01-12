@@ -111,7 +111,7 @@
         <table id="sort" class="grid pure-table pure-table-horizontal statsAppTable">
             <thead>
                 <tr>
-                    <th>Player</th>
+                    <th>#getPlayers.teamName#</th>
                     <th class="noDisplay">Jersey</th>
                     <th>FGM(1)</th>
                     <th>FGA(2)</th>
@@ -132,11 +132,21 @@
                 <cfloop query="getPlayers">
                     <cfif getPlayers.currentRow EQ 6>
                         <tr id="benchToggle">
-                            <td colspan="9">
+                            <td colspan="5">
                                 Bench (Click To Show/Hide)
                             </td>
                             <td colspan="3">
-                                #getPlayers.teamName#
+                                <label class="switch switch-left-right">
+                                    <input class="switch-input" type="checkbox" checked />
+                                    <span class="switch-label" data-on="1st Half" data-off="2nd Half"></span> 
+                                    <span class="switch-handle"></span> 
+                                </label>
+                            </td>
+                            <td colspan="2">
+                                1st Half Fouls: <span class="firstHalfFouls">0</span>
+                            </td>
+                            <td colspan="2">
+                                2nd Half Fouls: <span class="secondHalfFouls">0</span>
                             </td>
                             <td colspan="2">
                                 Total: <span class="teamTotalPts">0</span>

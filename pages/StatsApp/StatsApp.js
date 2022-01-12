@@ -141,6 +141,10 @@ $( document ).ready(function() {
 		var newFieldValue = fieldValue + 1;
 		fieldValueSpan.val(newFieldValue);
 
+		/* Visual Display of Add*/
+		var tdFlash = $(addNode).parent();
+		flashBackground(tdFlash);
+
 		if($(addNode).hasClass("FGM")){
 			addToValue("FGA", 1, playerID);
 			addToValue("PTS", 2, playerID);
@@ -189,6 +193,9 @@ $( document ).ready(function() {
 			addToValue("PTS", 1, playerID);
 			addToValue("FTA", 1, playerID);
 		}
+		else if($(this).hasClass("FOULS")){
+			console.log("work from here");
+		}
 	});
 
 	$(document).keydown(function(e){
@@ -236,6 +243,10 @@ $( document ).ready(function() {
 		var fieldValue = parseInt(fieldValueSpan.val());
 		var newFieldValue = fieldValue + addValue;
 		fieldValueSpan.val(newFieldValue);
+
+		/* Visual Display of Add*/
+		var tdFlash = $(fieldValueSpan).parent();
+		flashBackground(tdFlash);
 
 		 if(id=="PTS"){
 			var currentNum = parseFloat($('.teamTotalPts').html());
@@ -310,5 +321,10 @@ $( document ).ready(function() {
 	$("#benchToggle").click(function() {
 	  $(this).nextAll().toggle();
 	});
+
+	function flashBackground(node) 
+	{ 
+		$(node).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100)
+	}
 
 });
