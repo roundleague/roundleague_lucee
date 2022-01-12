@@ -17,8 +17,8 @@ Coded by www.creative-tim.com
 
 <head>
   <meta charset="utf-8" />
-  <link rel="apple-touch-icon" sizes="76x76" href="./assets/img/apple-icon.png">
-  <link rel="icon" type="image/png" href="./assets/img/favicon.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/admin-dashboard/assets/img/apple-icon.png">
+  <link rel="icon" type="image/png" href="/admin-dashboard/assets/img/favicon.png">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <title>
     The Round League
@@ -28,10 +28,10 @@ Coded by www.creative-tim.com
   <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
   <!-- CSS Files -->
-  <link href="./assets/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="./assets/css/paper-dashboard.css?v=2.0.1" rel="stylesheet" />
+  <link href="/admin-dashboard/assets/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="/admin-dashboard/assets/css/paper-dashboard.css?v=2.0.1" rel="stylesheet" />
   <!-- CSS Just for demo purpose, don't include it in your project -->
-  <link href="./assets/demo/demo.css" rel="stylesheet" />
+  <link href="/admin-dashboard/assets/demo/demo.css" rel="stylesheet" />
 </head>
 
 <body class="">
@@ -41,28 +41,28 @@ Coded by www.creative-tim.com
         <a href="https://www.creative-tim.com" class="simple-text logo-normal">
         <img src="https://static.wixstatic.com/media/b16829_f3a215a62a9f485990b0e43a0a993d3d~mv2.png/v1/fill/w_909,h_335,al_c,q_85,usm_0.66_1.00_0.01/4_edited.webp" alt="The Round League Logo">
           <!-- <div class="logo-image-big">
-            <img src="../assets/img/logo-big.png">
+            <img src="./admin-dashboard/assets/img/logo-big.png">
           </div> -->
         </a>
       </div>
       <div class="sidebar-wrapper">
         <ul class="nav">
-          <li class="active ">
+          <li>
             <a href="javascript:;">
               <i class="nc-icon nc-bank"></i>
-              <p>First Item</p>
+              <p>StatsApp</p>
             </a>
           </li>
           <li>
             <a href="javascript:;">
               <i class="nc-icon nc-diamond"></i>
-              <p>Second Item</p>
+              <p>Scoreboard</p>
             </a>
           </li>
-          <li>
-            <a href="javascript:;">
+          <li <cfif findNoCase("playerLookUp", CGI.REQUEST_URL)>class="active"</cfif>>
+            <a href="/admin-dashboard/pages/playerLookup/playerLookup.cfm">
               <i class="nc-icon nc-pin-3"></i>
-              <p>Third Item</p>
+              <p>Player Info Lookup</p>
             </a>
           </li>
         </ul>
@@ -81,7 +81,7 @@ Coded by www.creative-tim.com
                 <span class="navbar-toggler-bar bar3"></span>
               </button>
             </div>
-            <a class="navbar-brand" href="javascript:;">Welcome, valued Round League Staff Member (Insert name here later lol)</a>
+            <a class="navbar-brand" href="javascript:;">Welcome, {InsertNameHere}</a>
           </div>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-bar navbar-kebab"></span>
