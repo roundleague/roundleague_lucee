@@ -90,3 +90,7 @@ ul.acknowledge{
   font-weight: bold;
   margin-bottom: 10px;
 }
+
+.registerRequired {
+  border: 3px solid red;
+}

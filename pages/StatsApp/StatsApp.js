@@ -245,8 +245,8 @@ $( document ).ready(function() {
 		fieldValueSpan.val(newFieldValue);
 
 		/* Visual Display of Add*/
-		var tdFlash = $(fieldValueSpan).parent();
-		flashBackground(tdFlash);
+		// var tdFlash = $(fieldValueSpan).parent();
+		// flashBackground(tdFlash);
 
 		 if(id=="PTS"){
 			var currentNum = parseFloat($('.teamTotalPts').html());
@@ -324,7 +324,8 @@ $( document ).ready(function() {
 
 	function flashBackground(node) 
 	{ 
-		$(node).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100)
+		// Flash yellow background
+		$(node).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 	}
 
 });

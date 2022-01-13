@@ -92,7 +92,7 @@ I, for myself and on behalf of my heirs, assigns, personal representatives and n
 		        <div class="row">
 		          <div class="col-md-6 ml-auto mr-auto">
 		            <form class="settings-form" method="POST">
-					<div class="registerNote">Note: We are currently not taking free agent sign ups. Please only register if you have verified with your team captain!</div class="registerNote">
+					<!--- <div class="registerNote">Note: We are currently not taking free agent sign ups. Please only register if you have verified with your team captain!</div class="registerNote"> --->
 		              <div class="form-group">
 		                <label>Email</label>
 		                <input type="email" required class="form-control border-input" placeholder="Email" name="email">
@@ -129,7 +129,7 @@ I, for myself and on behalf of my heirs, assigns, personal representatives and n
 		                <div class="col-md-6 ml-auto mr-auto nonTextQuestions">
 		                  <div class="form-group">
 		                    <label>Instagram Handle (No @ Needed)</label>
-		                    <input type="text" class="form-control border-input" placeholder="IG Handle (N/A if none)" name="instagram">
+		                    <input type="text" class="form-control border-input" placeholder="IG Handle" name="instagram">
 		                  </div>
 		                </div>
 		              </div>
@@ -145,11 +145,12 @@ I, for myself and on behalf of my heirs, assigns, personal representatives and n
 			              <div class="col-md-6 ml-auto mr-auto nonTextQuestions">
 			                  <div class="form-group">
 			                    <label class="teamSelect">Select Team (Will be verified by Team Captain)</label><br>
-								<select name="teamID" style="padding: 7px;">
-								  <!--- <option value="0">I am signing up as a free agent</option> --->
+								<select class="teamID" name="teamID" style="padding: 7px;">
+								  <option value=""></option>
 								  <cfloop query="getTeams">
 								  	<option value="#getTeams.TeamID#">#getTeams.TeamName#</option>
 								  </cfloop>
+								  <option value="0">I am signing up as a free agent</option>
 								</select>
 			                  </div>
 			               </div>
