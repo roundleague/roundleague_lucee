@@ -16,7 +16,8 @@
     s.seasonName, 
     d.divisionName,
     t.captainPlayerID,
-    r.jersey
+    r.jersey,
+    p.PermissionToShare
 	FROM players p
 	JOIN roster r ON r.PlayerID = p.playerID
 	JOIN teams t ON t.teamId = r.teamID
@@ -60,10 +61,10 @@
                 </td>
                 <td>#Jersey#</td>
 	            	<td>#Position#</td>
-	            	<td>#Height#</td>
-	            	<td>#Weight#</td>
-	            	<td>#Hometown#</td>
-	            	<td>#School#</td>
+	            	<td><cfif PermissionToShare EQ 'Yes'>#Height#</cfif></td>
+	            	<td><cfif PermissionToShare EQ 'Yes'>#Weight#</cfif></td>
+	            	<td><cfif PermissionToShare EQ 'Yes'>#Hometown#</cfif></td>
+	            	<td><cfif PermissionToShare EQ 'Yes'>#Height#</cfif></td>
 	            </tr>
         	</cfloop>
           </tbody>
