@@ -64,7 +64,7 @@
 	            	<td><cfif PermissionToShare EQ 'Yes'>#Height#</cfif></td>
 	            	<td><cfif PermissionToShare EQ 'Yes'>#Weight#</cfif></td>
 	            	<td><cfif PermissionToShare EQ 'Yes'>#Hometown#</cfif></td>
-	            	<td><cfif PermissionToShare EQ 'Yes'>#Height#</cfif></td>
+	            	<td><cfif PermissionToShare EQ 'Yes'>#School#</cfif></td>
 	            </tr>
         	</cfloop>
           </tbody>
