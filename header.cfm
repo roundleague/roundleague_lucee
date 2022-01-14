@@ -61,7 +61,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" rel="tooltip" title="Like us on Facebook" data-placement="bottom" href="/pages/Standings/standings.cfm">
+            <a class="nav-link" rel="tooltip" title="Like us on Facebook" data-placement="bottom" href="/pages/Standings/standings_divisions.cfm">
               Standings
             </a>
           </li>
