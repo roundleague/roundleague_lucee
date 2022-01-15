@@ -4,7 +4,7 @@
 <link href="../boxscore/boxscore.css" rel="stylesheet">
 
 <cfquery name="getPlayerLogs" datasource="roundleague">
-	SELECT pgl.PlayerID, p.firstName, p.lastName, FGM, FGA, 3FGM, 3FGA, FTM, FTA, Points, Rebounds, Assists, Steals, Blocks, Turnovers, pgl.teamID, t.teamName
+	SELECT pgl.PlayerID, p.firstName, p.lastName, FGM, FGA, 3FGM, 3FGA, FTM, FTA, Points, Rebounds, Assists, Steals, Blocks, Turnovers, pgl.teamID, t.teamName, pgl.Fouls
 	FROM PlayerGameLog pgl
 	JOIN Players p on p.playerID = pgl.playerID
     JOIN Teams t on t.teamID = pgl.teamID
@@ -29,11 +29,41 @@
         <h5>#getTeamsPlaying.Date#</h5>
         <table>
             <cfset currentTeamID = ''>
+
+            <!--- Keep Track of Totals --->
+            <cfset totalFGM = 0>
+            <cfset totalFGA = 0>
+            <cfset total3FGM = 0>
+            <cfset total3FGA = 0>
+            <cfset totalFTM = 0>
+            <cfset totalFTA = 0>
+            <cfset totalREB = 0>
+            <cfset totalAST = 0>
+            <cfset totalSTL = 0>
+            <cfset totalBLK = 0>
+            <cfset totalTO = 0>
+            <cfset totalFLS = 0>
+            <cfset totalPTS = 0>
+
     		<cfloop query="getPlayerLogs">
+
                 <cfif getPlayerlogs.teamID NEQ currentTeamID>
+                    <cfset totalFGM = 0>
+                    <cfset totalFGA = 0>
+                    <cfset total3FGM = 0>
+                    <cfset total3FGA = 0>
+                    <cfset totalFTM = 0>
+                    <cfset totalFTA = 0>
+                    <cfset totalREB = 0>
+                    <cfset totalAST = 0>
+                    <cfset totalSTL = 0>
+                    <cfset totalBLK = 0>
+                    <cfset totalTO = 0>
+                    <cfset totalFLS = 0>
+                    <cfset totalPTS = 0>
                     <thead>
                         <tr>
-                            <td colspan="10">#GetPlayerLogs.teamName#</td>
+                            <td colspan="11">#GetPlayerLogs.teamName#</td>
                         </tr>
                             <tr>
                                 <th>Player</th>
@@ -45,10 +75,26 @@
                                 <th>STL</th>
                                 <th>BLK</th>
                                 <th>TO</th>
+                                <th>FLS</th>
                                 <th>PTS</th>
                             </tr>
                     </thead>
                 </cfif>
+
+                <cfset totalFGM += getPlayerLogs.FGM>
+                <cfset totalFGA += getPlayerLogs.FGA>
+                <cfset total3FGM += getPlayerLogs.3FGM>
+                <cfset total3FGA += getPlayerLogs.3FGA>
+                <cfset totalFTM += getPlayerLogs.FTM>
+                <cfset totalFTA += getPlayerLogs.FTA>
+                <cfset totalREB += getPlayerLogs.Rebounds>
+                <cfset totalAST += getPlayerLogs.Assists>
+                <cfset totalSTL += getPlayerLogs.Steals>
+                <cfset totalBLK += getPlayerLogs.Blocks>
+                <cfset totalTO += getPlayerLogs.Turnovers>
+                <cfset totalFLS += val(getPlayerLogs.Fouls)>
+                <cfset totalPTS += getPlayerLogs.Points>
+
     			<tr>
     				<td data-label="Player">#getPlayerLogs.firstName# #getPlayerLogs.LastName#</td>
     				<td data-label="FG">#getPlayerLogs.FGM# - #getPlayerLogs.FGA#</td>
@@ -59,10 +105,33 @@
     				<td data-label="STLS">#getPlayerLogs.Steals#</td>
     				<td data-label="BLKS">#getPlayerLogs.Blocks#</td>
     				<td data-label="TO">#getPlayerLogs.Turnovers#</td>
+                    <td data-label="FLS">#val(getPlayerLogs.Fouls)#</td>
     				<td data-label="PTS">#getPlayerLogs.Points#</td>
     			</tr>
                 <cfset currentTeamID = getPlayerlogs.teamID>
-        		</cfloop>
+
+                <cfif getPlayerlogs.recordCount NEQ getPlayerLogs.currentRow>
+                    <cfset nextRecord = QueryGetRow(getPlayerLogs, getPlayerLogs.currentRow+1)>
+                    <cfset nextTeamId = nextRecord.teamID>
+                </cfif>
+
+                <!--- Total Scores --->
+                <cfif getPlayerlogs.recordCount EQ getPlayerLogs.currentRow OR currentTeamID NEQ nextTeamID>
+                        <tr>
+                            <th>Totals</th>
+                            <th>#TotalFGM# - #TotalFGA#</th>
+                            <th>#Total3FGM# - #Total3FGA#</th> 
+                            <th>#TotalFTM# - #TotalFTA#</th>
+                            <th>#TotalREB#</th>
+                            <th>#TotalAST#</th>
+                            <th>#TotalSTL#</th>
+                            <th>#TotalBLK#</th>
+                            <th>#TotalTO#</th>
+                            <th>#TotalFLS#</th>
+                            <th>#TotalPTS#</th>
+                        </tr>
+                </cfif>
+        	</cfloop>
         </table>
 
       </div>
