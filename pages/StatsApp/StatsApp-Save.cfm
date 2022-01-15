@@ -24,7 +24,8 @@
                 Turnovers,
                 SeasonID,
                 TeamID,
-                ScheduleID
+                ScheduleID,
+                Fouls
                 )
             VALUES
             <cfloop list="#playerIDList#" index="count" item="i">
@@ -42,9 +43,10 @@
                     <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form["STLS_" & i]#">,
                     <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form["BLKS_" & i]#">,
                     <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form["TO_" & i]#">,
-                    <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getActiveSeasonID.seasonID#">, <!--- Change This SeasonID later --->
+                    <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getActiveSeasonID.seasonID#">,
                     <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.teamID#">,
-                    <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">
+                    <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">,
+                    <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form["FOULS_" & i]#">
                 )<cfif count NEQ ListLen(playerIDList)>,</cfif>
             </cfloop>
 
