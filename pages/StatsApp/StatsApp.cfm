@@ -138,15 +138,15 @@
                             <td colspan="3">
                                 <label class="switch switch-left-right">
                                     <input class="switch-input" type="checkbox" checked />
-                                    <span class="switch-label" data-on="1st Half" data-off="2nd Half"></span> 
+                                    <span class="switch-label" data-on="1st Half" data-off="2nd Half" data-value="1"></span> 
                                     <span class="switch-handle"></span> 
                                 </label>
                             </td>
                             <td colspan="2">
-                                1st Half Fouls: <span class="firstHalfFouls">0</span>
+                                1st Half Fouls: <span class="Fouls_Half_1">0</span>
                             </td>
                             <td colspan="2">
-                                2nd Half Fouls: <span class="secondHalfFouls">0</span>
+                                2nd Half Fouls: <span class="Fouls_Half_2">0</span>
                             </td>
                             <td colspan="2">
                                 Total: <span class="teamTotalPts">0</span>
@@ -239,7 +239,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" crossorigin="anonymous"></script>
     <script src="https://kit.fontawesome.com/356f7c17e2.js" crossorigin="anonymous"></script>
-    <script src="StatsApp.js"></script>
+    <script src="StatsApp.js?v=1.1"></script>
     <script src="StatsApp-Export.js"></script>
     <script src="ConfirmExit.js"></script>
 </body>

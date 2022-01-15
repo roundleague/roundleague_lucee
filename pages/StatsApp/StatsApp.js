@@ -194,7 +194,11 @@ $( document ).ready(function() {
 			addToValue("FTA", 1, playerID);
 		}
 		else if($(this).hasClass("FOULS")){
-			console.log("work from here");
+			var currentHalf = getCurrentHalf();
+			console.log(currentHalf);
+			var currentNum = parseFloat($('.Fouls_Half_'+currentHalf).html());
+			currentNum += 1;
+			$('.Fouls_Half_'+currentHalf).html(currentNum);
 		}
 	});
 
@@ -326,6 +330,20 @@ $( document ).ready(function() {
 	{ 
 		// Flash yellow background
 		$(node).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+	}
+
+	// 1st Half to 2nd Half Logic
+	$(".switch-label").click(function() {
+	   var currentHalf = $(this).data('value');
+	   if (currentHalf == "1") {
+	     $(this).data('value', "2");
+	   } else {
+	     $(this).data('value', "1");
+	   }
+	});
+
+	function getCurrentHalf(){
+		return $(".switch-label").data('value');
 	}
 
 });
