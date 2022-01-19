@@ -1,39 +1,65 @@
 <cfinclude template="/header.cfm">
 
 <!--- Page Specific CSS/JS Here --->
-<link href="/pages/Stats/leagueLeaders.css" rel="stylesheet" />
+<link href="/pages/Stats/leagueLeaders.css?v=1.1" rel="stylesheet" />
+
+<cfparam name="form.leagueSelect" default="0">
 
 <cfquery name="getPointsLeaders" datasource="roundleague">
-	SELECT ps.playerID, ps.points, p.firstName, p.lastName
+	SELECT ps.playerID, ps.points, p.firstName, p.lastName, r.jersey, t.teamName
 	FROM playerstats ps
 	JOIN players p ON p.playerID = ps.playerID
-	WHERE seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
-	ORDER BY points desc
+    JOIN teams t ON t.teamID = ps.teamID
+    JOIN divisions d ON t.divisionID = d.divisionID
+    JOIN roster r on r.playerID = p.playerID
+	WHERE ps.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+    AND r.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+	AND IFNULL(d.isWomens, 0) = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.leagueSelect#">
+    ORDER BY points desc
 	LIMIT 10
 </cfquery>
 
 <cfquery name="getReboundsLeaders" datasource="roundleague">
-	SELECT ps.playerID, ps.Rebounds, p.firstName, p.lastName
+	SELECT ps.playerID, ps.Rebounds, p.firstName, p.lastName, r.jersey, t.teamName
 	FROM playerstats ps
 	JOIN players p ON p.playerID = ps.playerID
-	WHERE seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
-	ORDER BY Rebounds desc
+    JOIN teams t ON t.teamID = ps.teamID
+    JOIN divisions d ON t.divisionID = d.divisionID
+    JOIN roster r on r.playerID = p.playerID
+	WHERE ps.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+    AND r.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+    AND IFNULL(d.isWomens, 0) = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.leagueSelect#">
+    ORDER BY Rebounds desc
 	LIMIT 10
 </cfquery>
 
 <cfquery name="getAssistsLeaders" datasource="roundleague">
-	SELECT ps.playerID, ps.Assists, p.firstName, p.lastName
+	SELECT ps.playerID, ps.Assists, p.firstName, p.lastName, r.jersey, t.teamName
 	FROM playerstats ps
 	JOIN players p ON p.playerID = ps.playerID
-	WHERE seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
-	ORDER BY Assists desc
+    JOIN teams t ON t.teamID = ps.teamID
+    JOIN divisions d ON t.divisionID = d.divisionID
+    JOIN roster r on r.playerID = p.playerID
+	WHERE ps.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+    AND r.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+    AND IFNULL(d.isWomens, 0) = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.leagueSelect#">
+    ORDER BY Assists desc
 	LIMIT 10
 </cfquery>
 
 <cfoutput>
+<form method="POST">
 <div class="main" style="background-color: white;">
     <div class="section text-center">
       <div class="container">
+
+        <div class="selectLeagueBox">
+            <label for="seasonID">Select League</label>
+            <select name="leagueSelect" id="Seasons" onchange="this.form.submit()">
+                    <option value="0" <cfif form.leagueSelect EQ 0>selected</cfif>>Men's League</option>
+                    <option value="1" <cfif form.leagueSelect EQ 1>selected</cfif>>Women's League</option>
+            </select>
+        </div>
 
  <h2 id="title" style="color: black;">League Leaders</h2> 
 <div class="hover-table-layout">
@@ -96,6 +122,7 @@
       </div>
     </div>
 </div>
+</form>
 </cfoutput>
 <cfinclude template="/footer.cfm">
 

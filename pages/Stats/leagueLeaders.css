@@ -137,6 +137,10 @@ figcaption p{
        background: rgba(195, 39, 43, 0.6);
 }*/
 
+.selectLeagueBox {
+  margin-top: 35px;
+}
+
 @media only screen and (min-width:540px){
   .listing-item {
    display: block;
