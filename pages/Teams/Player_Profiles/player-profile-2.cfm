@@ -12,16 +12,24 @@
 </cfquery>
 
 <cfquery name="getPlayerStats" datasource="roundleague">
-	SELECT *
-	FROM playerstats p
-	JOIN seasons s ON p.SeasonID = s.seasonID
-	WHERE PlayerID = <cfqueryparam cfsqltype="INTEGER" value="#url.playerID#">
+    SELECT Points, Rebounds, Assists, Truncate(FGM / FGA * 100, 1) AS FGP, TRUNCATE(`3FGM` / `3FGA` * 100, 1) AS `3FGP`, Steals, Blocks, Turnovers
+    FROM playerstats p
+    JOIN seasons s ON p.SeasonID = s.seasonID
+    AND p.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+    WHERE PlayerID = <cfqueryparam cfsqltype="INTEGER" value="#url.playerID#">
 </cfquery>
 
 <cfquery name="getPlayerAwards" datasource="roundleague">
 	SELECT AwardName
 	FROM Awards
 	WHERE PlayerID = <cfqueryparam cfsqltype="INTEGER" value="#url.playerID#">
+</cfquery>
+
+<cfquery name="getPlayerGameLog" datasource="roundleague">
+    SELECT pgl.PlayerID, FGM, FGA, 3FGM, 3FGA, FTM, FTA, Points, Rebounds, Assists, Steals, Blocks, Turnovers, pgl.teamID, pgl.Fouls
+    FROM PlayerGameLOG pgl
+    WHERE PlayerID = <cfqueryparam cfsqltype="INTEGER" value="#url.playerID#">
+    AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
 </cfquery>
 
 <!--- Career Totals --->
@@ -57,7 +65,6 @@
                         <div class="about-text go-to">
                             <h3 class="dark-color">#getPlayerData.firstName# #getPlayerData.LastName#</h3>
                             <h6 class="theme-color lead">#getPlayerData.position#</h6>
-                            <p>Career Awards Section</p>
                             <div class="row about-list">
                                 <div class="col-md-6">
                                     <div class="media">
@@ -75,12 +82,6 @@
                                     <div class="media">
                                         <label>School</label>
                                         <p>#getPlayerData.school#</p>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="media">
-                                        <label>Seasons</label>
-                                        <p>#getPlayerStats.recordCount#</p>
                                     </div>
                                 </div>
                             </div>
@@ -125,12 +126,62 @@
                                 <p class="m-0px font-w-600">Turnovers</p>
                             </div>
                         </div>
+                        <div class="col-6 col-lg-3">
+                            <div class="count-data text-center">
+                                <h6 class="count h2" data-to="190" data-speed="190">#val(getPlayerStats.FGP)#</h6>
+                                <p class="m-0px font-w-600">FG%</p>
+                            </div>
+                        </div>
+                        <div class="col-6 col-lg-3">
+                            <div class="count-data text-center">
+                                <h6 class="count h2" data-to="190" data-speed="190">#val(getPlayerStats.3FGP)#</h6>
+                                <p class="m-0px font-w-600">3FG%</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-	        <table>
+        <!--- Player Game Log --->
+          <table>
+              <caption>Player Game Log</caption>
+              <thead>
+                <tr class="headers">
+                    <th>Week</th>
+                    <th>FG</th>
+                    <th>3PT</th>
+                    <th>FT</th>
+                    <th>REB</th>
+                    <th>AST</th>
+                    <th>STL</th>
+                    <th>BLK</th>
+                    <th>TO</th>
+                    <th>FLS</th>
+                    <th>PTS</th>
+                </tr>
+              </thead>
+              <tbody>
+                <cfloop query="getPlayerGameLog">
+                    <tr>
+                        <td data-label="Week">#getPlayerGameLog.currentRow#</td>
+                        <td data-label="FG">#getPlayerGameLog.FGM# - #getPlayerGameLog.FGA#</td>
+                        <td data-label="3FG">#getPlayerGameLog.3FGM# - #getPlayerGameLog.3FGA#</td>
+                        <td data-label="FT">#getPlayerGameLog.FTM# - #getPlayerGameLog.FTA#</td>
+                        <td data-label="REBS">#getPlayerGameLog.Rebounds#</td>
+                        <td data-label="ASTS">#getPlayerGameLog.Assists#</td>
+                        <td data-label="STLS">#getPlayerGameLog.Steals#</td>
+                        <td data-label="BLKS">#getPlayerGameLog.Blocks#</td>
+                        <td data-label="TO">#getPlayerGameLog.Turnovers#</td>
+                        <td data-label="FLS">#val(getPlayerGameLog.Fouls)#</td>
+                        <td data-label="PTS">#getPlayerGameLog.Points#</td>
+                    </tr>
+                </cfloop>
+              </tbody>
+            </table>        
+
+        <!--- Hide Career Stats for now --->
+<!--- 	        <table>
 	          <caption>Career Stats</caption>
 	          <thead>
 	            <tr class="headers">
@@ -165,7 +216,7 @@
 	            	<td data-label="Turnovers">#val(careerStats.Turnovers)#</td>
 	            </tr>
 	          </tbody>
-	        </table>        
+	        </table>       --->  
 
       </div>
     </div>

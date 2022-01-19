@@ -54,10 +54,13 @@
           	<cfloop query="getTeamData">
 	            <tr>
 	            	<td>
-                  <!--- <a href="Player_Profiles/player-profile-2.cfm?playerID=#playerID#">
+                  <cfif PermissionToShare EQ 'YES' AND FindNoCase("testing.theroundleague.com", CGI.REQUEST_URL)>
+                    <a href="Player_Profiles/player-profile-2.cfm?playerID=#playerID#">
+                      #firstName# #lastName# <cfif getTeamData.captainPlayerID EQ getTeamData.playerID>(C)</cfif>
+                    </a>
+                  <cfelse>
                     #firstName# #lastName# <cfif getTeamData.captainPlayerID EQ getTeamData.playerID>(C)</cfif>
-                  </a> --->
-                  #firstName# #lastName# <cfif getTeamData.captainPlayerID EQ getTeamData.playerID>(C)</cfif>
+                  </cfif>
                 </td>
                 <td>#Jersey#</td>
 	            	<td>#Position#</td>
