@@ -1,0 +1,3 @@
+UPDATE players
+SET lastName = CONCAT(UCASE(LEFT(lastName, 1)), 
+                             LCASE(SUBSTRING(lastName, 2)));

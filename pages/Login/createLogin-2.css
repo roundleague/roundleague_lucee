@@ -1,0 +1,10 @@
+.invalidMsg {
+	position: relative;
+	top: 12px;
+}
+
+.successMsg {
+	margin-top: 25px;
+	font-size: large;
+	font-weight: 800;
+}
