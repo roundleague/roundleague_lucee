@@ -5,6 +5,8 @@
 
 <cfoutput>
 
+<cfset invalidLogin = false>
+
 <div class="main" style="background-color: white;">
     <div class="section text-center">
       <div class="container">
@@ -21,6 +23,8 @@
         <cfif Authenticate.password EQ hash(form.password, "SHA")>
           <cfset session.captainLoggedIn = true>
           <cflocation url="../captain/captain.cfm?playerID=#Authenticate.playerID#">
+        <cfelse>
+          <cfset invalidLogin = true>
         </cfif>
       </cfif>
 
@@ -34,6 +38,9 @@
             <div class="card card-register">
                <h3 class="title mx-auto">Welcome</h3>
                <form class="register-form" method="POST">
+                  <cfif invalidLogin>
+                      Credentials not found. If you have not signed up for a new captains account, please register.<br>
+                  </cfif>
                   <label>Email</label>
                   <input name="userName" type="text" class="form-control" placeholder="Email">
                   <label>Password</label>
