@@ -50,7 +50,7 @@
 
 <!--- Queries --->
 <cfquery name="getTeamMatchups" datasource="roundleague">
-    SELECT scheduleID, hometeamID, awayteamID, WEEK, a.teamName AS Home, b.teamName AS Away
+    SELECT scheduleID, hometeamID, awayteamID, WEEK, a.teamName AS Home, b.teamName AS Away, homeScore
     FROM schedule s
     LEFT JOIN teams as a ON s.hometeamID = a.teamID
     LEFT JOIN teams as b ON s.awayTeamID = b.teamID
@@ -85,7 +85,7 @@
                   <cfelse>
                     <cfset opponentTeam = getTeamMatchups.home>
                   </cfif>
-                  <option value="#getTeamMatchups.scheduleID#"<cfif form.scheduleID EQ getTeamMatchups.scheduleID>selected</cfif>>Week #getTeamMatchups.Week# VS #opponentTeam#</option>
+                  <option value="#getTeamMatchups.scheduleID#"<cfif form.scheduleID EQ getTeamMatchups.scheduleID>selected</cfif>>Week #getTeamMatchups.Week# VS #opponentTeam# <cfif homeScore NEQ ''>(Already Played)</cfif></option>
               </cfloop>
           </select>
         </cfif>
