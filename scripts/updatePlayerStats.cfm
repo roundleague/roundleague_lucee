@@ -13,7 +13,7 @@ SeasonID: #url.seasonID#
     AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.seasonID#">
 </cfquery>
 
-<cfloop list="#valueList(getPlayerIDs)#" item="i">
+<cfloop list="#valueList(getPlayerIDs.playerID)#" item="i">
     <cfquery name="updateStats" datasource="roundleague" result="updateResult">
         UPDATE playerStats
         SET 
