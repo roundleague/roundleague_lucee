@@ -1,3 +1,5 @@
+<cfoutput>
+
 <cfparam name="url.teamID" default="0">
 <cfparam name="url.seasonID" default="0">
 
@@ -33,3 +35,4 @@ SeasonID: #url.seasonID#
         /* Add in necessary additional where clauses here */
     </cfquery>
 </cfloop>
+</cfoutput>
