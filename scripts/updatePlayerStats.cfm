@@ -11,7 +11,7 @@ SeasonID: #url.seasonID#
     FROM roster
     WHERE TeamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.teamID#">
     AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.seasonID#">
-    AND PlayerID = 79
+    AND PlayerID != 79
 </cfquery>
 
 <cfloop list="#valueList(getPlayerIDs.playerID)#" item="i">
@@ -31,7 +31,7 @@ SeasonID: #url.seasonID#
             FTM = (SELECT CAST(AVG(FTM) AS DECIMAL(10,1)) FROM PlayerGameLog WHERE playerID = #i# AND SeasonID = #session.currentSeasonID#),
             FTA = (SELECT CAST(AVG(FTA) AS DECIMAL(10,1)) FROM PlayerGameLog WHERE playerID = #i# AND SeasonID = #session.currentSeasonID#),
             GamesPlayed = GamesPlayed - 1
-        WHERE playerID = 79
+        WHERE playerID = #i#
         AND SeasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
         /* Add in necessary additional where clauses here */
     </cfquery>
