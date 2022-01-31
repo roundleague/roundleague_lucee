@@ -11,6 +11,7 @@ SeasonID: #url.seasonID#
     FROM roster
     WHERE TeamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.teamID#">
     AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.seasonID#">
+    AND PlayerID = 79
 </cfquery>
 
 <cfloop list="#valueList(getPlayerIDs.playerID)#" item="i">
