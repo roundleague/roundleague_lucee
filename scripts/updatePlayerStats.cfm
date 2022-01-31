@@ -13,12 +13,10 @@ SeasonID: #url.seasonID#
     AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.seasonID#">
     AND PlayerID IN 
     (
-    544,
-    858,
-    852,
-    435,
-    461,
-    964
+        776,
+        778,
+        729,
+        244
     )
 </cfquery>
 
