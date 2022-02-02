@@ -54,7 +54,7 @@
           	<cfloop query="getTeamData">
 	            <tr>
 	            	<td>
-                  <cfif PermissionToShare EQ 'YES' AND FindNoCase("testing.theroundleague.com", CGI.REQUEST_URL)>
+                  <cfif PermissionToShare EQ 'YES'>
                     <a href="Player_Profiles/player-profile-2.cfm?playerID=#playerID#">
                       #firstName# #lastName# <cfif getTeamData.captainPlayerID EQ getTeamData.playerID>(C)</cfif>
                     </a>
