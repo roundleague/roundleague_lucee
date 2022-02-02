@@ -7,7 +7,6 @@
 <!DOCTYPE html>
 
 <html lang="en">
-
 <!--- Session / Application Variables --->
 <cfquery name="currentSeason" datasource="roundleague">
   SELECT SeasonID
@@ -110,6 +109,31 @@
                 </cfif>
               </ul>
             </div>
+
+              <!--- Account Section --->
+              <cfif findNoCase("127.0.0.1", CGI.HTTP_HOST)>
+                <li class="nav-item dropdown">
+                    <a href="javascript:;" class="nav-link navbar-brand" data-toggle="dropdown" width="30" height="30" aria-expanded="false">
+                      <div class="profile-photo-small">
+                        <img src="/assets/img/PlayerProfiles/default.JPG" alt="Circle Image" class="img-circle img-responsive img-no-padding">
+                      </div>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-right dropdown-danger">
+                      <div class="dropdown-header">My Account</div>
+                      <a class="dropdown-item" href="javascript:;">My Team</a>
+                      <a class="dropdown-item" href="javascript:;">Edit Info</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="javascript:;">Edit Team</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="javascript:;">Sign Free Agent</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="javascript:;">Propose Trade</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="javascript:;">Payments</a>
+                    </ul>
+                </li>
+              </cfif>
+
         </ul>
       </div>
     </div>
