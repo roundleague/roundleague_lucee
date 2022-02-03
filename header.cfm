@@ -120,7 +120,7 @@
                     </a>
                     <ul class="dropdown-menu dropdown-menu-right dropdown-danger">
                       <div class="dropdown-header">My Account</div>
-                      <a class="dropdown-item" href="javascript:;">My Team</a>
+                      <a class="dropdown-item" href="/pages/captain/captain_home.cfm">My Team</a>
                       <a class="dropdown-item" href="javascript:;">Edit Info</a>
                       <div class="dropdown-divider"></div>
                       <a class="dropdown-item" href="javascript:;">Edit Team</a>
