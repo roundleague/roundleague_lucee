@@ -17,6 +17,7 @@ The above copyright notice and this permission notice shall be included in all c
 <cfquery name="getPlayers" datasource="roundleague">
   SELECT *
   FROM players
+  LIMIT 1
 </cfquery>
 
 <!DOCTYPE html>
