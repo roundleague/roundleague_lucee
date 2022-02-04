@@ -70,7 +70,6 @@
               <a class="dropdown-item" href="/pages/schedule/schedule-2.cfm">Men's Schedule</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="/pages/schedule/schedule-womens.cfm">Women's Schedule</a>
-              <div class="dropdown-divider"></div>
             </ul>
           </div>
           <li class="nav-item">
@@ -78,11 +77,19 @@
               Teams
             </a>
           </li>
-          <li class="nav-item">
+          <div class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown" id="dropdownMenuButton" href="##pk" role="button" aria-haspopup="true" aria-expanded="false">Register</a>
+            <ul class="dropdown-menu dropdown-info" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" href="/pages/register/register.cfm">Register Player</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="https://forms.gle/apAEaVGKYT3U9NUJ8" target="_blank">Register Team</a>
+            </ul>
+          </div>
+          <!--- <li class="nav-item">
             <a class="nav-link" rel="tooltip" data-placement="bottom" href="/pages/register/register.cfm">
               Register
             </a>
-          </li>
+          </li> --->
           <li class="nav-item">
             <a class="nav-link" rel="tooltip" data-placement="bottom" href="https://docs.google.com/document/d/e/2PACX-1vSAgkeAcc_34PTnJmDjb6HyDuPRYyNfGmLdywFtEB_ePATrRs0ficHVOlW50n8SiPUvApGp1OV6Kaw4/pub" target="_blank">
               League Rules
