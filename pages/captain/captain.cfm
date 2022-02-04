@@ -1,9 +1,5 @@
 <cfinclude template="/header.cfm">
-
-<!--- Also add check for current session captain ID later --->
-<cfif !isDefined("session.captainLoggedIn")>
-	Access Denied.<cfabort />
-</cfif>
+<cfinclude template="captain_security_check.cfm">
 
 <!--- Page Specific CSS/JS Here --->
 <link href="captain.css" rel="stylesheet">

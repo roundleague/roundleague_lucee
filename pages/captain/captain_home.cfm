@@ -1,9 +1,35 @@
 <cfinclude template="/header.cfm">
+<cfinclude template="captain_security_check.cfm">
 
 <!--- Page Specific CSS/JS Here --->
 <link href="/pages/captain/captain_home.css" rel="stylesheet" />
 
+<cfparam name="url.playerID" default="0">
+
 <cfoutput>
+
+<cfquery name="getPlayerData" datasource="roundleague">
+	SELECT p.playerID, lastName, firstName, position, height, weight, hometown, school, t.teamName
+	FROM Players p
+	JOIN Roster r on r.playerID = p.playerID
+	JOIN Teams t on r.teamID = t.teamID
+	WHERE p.PlayerID = <cfqueryparam cfsqltype="INTEGER" value="#url.playerID#">
+</cfquery>
+
+<!--- Photo logic --->
+<cfset playerPhoto = ''>
+<cfset imgPath = "/assets/img/PlayerProfiles/#url.playerID#.JPG">
+<cfset altPath = "/assets/img/PlayerProfiles/#getPlayerData.teamName#/#getPlayerData.FirstName# #getPlayerData.lastName# - 1.JPG">
+<cfset defaultPath = "/assets/img/PlayerProfiles/default.JPG">
+
+<cfif FileExists(imgPath)>
+	<cfset playerPhoto = imgPath>
+<cfelseif FileExists(altPath)>
+	<cfset playerPhoto = altPath>
+<cfelse>
+	<cfset playerPhoto = defaultPath>
+</cfif>
+
 <div class="main" style="background-color: white;">
     <div class="section text-center">
       <div class="container">
@@ -13,22 +39,22 @@
 		    <div class="container profileHome">
 		        <div class="owner">
 		          <div class="avatar">
-		            <img src="../../assets/img/PlayerProfiles/68.JPG" alt="Circle Image" class="img-circle img-no-padding img-responsive">
+		            <img src="#playerPhoto#" alt="Circle Image" class="img-circle img-no-padding img-responsive">
 		          </div>
 		          <div class="name">
-		            <h4 class="title">Tim Huynh
+		            <h4 class="title">#GetPlayerData.FirstName# #GetPlayerData.LastName#
 		              <br />
 		            </h4>
-		            <h6 class="description">Point Guard</h6>
+		            <h6 class="description">#GetPlayerData.Position#</h6>
 		          </div>
 		        </div>
 		        <div class="row bottomProfile">
 		          <div class="col-md-6 ml-auto mr-auto text-center">
-		            <p>Oregon ABC</p>
+		            <p>#GetPlayerData.TeamName#</p>
 		            <br />
 		            <btn class="btn btn-outline-default btn-round"><i class="fa fa-cog"></i> Account Settings</btn>
-		            <btn class="btn btn-outline-default btn-round"><i class="fa fa-credit-card-alt"></i> Payments</btn>
-		            <btn class="btn btn-outline-default btn-round"><i class="fa fa-list"></i> Edit Team</btn>
+		            <a href="https://tinyurl.com/44348r29" target="_blank"><btn class="btn btn-outline-default btn-round"><i class="fa fa-credit-card-alt"></i> Payments</btn></a>
+		            <a href="/pages/captain/captain.cfm?playerID=#getPlayerData.playerID#"><btn class="btn btn-outline-default btn-round"><i class="fa fa-list"></i> Edit Team</btn></a>
 		            <btn class="btn btn-outline-default btn-round"><i class="fa fa-pencil-square-o"></i> Sign Free Agent</btn>
 		          </div>
 		        </div>
