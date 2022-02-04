@@ -65,6 +65,30 @@ Coded by www.creative-tim.com
               <p>Player Info Lookup</p>
             </a>
           </li>
+          <li>
+            <a href="javascript:;">
+              <i class="nc-icon nc-diamond"></i>
+              <p>Photo Tag Tool</p>
+            </a>
+          </li>
+          <li>
+            <a href="javascript:;">
+              <i class="nc-icon nc-diamond"></i>
+              <p>Team Payments</p>
+            </a>
+          </li>
+          <li>
+            <a href="javascript:;">
+              <i class="nc-icon nc-diamond"></i>
+              <p>Free Agent Lists</p>
+            </a>
+          </li>
+          <li>
+            <a href="javascript:;">
+              <i class="nc-icon nc-diamond"></i>
+              <p>Team Waitlist</p>
+            </a>
+          </li>
         </ul>
       </div>
     </div>
