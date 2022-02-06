@@ -118,7 +118,8 @@
             </div>
 
               <!--- Account Section --->
-              <cfif findNoCase("127.0.0.1", CGI.HTTP_HOST)>
+              <!--- Toggle on dev using 1 EQ 2 --->
+              <cfif findNoCase("127.0.0.1", CGI.HTTP_HOST) AND 1 EQ 1>
                 <li class="nav-item dropdown">
                     <a href="javascript:;" class="nav-link navbar-brand" data-toggle="dropdown" width="30" height="30" aria-expanded="false">
                       <div class="profile-photo-small">
@@ -138,6 +139,12 @@
                       <div class="dropdown-divider"></div>
                       <a class="dropdown-item" href="javascript:;">Payments</a>
                     </ul>
+                </li>
+              <cfelseif findNoCase("127.0.0.1", CGI.HTTP_HOST) AND 1 EQ 1>
+                <li class="nav-item">
+                  <a class="nav-link" rel="tooltip" data-placement="bottom" href="##">
+                    Log In
+                  </a>
                 </li>
               </cfif>
 
