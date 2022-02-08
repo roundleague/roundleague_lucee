@@ -119,7 +119,7 @@
 
               <!--- Account Section --->
               <!--- Toggle on dev using 1 EQ 2 --->
-              <cfif findNoCase("127.0.0.1", CGI.HTTP_HOST) AND 1 EQ 1>
+              <cfif isDefined("session.captainLoggedIn")>
                 <li class="nav-item dropdown">
                     <a href="javascript:;" class="nav-link navbar-brand" data-toggle="dropdown" width="30" height="30" aria-expanded="false">
                       <div class="profile-photo-small">
@@ -128,8 +128,14 @@
                     </a>
                     <ul class="dropdown-menu dropdown-menu-right dropdown-danger">
                       <div class="dropdown-header">My Account</div>
-                      <a class="dropdown-item" href="/pages/captain/captain_home.cfm">My Team</a>
-                      <a class="dropdown-item" href="javascript:;">Edit Info</a>
+
+                        <cfoutput>
+                          <cfset captainLinkURL = "/pages/captain/captain_home.cfm?playerID=#session.captainID#">
+                        </cfoutput>
+                        
+
+                        <a class="dropdown-item" <cfoutput> href="#captainLinkURL#" </cfoutput>>My Team</a>
+<!---                       <a class="dropdown-item" href="javascript:;">Edit Info</a>
                       <div class="dropdown-divider"></div>
                       <a class="dropdown-item" href="javascript:;">Edit Team</a>
                       <div class="dropdown-divider"></div>
@@ -137,12 +143,12 @@
                       <div class="dropdown-divider"></div>
                       <a class="dropdown-item" href="javascript:;">Propose Trade</a>
                       <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="javascript:;">Payments</a>
+                      <a class="dropdown-item" href="javascript:;">Payments</a> --->
                     </ul>
                 </li>
-              <cfelseif findNoCase("127.0.0.1", CGI.HTTP_HOST) AND 1 EQ 1>
+              <cfelseif findNoCase("127.0.0.1", CGI.HTTP_HOST) AND !isDefined("session.captainLoggedIn")>
                 <li class="nav-item">
-                  <a class="nav-link" rel="tooltip" data-placement="bottom" href="##">
+                  <a class="nav-link" rel="tooltip" data-placement="bottom" href="/pages/Login/captains_login.cfm">
                     Log In
                   </a>
                 </li>

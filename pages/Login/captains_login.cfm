@@ -24,10 +24,15 @@
         </cfquery>
         <cfif Authenticate.password EQ hash(form.password, "SHA")>
           <cfset session.captainLoggedIn = true>
-          <cflocation url="../captain/captain.cfm?playerID=#Authenticate.playerID#">
+          <cfset session.captainID = Authenticate.playerID>
+          <cflocation url="../captain/captain_home.cfm?playerID=#Authenticate.playerID#">
         <cfelse>
           <cfset invalidLogin = true>
         </cfif>
+      </cfif>
+
+      <cfif isDefined("form.forgotPassword")>
+        <cflocation url="forgotPassword.cfm">
       </cfif>
 
       <cfif isDefined("form.createLogin")>
@@ -48,6 +53,7 @@
                   <label>Password</label>
                   <input name="password" type="password" class="form-control" placeholder="Password">
                   <button class="btn btn-danger btn-block btn-round" name="submitLogin">Log In</button>
+                  <!--- <button class="btn btn-danger btn-block btn-round" name="forgotPassword">Forgot Password</button> --->
                   <br>OR
                   <button class="btn btn-danger btn-block btn-round" name="createLogin">Register New Captains Account</button>
                </form>

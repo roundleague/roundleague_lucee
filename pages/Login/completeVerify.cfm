@@ -25,8 +25,9 @@
   </cfquery>
 
   <cfset session.captainLoggedIn = true>
+  <cfset session.captainID = getPlayerId.playerID>
 
-  <cflocation url="../captain/captain.cfm?playerID=#getPlayerId.playerID#">
+  <cflocation url="../captain/captain_home.cfm?playerID=#getPlayerId.playerID#">
 
 <cfelse>
   Invalid hash code.<cfabort />

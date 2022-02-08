@@ -78,10 +78,16 @@
 		          <div class="col-md-6 ml-auto mr-auto text-center">
 		            <p>#GetPlayerData.TeamName#</p>
 		            <br />
-		            <btn class="btn btn-outline-default btn-round"><i class="fa fa-cog"></i> Account Settings</btn>
-		            <a href="https://tinyurl.com/44348r29" target="_blank"><btn class="btn btn-outline-default btn-round"><i class="fa fa-credit-card-alt"></i> Payments</btn></a>
-		            <a href="/pages/captain/captain.cfm?playerID=#getPlayerData.playerID#"><btn class="btn btn-outline-default btn-round"><i class="fa fa-list"></i> Edit Team</btn></a>
-		            <btn class="btn btn-outline-default btn-round"><i class="fa fa-pencil-square-o"></i> Sign Free Agent</btn>
+		            <cfif findNoCase("127.0.0.1", CGI.HTTP_HOST)>
+		            	<!--- Local --->
+			            <btn class="btn btn-outline-default btn-round"><i class="fa fa-cog"></i> Account Settings</btn>
+			            <a href="https://tinyurl.com/44348r29" target="_blank"><btn class="btn btn-outline-default btn-round"><i class="fa fa-credit-card-alt"></i> Payments</btn></a>
+			            <a href="/pages/captain/captain.cfm?playerID=#getPlayerData.playerID#"><btn class="btn btn-outline-default btn-round"><i class="fa fa-list"></i> Edit Team</btn></a>
+			            <btn class="btn btn-outline-default btn-round"><i class="fa fa-pencil-square-o"></i> Sign Free Agent</btn>
+		            <cfelse>
+		            	<!--- Prod --->
+						<a href="/pages/captain/captain.cfm?playerID=#getPlayerData.playerID#"><btn class="btn btn-outline-default btn-round"><i class="fa fa-list"></i> Edit Team</btn></a>
+		            </cfif>
 		          </div>
 		        </div>
 		        <br/>

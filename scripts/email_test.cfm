@@ -1,6 +1,6 @@
 <cfmail
-  from="theroundleague@gmail.com"
-  to="huynt553@gmail.com"
+  from="mailadmin@theroundleague.com"
+  to="hostektutorials@gmail.com "
   subject="Sample CF e-mail">
 
 This is the body of a test email.
@@ -8,8 +8,8 @@ This is the body of a test email.
 </cfmail>
 
 
-  from="theroundleague@gmail.com"
-  to="huynt553@gmail.com"
+  from="mailadmin@theroundleague.com"
+  to="hostektutorials@gmail.com "
   subject="Sample CF e-mail"
 
 This is the body of a test email.
