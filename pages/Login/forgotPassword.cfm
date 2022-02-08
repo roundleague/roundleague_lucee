@@ -18,7 +18,6 @@
 		      AND 
 		        Status = 'Active'
 		    </cfquery>
-		    <cfdump var="#checkValidEmail#" />
       	</cfif>
 
         <!--- Content Here --->

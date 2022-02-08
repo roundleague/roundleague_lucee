@@ -1,4 +1,9 @@
 <!--- Also add check for current session captain ID later --->
-<cfif !isDefined("session.captainLoggedIn") AND !findNoCase("127.0.0.1", CGI.HTTP_HOST)>
+<!--- If captain is not logged in AND we are not on local env --->
+<cfif !isDefined("session.captainLoggedIn")>
 	Access Denied.<cfabort />
+<cfelse>
+	<cfif session.captainID NEQ url.playerID>
+		Access Denied.<cfabort />
+	</cfif>
 </cfif>
