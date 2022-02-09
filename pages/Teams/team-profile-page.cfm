@@ -55,7 +55,7 @@
 	            <tr>
 	            	<td>
                   <cfif PermissionToShare EQ 'YES'>
-                    <a href="Player_Profiles/player-profile-2.cfm?playerID=#playerID#">
+                    <a href="Player_Profiles/player-profile-2.cfm?playerID=#playerID#" style="font-weight: bold;">
                       #firstName# #lastName# <cfif getTeamData.captainPlayerID EQ getTeamData.playerID>(C)</cfif>
                     </a>
                   <cfelse>
