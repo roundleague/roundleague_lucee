@@ -3065,7 +3065,7 @@ textarea {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   font-family: "Montserrat", "Helvetica", Arial, sans-serif;
-  font-weight: 400;
+  font-weight: 300;
 }
 
 h1,
@@ -3297,6 +3297,7 @@ body {
 
 a {
   color: #51bcda;
+  font-weight: 400;
 }
 
 a:hover,
