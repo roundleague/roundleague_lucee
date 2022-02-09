@@ -92,49 +92,49 @@
                     <div class="row">
                         <div class="col-6 col-lg-3">
                             <div class="count-data text-center">
-                                <h6 class="count h2" data-to="500" data-speed="500">#val(getPlayerStats.Points)#</h6>
+                                <h6 class="count h2" data-to="500" data-speed="500">#NumberFormat(getPlayerStats.Points, "0.0")#</h6>
                                 <p class="m-0px font-w-600">Points</p>
                             </div>
                         </div>
                         <div class="col-6 col-lg-3">
                             <div class="count-data text-center">
-                                <h6 class="count h2" data-to="150" data-speed="150">#val(getPlayerStats.Rebounds)#</h6>
+                                <h6 class="count h2" data-to="150" data-speed="150">#NumberFormat(getPlayerStats.Rebounds, "9.9")#</h6></h6>
                                 <p class="m-0px font-w-600">Rebounds</p>
                             </div>
                         </div>
                         <div class="col-6 col-lg-3">
                             <div class="count-data text-center">
-                                <h6 class="count h2" data-to="850" data-speed="850">#val(getPlayerStats.Assists)#</h6>
+                                <h6 class="count h2" data-to="850" data-speed="850">#NumberFormat(getPlayerStats.Assists, "0.0")#</h6></h6>
                                 <p class="m-0px font-w-600">Assists</p>
                             </div>
                         </div>
                         <div class="col-6 col-lg-3">
                             <div class="count-data text-center">
-                                <h6 class="count h2" data-to="190" data-speed="190">#val(getPlayerStats.Steals)#</h6>
+                                <h6 class="count h2" data-to="190" data-speed="190">#NumberFormat(getPlayerStats.Steals, "0.0")#</h6></h6>
                                 <p class="m-0px font-w-600">Steals</p>
                             </div>
                         </div>
                         <div class="col-6 col-lg-3">
                             <div class="count-data text-center">
-                                <h6 class="count h2" data-to="190" data-speed="190">#val(getPlayerStats.Blocks)#</h6>
+                                <h6 class="count h2" data-to="190" data-speed="190">#NumberFormat(getPlayerStats.Blocks, "0.0")#</h6></h6>
                                 <p class="m-0px font-w-600">Blocks</p>
                             </div>
                         </div>
                         <div class="col-6 col-lg-3">
                             <div class="count-data text-center">
-                                <h6 class="count h2" data-to="190" data-speed="190">#val(getPlayerStats.Turnovers)#</h6>
+                                <h6 class="count h2" data-to="190" data-speed="190">#NumberFormat(getPlayerStats.Turnovers, "0.0")#</h6></h6>
                                 <p class="m-0px font-w-600">Turnovers</p>
                             </div>
                         </div>
                         <div class="col-6 col-lg-3">
                             <div class="count-data text-center">
-                                <h6 class="count h2" data-to="190" data-speed="190">#val(getPlayerStats.FGP)#</h6>
+                                <h6 class="count h2" data-to="190" data-speed="190">#NumberFormat(getPlayerStats.FGP, "0.0")#</h6>
                                 <p class="m-0px font-w-600">FG%</p>
                             </div>
                         </div>
                         <div class="col-6 col-lg-3">
                             <div class="count-data text-center">
-                                <h6 class="count h2" data-to="190" data-speed="190">#val(getPlayerStats.3FGP)#</h6>
+                                <h6 class="count h2" data-to="190" data-speed="190">#NumberFormat(getPlayerStats.3FGP, "0.0")#</h6>
                                 <p class="m-0px font-w-600">3FG%</p>
                             </div>
                         </div>
