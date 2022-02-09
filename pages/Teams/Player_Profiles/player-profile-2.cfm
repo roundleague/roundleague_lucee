@@ -26,10 +26,13 @@
 </cfquery>
 
 <cfquery name="getPlayerGameLog" datasource="roundleague">
-    SELECT pgl.PlayerID, FGM, FGA, 3FGM, 3FGA, FTM, FTA, Points, Rebounds, Assists, Steals, Blocks, Turnovers, pgl.teamID, pgl.Fouls
+    SELECT pgl.PlayerID, FGM, FGA, 3FGM, 3FGA, FTM, FTA, Points, Rebounds, Assists, Steals, Blocks, Turnovers, pgl.teamID, pgl.Fouls, pgl.scheduleID, a.teamName AS HomeTeam, b.teamName AS AwayTeam, s.week
     FROM PlayerGameLOG pgl
+    JOIN schedule s ON s.ScheduleID = pgl.scheduleID
+        LEFT JOIN teams as a ON s.hometeamID = a.teamID
+        LEFT JOIN teams as b ON s.awayTeamID = b.teamID
     WHERE PlayerID = <cfqueryparam cfsqltype="INTEGER" value="#url.playerID#">
-    AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+    AND pgl.seasonID = 4
 </cfquery>
 
 <!--- Career Totals --->
@@ -149,6 +152,7 @@
               <thead>
                 <tr class="headers">
                     <th>Week</th>
+                    <th>Opponent</th>
                     <th>FG</th>
                     <th>3PT</th>
                     <th>FT</th>
@@ -162,9 +166,14 @@
                 </tr>
               </thead>
               <tbody>
+                <cfset teamObject = createObject("component", "library.teams") />
                 <cfloop query="getPlayerGameLog">
+
+                <cfset opponent = teamObject.getOpponent(getPlayerGameLog.homeTeam, getPlayerGameLog.awayTeam, getPlayerData.teamName)>
+
                     <tr>
-                        <td data-label="Week">#getPlayerGameLog.currentRow#</td>
+                        <td data-label="Week">#getPlayerGameLog.week#</td>
+                        <td data-label="Opponent">#opponent#</td>
                         <td data-label="FG">#getPlayerGameLog.FGM# - #getPlayerGameLog.FGA#</td>
                         <td data-label="3FG">#getPlayerGameLog.3FGM# - #getPlayerGameLog.3FGA#</td>
                         <td data-label="FT">#getPlayerGameLog.FTM# - #getPlayerGameLog.FTA#</td>
