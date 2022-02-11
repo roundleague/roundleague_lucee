@@ -93,6 +93,22 @@ I, for myself and on behalf of my heirs, assigns, personal representatives and n
 		          <div class="col-md-6 ml-auto mr-auto">
 		            <form class="settings-form" method="POST">
 					<!--- <div class="registerNote">Note: We are currently not taking free agent sign ups. Please only register if you have verified with your team captain!</div class="registerNote"> --->
+	                  <div class="form-group">
+	                    <label class="teamSelect">Select Season</label><br>
+						<select class="seasonSelect" name="seasonSelect" style="padding: 7px;">
+						  <option value=""></option>
+						  <option value="4">Winter 2022 (Current Season)</option>
+						  <option value="5">Spring 2022 (Next Season)</option>
+						</select>
+	                  </div>
+	                  <div class="form-group">
+	                    <label>Gender</label><br>
+						<select class="gender" name="gender" style="padding: 7px;">
+						  <option value=""></option>
+						  <option value="Male">Male</option>
+						  <option value="Female">Female</option>
+						</select>
+	                  </div>
 		              <div class="form-group">
 		                <label>Email</label>
 		                <input type="email" required class="form-control border-input" placeholder="Email" name="email">
@@ -259,6 +275,10 @@ I, for myself and on behalf of my heirs, assigns, personal representatives and n
 		                  <input type="checkbox" name="permissionToShare" data-toggle="switch" checked="" data-on-color="info" data-off-color="info"><span class="toggle"></span>
 		                </li>
 		                <li class="notification-item">
+		                  Do you wish to play in the Master's League? (Age 40+)
+		                  <input type="checkbox" name="mastersLeague" data-toggle="switch" data-on-color="info" data-off-color="info"><span class="toggle"></span>
+		                </li>
+		                <li class="notification-item">
 		                	<!--- Divider --->
 		                </li>
 		              </ul>
@@ -307,4 +327,4 @@ I, for myself and on behalf of my heirs, assigns, personal representatives and n
 </cfoutput>
 
 <cfinclude template="/footer.cfm">
-<script src="../Register/register.js?v=1.0"></script>
+<script src="../Register/register.js?v=1.1"></script>

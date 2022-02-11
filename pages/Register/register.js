@@ -21,17 +21,17 @@ $( document ).ready(function() {
 		let highestLevel = $('input[name="highestLevel"]:checked').val();
 		let FullyVaccinated = $('input[name="FullyVaccinated"]:checked').val();
 		let position = $('input[name="position"]:checked').val();
+		let gender = $('.gender').val();
+		let seasonSelect = $('.seasonSelect').val();
 		let registerTeam = $('.teamID').val();
 
-		if(highestLevel && FullyVaccinated && position){
+		if(highestLevel && FullyVaccinated && position && gender.length && seasonSelect.length){
 			$('.errorMessage').text("");
 		}
 		else{
-			$('.errorMessage').text("Please fill out Basketball Experience, COVID 19 Vaccination Status, Position.");
+			$('.errorMessage').text("Please fill out all required fields.");
 			return false;
 		}
-
-		console.log("registerTeam", registerTeam)
 
 		if(registerTeam == ""){
 			$('.teamID').addClass('registerRequired');

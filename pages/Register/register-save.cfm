@@ -29,7 +29,9 @@
 			Hometown,
 			School,
 			PermissionToShare,
-			Instagram
+			Instagram,
+			Gender,
+			MastersLeague
 		)
 		VALUES
 		(
@@ -48,7 +50,9 @@
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.Hometown#">,
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.School#">,
 			<cfif isDefined("form.PermissionToShare")>'Yes'<cfelse>'No'</cfif>,
-			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.Instagram#">
+			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.Instagram#">,
+			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.Gender#">,
+			<cfif isDefined("form.MastersLeague")>'Yes'<cfelse>'No'</cfif>
 		)
 	</cfquery>
 	<cfset newPlayerId = playerAdd.GENERATEDKEY>
@@ -58,7 +62,7 @@
 		(
 			<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#newPlayerId#">,
 			<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.teamID#">,
-			(SELECT seasonID From seasons WHERE status = 'Active'),
+			<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.seasonSelect#">,
 			(
 				SELECT DivisionID 
 				From Teams 
@@ -83,7 +87,7 @@
 			(
 				<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#checkDuplicate.PlayerID#">,
 				<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.teamID#">,
-				(SELECT seasonID From seasons WHERE status = 'Active'),
+				<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.seasonSelect#">,
 				(
 					SELECT DivisionID 
 					From Teams 
