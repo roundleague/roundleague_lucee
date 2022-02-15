@@ -27,24 +27,24 @@
             <thead>
                 <tr>
                     <th>Name</th>
+                    <th>PlayerID</th>
                     <th>Team</th>
                     <th>Instagram</th>
                     <th>Phone</th>
                     <th>Email</th>
                     <th>Division</th>
-                    <th>PlayerID</th>
                 </tr>
             </thead>
             <tbody>
               <cfloop query="getPlayers">
                 <tr>
                   <td data-label="Name">#getPlayers.firstName# #getPlayers.lastName# ###jersey#</td>
+                  <td data-label="PlayerID">#getPlayers.PlayerID#</td>
                   <td data-label="Team">#getPlayers.teamname#</td>
                   <td data-label="Instagram">#getPlayers.instagram#</td>
                   <td data-label="Phone">#getPlayers.Phone#</td>
                   <td data-label="Email">#getPlayers.Email#</td>
                   <td data-label="Division">#getPlayers.DivisionName#</td>
-                  <td data-label="PlayerID">#getPlayers.PlayerID#</td>
                 </tr>
               </cfloop>
             </tbody>
