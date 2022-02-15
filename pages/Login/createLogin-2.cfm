@@ -60,7 +60,7 @@
           subject="Registration - #getAndCheckCaptain.firstName# #getAndCheckCaptain.lastName#"
           type="HTML">
         
-        <h3>Thank you for registering! Please click <a href="http://#CGI.HTTP_HOST#/pages/Login/completeVerify.cfm?userID=#newUserId#&hashCode=#verifyLink.confirmationCode#">here</a> to complete your account.</h3>
+        <h3>Thank you for registering! Please click <a href="https://#CGI.HTTP_HOST#/pages/Login/completeVerify.cfm?userID=#newUserId#&hashCode=#verifyLink.confirmationCode#">here</a> to complete your account.</h3>
 
         </cfmail>
 
