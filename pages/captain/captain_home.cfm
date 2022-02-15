@@ -81,9 +81,9 @@
 		            <cfif findNoCase("127.0.0.1", CGI.HTTP_HOST)>
 		            	<!--- Local --->
 			            <btn class="btn btn-outline-default btn-round"><i class="fa fa-cog"></i> Account Settings</btn>
-			            <a href="https://tinyurl.com/44348r29" target="_blank"><btn class="btn btn-outline-default btn-round"><i class="fa fa-credit-card-alt"></i> Payments</btn></a>
+			            <a href="https://checkout.stripe.com/pay/cs_live_a13JJ6HsAoKjRJ55n3tG00LwA1l1473jHTDcdFKJZBOawyVaO1ezIpohgd##fidkdWxOYHwnPyd1blppbHNgWjA0TkpNXWNNSHd3MmdEM1ZXSmRfXTZySGF8YHx9NVEzaU1RY2JvMFBoRDEyaW1TV0RJXzJIZnY0c0JORnZ2aTZtQ25UdjVQT29ERFFxPG1yRFNRTn1jazZJNTVIdm59UUl0RicpJ3VpbGtuQH11anZgYUxhJz8nNDFuM3UxN2A9YmJ2NGBqZkhIJyknd2BjYHd3YHcnPydtcXF1dj8qKmZtYGZuanBxK3Zxd2x1YCtmamgqJ3gl" target="_blank"><btn class="btn btn-outline-default btn-round"><i class="fa fa-credit-card-alt"></i> Payments</btn></a>
 			            <a href="/pages/captain/captain.cfm?playerID=#getPlayerData.playerID#"><btn class="btn btn-outline-default btn-round"><i class="fa fa-list"></i> Edit Team</btn></a>
-			            <btn class="btn btn-outline-default btn-round"><i class="fa fa-pencil-square-o"></i> Sign Free Agent</btn>
+			            <a href="/pages/captain/signPlayer.cfm"><btn class="btn btn-outline-default btn-round"><i class="fa fa-pencil-square-o"></i> Sign Player</btn></a>
 		            <cfelse>
 		            	<!--- Prod --->
 						<a href="/pages/captain/captain.cfm?playerID=#getPlayerData.playerID#"><btn class="btn btn-outline-default btn-round"><i class="fa fa-list"></i> Edit Team</btn></a>
