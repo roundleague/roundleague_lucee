@@ -37,7 +37,7 @@
         <!--- Content Here --->
         <h1>#getTeamData.teamName#</h1>
 
-        <table>
+        <table class="bolder">
           <caption>#getTeamData.seasonName# Roster</caption>
           <thead>
             <tr>

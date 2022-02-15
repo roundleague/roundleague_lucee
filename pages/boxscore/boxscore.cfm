@@ -27,7 +27,7 @@
 
         <h4 class="gameTitle">#getTeamsPlaying.Home# #getTeamsPlaying.HomeScore# | #getTeamsPlaying.Away# #getTeamsPlaying.AwayScore#</h4>
         <h5>#getTeamsPlaying.Date#</h5>
-        <table>
+        <table class="bolder">
             <cfset currentTeamID = ''>
 
             <!--- Keep Track of Totals --->

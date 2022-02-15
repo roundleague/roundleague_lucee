@@ -45,7 +45,7 @@
 
         <h1>#getStandings.DivisionName#</h1> <!--- Should show latest Season name --->
 
-        <table>
+        <table class="bolder">
           <caption>Standings</caption>
           <thead>
             <tr>
