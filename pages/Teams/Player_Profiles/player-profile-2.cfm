@@ -148,7 +148,7 @@
         </section>
 
         <!--- Player Game Log --->
-          <table>
+          <table class="bolder">
               <caption>Player Game Log</caption>
               <thead>
                 <tr class="headers">
