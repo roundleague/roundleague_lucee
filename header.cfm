@@ -70,6 +70,8 @@
               <a class="dropdown-item" href="/pages/schedule/schedule-2.cfm">Men's Schedule</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="/pages/schedule/schedule-womens.cfm">Women's Schedule</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="https://docs.google.com/spreadsheets/d/e/2PACX-1vQCwwRDZydP5m0EFEdB3YjcpjN9r2ZvWa9Fh3qJqnFG2BzHfIfkQDWn3AVat-V9ptQ2xI5q9mi2B7UJ/pubhtml?gid=1979213860&single=true" target="_blank">Men's Playoff Schedule</a>
             </ul>
           </div>
           <li class="nav-item">
