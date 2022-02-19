@@ -14,6 +14,7 @@
 	JOIN Roster r on r.playerID = p.playerID
 	JOIN Teams t on r.teamID = t.teamID
 	WHERE p.PlayerID = <cfqueryparam cfsqltype="INTEGER" value="#url.playerID#">
+	AND r.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
 </cfquery>
 
 <cfquery name="getPlayerSchedule" datasource="roundleague">
