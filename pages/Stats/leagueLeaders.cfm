@@ -5,8 +5,16 @@
 
 <cfparam name="form.leagueSelect" default="0">
 
+<cfquery name="getMinGamesLimit" datasource="roundleague">
+    SELECT max(WEEK) as TotalGames
+    FROM schedule
+    WHERE seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+</cfquery>
+
+<cfset gamesLimit = Round(getMinGamesLimit.TotalGames / 2)>
+
 <cfquery name="getPointsLeaders" datasource="roundleague">
-	SELECT ps.playerID, ps.points, p.firstName, p.lastName, r.jersey, t.teamName
+	SELECT ps.playerID, ps.points, p.firstName, p.lastName, r.jersey, t.teamName, ps.gamesplayed
 	FROM playerstats ps
 	JOIN players p ON p.playerID = ps.playerID
     JOIN teams t ON t.teamID = ps.teamID
@@ -15,12 +23,13 @@
 	WHERE ps.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
     AND r.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
 	AND IFNULL(d.isWomens, 0) = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.leagueSelect#">
+    AND ps.gamesplayed >= <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#gamesLimit#">
     ORDER BY points desc
 	LIMIT 10
 </cfquery>
 
 <cfquery name="getReboundsLeaders" datasource="roundleague">
-	SELECT ps.playerID, ps.Rebounds, p.firstName, p.lastName, r.jersey, t.teamName
+	SELECT ps.playerID, ps.Rebounds, p.firstName, p.lastName, r.jersey, t.teamName, ps.gamesplayed
 	FROM playerstats ps
 	JOIN players p ON p.playerID = ps.playerID
     JOIN teams t ON t.teamID = ps.teamID
@@ -29,12 +38,13 @@
 	WHERE ps.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
     AND r.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
     AND IFNULL(d.isWomens, 0) = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.leagueSelect#">
+    AND ps.gamesplayed >= <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#gamesLimit#">
     ORDER BY Rebounds desc
 	LIMIT 10
 </cfquery>
 
 <cfquery name="getAssistsLeaders" datasource="roundleague">
-	SELECT ps.playerID, ps.Assists, p.firstName, p.lastName, r.jersey, t.teamName
+	SELECT ps.playerID, ps.Assists, p.firstName, p.lastName, r.jersey, t.teamName, ps.gamesplayed
 	FROM playerstats ps
 	JOIN players p ON p.playerID = ps.playerID
     JOIN teams t ON t.teamID = ps.teamID
@@ -43,6 +53,7 @@
 	WHERE ps.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
     AND r.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
     AND IFNULL(d.isWomens, 0) = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.leagueSelect#">
+    AND ps.gamesplayed >= <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#gamesLimit#">
     ORDER BY Assists desc
 	LIMIT 10
 </cfquery>
@@ -61,7 +72,7 @@
             </select>
         </div>
 
- <h2 id="title" style="color: black;">League Leaders</h2> 
+<h2 id="title" style="color: black;">League Leaders</h2> 
 <div class="hover-table-layout">
     <div class="listing-item">
         <div class="image">
@@ -117,6 +128,7 @@
         	</cfloop>
         </div>
     </div>
+    <p><i>* Must have played at least half the season to qualify</i></p>
 </div>
 
       </div>
