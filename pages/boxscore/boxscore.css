@@ -1,3 +1,11 @@
 .gameTitle {
 	margin-bottom: 10px;
 }
+
+table.smallFont td {
+	font-size: small;
+}
+
+tr.smallFont th {
+	font-size: small;
+}

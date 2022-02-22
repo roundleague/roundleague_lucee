@@ -27,7 +27,7 @@
 
         <h4 class="gameTitle">#getTeamsPlaying.Home# #getTeamsPlaying.HomeScore# | #getTeamsPlaying.Away# #getTeamsPlaying.AwayScore#</h4>
         <h5>#getTeamsPlaying.Date#</h5>
-        <table class="bolder">
+        <table class="bolder smallFont">
             <cfset currentTeamID = ''>
 
             <!--- Keep Track of Totals --->
@@ -63,10 +63,10 @@
                     <cfset totalPTS = 0>
                     <thead>
                         <tr>
-                            <td colspan="11">#GetPlayerLogs.teamName#</td>
+                            <td colspan="12">#GetPlayerLogs.teamName#</td>
                         </tr>
                             <tr>
-                                <th>Player</th>
+                                <th colspan="2">Player</th>
                                 <th>FG</th>
                                 <th>3PT</th>
                                 <th>FT</th>
@@ -96,7 +96,7 @@
                 <cfset totalPTS += getPlayerLogs.Points>
 
     			<tr>
-    				<td data-label="Player">#getPlayerLogs.firstName# #getPlayerLogs.LastName#</td>
+    				<td data-label="Player" colspan="2">#getPlayerLogs.firstName# #getPlayerLogs.LastName#</td>
     				<td data-label="FG">#getPlayerLogs.FGM# - #getPlayerLogs.FGA#</td>
     				<td data-label="3FG">#getPlayerLogs.3FGM# - #getPlayerLogs.3FGA#</td>
     				<td data-label="FT">#getPlayerLogs.FTM# - #getPlayerLogs.FTA#</td>
@@ -117,8 +117,8 @@
 
                 <!--- Total Scores --->
                 <cfif getPlayerlogs.recordCount EQ getPlayerLogs.currentRow OR currentTeamID NEQ nextTeamID>
-                        <tr>
-                            <th>Totals</th>
+                        <tr class="smallFont">
+                            <th colspan="2">Totals</th>
                             <th>#TotalFGM# - #TotalFGA#</th>
                             <th>#Total3FGM# - #Total3FGA#</th> 
                             <th>#TotalFTM# - #TotalFTA#</th>
