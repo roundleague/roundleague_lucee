@@ -63,17 +63,13 @@
 				        		<td data-label="Blocks">#getPlayerStats.Blocks#</td>
 				        		<td data-label="TO">#getPlayerStats.Turnovers#</td>
 				        		<td data-label="Sign">
-			            		<button type="submit" class="btn btn-outline-success btn-round removeBtn" name="signPlayerID"value="#playerID#">
-			              Sign
-			            </button>
+			            		<button type="submit" class="btn btn-outline-success btn-round removeBtn" name="signPlayerID"value="#playerID#">Sign</button>
 				        		</td>
 			        		</tr>
 			        	</cfloop>
 			        </tbody>
 			</table>
 		</form>
-
-		<cfdump var="#form#" />
 
       </div>
     </div>
