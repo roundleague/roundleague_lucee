@@ -70,6 +70,15 @@
         WHERE scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#"> 
     </cfquery>
 
+    <!--- 2/23/2022 Update for Women's Playoffs; remove this later --->
+    <cfif url.scheduleID EQ 249>
+        <cfquery name="updateWomensBracket" datasource="roundleague">
+            UPDATE Schedule
+            SET awayTeamID = <cfif form.homeScore GT form.awayScore>49<cfelse>53</cfif>
+            WHERE scheduleID = 251
+        </cfquery>
+    </cfif>
+
     <!--- Scores / Standings have already been updated --->
     <cfif scoresExist.homeScore EQ ''>
 
