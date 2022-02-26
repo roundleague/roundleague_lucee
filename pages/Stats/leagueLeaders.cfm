@@ -5,13 +5,13 @@
 
 <cfparam name="form.leagueSelect" default="0">
 
-<cfquery name="getMinGamesLimit" datasource="roundleague">
-    SELECT max(WEEK) as TotalGames
-    FROM schedule
+<!--- <cfquery name="getMinGamesLimit" datasource="roundleague">
+    SELECT max(gamesPlayed) as TotalGames
+    FROM playerstats
     WHERE seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
-</cfquery>
+</cfquery> --->
 
-<cfset gamesLimit = Round(getMinGamesLimit.TotalGames / 2)>
+<cfset gamesLimit = 4>
 
 <cfquery name="getPointsLeaders" datasource="roundleague">
 	SELECT ps.playerID, ps.points, p.firstName, p.lastName, r.jersey, t.teamName, ps.gamesplayed
@@ -71,7 +71,6 @@
                     <option value="1" <cfif form.leagueSelect EQ 1>selected</cfif>>Women's League</option>
             </select>
         </div>
-
 <h2 id="title" style="color: black;">League Leaders</h2> 
 <div class="hover-table-layout">
     <div class="listing-item">
