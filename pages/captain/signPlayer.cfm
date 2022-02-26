@@ -2,6 +2,24 @@
 
 <!--- Page Specific CSS/JS Here --->
 <link href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css" rel="stylesheet">
+<link href="/pages/captain/signPlayer.css" rel="stylesheet">
+
+<cfif isDefined("form.signPlayerID")>
+	<cfinclude template="signPlayer_confirm.cfm">
+	<cfexit>
+</cfif>
+
+<cfif isDefined("form.confirmSignPlayer")>
+  <cfquery name="transferPlayer" datasource="roundleague">
+  	UPDATE roster
+  	SET teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.toTeamID#">
+  	WHERE playerID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.confirmSignPlayer#">
+  	AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+  </cfquery>
+
+  <!-- The actual snackbar -->
+  <div id="snackbar">Player has been successfully added!</div>
+</cfif>
 
 <cfquery name="getPlayerStats" datasource="roundleague">
 	SELECT firstName, lastName, FGM, FGA, 3FGM, 3FGA, points, rebounds, assists, steals, blocks, turnovers, gamesplayed, r.jersey,t.teamName, height, p.playerID
@@ -12,11 +30,6 @@
 	WHERE ps.seasonID = (SELECT s.seasonID From Seasons s Where s.Status = 'Active')
 	ORDER BY points desc
 </cfquery>
-
-<cfif isDefined("form.signPlayerID")>
-	<cfinclude template="signPlayer_confirm.cfm">
-	<cfexit>
-</cfif>
 
 <cfoutput>
 <div class="main" style="background-color: white; padding-top: 50px">

@@ -5,7 +5,7 @@
 <link href="/pages/captain/signPlayer_confirm.css" rel="stylesheet">
 
 <cfquery name="getPlayerInfo" datasource="roundleague">
-    SELECT firstName, lastName, t.teamName
+    SELECT firstName, lastName, t.teamName, t.teamID
     FROM players p
     JOIN roster r on r.playerID = p.playerID
     JOIN teams t on t.teamID = r.teamID 
@@ -14,19 +14,22 @@
 </cfquery>
 
 <cfset teamObject = createObject("component", "library.teams") />
-<cfset currentTeam = teamObject.getCurrentSessionTeam(session.captainID)>
+<cfset teamStruct = teamObject.getCurrentSessionTeam(session.captainID)>
 
 <cfoutput>
 <div class="main" style="background-color: white; padding-top: 50px">
     <div class="section text-center">
       <div class="container">
         <!--- Content Here --->
-        <h3>IMPORTANT: Do not sign players without their permission.</h3>
-        <br>
-        <p>You are about to transfer <b>#getPlayerInfo.firstName# #getPlayerInfo.lastName#</b> from <b>#getPlayerInfo.teamName#</b> to <b>#currentTeam#</b>.</p>
-        <hr>
-        <button type="submit" class="btn btn-outline-success btn-round confirmSignBtn" name="confirmSignPlayer" value="#form.signPlayerID#">Sign</button><br><br>
-        <button type="submit" class="btn btn-outline-danger btn-round cancelSignBtn" name="cancelSign">Cancel</button>
+        <form name="confirmSignPlayerForm" method="POST">
+            <h3>IMPORTANT: Do not sign players without their permission.</h3>
+            <br>
+            <p>You are about to transfer <b>#getPlayerInfo.firstName# #getPlayerInfo.lastName#</b> from <b>#getPlayerInfo.teamName#</b> to <b>#teamStruct.teamName#</b>.</p>
+            <hr>
+            <button type="submit" class="btn btn-outline-success btn-round confirmSignBtn" name="confirmSignPlayer" value="#form.signPlayerID#">Sign</button><br><br>
+            <button type="submit" class="btn btn-outline-danger btn-round cancelSignBtn" name="cancelSign">Cancel</button>
+            <input type="hidden" name="toTeamID" value="#teamStruct.teamID#">
+        </form>
       </div>
     </div>
 </div>
