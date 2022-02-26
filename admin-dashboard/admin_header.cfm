@@ -95,6 +95,12 @@ Coded by www.creative-tim.com
               <p>League Transactions</p>
             </a>
           </li>
+          <li>
+            <a href="javascript:;">
+              <i class="nc-icon nc-diamond"></i>
+              <p>Player Awards</p>
+            </a>
+          </li>
         </ul>
       </div>
     </div>
