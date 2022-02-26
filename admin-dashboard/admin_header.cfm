@@ -89,6 +89,12 @@ Coded by www.creative-tim.com
               <p>Team Waitlist</p>
             </a>
           </li>
+          <li>
+            <a href="javascript:;">
+              <i class="nc-icon nc-diamond"></i>
+              <p>League Transactions</p>
+            </a>
+          </li>
         </ul>
       </div>
     </div>
