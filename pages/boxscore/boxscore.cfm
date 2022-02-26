@@ -9,6 +9,7 @@
 	JOIN Players p on p.playerID = pgl.playerID
     JOIN Teams t on t.teamID = pgl.teamID
 	WHERE scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">
+    ORDER by t.teamName
 </cfquery>
 
 <cfquery name="getTeamsPlaying" datasource="roundleague">
