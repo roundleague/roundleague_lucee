@@ -156,7 +156,7 @@
                     AND PlayerID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#i#">
                 </cfquery>
                 <cfif checkExistingPlayerStats.recordCount>
-                    <cfquery name="updateStats" datasource="roundleague" result="updateResult">
+                    <!--- <cfquery name="updateStats" datasource="roundleague" result="updateResult">
                         UPDATE playerStats
                         SET 
                             Points = (SELECT CAST(AVG(POINTS) AS DECIMAL(10,1)) FROM PlayerGameLog WHERE playerID = #i# AND SeasonID = #getActiveSeasonID.seasonID#),
@@ -174,7 +174,7 @@
                             GamesPlayed = GamesPlayed + 1
                         WHERE playerID = #i#
                         AND SeasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getActiveSeasonID.seasonID#">
-                    </cfquery>
+                    </cfquery> --->
                 <cfelse>
                     <cfquery name="savePlayerLogs" datasource="roundleague">
                             INSERT INTO PlayerStats (
