@@ -2,7 +2,7 @@
 
 <!--- Page Specific CSS/JS Here --->
 <link href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css" rel="stylesheet">
-<link href="/pages/captain/signPlayer.css" rel="stylesheet">
+<link href="/pages/captain/signPlayer.css?v=1.1" rel="stylesheet">
 
 <cfif isDefined("form.signPlayerID")>
 	<cfinclude template="signPlayer_confirm.cfm">
