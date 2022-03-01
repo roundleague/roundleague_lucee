@@ -38,7 +38,7 @@ Coded by www.creative-tim.com
   <div class="wrapper ">
     <div class="sidebar" data-color="white" data-active-color="danger">
       <div class="logo">
-        <a href="https://www.creative-tim.com" class="simple-text logo-normal">
+        <a href="/admin-dashboard/dashboard.cfm" class="simple-text logo-normal">
         <img src="https://static.wixstatic.com/media/b16829_f3a215a62a9f485990b0e43a0a993d3d~mv2.png/v1/fill/w_909,h_335,al_c,q_85,usm_0.66_1.00_0.01/4_edited.webp" alt="The Round League Logo">
           <!-- <div class="logo-image-big">
             <img src="./admin-dashboard/assets/img/logo-big.png">
@@ -49,13 +49,13 @@ Coded by www.creative-tim.com
         <ul class="nav">
           <li>
             <a href="javascript:;">
-              <i class="nc-icon nc-bank"></i>
+              <i class="nc-icon nc-ruler-pencil"></i>
               <p>StatsApp</p>
             </a>
           </li>
           <li>
             <a href="javascript:;">
-              <i class="nc-icon nc-diamond"></i>
+              <i class="nc-icon nc-laptop"></i>
               <p>Scoreboard</p>
             </a>
           </li>
@@ -67,6 +67,12 @@ Coded by www.creative-tim.com
           </li>
           <li>
             <a href="javascript:;">
+              <i class="nc-icon nc-bullet-list-67"></i>
+              <p>Teams Overview</p>
+            </a>
+          </li>
+          <li>
+            <a href="javascript:;">
               <i class="nc-icon nc-diamond"></i>
               <p>Photo Tag Tool</p>
             </a>
@@ -74,19 +80,7 @@ Coded by www.creative-tim.com
           <li>
             <a href="javascript:;">
               <i class="nc-icon nc-diamond"></i>
-              <p>Team Payments</p>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:;">
-              <i class="nc-icon nc-diamond"></i>
               <p>Free Agent Lists</p>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:;">
-              <i class="nc-icon nc-diamond"></i>
-              <p>Team Waitlist</p>
             </a>
           </li>
           <li>
