@@ -18,7 +18,7 @@
   </cfquery>
 
   <!-- The actual snackbar -->
-  <div id="snackbar">Player has been successfully added!</div>
+  <div id="snackbar">Player has been successfully added! test</div>
 </cfif>
 
 <cfquery name="getPlayerStats" datasource="roundleague">
