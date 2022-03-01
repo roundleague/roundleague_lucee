@@ -32,6 +32,7 @@ Coded by www.creative-tim.com
   <link href="/admin-dashboard/assets/css/paper-dashboard.css?v=2.0.1" rel="stylesheet" />
   <!-- CSS Just for demo purpose, don't include it in your project -->
   <link href="/admin-dashboard/assets/demo/demo.css" rel="stylesheet" />
+  <link href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css" rel="stylesheet">
 </head>
 
 <body class="">
@@ -65,8 +66,8 @@ Coded by www.creative-tim.com
               <p>Player Info Lookup</p>
             </a>
           </li>
-          <li>
-            <a href="javascript:;">
+          <li <cfif findNoCase("teamsOverview", CGI.REQUEST_URL)>class="active"</cfif>>
+            <a href="/admin-dashboard/pages/teamsOverview/teamsOverview.cfm">
               <i class="nc-icon nc-bullet-list-67"></i>
               <p>Teams Overview</p>
             </a>

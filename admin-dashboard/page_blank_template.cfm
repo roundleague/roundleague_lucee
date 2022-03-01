@@ -1,5 +1,5 @@
 
-<cfinclude template="admin_header.cfm">
+<cfinclude template="/admin-dashboard/admin_header.cfm">
 
 <!--- Page Specific CSS/JS Here --->
 
@@ -14,4 +14,4 @@
 </div>
 </cfoutput>
 
-<cfinclude template="admin_footer.cfm">
+<cfinclude template="/admin-dashboard/admin_footer.cfm">
