@@ -34,5 +34,24 @@
 
 		<cfreturn teamObject>
 		
+ </cffunction>
+
+ <cffunction name="updateTeamStatus" returntype="any" access="remote">
+ 	<cfargument name="status" default="" required="yes" type="string">
+ 	<cfargument name="teamID" default="" required="yes" type="numeric">
+
+ 		<!--- <cftry>
+ 			<cfquery name="updateStatus" datasource="roundleague">
+ 				UPDATE Teams
+ 				SET status = <cfqueryparam cfsqltype="CF_SQL_VARCHAR" value="#status#">
+ 				WHERE teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#teamID#">
+ 			</cfquery>
+
+ 			<cfcatch>
+ 				<cfreturn cfcatch.message>
+ 			</cfcatch>
+ 		</cftry> --->
+
+ 		<cfreturn 'Success'>
  </cffunction> 
 </cfcomponent>

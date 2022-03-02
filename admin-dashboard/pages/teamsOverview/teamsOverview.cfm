@@ -6,7 +6,7 @@
 
 <!--- CFQuery --->
 <cfquery name="getTeam" datasource="roundleague">
-	SELECT teamID, t.STATUS, teamName, t.registerDate, t.divisionID, t.seasonID, p.firstName, p.lastName, d.DivisionName, s.SeasonName
+	SELECT teamID, t.STATUS, teamName, t.registerDate, p.firstName, p.lastName, d.DivisionName, s.SeasonName
 	FROM teams t
 	LEFT JOIN players p ON p.PlayerID = t.captainPlayerID
 	LEFT JOIN divisions d ON d.divisionID = t.DivisionID
@@ -21,32 +21,39 @@
     <h3 class="description">Teams Overview</h3>
 
         <!--- Content Here --->
-    <table id="teamsOverviewTable" class="display" style="width:100%">
-            <thead>
-                <tr>
-                    <th>Status</th>
-                    <th>TeamID</th>
-                    <th>Team</th>
-                    <th>Captain</th>
-                    <th>Register Date</th>
-                    <th>Current Division</th>
-                    <th>Current Season</th>
-                </tr>
-            </thead>
-            <tbody>
-              <cfloop query="getTeam">
-                <tr>
-                  <td data-label="Status">#getTeam.status#</td>
-                  <td data-label="Name">#getTeam.teamID#</td>
-                  <td data-label="Team">#getTeam.teamname#</td>
-                  <td data-label="Captain">#getTeam.firstName# #getTeam.lastName#</td>
-                  <td data-label="Register Date">#DateFormat(getTeam.RegisterDate, "mm/dd/yyyy")#</td>
-                  <td data-label="Current Division">#getTeam.divisionName#</td>
-                  <td data-label="Current Season">#getTeam.seasonName#</td>
-                </tr>
-              </cfloop>
-            </tbody>
-    </table>
+        <form name="teamsOverviewForm" method="POST">
+		    <table id="teamsOverviewTable" class="display" style="width:100%">
+		            <thead>
+		                <tr>
+		                    <th>Status</th>
+		                    <th>Team</th>
+		                    <th>Captain</th>
+		                    <th>Register Date</th>
+		                    <th>Current Division</th>
+		                    <th>Current Season</th>
+		                </tr>
+		            </thead>
+		            <tbody>
+		              <cfloop query="getTeam">
+		                <tr>
+		                  <td data-label="Status">
+		            		<select name="status" class="statusSelect" data-value="#getTeam.teamID#">
+		            			<option value=""></option>
+		            			<option value="Active" <cfif getTeam.status EQ 'Active'>selected</cfif>>Active</option>
+		            			<option value="Pending" <cfif getTeam.status EQ 'Pending'>selected</cfif>>Pending</option>
+		            			<option value="Inactive" <cfif getTeam.status EQ 'Inactive'>selected</cfif>>Inactive</option>
+		            		</select>
+		                  </td>
+		                  <td data-label="Team">#getTeam.teamname#</td>
+		                  <td data-label="Captain">#getTeam.firstName# #getTeam.lastName#</td>
+		                  <td data-label="Register Date">#DateFormat(getTeam.RegisterDate, "mm/dd/yyyy")#</td>
+		                  <td data-label="Current Division">#getTeam.divisionName#</td>
+		                  <td data-label="Current Season">#getTeam.seasonName#</td>
+		                </tr>
+		              </cfloop>
+		            </tbody>
+		    </table>
+		</form>
   </div>
 </div>
 </div>
