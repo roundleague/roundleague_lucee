@@ -1,3 +1,7 @@
 .boldClass{
-  font-weight: bold;
+	font-weight: bold;
+}
+
+.bottomSpacing {
+	margin-bottom: 10px;
 }
