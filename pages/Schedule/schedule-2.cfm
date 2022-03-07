@@ -22,6 +22,14 @@
   WHERE homeScore IS NULL
 </cfquery>
 
+<cfif getLatestWeek.recordCount EQ 0>
+  <!--- Only if all weeks have been played --->
+  <cfquery name="getLatestWeek" dbtype="query">
+    SELECT max(week) as latestWeek
+    FROM getSchedule
+  </cfquery>
+</cfif>
+
 <cfoutput>
 <div class="main" style="background-color: white; margin-top: 25px;">
     <div class="section text-center">
