@@ -108,7 +108,7 @@
                 <a class="dropdown-item" href="https://forms.gle/a4cMnMnUH4botPWr6" target="_blank">Contact</a>
                 <div class="dropdown-divider"></div>
                 <a target="_blank" class="dropdown-item" href="/pages/login/login.cfm">StatsApp</a>
-                <cfif !FindNoCase("theroundleague.com", CGI.REQUEST_URL)>
+                <cfif !FindNoCase("testing.theroundleague.com", CGI.REQUEST_URL)>
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item" href="/assets/espn_scoreboard/scoreboard.html">Scoreboard</a>
                 </cfif>
