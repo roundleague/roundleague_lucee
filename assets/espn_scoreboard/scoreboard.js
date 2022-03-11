@@ -1,5 +1,11 @@
 $( document ).ready(function() {
 
+	var homeTeamName = prompt("Home Team Name: ");
+	var awayTeamName = prompt("Away Team Name: ");
+
+	$('.homeTeam').text(homeTeamName);
+	$('.awayTeam').text(awayTeamName);
+
 	 $(document).keydown(function(e) {
 		switch (e.which) {
 		 case 97:
