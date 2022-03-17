@@ -54,4 +54,19 @@
 
  		<cfreturn 'Success'>
  </cffunction> 
+
+ <cffunction name="getHelloWorld" returntype="string" access="remote">
+
+ 		<cftry>
+ 			<cfquery name="helloWorldQuery" datasource="roundleague">
+ 				SELECT 'Hello World' as hwString
+ 			</cfquery>
+
+ 			<cfcatch>
+ 				<cfreturn cfcatch.message>
+ 			</cfcatch>
+ 		</cftry>
+
+ 		<cfreturn helloWorldQuery.hwString>
+ </cffunction> 
 </cfcomponent>
