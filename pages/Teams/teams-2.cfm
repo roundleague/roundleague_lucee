@@ -9,7 +9,8 @@
   SELECT teamName, DivisionName, teamID
   FROM teams t
   JOIN divisions d ON t.DivisionID = d.DivisionID
-  WHERE t.DivisionID = 8
+  Where t.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+  AND DivisionName LIKE '%North%'
   ORDER BY divisionName
 </cfquery>
 
@@ -17,7 +18,8 @@
   SELECT teamName, DivisionName, teamID
   FROM teams t
   JOIN divisions d ON t.DivisionID = d.DivisionID
-  WHERE t.DivisionID = 9
+  Where t.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+  AND DivisionName LIKE '%South%'
   ORDER BY divisionName
 </cfquery>
 
@@ -25,7 +27,8 @@
   SELECT teamName, DivisionName, teamID
   FROM teams t
   JOIN divisions d ON t.DivisionID = d.DivisionID
-  WHERE t.DivisionID = 10
+  Where t.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+  AND DivisionName LIKE '%East%'
   ORDER BY divisionName
 </cfquery>
 
@@ -33,7 +36,8 @@
   SELECT teamName, DivisionName, teamID
   FROM teams t
   JOIN divisions d ON t.DivisionID = d.DivisionID
-  WHERE t.DivisionID = 11
+  Where t.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+  AND DivisionName LIKE '%West%'
   ORDER BY divisionName
 </cfquery>
 
@@ -41,7 +45,8 @@
   SELECT teamName, DivisionName, teamID
   FROM teams t
   JOIN divisions d ON t.DivisionID = d.DivisionID
-  WHERE t.DivisionID = 12
+  Where t.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+  AND DivisionName LIKE '%Women%'
   ORDER BY divisionName
 </cfquery>
 
