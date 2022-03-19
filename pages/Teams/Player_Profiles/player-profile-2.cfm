@@ -33,7 +33,7 @@
         LEFT JOIN teams as a ON s.hometeamID = a.teamID
         LEFT JOIN teams as b ON s.awayTeamID = b.teamID
     WHERE PlayerID = <cfqueryparam cfsqltype="INTEGER" value="#url.playerID#">
-    AND pgl.seasonID = 4
+    AND pgl.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
 </cfquery>
 
 <!--- Career Totals --->
