@@ -21,13 +21,21 @@
   <div id="snackbar">Player has been successfully added!</div>
 </cfif>
 
+<cfquery name="getLatestSeasons" datasource="roundleague">
+	SELECT seasonID, previousSeasonID
+	FROM seasons
+	ORDER BY seasonID DESC
+	LIMIT 2
+</cfquery>
+
 <cfquery name="getPlayerStats" datasource="roundleague">
 	SELECT firstName, lastName, FGM, FGA, 3FGM, 3FGA, points, rebounds, assists, steals, blocks, turnovers, gamesplayed, r.jersey,t.teamName, height, p.playerID
 	FROM playerstats ps
 	JOIN players p ON p.playerID = ps.playerID
 	JOIN roster r on r.playerID = p.playerID AND r.SeasonID = ps.seasonID
 	JOIN teams t on r.teamID = t.teamID
-	WHERE ps.seasonID = (SELECT s.seasonID From Seasons s Where s.Status = 'Active')
+	WHERE ps.seasonID IN (#getLatestSeasons.seasonID#, #getLatestSeasons.previousSeasonID#)
+	GROUP BY PlayerID
 	ORDER BY points desc
 </cfquery>
 
