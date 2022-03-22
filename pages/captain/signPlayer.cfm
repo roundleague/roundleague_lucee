@@ -18,18 +18,26 @@
   </cfquery>
 
   <!--- Insert Transaction History Record --->
-  <cfquery name="transactionRecord" datasource="roundleague">
-  	INSERT INTO transactions (PlayerID, FromTeamID, ToTeamID, SeasonID, CaptainModifiedBy, DateModified)
-  	VALUES 
-  	(
-  		<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.confirmSignPlayer#">,
-  		<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.fromTeamID#">,
-  		<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.toTeamID#">,
-  		<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">,
-  		<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.captainLoggedIn#">,
-  		<cfqueryparam cfsqltype="cf_sql_date" value="#now()#">
-	)	
+  <cfquery name="checkDup" datasource="roundleague">
+  	SELECT playerID
+  	FROM transactions
+  	WHERE playerID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.confirmSignPlayer#">
+  	AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
   </cfquery>
+  <cfif checkDup.recordCount EQ 0>
+	  <cfquery name="transactionRecord" datasource="roundleague">
+	  	INSERT INTO transactions (PlayerID, FromTeamID, ToTeamID, SeasonID, CaptainModifiedBy, DateModified)
+	  	VALUES 
+	  	(
+	  		<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.confirmSignPlayer#">,
+	  		<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.fromTeamID#">,
+	  		<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.toTeamID#">,
+	  		<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">,
+	  		<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.captainID#">,
+	  		<cfqueryparam cfsqltype="cf_sql_date" value="#now()#">
+		)	
+	  </cfquery>
+  </cfif>
 
   <!-- The actual snackbar -->
   <div id="snackbar">Player has been successfully added!</div>
@@ -46,9 +54,9 @@
 	SELECT firstName, lastName, FGM, FGA, 3FGM, 3FGA, points, rebounds, assists, steals, blocks, turnovers, gamesplayed, r.jersey,t.teamName, height, p.playerID
 	FROM playerstats ps
 	JOIN players p ON p.playerID = ps.playerID
-	JOIN roster r on r.playerID = p.playerID AND r.SeasonID = ps.seasonID
+	JOIN roster r on r.playerID = p.playerID AND r.SeasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getLatestSeasons.seasonID#">
 	JOIN teams t on r.teamID = t.teamID
-	WHERE ps.seasonID IN (#getLatestSeasons.seasonID#, #getLatestSeasons.previousSeasonID#)
+	WHERE r.seasonID IN (#getLatestSeasons.seasonID#, #getLatestSeasons.previousSeasonID#)
 	GROUP BY PlayerID
 	ORDER BY points desc
 </cfquery>
