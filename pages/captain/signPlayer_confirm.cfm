@@ -29,6 +29,7 @@
             <button type="submit" class="btn btn-outline-success btn-round confirmSignBtn" name="confirmSignPlayer" value="#form.signPlayerID#">Sign</button><br><br>
             <button type="submit" class="btn btn-outline-danger btn-round cancelSignBtn" name="cancelSign">Cancel</button>
             <input type="hidden" name="toTeamID" value="#teamStruct.teamID#">
+            <input type="hidden" name="fromTeamID" value="#getPlayerInfo.teamID#">
         </form>
       </div>
     </div>

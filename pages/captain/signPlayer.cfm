@@ -17,6 +17,20 @@
   	AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
   </cfquery>
 
+  <!--- Insert Transaction History Record --->
+  <cfquery name="transactionRecord" datasource="roundleague">
+  	INSERT INTO transactions (PlayerID, FromTeamID, ToTeamID, SeasonID, CaptainModifiedBy, DateModified)
+  	VALUES 
+  	(
+  		<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.confirmSignPlayer#">,
+  		<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.fromTeamID#">,
+  		<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.toTeamID#">,
+  		<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">,
+  		<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.captainLoggedIn#">,
+  		<cfqueryparam cfsqltype="cf_sql_date" value="#now()#">
+	)	
+  </cfquery>
+
   <!-- The actual snackbar -->
   <div id="snackbar">Player has been successfully added!</div>
 </cfif>
