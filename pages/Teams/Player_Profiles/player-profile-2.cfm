@@ -191,11 +191,12 @@
             </table>        
 
         <!--- Hide Career Stats for now --->
-<!--- 	        <table>
+	        <table>
 	          <caption>Career Stats</caption>
 	          <thead>
 	            <tr class="headers">
 	            	<th>Season</th>
+                    <th>Team</th>
 	            	<th>Points</th>
 	            	<th>Rebounds</th>
 	            	<th>Assists</th>
@@ -205,28 +206,20 @@
 	            </tr>
 	          </thead>
 	          <tbody>
-	          	<cfloop query="getPlayerStats">
-		            <tr>
-		            	<td data-label="Season">#getPlayerStats.SeasonName#</td>
-		            	<td data-label="Points">#val(getPlayerStats.Points)#</td>
-		            	<td data-label="Rebounds">#val(getPlayerStats.Rebounds)#</td>
-		            	<td data-label="Assists">#val(getPlayerStats.Assists)#</td>
-		            	<td data-label="Steals">#val(getPlayerStats.Steals)#</td>
-		            	<td data-label="Blocks">#val(getPlayerStats.Blocks)#</td>
-		            	<td data-label="Turnovers">#val(getPlayerStats.Turnovers)#</td>
-		            </tr>
-	        	</cfloop>
-	            <tr class="headers">
-	            	<td data-label="Career">Career</td>
-	            	<td data-label="Points">#val(careerStats.Points)#</td>
-	            	<td data-label="Rebounds">#val(careerStats.Rebounds)#</td>
-	            	<td data-label="Assists">#val(careerStats.Assists)#</td>
-	            	<td data-label="Steals">#val(careerStats.Steals)#</td>
-	            	<td data-label="Blocks">#val(careerStats.Blocks)#</td>
-	            	<td data-label="Turnovers">#val(careerStats.Turnovers)#</td>
-	            </tr>
+                <cfloop query="careerStats">
+                    <tr>
+                        <td data-label="Season">#careerStats.seasonName#</td>
+                        <td data-label="Team">#careerStats.teamName#</td>
+                        <td data-label="Points">#val(careerStats.Points)#</td>
+                        <td data-label="Rebounds">#val(careerStats.Rebounds)#</td>
+                        <td data-label="Assists">#val(careerStats.Assists)#</td>
+                        <td data-label="Steals">#val(careerStats.Steals)#</td>
+                        <td data-label="Blocks">#val(careerStats.Blocks)#</td>
+                        <td data-label="Turnovers">#val(careerStats.Turnovers)#</td>
+                    </tr>
+                </cfloop>
 	          </tbody>
-	        </table>       --->  
+	        </table>        
 
       </div>
     </div>
