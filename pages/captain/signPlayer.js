@@ -1,5 +1,6 @@
 $( document ).ready(function() {
 	$('#signPlayerTable').DataTable();
+	$('#signPlayerTableFreeAgent').DataTable();
 
 	/* Snackbar */
 	  var x = document.getElementById("snackbar");

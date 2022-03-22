@@ -55,10 +55,18 @@
 	FROM playerstats ps
 	JOIN players p ON p.playerID = ps.playerID
 	JOIN roster r on r.playerID = p.playerID AND r.SeasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getLatestSeasons.seasonID#">
-	JOIN teams t on r.teamID = t.teamID
+	LEFT OUTER JOIN teams t on r.teamID = t.teamID
 	WHERE r.seasonID IN (#getLatestSeasons.seasonID#, #getLatestSeasons.previousSeasonID#)
 	GROUP BY PlayerID
 	ORDER BY points desc
+</cfquery>
+
+<cfquery name="freeAgentPool" datasource="roundleague">
+	SELECT firstName, lastName, HighestLevel, height, position, weight, instagram, phone, p.playerID
+	FROM players p 
+	JOIN roster r on r.playerID = p.playerID
+	WHERE r.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+	and r.teamID = 0
 </cfquery>
 
 <cfoutput>
@@ -105,6 +113,37 @@
 				        		<td data-label="Steals">#getPlayerStats.Steals#</td>
 				        		<td data-label="Blocks">#getPlayerStats.Blocks#</td>
 				        		<td data-label="TO">#getPlayerStats.Turnovers#</td>
+				        		<td data-label="Sign">
+			            		<button type="submit" class="btn btn-outline-success btn-round removeBtn" name="signPlayerID"value="#playerID#">Sign</button>
+				        		</td>
+			        		</tr>
+			        	</cfloop>
+			        </tbody>
+			</table>
+
+			<table id="signPlayerTableFreeAgent" class="display bolder" style="width:100%">
+			        <thead>
+			            <tr>
+			                <th>Name</th>
+			                <th>Highest Level</th>
+			                <th>Position</th>
+			                <th>Height</th>
+			                <th>Weight</th>
+			                <th>Instagram</th>
+			                <th>Phone</th>
+			                <th>Sign</th>
+			            </tr>
+			        </thead>
+			        <tbody>
+			        	<cfloop query="freeAgentPool">
+			        		<tr>
+				        		<td data-label="Name">#freeAgentPool.firstName# #freeAgentPool.lastName#</td>
+				        		<td data-label="Highest Level">#freeAgentPool.highestLevel#</td>
+				        		<td data-label="Position">#freeAgentPool.Position#</td>
+				        		<td data-label="Height">#freeAgentPool.Height#</td>
+				        		<td data-label="Weight">#freeAgentPool.Weight#</td>
+				        		<td data-label="Instagram">#freeAgentPool.Instagram#</td>
+				        		<td data-label="Phone">#freeAgentPool.Phone#</td>
 				        		<td data-label="Sign">
 			            		<button type="submit" class="btn btn-outline-success btn-round removeBtn" name="signPlayerID"value="#playerID#">Sign</button>
 				        		</td>
