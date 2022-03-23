@@ -8,17 +8,20 @@
       <div class="container">
 
         <!--- Content Here --->
-		<button type="button" class="btn btn-outline-success btn-round helloWorldBtn_FE">Click Here to Render "Hello World" using Front End</button>
 
-		<button type="button" class="btn btn-outline-success btn-round helloWorldBtn_BE">Click Here to Render "Hello World" using Back End</button>
+		<!--- <button type="button" class="btn btn-outline-success btn-round helloWorldBtn_BE">Click Here to Render "Hello World" using Back End</button> --->
 
 		<div class="textBox_FE" style="margin-top: 25px; font-weight: bold;">
-        	Front End: <span class="textRender_FE"></span>
+        	<span class="textRender_FE"></span>
 		</div>
 
-		<div class="textBox_BE" style="margin-top: 25px; font-weight: bold;">
+    <input type="number" class="form-control border-input jokeNumber" name="jokeNumber" style="width: 100px;">
+
+    <button type="button" class="btn btn-outline-success btn-round getJokeNumber">Click to get joke based on ID</button>
+
+		<!--- <div class="textBox_BE" style="margin-top: 25px; font-weight: bold;">
         	Back End: <span class="textRender_BE"></span>
-		</div>
+		</div> --->
 
       </div>
     </div>
