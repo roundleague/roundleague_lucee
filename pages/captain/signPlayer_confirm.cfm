@@ -16,6 +16,17 @@
 <cfset teamObject = createObject("component", "library.teams") />
 <cfset teamStruct = teamObject.getCurrentSessionTeam(session.captainID)>
 
+<!--- If player is a free agent --->
+<cfif getPlayerInfo.recordCount EQ 0>
+    <cfquery name="getPlayerInfo" datasource="roundleague">
+        SELECT firstName, lastName, 'Free Agents' as teamName, 0 as teamID
+        FROM players p
+        JOIN roster r on r.playerID = p.playerID
+        WHERE r.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+        AND p.playerID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.signPlayerID#">
+    </cfquery>
+</cfif>
+
 <cfoutput>
 <div class="main" style="background-color: white; padding-top: 50px">
     <div class="section text-center">

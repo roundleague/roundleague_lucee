@@ -76,6 +76,7 @@
 
         <!--- Content Here --->
         <form method="POST" class="signPlayerForm">
+        	<captain><h2>Active Players</h2></captain>
 			<table id="signPlayerTable" class="display bolder" style="width:100%">
 			        <thead>
 			            <tr>
@@ -121,6 +122,7 @@
 			        </tbody>
 			</table>
 
+			<captain><h2>Free Agents</h2></captain>
 			<table id="signPlayerTableFreeAgent" class="display bolder" style="width:100%">
 			        <thead>
 			            <tr>
