@@ -57,6 +57,8 @@
 	JOIN roster r on r.playerID = p.playerID AND r.SeasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getLatestSeasons.seasonID#">
 	LEFT OUTER JOIN teams t on r.teamID = t.teamID
 	WHERE r.seasonID IN (#getLatestSeasons.seasonID#, #getLatestSeasons.previousSeasonID#)
+	AND ps.seasonID IN (#getLatestSeasons.seasonID#, #getLatestSeasons.previousSeasonID#)
+	AND r.teamID != 0
 	GROUP BY PlayerID
 	ORDER BY points desc
 </cfquery>
