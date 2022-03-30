@@ -97,7 +97,7 @@ I, for myself and on behalf of my heirs, assigns, personal representatives and n
 	                    <label class="teamSelect">Select Season</label><br>
 						<select class="seasonSelect" name="seasonSelect" style="padding: 7px;">
 						  <option value=""></option>
-						  <option value="5">Spring 2022 (Next Season)</option>
+						  <option value="5">Spring 2022</option>
 						</select>
 	                  </div>
 	                  <div class="form-group">
@@ -170,13 +170,13 @@ I, for myself and on behalf of my heirs, assigns, personal representatives and n
 			                    <label class="teamSelect">Select Team (Will be verified by Team Captain)</label><br>
 								<select class="teamID" name="teamID" style="padding: 7px;">
 								  <option value=""></option>
-								  <!--- <cfloop query="getTeams">
+								  <cfloop query="getTeams">
 								  	<option value="#getTeams.TeamID#">#getTeams.TeamName#</option>
-								  </cfloop> --->
+								  </cfloop>
 								  <option value="0">I am signing up as a free agent</option>
 								</select>
-								<br>
-								<b>If you have a team but do not see it here, please register at a later time once your team has been added.</b>
+								<!--- <br>
+								<b>If you have a team but do not see it here, please register at a later time once your team has been added.</b> --->
 			                  </div>
 			               </div>
 		              </div>
