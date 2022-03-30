@@ -143,6 +143,14 @@ I, for myself and on behalf of my heirs, assigns, personal representatives and n
 		              <div class="row">
 		                <div class="col-md-6 ml-auto mr-auto nonTextQuestions">
 		                  <div class="form-group">
+		                    <label>Zip Code</label>
+		                    <input type="text" required class="form-control border-input" placeholder="Zip Code" name="zipCode">
+		                  </div>
+		                </div>
+		              </div>
+		              <div class="row">
+		                <div class="col-md-6 ml-auto mr-auto nonTextQuestions">
+		                  <div class="form-group">
 		                    <label>Instagram Handle (No @ Needed)</label>
 		                    <input type="text" class="form-control border-input" placeholder="IG Handle" name="instagram">
 		                  </div>
