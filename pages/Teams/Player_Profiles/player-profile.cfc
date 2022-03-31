@@ -10,15 +10,18 @@
 	type="string">
    <cfquery name="careerStats" datasource="roundleague">
 		SELECT playerID, 
-		Truncate(AVG(points), 1) AS points, 
-		Truncate(AVG(rebounds), 1) AS rebounds,
-		Truncate(AVG(assists), 1) AS assists,
-		Truncate(AVG(steals), 1) AS steals,
-		Truncate(AVG(blocks), 1) AS blocks,
-		Truncate(AVG(turnovers), 1) AS turnovers
-		FROM playerstats 
+		points, 
+		rebounds,
+		assists,
+		steals,
+		blocks,
+		turnovers,
+		s.seasonName,
+		t.teamName
+		FROM playerstats ps
+		JOIN seasons s on ps.seasonID = s.seasonID
+		JOIN teams t on t.teamID = ps.teamID
 		WHERE playerID = <cfqueryparam cfsqltype="INTEGER" value="#playerID#">
-		GROUP BY playerID;
    </cfquery>
    <cfreturn careerStats>
  </cffunction>

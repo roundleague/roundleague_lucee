@@ -18,6 +18,32 @@
 		AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
 	</cfquery>
 
+  <!--- Insert Transaction History Record --->
+  <cfquery name="checkDup" datasource="roundleague">
+  	SELECT playerID
+  	FROM transactions
+  	WHERE playerID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.removePlayer#">
+  	AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+  </cfquery>
+
+	<cfset teamObject = createObject("component", "library.teams") />
+	<cfset teamStruct = teamObject.getCurrentSessionTeam(session.captainID)>
+
+  <cfif checkDup.recordCount EQ 0>
+	  <cfquery name="transactionRecord" datasource="roundleague">
+	  	INSERT INTO transactions (PlayerID, FromTeamID, ToTeamID, SeasonID, CaptainModifiedBy, DateModified)
+	  	VALUES 
+	  	(
+	  		<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.removePlayer#">,
+	  		<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#teamStruct.teamID#">,
+	  		<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="0">,
+	  		<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">,
+	  		<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.captainID#">,
+	  		<cfqueryparam cfsqltype="cf_sql_date" value="#now()#">
+		)	
+	  </cfquery>
+  </cfif>
+
   	<!-- The actual snackbar -->
   	<div id="snackbar">Player has been removed.</div>
 </cfif>

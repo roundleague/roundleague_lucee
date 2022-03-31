@@ -31,7 +31,8 @@
 			PermissionToShare,
 			Instagram,
 			Gender,
-			MastersLeague
+			MastersLeague,
+			ZipCode
 		)
 		VALUES
 		(
@@ -52,7 +53,8 @@
 			<cfif isDefined("form.PermissionToShare")>'Yes'<cfelse>'No'</cfif>,
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.Instagram#">,
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.Gender#">,
-			<cfif isDefined("form.MastersLeague")>'Yes'<cfelse>'No'</cfif>
+			<cfif isDefined("form.MastersLeague")>'Yes'<cfelse>'No'</cfif>,
+			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.zipCode#">
 		)
 	</cfquery>
 	<cfset newPlayerId = playerAdd.GENERATEDKEY>

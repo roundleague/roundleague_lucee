@@ -97,7 +97,7 @@ I, for myself and on behalf of my heirs, assigns, personal representatives and n
 	                    <label class="teamSelect">Select Season</label><br>
 						<select class="seasonSelect" name="seasonSelect" style="padding: 7px;">
 						  <option value=""></option>
-						  <option value="5">Spring 2022 (Next Season)</option>
+						  <option value="5">Spring 2022</option>
 						</select>
 	                  </div>
 	                  <div class="form-group">
@@ -143,6 +143,14 @@ I, for myself and on behalf of my heirs, assigns, personal representatives and n
 		              <div class="row">
 		                <div class="col-md-6 ml-auto mr-auto nonTextQuestions">
 		                  <div class="form-group">
+		                    <label>Zip Code</label>
+		                    <input type="text" required class="form-control border-input" placeholder="Zip Code" name="zipCode">
+		                  </div>
+		                </div>
+		              </div>
+		              <div class="row">
+		                <div class="col-md-6 ml-auto mr-auto nonTextQuestions">
+		                  <div class="form-group">
 		                    <label>Instagram Handle (No @ Needed)</label>
 		                    <input type="text" class="form-control border-input" placeholder="IG Handle" name="instagram">
 		                  </div>
@@ -162,13 +170,13 @@ I, for myself and on behalf of my heirs, assigns, personal representatives and n
 			                    <label class="teamSelect">Select Team (Will be verified by Team Captain)</label><br>
 								<select class="teamID" name="teamID" style="padding: 7px;">
 								  <option value=""></option>
-								  <!--- <cfloop query="getTeams">
+								  <cfloop query="getTeams">
 								  	<option value="#getTeams.TeamID#">#getTeams.TeamName#</option>
-								  </cfloop> --->
+								  </cfloop>
 								  <option value="0">I am signing up as a free agent</option>
 								</select>
-								<br>
-								<b>If you have a team but do not see it here, please register at a later time once your team has been added.</b>
+								<!--- <br>
+								<b>If you have a team but do not see it here, please register at a later time once your team has been added.</b> --->
 			                  </div>
 			               </div>
 		              </div>
