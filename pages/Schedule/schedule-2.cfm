@@ -12,7 +12,7 @@
   LEFT JOIN teams as a ON s.hometeamID = a.teamID
   LEFT JOIN teams as b ON s.awayTeamID = b.teamID
   WHERE s.seasonID = (SELECT seasonID From seasons WHERE status = 'Active')
-  AND (S.DivisionID != 12 OR S.DivisionID IS NULL)
+  AND (S.DivisionID != 18 OR S.DivisionID IS NULL)
   ORDER BY WEEK, date, startTime
 </cfquery>
 
