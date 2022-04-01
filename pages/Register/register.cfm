@@ -11,6 +11,7 @@
 	FROM Teams
 	Where Status = 'Active'
 	AND seasonID = (SELECT seasonID From seasons WHERE status = 'Active')
+	ORDER BY teamName
 </cfquery>
 
 <cfset basketballExp = 'Recreational,High School Varsity,College,D-1 University,Professional'>
