@@ -131,12 +131,12 @@
 	                    	#firstName# #lastName# <cfif getTeamData.captainPlayerID EQ getTeamData.playerID>(C)</cfif>
 	                	</td>
 	                <td data-label="Jersey">
-	                	<!--- <input type="number" class="form-control border-input" value="#jersey#" name="jersey_#playerID#"> --->
-	                	<cfif jersey EQ ''>
+	                	<input type="number" class="form-control border-input" value="#jersey#" name="jersey_#playerID#">
+	                	<!--- <cfif jersey EQ ''>
 	                		N/A
 	                	<cfelse>
 	                		#jersey#
-	                	</cfif>
+	                	</cfif> --->
 	            	</td>
 		            	<td data-label="Position">
 		            		<select name="position_#playerID#">
