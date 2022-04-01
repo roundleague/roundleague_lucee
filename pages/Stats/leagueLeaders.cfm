@@ -5,13 +5,13 @@
 
 <cfparam name="form.leagueSelect" default="0">
 
-<!--- <cfquery name="getMinGamesLimit" datasource="roundleague">
+<cfquery name="getMinGamesLimit" datasource="roundleague">
     SELECT max(gamesPlayed) as TotalGames
     FROM playerstats
     WHERE seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
-</cfquery> --->
+</cfquery>
 
-<cfset gamesLimit = 4>
+<cfset gamesLimit = getMinGamesLimit.TotalGames / 2>
 
 <cfquery name="getPointsLeaders" datasource="roundleague">
 	SELECT ps.playerID, ps.points, p.firstName, p.lastName, r.jersey, t.teamName, ps.gamesplayed
