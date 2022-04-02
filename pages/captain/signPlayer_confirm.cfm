@@ -16,6 +16,17 @@
 <cfset teamObject = createObject("component", "library.teams") />
 <cfset teamStruct = teamObject.getCurrentSessionTeam(session.captainID)>
 
+<!--- If current captain played for a previous team --->
+<cfif teamStruct.teamID EQ getPlayerInfo.teamID>
+    <cfquery name="getNewTeamPrevCaptain" datasource="roundleague">
+        SELECT TeamID, teamName
+        FROM teams 
+        WHERE CaptainPlayerID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.captainID#">
+    </cfquery>
+    <cfset teamStruct.teamID = getNewTeamPrevCaptain.teamID>
+    <cfset teamStruct.teamName = getNewTeamPrevCaptain.teamName>
+</cfif>
+
 <!--- If player is a free agent --->
 <cfif getPlayerInfo.recordCount EQ 0>
     <cfquery name="getPlayerInfo" datasource="roundleague">
