@@ -51,15 +51,13 @@
 </cfquery>
 
 <cfquery name="getPlayerStats" datasource="roundleague">
-	SELECT firstName, lastName, FGM, FGA, 3FGM, 3FGA, points, rebounds, assists, steals, blocks, turnovers, gamesplayed, r.jersey,t.teamName, height, p.playerID
-	FROM playerstats ps
-	JOIN players p ON p.playerID = ps.playerID
+	SELECT p.firstName, p.lastName, ps.FGM, ps.FGA, ps.3FGM, ps.3FGA, ps.points, ps.rebounds, ps.assists, ps.steals, ps.blocks, ps.turnovers, ps.gamesplayed, r.jersey, t.teamName, p.height, p.playerID
+	FROM players p
+	LEFT OUTER JOIN playerstats ps ON p.playerID = ps.playerID AND ps.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getLatestSeasons.previousSeasonID#">
 	JOIN roster r on r.playerID = p.playerID AND r.SeasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getLatestSeasons.seasonID#">
 	LEFT OUTER JOIN teams t on r.teamID = t.teamID
 	WHERE r.seasonID IN (#getLatestSeasons.seasonID#, #getLatestSeasons.previousSeasonID#)
-	AND ps.seasonID IN (#getLatestSeasons.seasonID#, #getLatestSeasons.previousSeasonID#)
 	AND r.teamID != 0
-	GROUP BY PlayerID
 	ORDER BY points desc
 </cfquery>
 
