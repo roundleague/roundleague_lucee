@@ -41,6 +41,15 @@
   ORDER BY divisionName
 </cfquery>
 
+<cfquery name="getPacificDivision" datasource="roundleague">
+  SELECT teamName, DivisionName, teamID
+  FROM teams t
+  JOIN divisions d ON t.DivisionID = d.DivisionID
+  Where t.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+  AND DivisionName LIKE '%Pacific%'
+  ORDER BY divisionName
+</cfquery>
+
 <cfquery name="getWomensDivision" datasource="roundleague">
   SELECT teamName, DivisionName, teamID
   FROM teams t
@@ -68,6 +77,14 @@
               <ul class="standingsUl">
                 <cfloop query="getSouthDivision">
                   <li><a href="team-profile-page.cfm?teamID=#getSouthDivision.teamID#">#getSouthDivision.teamName#</a></li>
+                </cfloop>
+              </ul>
+            </div>
+            <div class="standingsDiv flex-item">
+              <h4 class="standingsh4">Pacific Division</h4>
+              <ul class="standingsUl">
+                <cfloop query="getPacificDivision">
+                  <li><a href="team-profile-page.cfm?teamID=#getPacificDivision.teamID#">#getPacificDivision.teamName#</a></li>
                 </cfloop>
               </ul>
             </div>
