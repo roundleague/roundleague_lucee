@@ -62,7 +62,7 @@
 </cfquery>
 
 <cfquery name="freeAgentPool" datasource="roundleague">
-	SELECT firstName, lastName, HighestLevel, height, position, weight, instagram, phone, p.playerID
+	SELECT firstName, lastName, HighestLevel, height, position, weight, instagram, phone, p.playerID, p.PermissionToShare
 	FROM players p 
 	JOIN roster r on r.playerID = p.playerID
 	WHERE r.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
@@ -140,12 +140,12 @@
 			        	<cfloop query="freeAgentPool">
 			        		<tr>
 				        		<td data-label="Name">#freeAgentPool.firstName# #freeAgentPool.lastName#</td>
-				        		<td data-label="Highest Level">#freeAgentPool.highestLevel#</td>
-				        		<td data-label="Position">#freeAgentPool.Position#</td>
-				        		<td data-label="Height">#freeAgentPool.Height#</td>
-				        		<td data-label="Weight">#freeAgentPool.Weight#</td>
-				        		<td data-label="Instagram">#freeAgentPool.Instagram#</td>
-				        		<td data-label="Phone">#freeAgentPool.Phone#</td>
+				        		<td data-label="Highest Level"><cfif PermissionToShare EQ 'YES'>#freeAgentPool.highestLevel#</cfif></td>
+				        		<td data-label="Position"><cfif PermissionToShare EQ 'YES'>#freeAgentPool.Position#</cfif></td>
+				        		<td data-label="Height"><cfif PermissionToShare EQ 'YES'>#freeAgentPool.Height#</cfif></td>
+				        		<td data-label="Weight"><cfif PermissionToShare EQ 'YES'>#freeAgentPool.Weight#</cfif></td>
+				        		<td data-label="Instagram"><cfif PermissionToShare EQ 'YES'>#freeAgentPool.Instagram#</cfif></td>
+				        		<td data-label="Phone"><cfif PermissionToShare EQ 'YES'>#freeAgentPool.Phone#</cfif></td>
 				        		<td data-label="Sign">
 			            		<button type="submit" class="btn btn-outline-success btn-round removeBtn" name="signPlayerID"value="#playerID#">Sign</button>
 				        		</td>

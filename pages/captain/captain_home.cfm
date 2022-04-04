@@ -1,5 +1,9 @@
 <cfinclude template="/header.cfm">
-<cfinclude template="captain_security_check.cfm">
+
+<!--- Only check security on prod --->
+<cfif !findNoCase("127.0.0.1", CGI.HTTP_HOST)>
+	<cfinclude template="captain_security_check.cfm">
+</cfif>
 
 <!--- Page Specific CSS/JS Here --->
 <link href="/pages/captain/captain_home.css" rel="stylesheet" />
