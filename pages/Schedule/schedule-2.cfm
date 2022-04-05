@@ -85,7 +85,7 @@
                       </cfif>
                       
                       <td data-label="Date">#DateFormat(getSchedule.Date, "mm/dd/yyyy")#</td>
-                      <td data-label="Time">#DateTimeFormat(getSchedule.startTime, "h:nn")# PM</td>
+                      <td data-label="Time">#DateTimeFormat(getSchedule.startTime, "h:nn tt")#</td>
                     </tr>
                 </cfloop>
             </tbody>
