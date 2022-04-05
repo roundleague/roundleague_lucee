@@ -11,7 +11,11 @@
     WHERE seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
 </cfquery>
 
-<cfset gamesLimit = getMinGamesLimit.TotalGames / 2>
+<cfif getMinGamesLimit.recordCount>
+    <cfset gamesLimit = getMinGamesLimit.TotalGames / 2>
+<cfelse>
+    <cfset gamesLimit = 1>
+</cfif>
 
 <cfquery name="getPointsLeaders" datasource="roundleague">
 	SELECT ps.playerID, ps.points, p.firstName, p.lastName, r.jersey, t.teamName, ps.gamesplayed
