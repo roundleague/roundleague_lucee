@@ -11,7 +11,7 @@
     WHERE seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
 </cfquery>
 
-<cfif getMinGamesLimit.totalGames IS NULL>
+<cfif getMinGamesLimit.totalGames EQ NULL>
     <cfset gamesLimit = getMinGamesLimit.TotalGames / 2>
 <cfelse>
     <cfset gamesLimit = 1>
