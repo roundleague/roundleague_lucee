@@ -145,7 +145,7 @@ I, for myself and on behalf of my heirs, assigns, personal representatives and n
 		                <div class="col-md-6 ml-auto mr-auto nonTextQuestions">
 		                  <div class="form-group">
 		                    <label>Zip Code</label>
-		                    <input type="text" required class="form-control border-input" placeholder="Zip Code" name="zipCode">
+		                    <input type="text" required class="form-control border-input" placeholder="Zip Code" name="zipCode" maxlength="5">
 		                  </div>
 		                </div>
 		              </div>
