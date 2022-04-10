@@ -46,6 +46,7 @@
   FROM teams
   Where Status = 'Active'
   AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+  ORDER BY teamName
 </cfquery>
 
 <!--- Queries --->
