@@ -35,11 +35,10 @@
 
 <!--- Queries --->
 <cfquery name="getPlayers" datasource="roundleague">
-    SELECT p.playerID, lastName, firstName, teamName, s.seasonName, s.seasonID, d.divisionName, position, r.Jersey
+    SELECT p.playerID, lastName, firstName, teamName, s.seasonName, s.seasonID, position, r.Jersey
     FROM players p
     JOIN roster r ON r.PlayerID = p.playerID
     JOIN teams t ON t.teamId = r.teamID
-    JOIN divisions d ON d.divisionID = r.DivisionID
     JOIN seasons s ON s.seasonID = s.seasonID
     WHERE r.seasonID = s.seasonID
     AND s.seasonID = (SELECT SeasonID From Seasons Where Status = 'Active')
