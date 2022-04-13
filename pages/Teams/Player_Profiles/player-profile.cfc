@@ -9,7 +9,7 @@
 	required="yes" 
 	type="string">
    <cfquery name="careerStats" datasource="roundleague">
-		SELECT playerID, 
+		SELECT r.playerID, 
 		points, 
 		rebounds,
 		assists,
@@ -20,8 +20,9 @@
 		t.teamName
 		FROM playerstats ps
 		JOIN seasons s on ps.seasonID = s.seasonID
-		JOIN teams t on t.teamID = ps.teamID
-		WHERE playerID = <cfqueryparam cfsqltype="INTEGER" value="#playerID#">
+		JOIN roster r ON r.playerID = ps.playerID AND r.seasonID = s.seasonID
+		JOIN teams t on t.teamID = r.teamID
+		WHERE r.playerID = <cfqueryparam cfsqltype="INTEGER" value="#playerID#">
    </cfquery>
    <cfreturn careerStats>
  </cffunction>

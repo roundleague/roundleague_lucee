@@ -8,8 +8,10 @@
 
 		<cfif homeTeam EQ userTeam>
 			<cfreturn awayTeam>
-		<cfelse>
+		<cfelseif awayTeam EQ userTeam>
 			<cfreturn homeTeam>
+		<cfelse>
+			<cfreturn ''>
 		</cfif>
 		
  </cffunction>

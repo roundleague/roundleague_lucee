@@ -156,7 +156,7 @@
                     AND PlayerID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#i#">
                 </cfquery>
                 <cfif checkExistingPlayerStats.recordCount>
-                    <!--- <cfquery name="updateStats" datasource="roundleague" result="updateResult">
+                    <cfquery name="updateStats" datasource="roundleague" result="updateResult">
                         UPDATE playerStats
                         SET 
                             Points = (SELECT CAST(AVG(POINTS) AS DECIMAL(10,1)) FROM PlayerGameLog WHERE playerID = #i# AND SeasonID = #getActiveSeasonID.seasonID#),
@@ -174,7 +174,7 @@
                             GamesPlayed = GamesPlayed + 1
                         WHERE playerID = #i#
                         AND SeasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getActiveSeasonID.seasonID#">
-                    </cfquery> --->
+                    </cfquery>
                 <cfelse>
                     <cfquery name="savePlayerLogs" datasource="roundleague">
                             INSERT INTO PlayerStats (
@@ -226,72 +226,6 @@
                     AND SeasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getActiveSeasonID.seasonID#">
                 </cfquery>
         </cfloop>
-
-        <!--- 2/24/2022 Update for Mens's Playoffs; remove this later --->
-        <!--- 3's to the Dome vs HiiPower Plays Cartel --->
-        <cfif url.scheduleID EQ 256>
-            <cfquery name="updateMensBracket" datasource="roundleague">
-                UPDATE Schedule
-                SET awayTeamID = <cfif form.homeScore GT form.awayScore>20<cfelse>27</cfif>
-                WHERE scheduleID = 267
-            </cfquery>
-        </cfif>
-        <!--- Rose City Kings vs Gots to See It Thru Plays Oregon ABC --->
-        <cfif url.scheduleID EQ 257>
-            <cfquery name="updateMensBracket" datasource="roundleague">
-                UPDATE Schedule
-                SET awayTeamID = <cfif form.homeScore GT form.awayScore>23<cfelse>41</cfif>
-                WHERE scheduleID = 266
-            </cfquery>
-        </cfif>
-        <!--- Local Grown vs Smokin' 3's Plays Goodfellas --->
-        <cfif url.scheduleID EQ 258>
-            <cfquery name="updateMensBracket" datasource="roundleague">
-                UPDATE Schedule
-                SET awayTeamID = <cfif form.homeScore GT form.awayScore>15<cfelse>10</cfif>
-                WHERE scheduleID = 269
-            </cfquery>
-        </cfif>
-        <!--- Mobb Deep vs Jayhawks Plays PDX Ballerz --->
-        <cfif url.scheduleID EQ 259>
-            <cfquery name="updateMensBracket" datasource="roundleague">
-                UPDATE Schedule
-                SET awayTeamID = <cfif form.homeScore GT form.awayScore>2<cfelse>28</cfif>
-                WHERE scheduleID = 268
-            </cfquery>
-        </cfif>
-        <!--- Aces vs Kareem Cheese Plays CrossinOver Toddlers --->
-        <cfif url.scheduleID EQ 253>
-            <cfquery name="updateMensBracket" datasource="roundleague">
-                UPDATE Schedule
-                SET awayTeamID = <cfif form.homeScore GT form.awayScore>37<cfelse>32</cfif>
-                WHERE scheduleID = 270
-            </cfquery>
-        </cfif>
-        <!--- Minx vs KeKembas Plays Shooting Blanks --->
-        <cfif url.scheduleID EQ 252>
-            <cfquery name="updateMensBracket" datasource="roundleague">
-                UPDATE Schedule
-                SET awayTeamID = <cfif form.homeScore GT form.awayScore>33<cfelse>45</cfif>
-                WHERE scheduleID = 271
-            </cfquery>
-        </cfif>
-        <!--- From No Where Close vs Tripp City Plays The Dream Team --->
-        <cfif url.scheduleID EQ 254>
-            <cfquery name="updateMensBracket" datasource="roundleague">
-                UPDATE Schedule
-                SET awayTeamID = <cfif form.homeScore GT form.awayScore>47<cfelse>54</cfif>
-                WHERE scheduleID = 273
-            </cfquery>
-        </cfif>
-        <!--- OPM vs Coastbusterz Plays The Murray's --->
-        <cfif url.scheduleID EQ 255>
-            <cfquery name="updateMensBracket" datasource="roundleague">
-                UPDATE Schedule
-                SET awayTeamID = <cfif form.homeScore GT form.awayScore>12<cfelse>48</cfif>
-                WHERE scheduleID = 272
-            </cfquery>
-        </cfif>
 
         <cflocation url="StatsApp-Select.cfm?saved=true">
 
