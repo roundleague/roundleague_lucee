@@ -190,8 +190,7 @@
               </tbody>
             </table>        
 
-        <!--- Hide Career Stats for now --->
-	        <table>
+	        <table class="bolder">
 	          <caption>Career Stats</caption>
 	          <thead>
 	            <tr class="headers">

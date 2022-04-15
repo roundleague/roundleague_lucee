@@ -40,7 +40,7 @@
       <div class="container">
         <input type="text" class="bottomSpacing" id="myInput" onkeyup="myFunction()" placeholder="Search for teams.." title="Type in a team">
         <!--- Content Here --->
-        <table id="myTable" class="grid pure-table pure-table-horizontal">
+        <table id="myTable" class="grid pure-table pure-table-horizontal bolder">
             <thead>
                 <tr>
                     <th>Home</th>
