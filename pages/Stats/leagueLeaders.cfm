@@ -62,6 +62,53 @@
 	LIMIT 10
 </cfquery>
 
+<cfquery name="getStealsLeaders" datasource="roundleague">
+    SELECT ps.playerID, ps.Steals, p.firstName, p.lastName, r.jersey, t.teamName, ps.gamesplayed
+    FROM playerstats ps
+    JOIN players p ON p.playerID = ps.playerID
+    JOIN teams t ON t.teamID = ps.teamID
+    JOIN divisions d ON t.divisionID = d.divisionID
+    JOIN roster r on r.playerID = p.playerID
+    WHERE ps.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+    AND r.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+    AND IFNULL(d.isWomens, 0) = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.leagueSelect#">
+    AND ps.gamesplayed >= <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#gamesLimit#">
+    ORDER BY Steals desc
+    LIMIT 10
+</cfquery>
+
+<cfquery name="getBlocksLeaders" datasource="roundleague">
+    SELECT ps.playerID, ps.Blocks, p.firstName, p.lastName, r.jersey, t.teamName, ps.gamesplayed
+    FROM playerstats ps
+    JOIN players p ON p.playerID = ps.playerID
+    JOIN teams t ON t.teamID = ps.teamID
+    JOIN divisions d ON t.divisionID = d.divisionID
+    JOIN roster r on r.playerID = p.playerID
+    WHERE ps.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+    AND r.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+    AND IFNULL(d.isWomens, 0) = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.leagueSelect#">
+    AND ps.gamesplayed >= <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#gamesLimit#">
+    ORDER BY Blocks desc
+    LIMIT 10
+</cfquery>
+
+<cfquery name="get3FGMLeaders" datasource="roundleague">
+    SELECT pgl.playerID, SUM(pgl.3FGM) AS 3PTS, p.firstName, p.lastName, r.jersey, t.teamName, ps.gamesplayed
+    FROM playergamelog pgl
+    JOIN playerstats ps ON ps.playerID = pgl.playerID
+    JOIN players p ON p.playerID = ps.playerID
+    JOIN teams t ON t.teamID = ps.teamID
+    JOIN divisions d ON t.divisionID = d.divisionID
+    JOIN roster r on r.playerID = p.playerID
+    WHERE pgl.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+    AND r.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+    AND ps.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+    AND IFNULL(d.isWomens, 0) = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.leagueSelect#">
+    GROUP BY PlayerID
+    ORDER BY 3PTS DESC
+    LIMIT 10
+</cfquery>
+
 <cfoutput>
 <form method="POST">
 <div class="main" style="background-color: white;">
@@ -129,6 +176,60 @@
         	<cfloop query="getAssistsLeaders">
         		<h4 class="noTopSpace">#getAssistsLeaders.currentRow#. #getAssistsLeaders.FirstName# #getAssistsLeaders.LastName# - #getAssistsLeaders.Assists#</h4>
         	</cfloop>
+        </div>
+    </div>
+    <div class="listing-item">
+        <div class="image">
+            <cfset imgPath = "/assets/img/PlayerProfiles/#get3FGMLeaders.playerID#.JPG">
+            <cfif FileExists(imgPath)>
+                <img class="playerPic" src="#imgPath#" alt="image">
+            <cfelse>
+                <img class="playerPic" src="/assets/img/PlayerProfiles/default.JPG">
+            </cfif>
+              <div class="caption">
+                <h1 class="noTopSpace catTitle">3 Pointers</h1>
+              </div>
+        </div>
+        <div class="listing">
+            <cfloop query="get3FGMLeaders">
+                <h4 class="noTopSpace">#get3FGMLeaders.currentRow#. #get3FGMLeaders.FirstName# #get3FGMLeaders.LastName# - #get3FGMLeaders.3PTS#</h4>
+            </cfloop>
+        </div>
+    </div>
+    <div class="listing-item">
+        <div class="image">
+            <cfset imgPath = "/assets/img/PlayerProfiles/#getStealsLeaders.playerID#.JPG">
+            <cfif FileExists(imgPath)>
+                <img class="playerPic" src="#imgPath#" alt="image">
+            <cfelse>
+                <img class="playerPic" src="/assets/img/PlayerProfiles/default.JPG">
+            </cfif>
+              <div class="caption">
+                <h1 class="noTopSpace catTitle">Steals</h1>
+              </div>
+        </div>
+        <div class="listing">
+            <cfloop query="getStealsLeaders">
+                <h4 class="noTopSpace">#getStealsLeaders.currentRow#. #getStealsLeaders.FirstName# #getStealsLeaders.LastName# - #getStealsLeaders.Steals#</h4>
+            </cfloop>
+        </div>
+    </div>
+    <div class="listing-item">
+        <div class="image">
+            <cfset imgPath = "/assets/img/PlayerProfiles/#getBlocksLeaders.playerID#.JPG">
+            <cfif FileExists(imgPath)>
+                <img class="playerPic" src="#imgPath#" alt="image">
+            <cfelse>
+                <img class="playerPic" src="/assets/img/PlayerProfiles/default.JPG">
+            </cfif>
+              <div class="caption">
+                <h1 class="noTopSpace catTitle">Blocks</h1>
+              </div>
+        </div>
+        <div class="listing">
+            <cfloop query="getBlocksLeaders">
+                <h4 class="noTopSpace">#getBlocksLeaders.currentRow#. #getBlocksLeaders.FirstName# #getBlocksLeaders.LastName# - #getBlocksLeaders.Blocks#</h4>
+            </cfloop>
         </div>
     </div>
     <p><i>* Must have played at least half the season to qualify</i></p>
