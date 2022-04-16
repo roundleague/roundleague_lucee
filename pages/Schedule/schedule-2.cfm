@@ -17,9 +17,9 @@
 </cfquery>
 
 <cfquery name="getLatestWeek" dbtype="query">
-  SELECT max(week) as latestWeek
+  SELECT max(week)+1 as latestWeek
   FROM getSchedule
-  WHERE homeScore IS NULL
+  WHERE homeScore IS NOT NULL
 </cfquery>
 
 <cfif getLatestWeek.recordCount EQ 0>
