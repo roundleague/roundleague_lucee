@@ -138,7 +138,7 @@
         </div>
         <div class="listing">
         	<cfloop query="getPointsLeaders">
-        		<h4 class="noTopSpace">#getPointsLeaders.currentRow#. #getPointsLeaders.FirstName# #getPointsLeaders.LastName# - #getPointsLeaders.Points#</h4>
+        		<h4 class="noTopSpace">#getPointsLeaders.currentRow#. #getPointsLeaders.FirstName# #getPointsLeaders.LastName# - #NumberFormat(getPointsLeaders.Points, "0.0")#</h4>
         	</cfloop>
         </div>
     </div>
@@ -156,7 +156,7 @@
         </div>
         <div class="listing">
         	<cfloop query="getReboundsLeaders">
-        		<h4 class="noTopSpace">#getReboundsLeaders.currentRow#. #getReboundsLeaders.FirstName# #getReboundsLeaders.LastName# - #getReboundsLeaders.Rebounds#</h4>
+        		<h4 class="noTopSpace">#getReboundsLeaders.currentRow#. #getReboundsLeaders.FirstName# #getReboundsLeaders.LastName# - #NumberFormat(getReboundsLeaders.Rebounds, "0.0")#</h4>
         	</cfloop>
         </div>
     </div>
@@ -174,7 +174,7 @@
         </div>
         <div class="listing">
         	<cfloop query="getAssistsLeaders">
-        		<h4 class="noTopSpace">#getAssistsLeaders.currentRow#. #getAssistsLeaders.FirstName# #getAssistsLeaders.LastName# - #getAssistsLeaders.Assists#</h4>
+        		<h4 class="noTopSpace">#getAssistsLeaders.currentRow#. #getAssistsLeaders.FirstName# #getAssistsLeaders.LastName# - #NumberFormat(getAssistsLeaders.Assists, "0.0")#</h4>
         	</cfloop>
         </div>
     </div>
@@ -210,7 +210,7 @@
         </div>
         <div class="listing">
             <cfloop query="getStealsLeaders">
-                <h4 class="noTopSpace">#getStealsLeaders.currentRow#. #getStealsLeaders.FirstName# #getStealsLeaders.LastName# - #getStealsLeaders.Steals#</h4>
+                <h4 class="noTopSpace">#getStealsLeaders.currentRow#. #getStealsLeaders.FirstName# #getStealsLeaders.LastName# - #NumberFormat(getStealsLeaders.Steals, "0.0")#</h4>
             </cfloop>
         </div>
     </div>
@@ -228,7 +228,7 @@
         </div>
         <div class="listing">
             <cfloop query="getBlocksLeaders">
-                <h4 class="noTopSpace">#getBlocksLeaders.currentRow#. #getBlocksLeaders.FirstName# #getBlocksLeaders.LastName# - #getBlocksLeaders.Blocks#</h4>
+                <h4 class="noTopSpace">#getBlocksLeaders.currentRow#. #getBlocksLeaders.FirstName# #getBlocksLeaders.LastName# - #NumberFormat(getBlocksLeaders.Blocks, "0.0")#</h4>
             </cfloop>
         </div>
     </div>
