@@ -72,9 +72,15 @@ Coded by www.creative-tim.com
               <p>Teams Overview</p>
             </a>
           </li>
+          <li <cfif findNoCase("playoffs", CGI.REQUEST_URL)>class="active"</cfif>>
+            <a href="/admin-dashboard/pages/playoffs/playoffs.cfm">
+              <i class="nc-icon nc-trophy"></i>
+              <p>Playoffs</p>
+            </a>
+          </li>
           <li <cfif findNoCase("ideas", CGI.REQUEST_URL)>class="active"</cfif>>
             <a href="/admin-dashboard/pages/ideas/ideas.cfm">
-              <i class="nc-icon nc-bullet-list-67"></i>
+              <i class="nc-icon nc-settings"></i>
               <p>Future Ideas</p>
             </a>
           </li>
@@ -82,7 +88,7 @@ Coded by www.creative-tim.com
       </div>
     </div>
 
-    <div class="main-panel" style="height: 100vh;">
+    <div class="main-panel">
       <!-- Navbar -->
       <nav class="navbar navbar-expand-lg navbar-absolute fixed-top navbar-transparent">
         <div class="container-fluid">
