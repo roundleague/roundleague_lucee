@@ -72,28 +72,10 @@ Coded by www.creative-tim.com
               <p>Teams Overview</p>
             </a>
           </li>
-          <li>
-            <a href="javascript:;">
-              <i class="nc-icon nc-diamond"></i>
-              <p>Photo Tag Tool</p>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:;">
-              <i class="nc-icon nc-diamond"></i>
-              <p>Free Agent Lists</p>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:;">
-              <i class="nc-icon nc-diamond"></i>
-              <p>League Transactions</p>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:;">
-              <i class="nc-icon nc-diamond"></i>
-              <p>Player Awards</p>
+          <li <cfif findNoCase("ideas", CGI.REQUEST_URL)>class="active"</cfif>>
+            <a href="/admin-dashboard/pages/ideas/ideas.cfm">
+              <i class="nc-icon nc-bullet-list-67"></i>
+              <p>Future Ideas</p>
             </a>
           </li>
         </ul>
