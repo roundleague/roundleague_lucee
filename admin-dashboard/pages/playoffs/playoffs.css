@@ -32,7 +32,7 @@ main{
 }
 
 li.game{
-  padding-left:20px;
+  padding: 5px;
 }
 
   li.game.winner{
