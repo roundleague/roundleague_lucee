@@ -72,6 +72,9 @@
 	JOIN seasons s ON s.seasonID = t.seasonID
 	WHERE r.seasonID = s.seasonID
 	AND t.captainPlayerID = <cfqueryparam cfsqltype="INTEGER" value="#url.playerID#">
+	<cfif findNoCase("127.0.0.1", CGI.HTTP_HOST)>
+			OR t.captainPlayerID = 1002
+	</cfif>
   GROUP BY lastName, firstName
 </cfquery>
 
