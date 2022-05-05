@@ -18,7 +18,7 @@
 		    <li class="game game-top winner">
 				<input type="text" required class="form-control border-input" placeholder="Seed 1" name="seed_1">
 		    </li>
-		    <li class="game game-spacer">&nbsp;</li>
+		    <li class="game game-spacer"></li>
 		    <li class="game game-bottom ">
 				<input type="text" required class="form-control border-input" placeholder="Seed 8" name="seed_8">
 		    </li>
@@ -26,11 +26,11 @@
 		    <li class="spacer">&nbsp;</li>
 		    
 		    <li class="game game-top winner">
-				<input type="text" required class="form-control border-input" placeholder="Seed 2" name="seed_2">
+				<input type="text" required class="form-control border-input" placeholder="Seed 4" name="seed_4">
 		    </li>
 		    <li class="game game-spacer">&nbsp;</li>
 		    <li class="game game-bottom ">
-				<input type="text" required class="form-control border-input" placeholder="Seed 7" name="seed_7">
+				<input type="text" required class="form-control border-input" placeholder="Seed 5" name="seed_5">
 		    </li>
 
 		    <li class="spacer">&nbsp;</li>
@@ -46,11 +46,11 @@
 		    <li class="spacer">&nbsp;</li>
 		    
 		    <li class="game game-top winner">
-				<input type="text" required class="form-control border-input" placeholder="Seed 4" name="seed_4">
+				<input type="text" required class="form-control border-input" placeholder="Seed 2" name="seed_2">
 		    </li>
 		    <li class="game game-spacer">&nbsp;</li>
 		    <li class="game game-bottom ">
-				<input type="text" required class="form-control border-input" placeholder="Seed 5" name="seed_5">
+				<input type="text" required class="form-control border-input" placeholder="Seed 7" name="seed_7">
 		    </li>
 
 		    <li class="spacer">&nbsp;</li>
@@ -58,15 +58,15 @@
 		  <ul class="round round-2">
 		    <li class="spacer">&nbsp;</li>
 		    
-		    <li class="game game-top winner">Lousville <span>82</span></li>
+		    <li class="game game-top"></li>
 		    <li class="game game-spacer">&nbsp;</li>
-		    <li class="game game-bottom ">Colo St <span>56</span></li>
+		    <li class="game game-bottom "></li>
 
 		    <li class="spacer">&nbsp;</li>
 		    
-		    <li class="game game-top winner">Oregon <span>74</span></li>
+		    <li class="game game-top"></li>
 		    <li class="game game-spacer">&nbsp;</li>
-		    <li class="game game-bottom ">Saint Louis <span>57</span></li>
+		    <li class="game game-bottom "></li>
 
 		    <li class="spacer">&nbsp;</li>
 
@@ -74,16 +74,16 @@
 		  <ul class="round round-3">
 		    <li class="spacer">&nbsp;</li>
 		    
-		    <li class="game game-top winner">Lousville <span>77</span></li>
+		    <li class="game game-top"></li>
 		    <li class="game game-spacer">&nbsp;</li>
-		    <li class="game game-bottom ">Oregon <span>69</span></li>
+		    <li class="game game-bottom "></li>
 
 		    <li class="spacer">&nbsp;</li>
 		  </ul>
 		  <ul class="round round-4">
 		    <li class="spacer">&nbsp;</li>
 		    
-		    <li class="game game-top winner">Lousville <span>85</span></li>
+		    <li class="game game-top"></li>
 		    
 		    <li class="spacer">&nbsp;</li>
 		  </ul>   
