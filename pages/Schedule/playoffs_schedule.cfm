@@ -56,13 +56,13 @@
                     <tr>
 
                       <cfif getSchedule.homeScore NEQ ''>
-                        <td data-label="Home"><a class="#homeBoldClass#" href="/pages/boxscore/boxscore.cfm?scheduleID=#getSchedule.scheduleID#">#getSchedule.Home# #getSchedule.HomeScore#</a></td>
+                        <td data-label="Home"><a class="#homeBoldClass#" href="/pages/boxscore/playoffs_boxscore.cfm?scheduleID=#getSchedule.playoffs_scheduleID#">#getSchedule.Home# #getSchedule.HomeScore#</a></td>
                       <cfelse>
                         <td data-label="Home">#getSchedule.Home# #getSchedule.HomeScore#</td>
                       </cfif>
 
                       <cfif getSchedule.AwayScore NEQ ''>
-                        <td data-label="Away"><a class="#awayBoldClass#" href="/pages/boxscore/boxscore.cfm?scheduleID=#getSchedule.scheduleID#">#getSchedule.Away# #getSchedule.AwayScore#</a></td>
+                        <td data-label="Away"><a class="#awayBoldClass#" href="/pages/boxscore/playoffs_boxscore.cfm?scheduleID=#getSchedule.playoffs_scheduleID#">#getSchedule.Away# #getSchedule.AwayScore#</a></td>
                       <cfelse>
                         <td data-label="Away">#getSchedule.Away# #getSchedule.AwayScore#</td>
                       </cfif>

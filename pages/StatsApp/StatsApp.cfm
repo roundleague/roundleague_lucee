@@ -54,8 +54,23 @@
     WHERE s.scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">
 </cfquery>
 
+<!--- Replace submit scores with playoff schedule teams --->
+<cfif url.isPlayoffs EQ 1>
+    <cfquery name="getTeamsPlaying" datasource="roundleague">
+        SELECT playoffs_scheduleID, hometeamID, awayteamID, WEEK, a.teamName AS Home, b.teamName AS Away
+        FROM playoffs_schedule s
+        LEFT JOIN teams as a ON s.hometeamID = a.teamID
+        LEFT JOIN teams as b ON s.awayTeamID = b.teamID
+        WHERE s.playoffs_scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">
+    </cfquery>
+</cfif>
+
 <cfif IsDefined("form.saveBoxScore")>
-    <cfinclude template="StatsApp-Save.cfm">
+    <cfif url.isPlayoffs EQ 1>
+        <cfinclude template="StatsApp-Save-Playoffs.cfm">
+    <cfelse>
+        <cfinclude template="StatsApp-Save.cfm">
+    </cfif>
 </cfif>
 
 <body>

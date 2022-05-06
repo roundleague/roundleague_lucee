@@ -14,6 +14,11 @@ $( document ).ready(function() {
 	  $('#mainForm').submit();
 	});
 
+	$('.scheduleSelect').on('change', function() {
+		var isPlayoffs = $(this).find(':selected').data('playoffs');
+		$('.isPlayoffsValue').val(isPlayoffs);
+	});
+
 	  /* Only show snackbar if no team selected (along with URL cfif) */
 	  if($('#Team').val() == ''){
 		  // Get the snackbar DIV
