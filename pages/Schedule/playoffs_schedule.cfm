@@ -6,21 +6,43 @@
 <script src="/pages/Schedule/schedule-2.js"></script>
 <link href="../Schedule/schedule-2.css?v=1.1" rel="stylesheet">
 
+<cfquery name="getBrackets" datasource="roundleague">
+  SELECT Playoffs_BracketID as BracketID, Name, SeasonID
+  FROM Playoffs_Bracket
+  Where SeasonID = (SELECT seasonID From seasons WHERE status = 'Active')
+  ORDER BY SortOrder
+</cfquery>
+
+<cfparam name="form.bracketID" default="#getBrackets.BracketID#">
+
 <cfquery name="getSchedule" datasource="roundleague">
   SELECT s.Playoffs_ScheduleID, a.teamName AS Home, b.teamName AS Away, 
-  s.startTime, s.date, s.homeTeamID, s.awayTeamID, s.seasonID, s.homeScore, s.awayScore, s.BracketGameID, s.BracketRoundID, pb.Name, s.week
+  s.startTime, s.date, s.homeTeamID, s.awayTeamID, s.seasonID, s.homeScore, s.awayScore, s.BracketGameID, s.BracketRoundID, pb.Name as BracketName, s.week
   FROM playoffs_schedule s
   JOIN playoffs_bracket pb ON pb.Playoffs_bracketID = s.Playoffs_BracketID
   LEFT JOIN teams as a ON s.hometeamID = a.teamID
   LEFT JOIN teams as b ON s.awayTeamID = b.teamID
   WHERE pb.seasonID = (SELECT seasonID From seasons WHERE status = 'Active')
+  AND pb.Playoffs_BracketID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.bracketID#">
   ORDER BY WEEK, date, startTime
 </cfquery>
 
 <cfoutput>
 <div class="main" style="background-color: white; margin-top: 25px;">
+  <form method="POST">
     <div class="section text-center">
       <div class="container">
+
+        <!--- Select for Bracket Type --->
+        <label for="BracketID">Bracket</label>
+        <select name="BracketID" id="Brackets" onchange="this.form.submit()">
+          <cfloop query="getBrackets">
+            <option value="#getBrackets.BracketID#"<cfif getBrackets.BracketID EQ form.BracketID> selected</cfif>>#getBrackets.Name#</option>
+          </cfloop>
+        </select>
+
+        <h1>#getSchedule.BracketName#</h1>
+
         <input type="text" class="bottomSpacing" id="myInput" onkeyup="myFunction()" placeholder="Search for teams.." title="Type in a team">
         <!--- Content Here --->
         <table id="myTable" class="grid pure-table pure-table-horizontal bolder">
@@ -75,6 +97,7 @@
         </table>
       </div>
     </div>
+  </form>
 </div>
 </cfoutput>
 
