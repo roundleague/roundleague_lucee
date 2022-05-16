@@ -81,6 +81,44 @@
             WHERE Playoffs_scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">
         </cfquery>
 
+
+        <!--- Advance Winning Team --->
+        <cfset nextRound = url.bracketRoundID + 1>
+        <cfquery name="advanceSchedule" datasource="roundleague">
+            SELECT Playoffs_scheduleID, HomeTeamID, AwayTeamID
+            FROM Playoffs_Schedule
+            WHERE Playoffs_BracketID = 1 <!--- Fix later --->
+            AND bracketRoundID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#nextRound#">
+            AND (homeTeamID IS NULL OR awayTeamID IS NULL)
+            LIMIT 1
+        </cfquery>
+
+        <cfif advanceSchedule.recordCount NEQ 0>
+            <!--- If this is not the championship game --->
+            <cfif advanceSchedule.homeTeamID EQ ''>
+                <cfset updateTeamCol = 'HomeTeamID'>
+            <cfelse>
+                <cfset updateTeamCol = 'AwayTeamID'>
+            </cfif>
+
+            <cfif form.homeScore GT form.awayScore>
+                <!--- Advance Home Team --->
+                <cfquery name="advanceTeam" datasource="roundleague">
+                    UPDATE Playoffs_Schedule
+                    SET #updateTeamCol# = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.homeTeamID#">
+                    WHERE Playoffs_scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#advanceSchedule.Playoffs_scheduleID#">
+                </cfquery>
+            <cfelse>
+                <!--- Advance Away Team --->
+                <cfquery name="advanceTeam" datasource="roundleague">
+                    UPDATE Playoffs_Schedule
+                    SET #updateTeamCol# = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.awayTeamID#">
+                    WHERE Playoffs_scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#advanceSchedule.Playoffs_scheduleID#">
+                </cfquery>
+            </cfif>
+        <cfelse>
+            <!--- Championship Game --->
+        </cfif>
     </cfif>
 
         <cflocation url="StatsApp-Select.cfm?saved=true">
