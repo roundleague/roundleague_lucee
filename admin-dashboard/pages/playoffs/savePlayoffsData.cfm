@@ -11,12 +11,12 @@
 		<cfelse>
 			<cfset homeOrAway = 'awayTeamID'>
 		</cfif>
-		<cfif i NEQ 'saveBtn'>
+		<cfif !findNoCase("saveBtn", i) AND !findNoCase("bracketID", i)>
 			<cfquery name="updatePlayoffSchedule" datasource="roundleague">
 				UPDATE playoffs_schedule
 				SET
 					#homeOrAway# = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form["Game_" & gameNumber[1] & "_" & homeOrAway]#">
-				WHERE playoffs_bracketID = 1 <!--- Fix later --->
+				WHERE playoffs_bracketID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.bracketID#">
 				AND BracketGameID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#gameNumber[1]#">
 			</cfquery>
 		</cfif>

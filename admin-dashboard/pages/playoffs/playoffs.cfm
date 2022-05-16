@@ -10,6 +10,15 @@
 	<cfinclude template="savePlayoffsData.cfm">
 </cfif>
 
+<cfquery name="getBrackets" datasource="roundleague">
+  SELECT Playoffs_BracketID as BracketID, Name, SeasonID
+  FROM Playoffs_Bracket
+  Where SeasonID = (SELECT seasonID From seasons WHERE status = 'Active')
+  ORDER BY SortOrder
+</cfquery>
+
+<cfparam name="form.bracketID" default="#getBrackets.BracketID#">
+
 <cfquery name="getTeams" datasource="roundleague">
   SELECT teamID, teamName
   FROM teams
@@ -26,6 +35,7 @@
   LEFT JOIN teams as a ON s.hometeamID = a.teamID
   LEFT JOIN teams as b ON s.awayTeamID = b.teamID
   WHERE pb.seasonID = (SELECT seasonID From seasons WHERE status = 'Active')
+  AND pb.Playoffs_BracketID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.bracketID#">
   ORDER BY WEEK, date, startTime
 </cfquery>
 
@@ -34,7 +44,15 @@
     <div class="col-md-12">
       <form name="playoffsForm" method="POST">	
 	      <div class="playoffBracket">
-			<h1>Playoffs Scheduler</h1>
+	        <!--- Select for Bracket Type --->
+	        <label for="BracketID">Bracket</label>
+	        <select name="BracketID" id="Brackets" onchange="this.form.submit()">
+	          <cfloop query="getBrackets">
+	            <option value="#getBrackets.BracketID#"<cfif getBrackets.BracketID EQ form.BracketID> selected</cfif>>#getBrackets.Name#</option>
+	          </cfloop>
+	        </select>
+
+	        <h1>#getPlayoffGames.Name#</h1>
 			<main id="tournament">
 			  <ul class="round round-1">
 			  	<cfquery name="gamesRound1" dbtype="query">
