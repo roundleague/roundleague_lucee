@@ -17,6 +17,12 @@ $( document ).ready(function() {
 	$('.scheduleSelect').on('change', function() {
 		var isPlayoffs = $(this).find(':selected').data('playoffs');
 		$('.isPlayoffsValue').val(isPlayoffs);
+
+		var BracketGameID = $(this).find(':selected').data('bracketgameid');
+		$('.BracketGameID').val(BracketGameID);
+
+		var BracketRoundID = $(this).find(':selected').data('bracketroundid');
+		$('.BracketRoundID').val(BracketRoundID);
 	});
 
 	  /* Only show snackbar if no team selected (along with URL cfif) */
