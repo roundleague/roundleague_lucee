@@ -23,6 +23,9 @@ $( document ).ready(function() {
 
 		var BracketRoundID = $(this).find(':selected').data('bracketroundid');
 		$('.BracketRoundID').val(BracketRoundID);
+
+		var Playoffs_BracketID = $(this).find(':selected').data('bracketid');
+		$('.Playoffs_BracketID').val(Playoffs_BracketID);
 	});
 
 	  /* Only show snackbar if no team selected (along with URL cfif) */

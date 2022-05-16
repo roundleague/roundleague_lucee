@@ -87,7 +87,7 @@
         <cfquery name="advanceSchedule" datasource="roundleague">
             SELECT Playoffs_scheduleID, HomeTeamID, AwayTeamID
             FROM Playoffs_Schedule
-            WHERE Playoffs_BracketID = 1 <!--- Fix later --->
+            WHERE Playoffs_BracketID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.Playoffs_BracketID#">
             AND bracketRoundID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#nextRound#">
             AND (homeTeamID IS NULL OR awayTeamID IS NULL)
             LIMIT 1
