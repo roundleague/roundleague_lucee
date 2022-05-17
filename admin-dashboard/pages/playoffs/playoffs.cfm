@@ -39,6 +39,11 @@
   ORDER BY WEEK, date, startTime
 </cfquery>
 
+<cfquery name="getMaxRounds" dbtype="query">
+	SELECT MAX(BracketRoundID) as MaxRounds
+	FROM getPlayoffGames
+</cfquery>
+
 <div class="content">
   <div class="row">
     <div class="col-md-12">
@@ -63,7 +68,7 @@
 			  	<cfloop query="gamesRound1">
 				    <li class="spacer">&nbsp;</li>
 				    
-				    <li class="game game-top winner">
+				    <li class="game game-top round1">
 				        <select name="Game_#gamesRound1.BracketGameID#_HomeTeamID" id="Team" class="teamSelect">
 				            <option value=""></option>
 				            <cfloop query="getTeams">
@@ -72,7 +77,7 @@
 				        </select>
 				    </li>
 				    <li class="game game-spacer">Game #gamesRound1.BracketGameID#</li>
-				    <li class="game game-bottom ">
+				    <li class="game game-bottom round1">
 				        <select name="Game_#gamesRound1.BracketGameID#_AwayTeamID" id="Team" class="teamSelect">
 				            <option value=""></option>
 				            <cfloop query="getTeams">
@@ -115,37 +120,101 @@
 			    <li class="spacer">&nbsp;</li>
 			  </ul>
 			  <ul class="round round-2">
-			    <li class="spacer">&nbsp;</li>
-			    
-			    <li class="game game-top"></li>
-			    <li class="game game-spacer">Game 5</li>
-			    <li class="game game-bottom "></li>
-
-			    <li class="spacer">&nbsp;</li>
-			    
-			    <li class="game game-top"></li>
-			    <li class="game game-spacer">Game 6</li>
-			    <li class="game game-bottom "></li>
+			  	<cfquery name="gamesRound2" dbtype="query">
+			  		SELECT *
+			  		FROM getPlayoffGames
+			  		WHERE getPlayoffGames.BracketRoundID = 2
+			  	</cfquery>
+			  	<cfloop query="gamesRound2">
+				    <li class="spacer">&nbsp;</li>
+				    
+				    <li class="game game-top round2">
+				        #gamesRound2.Home#
+				    </li>
+				    <li class="game game-spacer">Game #gamesRound2.BracketGameID#</li>
+				    <li class="game game-bottom round2">
+				        #gamesRound2.Away#
+				    </li>
+			  	</cfloop>
 
 			    <li class="spacer">&nbsp;</li>
 
 			  </ul>
 			  <ul class="round round-3">
-			    <li class="spacer">&nbsp;</li>
-			    
-			    <li class="game game-top"></li>
-			    <li class="game game-spacer">Game 7</li>
-			    <li class="game game-bottom "></li>
+			  	<cfquery name="gamesRound3" dbtype="query">
+			  		SELECT *
+			  		FROM getPlayoffGames
+			  		WHERE getPlayoffGames.BracketRoundID = 3
+			  	</cfquery>
+			  	<cfloop query="gamesRound3">
+				    <li class="spacer">&nbsp;</li>
+				    
+				    <li class="game game-top round3">
+				        #gamesRound3.Home#
+				    </li>
+				    <li class="game game-spacer">Game #gamesRound3.BracketGameID#</li>
+				    <li class="game game-bottom round3">
+				        #gamesRound3.Away#
+				    </li>
+			  	</cfloop>
 
 			    <li class="spacer">&nbsp;</li>
 			  </ul>
-			  <ul class="round round-4">
-			    <li class="spacer">&nbsp;</li>
-			    
-			    <li class="game game-top">Champion</li>
-			    
-			    <li class="spacer">&nbsp;</li>
-			  </ul>   
+			  <cfif getMaxRounds.maxRounds EQ 3>
+			  	<!--- 8 Team Bracket --->
+				<ul class="round round-4">
+					<li class="spacer">&nbsp;</li>
+					<li class="game game-top">Champion</li>
+					<li class="spacer">&nbsp;</li>
+			  	</ul>
+			  <cfelse>
+			  	<!--- 32 Team Bracket --->
+				  <ul class="round round-4">
+				  	<cfquery name="gamesRound4" dbtype="query">
+				  		SELECT *
+				  		FROM getPlayoffGames
+				  		WHERE getPlayoffGames.BracketRoundID = 4
+				  	</cfquery>
+				  	<cfloop query="gamesRound4">
+					    <li class="spacer">&nbsp;</li>
+					    
+					    <li class="game game-top round4">
+					        #gamesRound4.Home#
+					    </li>
+					    <li class="game game-spacer">Game #gamesRound4.BracketGameID#</li>
+					    <li class="game game-bottom round4">
+					        #gamesRound4.Away#
+					    </li>
+				  	</cfloop>
+
+				    <li class="spacer">&nbsp;</li>
+				  </ul>
+				  <ul class="round round-5">
+				  	<cfquery name="gamesRound5" dbtype="query">
+				  		SELECT *
+				  		FROM getPlayoffGames
+				  		WHERE getPlayoffGames.BracketRoundID = 5
+				  	</cfquery>
+				  	<cfloop query="gamesRound5">
+					    <li class="spacer">&nbsp;</li>
+					    
+					    <li class="game game-top round5">
+					        #gamesRound5.Home#
+					    </li>
+					    <li class="game game-spacer">Game #gamesRound5.BracketGameID#</li>
+					    <li class="game game-bottom round5">
+					        #gamesRound5.Away#
+					    </li>
+				  	</cfloop>
+
+				    <li class="spacer">&nbsp;</li>
+				  </ul>
+				<ul class="round round-6">
+					<li class="spacer">&nbsp;</li>
+					<li class="game game-top">Champion</li>
+					<li class="spacer">&nbsp;</li>
+			  	</ul>
+			  </cfif>  
 			</main>
 	      </div>
 	      <button name="saveBtn" type="submit" class="btn btn-wd btn-info btn-round saveBtn">Save</button>

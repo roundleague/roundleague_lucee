@@ -32,9 +32,13 @@ main{
   line-height:1.4em;
 }
 
-li.game{
+li.round1{
   padding: 10px;
   padding-left: 0px;
+}
+
+li.round2, li.round3{
+  padding-left: 25px;
 }
 
   li.game.winner{
