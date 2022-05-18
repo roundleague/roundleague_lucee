@@ -1,5 +1,50 @@
 <cfoutput>
+
+     <cffunction name="getAdvanceToGameId"
+        hint="Get the next bracketGameId to advance to for playoffs" returntype="number">
+        <cfargument name="fromGameId" default="" required="yes" type="number">
+        <cfargument name="numRounds" default="" required="yes" type="number">
+
+        <cfif numRounds EQ 5>
+            <cfswitch expression="#fromGameId#"> 
+                <cfcase value="1,2"><cfreturn 17></cfcase>
+                <cfcase value="3,4"><cfreturn 18></cfcase>
+                <cfcase value="5,6"><cfreturn 19></cfcase>
+                <cfcase value="7,8"><cfreturn 20></cfcase>
+                <cfcase value="9,10"><cfreturn 21></cfcase>
+                <cfcase value="11,12"><cfreturn 22></cfcase>
+                <cfcase value="13,14"><cfreturn 23></cfcase>
+                <cfcase value="15,16"><cfreturn 24></cfcase>
+                <cfcase value="17,18"><cfreturn 25></cfcase>
+                <cfcase value="19,20"><cfreturn 26></cfcase>
+                <cfcase value="21,22"><cfreturn 27></cfcase>
+                <cfcase value="23,24"><cfreturn 28></cfcase>
+                <cfcase value="25,26"><cfreturn 29></cfcase>
+                <cfcase value="27,28"><cfreturn 30></cfcase>
+                <cfcase value="29,30"><cfreturn 31></cfcase>
+                <cfdefaultcase><cfreturn 0></cfdefaultcase> 
+            </cfswitch>
+        <cfelseif numRounds EQ 3>
+            <cfswitch expression="#fromGameId#"> 
+                <cfcase value="1,2"><cfreturn 5></cfcase>
+                <cfcase value="3,4"><cfreturn 6></cfcase>
+                <cfcase value="5,6"><cfreturn 7></cfcase>
+                <cfdefaultcase><cfreturn 0></cfdefaultcase> 
+            </cfswitch>
+        <cfelse>
+            <cfreturn 0>
+        </cfif>
+            
+     </cffunction>
+
     <cftry>
+    <!--- Get the max rounds for current bracket --->
+    <cfquery name="getMaxRounds" datasource="roundleague">
+        SELECT max(bracketRoundID) as MaxRounds
+        FROM playoffs_schedule
+        WHERE Playoffs_BracketID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.Playoffs_BracketID#">
+    </cfquery>
+
     <!--- Get the active seasonID --->
     <cfquery name="getActiveSeasonID" datasource="roundleague">
         SELECT SeasonID
@@ -83,14 +128,12 @@
 
 
         <!--- Advance Winning Team --->
-        <cfset nextRound = url.bracketRoundID + 1>
+        <cfset nextGameId = getAdvanceToGameId(url.bracketGameID, getMaxRounds.maxRounds)>
         <cfquery name="advanceSchedule" datasource="roundleague">
             SELECT Playoffs_scheduleID, HomeTeamID, AwayTeamID
             FROM Playoffs_Schedule
             WHERE Playoffs_BracketID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.Playoffs_BracketID#">
-            AND bracketRoundID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#nextRound#">
-            AND (homeTeamID IS NULL OR awayTeamID IS NULL)
-            LIMIT 1
+            AND BracketGameID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#nextGameId#">
         </cfquery>
 
         <cfif advanceSchedule.recordCount NEQ 0>
