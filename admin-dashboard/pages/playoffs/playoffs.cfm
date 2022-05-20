@@ -29,14 +29,14 @@
 
 <cfquery name="getPlayoffGames" datasource="roundleague">
   SELECT s.Playoffs_ScheduleID, a.teamName AS Home, b.teamName AS Away, 
-  s.startTime, s.date, s.homeTeamID, s.awayTeamID, s.seasonID, s.homeScore, s.awayScore, s.BracketGameID, s.BracketRoundID, pb.Name
+  s.startTime, s.date, s.homeTeamID, s.awayTeamID, s.seasonID, s.homeScore, s.awayScore, s.BracketGameID, s.BracketRoundID, pb.Name, s.HomeSeed, s.AwaySeed
   FROM playoffs_schedule s
   JOIN playoffs_bracket pb ON pb.Playoffs_bracketID = s.Playoffs_BracketID
   LEFT JOIN teams as a ON s.hometeamID = a.teamID
   LEFT JOIN teams as b ON s.awayTeamID = b.teamID
   WHERE pb.seasonID = (SELECT seasonID From seasons WHERE status = 'Active')
   AND pb.Playoffs_BracketID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.bracketID#">
-  ORDER BY WEEK, date, startTime
+  ORDER BY S.BracketGameID, WEEK, date, startTime
 </cfquery>
 
 <cfquery name="getMaxRounds" dbtype="query">
@@ -67,8 +67,8 @@
 			  	</cfquery>
 			  	<cfloop query="gamesRound1">
 				    <li class="spacer">&nbsp;</li>
-				    
 				    <li class="game game-top round1">
+				    	###HomeSeed#
 				        <select name="Game_#gamesRound1.BracketGameID#_HomeTeamID" id="Team" class="teamSelect">
 				            <option value=""></option>
 				            <cfloop query="getTeams">
@@ -78,6 +78,7 @@
 				    </li>
 				    <li class="game game-spacer">Game #gamesRound1.BracketGameID#</li>
 				    <li class="game game-bottom round1">
+				    	###AwaySeed#
 				        <select name="Game_#gamesRound1.BracketGameID#_AwayTeamID" id="Team" class="teamSelect">
 				            <option value=""></option>
 				            <cfloop query="getTeams">
