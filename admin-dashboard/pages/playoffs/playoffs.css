@@ -9,7 +9,7 @@ main{
   display:flex;
   flex-direction:column;
   justify-content:center;
-  width:200px;
+  width: 229px;
   list-style:none;
   padding:0;
 }
@@ -18,7 +18,8 @@ main{
   .round .spacer:last-child{ flex-grow:.5; }
 
   .round .game-spacer{
-    flex-grow:1.5;
+    flex-grow:1;
+    text-align: center;
   }
 
 /*
@@ -31,8 +32,13 @@ main{
   line-height:1.4em;
 }
 
-li.game{
-  padding: 5px;
+li.round1{
+  padding: 10px;
+  padding-left: 0px;
+}
+
+li.round2, li.round3{
+  padding-left: 25px;
 }
 
   li.game.winner{

@@ -51,13 +51,20 @@
 
 <!--- Queries --->
 <cfquery name="getTeamMatchups" datasource="roundleague">
-    SELECT scheduleID, hometeamID, awayteamID, WEEK, a.teamName AS Home, b.teamName AS Away, homeScore
-    FROM schedule s
-    LEFT JOIN teams as a ON s.hometeamID = a.teamID
-    LEFT JOIN teams as b ON s.awayTeamID = b.teamID
+  SELECT scheduleID, hometeamID, awayteamID, WEEK, a.teamName AS Home, b.teamName AS Away, homeScore, 0 AS IsPlayoffs, 0 as BracketGameID, 0 as BracketRoundID, 0 as Playoffs_BracketID
+  FROM schedule s
+  LEFT JOIN teams as a ON s.hometeamID = a.teamID
+  LEFT JOIN teams as b ON s.awayTeamID = b.teamID
+  WHERE (a.teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.teamID#"> OR b.teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.teamID#">)
+  AND s.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#"> 
+  UNION
+  SELECT playoffs_scheduleID, hometeamID, awayteamID, WEEK, a.teamName AS Home, b.teamName AS Away, homeScore, 1 AS IsPlayoffs, BracketGameID, BracketRoundID, s.Playoffs_BracketID
+  FROM playoffs_schedule s
+  JOIN playoffs_bracket pb ON pb.Playoffs_bracketID = s.Playoffs_BracketID
+  LEFT JOIN teams as a ON s.hometeamID = a.teamID
+  LEFT JOIN teams as b ON s.awayTeamID = b.teamID
     WHERE (a.teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.teamID#"> OR b.teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.teamID#">)
-    AND s.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#"> 
-    -- AND (s.homeScore IS NULL OR s.awayScore IS NULL)
+    AND pb.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#"> 
 </cfquery>
 
 <!--- If coming after saving a game --->
@@ -86,12 +93,16 @@
                   <cfelse>
                     <cfset opponentTeam = getTeamMatchups.home>
                   </cfif>
-                  <option value="#getTeamMatchups.scheduleID#"<cfif form.scheduleID EQ getTeamMatchups.scheduleID>selected</cfif>>Week #getTeamMatchups.Week# VS #opponentTeam# <cfif homeScore NEQ ''>(Already Played)</cfif></option>
+                  <option data-bracketid="#getTeamMatchups.Playoffs_BracketID#" data-bracketroundid="#getTeamMatchups.bracketRoundID#" data-bracketgameid="#getTeamMatchups.BracketGameID#" data-playoffs="#getTeamMatchups.isPlayoffs#" value="#getTeamMatchups.scheduleID#"<cfif form.scheduleID EQ getTeamMatchups.scheduleID>selected</cfif>>Week #getTeamMatchups.Week# VS #opponentTeam# <cfif homeScore NEQ ''>(Already Played)</cfif></option>
               </cfloop>
           </select>
         </cfif>
         <br>
         <br>
+        <input type="hidden" class="isPlayoffsValue" name="isPlayoffsValue" value="">
+        <input type="hidden" class="BracketGameID" name="BracketGameID" value="">
+        <input type="hidden" class="BracketRoundID" name="BracketRoundID" value="">
+        <input type="hidden" class="Playoffs_BracketID" name="Playoffs_BracketID" value="">
         <input type="submit" value="Submit">
       </div>
 
@@ -107,7 +118,7 @@
     </form>
 
     <cfif form.scheduleID>
-      <cflocation url="StatsApp.cfm?teamID=#form.teamID#&scheduleID=#form.scheduleID#">
+      <cflocation url="StatsApp.cfm?teamID=#form.teamID#&scheduleID=#form.scheduleID#&isPlayoffs=#form.isPlayoffsValue#&BracketGameID=#form.BracketGameID#&BracketRoundID=#form.BracketRoundID#&Playoffs_BracketID=#form.Playoffs_BracketID#">
     </cfif>
 
     <cfif isDefined("form.scrimmage")>

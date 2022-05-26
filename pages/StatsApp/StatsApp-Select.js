@@ -14,6 +14,20 @@ $( document ).ready(function() {
 	  $('#mainForm').submit();
 	});
 
+	$('.scheduleSelect').on('change', function() {
+		var isPlayoffs = $(this).find(':selected').data('playoffs');
+		$('.isPlayoffsValue').val(isPlayoffs);
+
+		var BracketGameID = $(this).find(':selected').data('bracketgameid');
+		$('.BracketGameID').val(BracketGameID);
+
+		var BracketRoundID = $(this).find(':selected').data('bracketroundid');
+		$('.BracketRoundID').val(BracketRoundID);
+
+		var Playoffs_BracketID = $(this).find(':selected').data('bracketid');
+		$('.Playoffs_BracketID').val(Playoffs_BracketID);
+	});
+
 	  /* Only show snackbar if no team selected (along with URL cfif) */
 	  if($('#Team').val() == ''){
 		  // Get the snackbar DIV
