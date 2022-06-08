@@ -6,7 +6,7 @@
 
 <!--- CFQuery --->
 <cfquery name="getPlayers" datasource="roundleague">
-  SELECT lastName, firstName, teamName, d.divisionName, r.jersey, p.instagram, p.phone, p.email, p.playerID
+  SELECT lastName, firstName, teamName, d.divisionName, r.jersey, p.instagram, p.phone, p.email, p.playerID, p.birthDate
   FROM players p
   JOIN roster r ON r.PlayerID = p.playerID
   JOIN teams t ON t.teamId = r.teamID
@@ -32,6 +32,7 @@
                     <th>Phone</th>
                     <th>Email</th>
                     <th>Division</th>
+                    <th>Birthday</th>
                 </tr>
             </thead>
             <tbody>
@@ -44,6 +45,7 @@
                   <td data-label="Phone">#getPlayers.Phone#</td>
                   <td data-label="Email">#getPlayers.Email#</td>
                   <td data-label="Division">#getPlayers.DivisionName#</td>
+                  <td data-label="Division">#DateFormat(getPlayers.BirthDate, "mm/dd/yy")#</td>
                 </tr>
               </cfloop>
             </tbody>
