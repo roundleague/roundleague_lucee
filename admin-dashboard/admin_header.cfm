@@ -12,6 +12,12 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 -->
+
+<!--- Admin security check --->
+<cfif !isDefined("session.adminLoggedIn")>
+  Access Denied.<cfabort />
+</cfif>
+
 <!doctype html>
 <html lang="en">
 
