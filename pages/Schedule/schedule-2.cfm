@@ -31,7 +31,7 @@
 </cfif>
 
 <cfoutput>
-  <cfif FindNoCase("testing.theroundleague.com", CGI.REQUEST_URL)>
+  <cfif FindNoCase("testing.theroundleague.com", CGI.REQUEST_URL) OR FindNoCase("thoughtfocus", CGI.REQUEST_URL)>
   <div class="main" style="background-color: white; margin-top: 25px;">
       <div class="section text-center">
         <!--- Mobile Only --->
@@ -76,17 +76,24 @@
                         <cfif getSchedule.homeScore NEQ ''>
                           <td data-label="Home"><a class="#homeBoldClass#" href="/pages/boxscore/boxscore.cfm?scheduleID=#getSchedule.scheduleID#">#getSchedule.Home# #getSchedule.HomeScore#</a></td>
                         <cfelse>
-                          <td data-label="Home">#getSchedule.Home# #getSchedule.HomeScore#</td>
+                          <td data-label="Home">#getSchedule.Home#</td>
                         </cfif>
 
                         <cfif getSchedule.AwayScore NEQ ''>
                           <td data-label="Away"><a class="#awayBoldClass#" href="/pages/boxscore/boxscore.cfm?scheduleID=#getSchedule.scheduleID#">#getSchedule.Away# #getSchedule.AwayScore#</a></td>
                         <cfelse>
-                          <td data-label="Away">#getSchedule.Away# #getSchedule.AwayScore#</td>
+                          <!--- Extra logic for away; if schedule includes a BYE --->
+                          <td data-label="Away">
+                          #(len(DateTimeFormat(getSchedule.startTime, "h:nn tt")) GT 0) ? evaluate('getSchedule.Away') : 'BYE'#
+                          </td>
                         </cfif>
                         
-                        <td data-label="Date">#DateFormat(getSchedule.Date, "mm/dd/yyyy")#</td>
-                        <td data-label="Time">#DateTimeFormat(getSchedule.startTime, "h:nn tt")#</td>
+                        <td data-label="Date">
+                          #DateFormat(getSchedule.Date, "mm/dd/yyyy")#
+                        </td>
+                        <td data-label="Time">
+                          #(len(DateTimeFormat(getSchedule.startTime, "h:nn tt")) GT 0) ? DateTimeFormat(getSchedule.startTime, "h:nn tt") : 'BYE'#
+                        </td>
                       </tr>
                   </cfloop>
               </tbody>

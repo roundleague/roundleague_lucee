@@ -59,6 +59,24 @@
   ORDER BY divisionName
 </cfquery>
 
+<cfquery name="getAtlanticDivision" datasource="roundleague">
+  SELECT teamName, DivisionName, teamID
+  FROM teams t
+  JOIN divisions d ON t.DivisionID = d.DivisionID
+  Where t.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+  AND DivisionName LIKE '%Atlantic%'
+  ORDER BY divisionName
+</cfquery>
+
+<cfquery name="getAsianDivision" datasource="roundleague">
+  SELECT teamName, DivisionName, teamID
+  FROM teams t
+  JOIN divisions d ON t.DivisionID = d.DivisionID
+  Where t.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+  AND DivisionName LIKE '%Asian%'
+  ORDER BY divisionName
+</cfquery>
+
 <div class="main" style="background-color: white; margin-top: 50px;">
     <div class="section text-center">
       <div class="container">
@@ -88,6 +106,14 @@
                 </cfloop>
               </ul>
             </div>
+            <div class="standingsDiv flex-item">
+              <h4 class="standingsh4">Atlantic Division</h4>
+              <ul class="standingsUl">
+                <cfloop query="getAtlanticDivision">
+                  <li><a href="team-profile-page.cfm?teamID=#getAtlanticDivision.teamID#">#getAtlanticDivision.teamName#</a></li>
+                </cfloop>
+              </ul>
+            </div>
         </div>
 
         <div class="standingsContainer">
@@ -104,6 +130,14 @@
               <ul class="standingsUl">
                 <cfloop query="getWestDivision">
                   <li><a href="team-profile-page.cfm?teamID=#getWestDivision.teamID#">#getWestDivision.teamName#</a></li>
+                </cfloop>
+              </ul>
+            </div>
+            <div class="standingsDiv flex-item">
+              <h4 class="standingsh4">Asian Division</h4>
+              <ul class="standingsUl">
+                <cfloop query="getAsianDivision">
+                  <li><a href="team-profile-page.cfm?teamID=#getAsianDivision.teamID#">#getAsianDivision.teamName#</a></li>
                 </cfloop>
               </ul>
             </div>
