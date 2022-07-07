@@ -65,6 +65,7 @@
   LEFT JOIN teams as b ON s.awayTeamID = b.teamID
     WHERE (a.teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.teamID#"> OR b.teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.teamID#">)
     AND pb.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#"> 
+  ORDER BY WEEK
 </cfquery>
 
 <!--- If coming after saving a game --->
