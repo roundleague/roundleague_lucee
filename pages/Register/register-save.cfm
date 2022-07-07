@@ -72,6 +72,15 @@
 			)
 		)
 	</cfquery>
+	<!--- If captain checkbox selected, set them as team captain --->
+	<cfif isDefined("form.captainCheck")>
+		<cfquery name="setCaptainId" datasource="roundleague">
+			UPDATE Teams
+			SET captainPlayerID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#newPlayerId#">
+			WHERE teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.teamID#">
+		</cfquery>
+	</cfif>
+
 	<cfset toastMessage = "Player Registration info successfully submitted! Note: If you signed up as a free agent, you will be contacted if a free agent spot opens up.">
 <cfelse>
 	<!--- We use the duplicate playerID email to Insert Into Roster --->

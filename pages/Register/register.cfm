@@ -256,8 +256,8 @@ I, for myself and on behalf of my heirs, assigns, personal representatives and n
 		                </div>
 		                <div class="col-md-6 col-sm-6">
 		                  <div class="form-group">
-		                    <label>Why do you like basketball?</label>
-		                    <input type="text" class="form-control border-input" name="whyBasketball">
+		                    <label>Current City</label>
+		                    <input type="text" class="form-control border-input" name="currentCity">
 		                  </div>
 		                </div>
 		              </div>
@@ -273,6 +273,10 @@ I, for myself and on behalf of my heirs, assigns, personal representatives and n
 		              </div>
 		              <label>Notifications</label> ---> 
 		              <ul class="notifications">
+		                <li class="notification-item">
+		                  Are you the captain of this team?
+		                  <input type="checkbox" name="captainCheck" data-toggle="switch" data-on-color="info" data-off-color="info"><span class="toggle"></span>
+		                </li>
 		                <li class="notification-item">
 		                  Are you over 18?
 		                  <input type="checkbox" name="over18" data-toggle="switch" checked="" data-on-color="info" data-off-color="info"><span class="toggle"></span>
