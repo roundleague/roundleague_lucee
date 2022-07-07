@@ -12,12 +12,12 @@
   LEFT JOIN teams as a ON s.hometeamID = a.teamID
   LEFT JOIN teams as b ON s.awayTeamID = b.teamID
   WHERE s.seasonID = (SELECT seasonID From seasons WHERE status = 'Active')
-  AND S.DivisionID = 18
+  AND S.DivisionID = 23
   ORDER BY WEEK, date, startTime
 </cfquery>
 
 <cfoutput>
-<div class="main" style="background-color: white; margin-top: 50px;">
+<!--- <div class="main" style="background-color: white; margin-top: 50px;">
     <div class="section text-center">
       <div class="container">
 
@@ -76,7 +76,7 @@
 
       </div>
     </div>
-</div>
+</div> --->
 </cfoutput>
 
 <cfinclude template="/footer.cfm">
