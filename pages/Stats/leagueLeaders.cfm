@@ -11,6 +11,12 @@
     WHERE seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
 </cfquery>
 
+<cfquery name="getLeagues" datasource="roundleague">
+    SELECT LeagueID, LeagueName
+    FROM leagues
+    WHERE seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+</cfquery>
+
 <cfif getMinGamesLimit.totalGames NEQ ''>
     <cfset gamesLimit = getMinGamesLimit.TotalGames / 2>
 <cfelse>
