@@ -71,7 +71,9 @@
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="/pages/schedule/schedule-womens.cfm">Women's Schedule</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="/pages/schedule/playoffs_schedule.cfm">Playoffs Schedule</a>
+              <a class="dropdown-item" href="/pages/schedule/schedule-asian.cfm">Asian League Schedule</a>
+              <!--- <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="/pages/schedule/playoffs_schedule.cfm">Playoffs Schedule</a> --->
             </ul>
           </div>
           <li class="nav-item">

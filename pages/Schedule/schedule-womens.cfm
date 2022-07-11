@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.6/build/pure-min.css" integrity="sha384-Uu6IeWbM+gzNVXJcM9XV3SohHtmWE+3VGi496jvgX1jyvDTXfdK+rfZc8C1Aehk5" crossorigin="anonymous">
 <!--- Scripts --->
 <script src="/pages/Schedule/schedule-2.js"></script>
-<link href="../Schedule/schedule-2.css" rel="stylesheet">
+<link href="../Schedule/schedule-2.css?v=1.1" rel="stylesheet">
 
 <cfquery name="getSchedule" datasource="roundleague">
   SELECT scheduleID, WEEK, a.teamName AS Home, b.teamName AS Away, s.startTime, s.date, s.homeTeamID, s.awayTeamID, s.seasonID, s.homeScore, s.awayScore
@@ -17,14 +17,13 @@
 </cfquery>
 
 <cfoutput>
-  <cfif FindNoCase("testing.theroundleague.com", CGI.REQUEST_URL)>
     <div class="main" style="background-color: white; margin-top: 50px;">
         <div class="section text-center">
           <div class="container">
 
             <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for teams.." title="Type in a team">
             <!--- Content Here --->
-            <table id="myTable" class="grid pure-table pure-table-horizontal">
+            <table id="myTable" class="grid pure-table pure-table-horizontal bolder">
                 <thead>
                     <tr>
                         <th>Home</th>
@@ -78,7 +77,6 @@
           </div>
         </div>
     </div>
-  </cfif>
 </cfoutput>
 
 <cfinclude template="/footer.cfm">
