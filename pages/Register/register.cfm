@@ -11,7 +11,6 @@
 	FROM Teams
 	Where Status = 'Active'
 	AND seasonID = (SELECT seasonID From seasons WHERE status = 'Active')
-	AND teamID NOT IN (38, 44, 53, 48)
 	ORDER BY teamName
 </cfquery>
 
