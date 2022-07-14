@@ -3,8 +3,6 @@
 <!--- Page Specific CSS/JS Here --->
 <link href="/pages/Stats/leagueLeaders.css?v=1.1" rel="stylesheet" />
 
-<cfparam name="form.leagueSelect" default="0">
-
 <cfquery name="getMinGamesLimit" datasource="roundleague">
     SELECT max(gamesPlayed) as TotalGames
     FROM playerstats
@@ -16,6 +14,8 @@
     FROM leagues
     WHERE seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
 </cfquery>
+
+<cfparam name="form.leagueSelect" default="#getLeagues.leagueID#">
 
 <cfif getMinGamesLimit.totalGames NEQ ''>
     <cfset gamesLimit = getMinGamesLimit.TotalGames / 2>
@@ -30,9 +30,10 @@
     JOIN teams t ON t.teamID = ps.teamID
     JOIN divisions d ON t.divisionID = d.divisionID
     JOIN roster r on r.playerID = p.playerID
+    JOIN leagues l on l.leagueID = d.leagueID
 	WHERE ps.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
     AND r.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
-	AND IFNULL(d.isWomens, 0) = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.leagueSelect#">
+    AND l.leagueID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.leagueSelect#">
     AND ps.gamesplayed >= <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#gamesLimit#">
     ORDER BY points desc
 	LIMIT 10
@@ -45,9 +46,10 @@
     JOIN teams t ON t.teamID = ps.teamID
     JOIN divisions d ON t.divisionID = d.divisionID
     JOIN roster r on r.playerID = p.playerID
+    JOIN leagues l on l.leagueID = d.leagueID
 	WHERE ps.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
     AND r.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
-    AND IFNULL(d.isWomens, 0) = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.leagueSelect#">
+    AND l.leagueID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.leagueSelect#">
     AND ps.gamesplayed >= <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#gamesLimit#">
     ORDER BY Rebounds desc
 	LIMIT 10
@@ -60,9 +62,10 @@
     JOIN teams t ON t.teamID = ps.teamID
     JOIN divisions d ON t.divisionID = d.divisionID
     JOIN roster r on r.playerID = p.playerID
+    JOIN leagues l on l.leagueID = d.leagueID
 	WHERE ps.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
     AND r.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
-    AND IFNULL(d.isWomens, 0) = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.leagueSelect#">
+    AND l.leagueID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.leagueSelect#">
     AND ps.gamesplayed >= <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#gamesLimit#">
     ORDER BY Assists desc
 	LIMIT 10
@@ -75,9 +78,10 @@
     JOIN teams t ON t.teamID = ps.teamID
     JOIN divisions d ON t.divisionID = d.divisionID
     JOIN roster r on r.playerID = p.playerID
+    JOIN leagues l on l.leagueID = d.leagueID
     WHERE ps.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
     AND r.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
-    AND IFNULL(d.isWomens, 0) = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.leagueSelect#">
+    AND l.leagueID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.leagueSelect#">
     AND ps.gamesplayed >= <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#gamesLimit#">
     ORDER BY Steals desc
     LIMIT 10
@@ -90,9 +94,10 @@
     JOIN teams t ON t.teamID = ps.teamID
     JOIN divisions d ON t.divisionID = d.divisionID
     JOIN roster r on r.playerID = p.playerID
+    JOIN leagues l on l.leagueID = d.leagueID
     WHERE ps.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
     AND r.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
-    AND IFNULL(d.isWomens, 0) = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.leagueSelect#">
+    AND l.leagueID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.leagueSelect#">
     AND ps.gamesplayed >= <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#gamesLimit#">
     ORDER BY Blocks desc
     LIMIT 10
@@ -106,10 +111,11 @@
     JOIN teams t ON t.teamID = ps.teamID
     JOIN divisions d ON t.divisionID = d.divisionID
     JOIN roster r on r.playerID = p.playerID
+    JOIN leagues l on l.leagueID = d.leagueID
     WHERE pgl.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
     AND r.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+    AND l.leagueID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.leagueSelect#">
     AND ps.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
-    AND IFNULL(d.isWomens, 0) = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.leagueSelect#">
     GROUP BY PlayerID
     ORDER BY 3PTS DESC
     LIMIT 10
@@ -124,8 +130,9 @@
         <div class="selectLeagueBox">
             <label for="seasonID">Select League</label>
             <select name="leagueSelect" id="Seasons" onchange="this.form.submit()">
-                    <option value="0" <cfif form.leagueSelect EQ 0>selected</cfif>>Men's League</option>
-                    <option value="1" <cfif form.leagueSelect EQ 1>selected</cfif>>Women's League</option>
+                <cfloop query="getLeagues">
+                    <option value="#getLeagues.leagueID#" <cfif form.leagueSelect EQ getLeagues.leagueID>selected</cfif>>#getLeagues.leagueName#</option>
+                </cfloop>
             </select>
         </div>
 <h2 id="title" style="color: black;">League Leaders</h2> 
