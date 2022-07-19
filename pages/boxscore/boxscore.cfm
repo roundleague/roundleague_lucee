@@ -1,13 +1,14 @@
 <cfinclude template="/header.cfm">
 
 <!--- Page Specific CSS/JS Here --->
-<link href="../boxscore/boxscore.css" rel="stylesheet">
+<link href="../boxscore/boxscore.css?v=1.1" rel="stylesheet">
 
 <cfquery name="getPlayerLogs" datasource="roundleague">
-	SELECT pgl.PlayerID, p.firstName, p.lastName, FGM, FGA, 3FGM, 3FGA, FTM, FTA, Points, Rebounds, Assists, Steals, Blocks, Turnovers, pgl.teamID, t.teamName, pgl.Fouls
+	SELECT pgl.PlayerID, p.firstName, p.lastName, FGM, FGA, 3FGM, 3FGA, FTM, FTA, Points, Rebounds, Assists, Steals, Blocks, Turnovers, pgl.teamID, t.teamName, pgl.Fouls, r.jersey, p.PermissionToShare
 	FROM PlayerGameLog pgl
 	JOIN Players p on p.playerID = pgl.playerID
     JOIN Teams t on t.teamID = pgl.teamID
+    JOIN Roster r on r.playerID = p.playerID and r.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
 	WHERE scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">
     ORDER by t.teamName
 </cfquery>
@@ -97,7 +98,13 @@
                 <cfset totalPTS += getPlayerLogs.Points>
 
     			<tr>
-    				<td data-label="Player" colspan="2">#getPlayerLogs.firstName# #getPlayerLogs.LastName#</td>
+    				<td data-label="Player" colspan="2">
+                        <cfif getPlayerlogs.PermissionToShare EQ 'Yes'>
+                        <a class="playerLink" href="/pages/teams/Player_Profiles/player-profile-2.cfm?playerID=#playerID#">#getPlayerLogs.firstName# #getPlayerLogs.LastName# ###getPlayerlogs.jersey#</a>
+                        <cfelse>
+                            #getPlayerLogs.firstName# #getPlayerLogs.LastName# ###getPlayerlogs.jersey#
+                        </cfif>
+                    </td>
     				<td data-label="FG">#getPlayerLogs.FGM# - #getPlayerLogs.FGA#</td>
     				<td data-label="3FG">#getPlayerLogs.3FGM# - #getPlayerLogs.3FGA#</td>
     				<td data-label="FT">#getPlayerLogs.FTM# - #getPlayerLogs.FTA#</td>

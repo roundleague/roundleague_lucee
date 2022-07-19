@@ -9,3 +9,7 @@ table.smallFont td {
 tr.smallFont th {
 	font-size: small;
 }
+
+a.playerLink {
+	font-weight: 800;
+}
