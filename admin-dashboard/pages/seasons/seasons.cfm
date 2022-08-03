@@ -22,36 +22,57 @@
 
 <cfoutput>
 
-      	<!--- Add Season Modal --->
-            <div class="modal fade" id="waiverModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-              <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">x</span>
-                    </button>
-                  </div>
-                  <div class="modal-body"> 
+<!--- Add Season Modal --->
+<div class="modal fade" id="addSeasonModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">x</span>
+        </button>
+      </div>
+      <div class="modal-body"> 
 
- 					<form id="newSeasonsForm" class="settings-form" method="POST">
-		              <div class="form-group">
-		                <label>Add New Season Name</label>
-		                <input type="text" required class="form-control border-input" placeholder="New Season Name" name="newSeasonName">
-		              </div>
-	              	</form>
+        <form id="newSeasonsForm" class="settings-form" method="POST">
+        <div class="form-group">
+          <label>Add New Season Name</label>
+          <input type="text" required class="form-control border-input" placeholder="New Season Name" name="newSeasonName">
+        </div>
+    	</form>
 
-                  </div>
-                  <div class="modal-footer">
-                    <div class="left-side">
-                      <button type="button" class="btn btn-default btn-link saveSeasonsBtn" data-dismiss="modal">Save</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </form>
+      </div>
+      <div class="modal-footer">
+        <div class="left-side">
+          <button type="button" class="btn btn-default btn-link saveSeasonsBtn" data-dismiss="modal">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-<!-- End Navbar -->
+<!--- Confirm Progression Modal --->
+<div class="modal fade" id="confirmProgression" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">x</span>
+        </button>
+      </div>
+      <div class="modal-body"> 
+        <p>Are you sure you wish to proceed and progress to the next season? </p>
+        <p>Progression will set the latest season as active and transfer all current players and free agents to the new season.</p>
+      </div>
+      <div class="modal-footer">
+        <div class="left-side">
+          <button type="button" class="btn btn-default btn-link progressionBtn" data-dismiss="modal">Yes, progress to next season</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--- Begin Content --->
 <div class="content">
   <div class="row">
     <div class="col-md-12">
@@ -77,7 +98,7 @@
 	            	</td>
 	            	<td data-label="Progression">
 	            		<cfif getSeasons.currentRow EQ 1 AND getSeasons.status EQ 'Inactive'>
-					        <button type="button" class="btn btn-outline-danger btn-round">
+					        <button type="button" class="btn btn-outline-danger btn-round modalBtn" data-toggle="modal" data-target="##confirmProgression">
 					          START SEASON (Not Implemented)
 					        </button>
 				    	</cfif>
@@ -87,7 +108,7 @@
         	   </cfloop>
             </tbody>
           </table>
-        <input type="submit" class="btn btn-outline-danger btn-round updateSaveBtn" value="Save" name="updateSaveBtn">        <button type="button" class="btn btn-outline-danger btn-round modalBtn" data-toggle="modal" data-target="##waiverModal">
+        <input type="submit" class="btn btn-outline-danger btn-round updateSaveBtn" value="Save" name="updateSaveBtn">        <button type="button" class="btn btn-outline-danger btn-round modalBtn" data-toggle="modal" data-target="##addSeasonModal">
           Add New Season
         </button>
         </form>
