@@ -17,7 +17,7 @@
 		ORDER BY seasonID Desc
 		LIMIT 1
 	</cfquery>
-	<cfquery name="addPlayer" datasource="roundleague" result="playerAdd">
+	<cfquery name="addSeason" datasource="roundleague">
 		INSERT INTO Seasons 
 		(
 			SeasonName,

@@ -9,6 +9,8 @@
 <!--- Save Data --->
 <cfif isDefined("form.newSeasonName")>
 	<cfinclude template="saveNewSeason.cfm">
+<cfelseif isDefined("form.updateSaveBtn")>
+  <cfinclude template="updateSeasonStatuses.cfm">
 </cfif>
 
 <cfquery name="getSeasons" datasource="roundleague">
@@ -47,12 +49,14 @@
                 </div>
               </div>
             </div>
+          </form>
 
 <!-- End Navbar -->
 <div class="content">
   <div class="row">
     <div class="col-md-12">
       <h3 class="description">Seasons Manager</h3>
+      <form id="updateSeasons" method="POST">
         <table>
           <thead>
             <tr>
@@ -66,7 +70,7 @@
 	            <tr>
 	            	<td data-label="Season Name">#SeasonName#</td>
 	            	<td data-label="Status">
-	            		<select name="status" class="statusSelect">
+	            		<select name="status_#getSeasons.seasonID#" class="statusSelect">
 	            			<option value="Active" <cfif getSeasons.status EQ 'Active'>selected</cfif>>Active</option>
 	            			<option value="Inactive" <cfif getSeasons.status EQ 'Inactive'>selected</cfif>>Inactive</option>
 	            		</select>
@@ -79,15 +83,14 @@
 				    	</cfif>
 	            	</td>
 	            </tr>
-        	</cfloop>
-          </tbody>
-        </table>
-        <button type="button" class="btn btn-outline-danger btn-round">
-          Save (Not Implemented)
-        </button>
-        <button type="button" class="btn btn-outline-danger btn-round modalBtn" data-toggle="modal" data-target="##waiverModal">
+              <input type="hidden" name="seasonIDList" value="#seasonID#">
+        	   </cfloop>
+            </tbody>
+          </table>
+        <input type="submit" class="btn btn-outline-danger btn-round updateSaveBtn" value="Save" name="updateSaveBtn">        <button type="button" class="btn btn-outline-danger btn-round modalBtn" data-toggle="modal" data-target="##waiverModal">
           Add New Season
         </button>
+        </form>
         <br>
         <h4 class="toastMsg">#toastMsg#</h4>
     </div>
