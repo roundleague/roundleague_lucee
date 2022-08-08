@@ -12,6 +12,10 @@ $( document ).ready(function() {
 	$(".saveBtn").click(function(){
 		$("#saveScoresModal").show();
 
+		// Default the current team final score in the box to prevent confusion
+		var finalScore = $('.teamTotalPts').text();
+		$('.defaultScore').val(finalScore);
+
 		// Remove the player highlight to prevent any numbers from updating stats
 		$("td.playerBox").removeClass("playerHighlight");
 

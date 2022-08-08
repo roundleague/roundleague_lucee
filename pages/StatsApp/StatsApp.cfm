@@ -90,8 +90,8 @@
                 <h2>Enter the final scores</h2>
               </header>
               <div class="w3-container" style="padding: 30px;">
-                #getTeamsPlaying.home# (Home): <input type="number" name="homeScore" value="0"><br>
-                #getTeamsPlaying.away# (Away): <input type="number" name="awayScore" value="0">
+                #getTeamsPlaying.home# (Home): <input type="number" name="homeScore" value="0" <cfif url.teamID EQ getTeamsPlaying.homeTeamId>class="defaultScore"</cfif>><br>
+                #getTeamsPlaying.away# (Away): <input type="number" name="awayScore" value="0" <cfif url.teamID EQ getTeamsPlaying.awayTeamId>class="defaultScore"</cfif>>
                 <input type="submit" name="saveBoxScore" style="margin-left: 25px;" value="Save">
               </div>
               <footer class="w3-container w3-teal">
