@@ -72,6 +72,12 @@ Coded by www.creative-tim.com
               <p>Teams Overview</p>
             </a>
           </li>
+          <li <cfif findNoCase("seasons", CGI.REQUEST_URL)>class="active"</cfif>>
+            <a href="/admin-dashboard/pages/seasons/seasons.cfm">
+              <i class="nc-icon nc-paper"></i>
+              <p>Seasons Manager</p>
+            </a>
+          </li>
           <li <cfif findNoCase("playoffs", CGI.REQUEST_URL)>class="active"</cfif>>
             <a href="/admin-dashboard/pages/playoffs/playoffs.cfm">
               <i class="nc-icon nc-trophy"></i>
