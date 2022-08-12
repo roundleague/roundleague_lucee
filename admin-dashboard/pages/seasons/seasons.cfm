@@ -11,6 +11,8 @@
 	<cfinclude template="saveNewSeason.cfm">
 <cfelseif isDefined("form.updateSaveBtn")>
   <cfinclude template="updateSeasonStatuses.cfm">
+<cfelseif isDefined("form.progressToSeasonId")>
+  <cfinclude template="progressSeason.cfm">
 </cfif>
 
 <cfquery name="getSeasons" datasource="roundleague">
@@ -21,7 +23,6 @@
 </cfquery>
 
 <cfoutput>
-
 <!--- Add Season Modal --->
 <div class="modal fade" id="addSeasonModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -61,10 +62,13 @@
       </div>
       <div class="modal-body"> 
         <p>Are you sure you wish to proceed and progress to the next season? </p>
-        <p>Progression will set the latest season as active and transfer all current players and free agents to the new season.</p>
+        <p>Progression will set the newest season as active and transfer all current players and free agents to the new season.</p>
       </div>
       <div class="modal-footer">
         <div class="left-side">
+          <form id="progressSeasonForm" class="settings-form" method="POST">
+            <input type="hidden" name="progressToSeasonId" value="" class="progressToSeasonId" />
+          </form>
           <button type="button" class="btn btn-default btn-link progressionBtn" data-dismiss="modal">Yes, progress to next season</button>
         </div>
       </div>
@@ -98,10 +102,10 @@
 	            	</td>
 	            	<td data-label="Progression">
 	            		<cfif getSeasons.currentRow EQ 1 AND getSeasons.status EQ 'Inactive'>
-					        <button type="button" class="btn btn-outline-danger btn-round modalBtn" data-toggle="modal" data-target="##confirmProgression">
-					          START SEASON (Not Implemented)
-					        </button>
-				    	</cfif>
+  					        <button type="button" class="btn btn-outline-danger btn-round modalBtn progressSeasonBtn" data-value="#getSeasons.seasonID#" data-toggle="modal" data-target="##confirmProgression">
+  					          START SEASON
+  					        </button>
+			    	     </cfif>
 	            	</td>
 	            </tr>
               <input type="hidden" name="seasonIDList" value="#seasonID#">
@@ -120,4 +124,4 @@
 </cfoutput>
 
 <cfinclude template="/admin-dashboard/admin_footer.cfm">
-<script src="/admin-dashboard/pages/seasons/seasons.js"></script>
+<script src="/admin-dashboard/pages/seasons/seasons.js?v=1.1"></script>
