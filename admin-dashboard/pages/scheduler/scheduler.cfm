@@ -1,0 +1,103 @@
+
+<cfinclude template="/admin-dashboard/admin_header.cfm">
+
+<!--- Page Specific CSS/JS Here --->
+
+<cfquery name="getDivisions" datasource="roundleague">
+  SELECT DivisionID, DivisionName
+  FROM Divisions
+  Where SeasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+</cfquery>
+<cfparam name="form.divisionID" default="#getDivisions.divisionID#">
+
+<cfquery name="getSchedule" datasource="roundleague">
+  SELECT scheduleID, WEEK, a.teamName AS Home, b.teamName AS Away, s.startTime, s.date, s.homeTeamID, s.awayTeamID, s.seasonID, s.homeScore, s.awayScore
+  FROM schedule s
+  LEFT JOIN teams as a ON s.hometeamID = a.teamID
+  LEFT JOIN teams as b ON s.awayTeamID = b.teamID
+  WHERE s.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+  AND s.divisionID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.divisionID#">
+  ORDER BY WEEK, date, startTime
+</cfquery>
+
+<cfoutput>
+<!-- End Navbar -->
+<div class="content">
+  <div class="row">
+    <div class="col-md-12">
+      <h3 class="description">Scheduler</h3>
+      <form method="POST">
+
+        <label for="DivisionID">Division</label>
+        <select name="DivisionID" id="Divisions" onchange="this.form.submit()">
+          <cfloop query="getDivisions">
+            <option value="#getDivisions.DivisionID#"<cfif getDivisions.DivisionID EQ form.DivisionID> selected</cfif>>#getDivisions.DivisionName#</option>
+          </cfloop>
+        </select>
+
+        <!--- Display schedule based on selected division --->
+          <table id="myTable" class="grid pure-table pure-table-horizontal bolder">
+              <thead>
+                  <tr>
+                      <th>Home</th>
+                      <th>Away</th>
+                      <th>Date</th>
+                      <th>Time</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <cfset currentWeek = 1>
+                  <cfloop query="getSchedule">
+
+                    <cfif homeScore GT awayScore>
+                      <cfset homeBoldClass = 'boldClass'>
+                      <cfset awayBoldClass = ''>
+                    <cfelseif awayScore GT homeScore>
+                      <cfset homeBoldClass = ''>
+                      <cfset awayBoldClass = 'boldClass'>
+                    <cfelse>
+                      <cfset homeBoldClass = ''>
+                      <cfset awayBoldClass = ''>
+                    </cfif>
+
+                    <cfif currentWeek NEQ getSchedule.week OR getSchedule.currentRow EQ 1>
+                      <cfset currentWeek = getSchedule.week>
+                      <tr class="weekRow" id="week_#currentWeek#">
+                        <td colspan="4">Week #currentWeek#</td>
+                      </tr>
+                    </cfif>
+                      <tr>
+
+                        <cfif getSchedule.homeScore NEQ ''>
+                          <td data-label="Home"><a class="#homeBoldClass#" href="/pages/boxscore/boxscore.cfm?scheduleID=#getSchedule.scheduleID#">#getSchedule.Home# #getSchedule.HomeScore#</a></td>
+                        <cfelse>
+                          <td data-label="Home">#getSchedule.Home#</td>
+                        </cfif>
+
+                        <cfif getSchedule.AwayScore NEQ ''>
+                          <td data-label="Away"><a class="#awayBoldClass#" href="/pages/boxscore/boxscore.cfm?scheduleID=#getSchedule.scheduleID#">#getSchedule.Away# #getSchedule.AwayScore#</a></td>
+                        <cfelse>
+                          <!--- Extra logic for away; if schedule includes a BYE --->
+                          <td data-label="Away">
+                          #(len(DateTimeFormat(getSchedule.startTime, "h:nn tt")) GT 0) ? evaluate('getSchedule.Away') : 'BYE'#
+                          </td>
+                        </cfif>
+                        
+                        <td data-label="Date">
+                          #DateFormat(getSchedule.Date, "mm/dd/yyyy")#
+                        </td>
+                        <td data-label="Time">
+                          #(len(DateTimeFormat(getSchedule.startTime, "h:nn tt")) GT 0) ? DateTimeFormat(getSchedule.startTime, "h:nn tt") : 'BYE'#
+                        </td>
+                      </tr>
+                  </cfloop>
+              </tbody>
+          </table>
+
+      </form>
+    </div>
+  </div>
+</div>
+</cfoutput>
+
+<cfinclude template="/admin-dashboard/admin_footer.cfm">
