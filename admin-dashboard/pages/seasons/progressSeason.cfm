@@ -28,6 +28,35 @@
 		FROM roster
 		WHERE seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getPreviousSeasonID.PreviousSeasonID#">
 	</cfquery>
+	<cfquery name="transferLeaguesToNextSeason" datasource="roundleague">
+		INSERT INTO leagues (seasonID, LeagueName)
+		SELECT <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.progressToSeasonId#">, LeagueName
+		FROM leagues
+		WHERE seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getPreviousSeasonID.PreviousSeasonID#">
+	</cfquery>
+	<!--- Grab new leagues based on name, (get latest leagueID top 1, then insert here) --->
+	<cfquery name="transferDivisionsToNextSeason" datasource="roundleague">
+		INSERT INTO divisions (seasonID, DivisionName, IsWomens, LeagueID)
+		SELECT <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.progressToSeasonId#">, DivisionName, IsWomens, (SELECT LeagueID 
+			FROM leagues
+			WHERE leagueName = (SELECT leagueName FROM leagues WHERE leagueID = d.leagueID)
+			ORDER BY leagueID DESC
+			LIMIT 1)
+		FROM divisions d
+		WHERE seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getPreviousSeasonID.PreviousSeasonID#">
+	</cfquery>
+	<!--- Copy all schedule games from previous season to new season, then edit from there --->
+	<!--- Grab new divisions based on name, (get latest divisionID top 1, then insert here) --->
+	<cfquery name="transferScheduleToNextSeason" datasource="roundleague">
+		INSERT INTO schedule (HomeTeamID, AwayTeamID, Week, StartTime, Date, DivisionID, SeasonID)
+		SELECT HomeTeamID, AwayTeamID, Week, StartTime, Date, (SELECT DivisionID 
+			FROM Divisions
+			WHERE DivisionName = (SELECT DivisionName FROM Divisions WHERE DivisionID = s.divisionID)
+			ORDER BY DivisionID DESC
+			LIMIT 1), <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.progressToSeasonId#">
+		FROM schedule s 
+		WHERE seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getPreviousSeasonID.PreviousSeasonID#">
+	</cfquery>
 	<cfset toastMsg = 'Successfully progressed to #getNewSeason.SeasonName# Season!'>
 
 </cfoutput>

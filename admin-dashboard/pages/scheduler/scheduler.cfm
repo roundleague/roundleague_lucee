@@ -2,6 +2,8 @@
 <cfinclude template="/admin-dashboard/admin_header.cfm">
 
 <!--- Page Specific CSS/JS Here --->
+<link rel="stylesheet" href="https://unpkg.com/purecss@2.0.6/build/pure-min.css" integrity="sha384-Uu6IeWbM+gzNVXJcM9XV3SohHtmWE+3VGi496jvgX1jyvDTXfdK+rfZc8C1Aehk5" crossorigin="anonymous">
+<link href="../scheduler/scheduler.css?v=1.1" rel="stylesheet">
 
 <cfquery name="getDivisions" datasource="roundleague">
   SELECT DivisionID, DivisionName
@@ -23,7 +25,6 @@
 <cfoutput>
 <!-- End Navbar -->
 <div class="content">
-  <div class="row">
     <div class="col-md-12">
       <h3 class="description">Scheduler</h3>
       <form method="POST">
@@ -36,7 +37,7 @@
         </select>
 
         <!--- Display schedule based on selected division --->
-          <table id="myTable" class="grid pure-table pure-table-horizontal bolder">
+          <table id="myTable" class="grid pure-table pure-table-horizontal bolder" style="width: 80%">
               <thead>
                   <tr>
                       <th>Home</th>
@@ -96,7 +97,6 @@
 
       </form>
     </div>
-  </div>
 </div>
 </cfoutput>
 

@@ -61,8 +61,15 @@
         </button>
       </div>
       <div class="modal-body"> 
+        <p>Progression will set the newest season as active and do the following</p>
+        <ul>
+          <li>Move all current active teams to new season</li>
+          <li>Move all current roster records to new season</li>
+          <li>Move all leagues to new season</li>
+          <li>Move all current divisions to new season (leagueID will need to be assigned manually - Tim's job)</li>
+          <li>Move all scheduled games to new season (to be edited using scheduler)</li>
+        </ul>
         <p>Are you sure you wish to proceed and progress to the next season? </p>
-        <p>Progression will set the newest season as active and transfer all current players and free agents to the new season.</p>
       </div>
       <div class="modal-footer">
         <div class="left-side">
