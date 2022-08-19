@@ -66,7 +66,7 @@
           <li>Move all current active teams to new season</li>
           <li>Move all current roster records to new season</li>
           <li>Move all leagues to new season</li>
-          <li>Move all current divisions to new season (leagueID will need to be assigned manually - Tim's job)</li>
+          <li>Move all current divisions to new season</li>
           <li>Move all scheduled games to new season (to be edited using scheduler)</li>
         </ul>
         <p>Are you sure you wish to proceed and progress to the next season? </p>
