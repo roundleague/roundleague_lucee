@@ -2,7 +2,7 @@
 <cfinclude template="captain_security_check.cfm">
 
 <!--- Page Specific CSS/JS Here --->
-<link href="captain.css" rel="stylesheet">
+<link href="captain.css?v=1.3" rel="stylesheet">
 
 <cfif isDefined("form.updateBtn")>
 	<cfinclude template="saveRosterData.cfm">
