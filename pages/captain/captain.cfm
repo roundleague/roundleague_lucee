@@ -2,7 +2,7 @@
 <cfinclude template="captain_security_check.cfm">
 
 <!--- Page Specific CSS/JS Here --->
-<link href="captain.css" rel="stylesheet">
+<link href="captain.css?v=1.2" rel="stylesheet">
 
 <cfif isDefined("form.updateBtn")>
 	<cfinclude template="saveRosterData.cfm">
@@ -63,6 +63,7 @@
     d.divisionName,
     t.captainPlayerID,
     r.jersey,
+    r.starter,
     p.PermissionToShare,
     p.instagram
 	FROM players p
@@ -75,7 +76,7 @@
 	<cfif findNoCase("127.0.0.1", CGI.HTTP_HOST)>
 			OR t.captainPlayerID = 1002
 	</cfif>
-  GROUP BY lastName, firstName
+	ORDER BY Starter desc, lastName
 </cfquery>
 
 <cfset bballPosition = 'Point Guard,Shooting Guard,Small Forward,Power Forward,Center'>
@@ -115,7 +116,7 @@
 	        <table>
 	          <caption>#getTeamData.seasonName# Roster</caption>
 	          <thead>
-	            <tr>
+	            <tr class="autoWidth">
 	            	<td>Name</td>
 	              	<td>Jersey</td>
 	            	<td>Position</td>
@@ -124,17 +125,23 @@
 	            	<td>Hometown</td>
 	            	<td>School</td>
 	            	<td>Instagram</td>
+	            	<td width="40">Starter</td>
 	            	<td>Remove</td>
 	            </tr>
 	          </thead>
 	          <tbody>
 	          	<cfloop query="getTeamData">
+	          		<cfif getTeamData.currentRow EQ 6>
+	          			<tr>
+	          				<td colspan="10">Bench</td>
+	          			</tr>
+	          		</cfif>
 		            <tr>
 		            	<td data-label="Player">
 	                    	#firstName# #lastName# <cfif getTeamData.captainPlayerID EQ getTeamData.playerID>(C)</cfif>
 	                	</td>
 	                <td data-label="Jersey">
-	                	<input type="number" class="form-control border-input" value="#jersey#" name="jersey_#playerID#">
+	                	<input type="number" class="form-control border-input smallerField" value="#jersey#" name="jersey_#playerID#">
 	                	<!--- <cfif jersey EQ ''>
 	                		N/A
 	                	<cfelse>
@@ -163,10 +170,12 @@
 		            	<td data-label="Instagram">
 		            		<input type="text" class="form-control border-input" value="#instagram#" name="instagram_#playerID#">
 		            	</td>
+		            	<td data-label="Starter">
+		            		<input type="checkbox" class="form-control border-input starterCheckboxMobile" value="#starter#" name="starter_#playerID#" style="width: 20px;" <cfif starter EQ 1>checked</cfif>>
+		            	</td>
 		            	<td data-label="Remove Player">
 		            		<button type="button" class="btn btn-outline-danger btn-round removeBtn" data-toggle="modal" data-target="##removePlayerModal" data-name="#firstName# #lastName#" data-playerid="#playerID#">
-		              Remove
-		            </button>
+		              			Remove</button>
 		            	</td>
 		            </tr>
 		            <input type="hidden" name="playerIDList" value="#playerID#">

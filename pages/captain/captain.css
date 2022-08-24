@@ -69,4 +69,9 @@ div.container {
 		width: 20%;
 		border-top: 1px solid black;
 	}
+  .starterCheckboxMobile {
+    margin-top: 10px;
+    position: relative;
+    left: -35px;
+  }
 }
