@@ -18,7 +18,8 @@
 	    	WHERE PlayerID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#i#">;
 
 	    	UPDATE roster
-	    	SET JERSEY = <cfqueryparam cfsqltype="cf_sql_varchar" value="#val(form["jersey_" & i])#">
+	    	SET JERSEY = <cfqueryparam cfsqltype="cf_sql_varchar" value="#val(form["jersey_" & i])#">,
+	    		Starter = <cfif isDefined("starter_#i#")>1<cfelse>0</cfif>
 	    	WHERE PlayerID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#i#">
 	    	AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">;
 	    </cfquery>
