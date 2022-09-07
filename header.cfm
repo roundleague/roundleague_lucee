@@ -14,6 +14,14 @@
   Where Status = 'Active'
 </cfquery>
 <cfset session.currentSeasonID = currentSeason.seasonID>
+
+<!--- Check to see if playoffs exists this season --->
+<cfquery name="doPlayoffsExist" datasource="roundleague">
+  SELECT playoffs_scheduleID
+  FROM playoffs_schedule
+  WHERE seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+</cfquery>
+
 <head>
   <meta charset="utf-8" />
   <link rel="apple-touch-icon" sizes="76x76" href="/assets/img//apple-icon.png">
@@ -72,8 +80,10 @@
               <a class="dropdown-item" href="/pages/schedule/schedule-womens.cfm">Women's Schedule</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="/pages/schedule/schedule-asian.cfm">Asian League Schedule</a>
-              <!--- <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="/pages/schedule/playoffs_schedule.cfm">Playoffs Schedule</a> --->
+              <cfif doPlayoffsExist.recordCount>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="/pages/schedule/playoffs_schedule.cfm">Playoffs Schedule</a>
+              </cfif>
             </ul>
           </div>
           <li class="nav-item">

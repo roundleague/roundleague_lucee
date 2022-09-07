@@ -31,6 +31,11 @@
                 <cfcase value="5,6"><cfreturn 7></cfcase>
                 <cfdefaultcase><cfreturn 0></cfdefaultcase> 
             </cfswitch>
+        <cfelseif numRounds EQ 2>
+            <cfswitch expression="#fromGameId#"> 
+                <cfcase value="1,2"><cfreturn 3></cfcase>
+                <cfdefaultcase><cfreturn 0></cfdefaultcase> 
+            </cfswitch>
         <cfelse>
             <cfreturn 0>
         </cfif>
