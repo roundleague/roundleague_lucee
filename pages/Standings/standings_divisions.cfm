@@ -60,7 +60,7 @@
           	<cfloop query="getStandings">
 	            <tr>
 	            	<td data-label="Rank">#getStandings.currentRow#</td>
-	            	<td data-label="Team">#TeamName#</td>
+	            	<td data-label="Team"><a href="/pages/teams/team-profile-page.cfm?teamID=#getStandings.teamID#">#TeamName#</a></td>
 	            	<td data-label="Wins">#Wins#</td>
 	            	<td data-label="Losses">#Losses#</td>
 	            	<td data-label="PointDiff">#PointDifferential#</td>
