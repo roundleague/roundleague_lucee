@@ -2,6 +2,7 @@
 
 <!--- Page Specific CSS/JS Here --->
 <link href="/pages/Standings/purekitpro.css" rel="stylesheet" />
+<link href="/pages/Standings/standings_divisions.css?v=1.0" rel="stylesheet" />
 
 <cfquery name="getActive" datasource="roundleague">
 	SELECT SeasonID 
@@ -60,7 +61,7 @@
           	<cfloop query="getStandings">
 	            <tr>
 	            	<td data-label="Rank">#getStandings.currentRow#</td>
-	            	<td data-label="Team"><a href="/pages/teams/team-profile-page.cfm?teamID=#getStandings.teamID#">#TeamName#</a></td>
+	            	<td data-label="Team"><a class="boldClass" href="/pages/teams/team-profile-page.cfm?teamID=#getStandings.teamID#">#TeamName#</a></td>
 	            	<td data-label="Wins">#Wins#</td>
 	            	<td data-label="Losses">#Losses#</td>
 	            	<td data-label="PointDiff">#PointDifferential#</td>
