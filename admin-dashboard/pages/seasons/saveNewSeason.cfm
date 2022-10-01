@@ -22,13 +22,17 @@
 		(
 			SeasonName,
 			Status,
-			PreviousSeasonID
+			PreviousSeasonID,
+			StartDate,
+			EndDate
 		)
 		VALUES
 		(
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.newSeasonName#">,
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="Inactive">,
-			<cfqueryparam cfsqltype="cf_sql_integer" value="#getPreviousSeasonID.seasonID#">
+			<cfqueryparam cfsqltype="cf_sql_integer" value="#getPreviousSeasonID.seasonID#">,
+			<cfqueryparam cfsqltype="cf_sql_date" value="#DateFormat(form.startDate, "mm/dd/yyyy")#">,
+			<cfqueryparam cfsqltype="cf_sql_date" value="#DateFormat(form.endDate, "mm/dd/yyyy")#">
 		)
 	</cfquery>
 	<cfset toastMsg = 'Successfully added season!'>
