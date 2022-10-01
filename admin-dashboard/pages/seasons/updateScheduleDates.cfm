@@ -84,20 +84,33 @@
 		</cfswitch>
 	<cfelse>
 		<!--- Week 2, 3, 4, etc, just update schedule date to be past week + 7, by divisionID --->
-		<cfloop query="getUniqueDivision">
-			<!--- currently not working --->
-			<cfquery name="updateDate" datasource="roundleague">
-				UPDATE schedule
-				SET date = (
-						SELECT DATE_ADD(date, INTERVAL 7 DAY) 
-						FROM schedule 
-						WHERE seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.progressToSeasonId#">
-						AND divisionID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getUniqueDivision.divisionID#">
-						AND week = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getNewSchedule.Week#"> - 1
-						LIMIT 1)
-				WHERE scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getNewSchedule.scheduleID#">
-			</cfquery>
-		</cfloop>
 	</cfif>
 </cfloop>
+
+<cfloop index="i" from="2" to="8">
+	<cfloop query="getUniqueDivision">
+		<!--- currently not working --->
+		<cfquery name="getPreviousWeekDateByDivision" datasource="roundleague">
+			SELECT DATE_ADD(date, INTERVAL 7 DAY) as newWeekDate
+			FROM schedule 
+			WHERE seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.progressToSeasonId#">
+			AND divisionID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getUniqueDivision.divisionID#">
+			AND week = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#i#"> - 1
+			LIMIT 1
+		</cfquery>
+		<cfquery name="updateDate" datasource="roundleague">
+			UPDATE schedule
+			SET date = <cfqueryparam cfsqltype="cf_sql_date" value="#getPreviousWeekDateByDivision.newWeekDate#">
+			WHERE divisionID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getUniqueDivision.divisionID#">
+			AND week = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#i#">
+		</cfquery>
+	</cfloop>
+</cfloop>
+
+<!--- Finally, delete all play in games (Week 8; added manually later on) --->
+<cfquery name="deletePlayInGames" datasource="roundleague">
+	DELETE FROM schedule
+	WHERE seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.progressToSeasonId#">
+	AND week = 8
+</cfquery>
 </cfoutput>
