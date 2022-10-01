@@ -32,6 +32,7 @@
 	SELECT scheduleID, week, DAYOFWEEK(DATE) as DayOfWeek
 	FROM schedule
 	WHERE seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.progressToSeasonId#">
+	AND week = 1
 </cfquery>
 
 <!--- Week 2, 3, 4, etc, just update schedule date to be past week + 7, by divisionID --->
@@ -44,47 +45,40 @@
 <!--- MySQL Day of the Weeks Key --->
 <!--- Sat = 7, Sun = 1, Mon = 2, Weds = 4 --->
 <cfloop query="getNewSchedule">
-	<cfif getNewSchedule.week EQ 8>
-		<!--- Do not include play in games, which are designated as week 8 right now --->
-		<cfbreak>
-	<cfelseif getNewSchedule.week EQ 1>
-		<cfswitch expression="#getNewSchedule.DayOfWeek#">
-			<cfcase value="7">
-				<!--- Sat --->
-				<cfquery name="setDate" datasource="roundleague">
-					UPDATE schedule
-					SET date = <cfqueryparam cfsqltype="cf_sql_date" value="#getStartDate.startDate#">
-					WHERE scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getNewSchedule.scheduleID#">
-				</cfquery>
-			</cfcase>
-			<cfcase value="1">
-				<!--- Sun --->
-				<cfquery name="setDate" datasource="roundleague">
-					UPDATE schedule
-					SET date = <cfqueryparam cfsqltype="cf_sql_date" value="#NextSunday#">
-					WHERE scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getNewSchedule.scheduleID#">
-				</cfquery>
-			</cfcase>
-			<cfcase value="2">
-				<!--- Mon --->
-				<cfquery name="setDate" datasource="roundleague">
-					UPDATE schedule
-					SET date = <cfqueryparam cfsqltype="cf_sql_date" value="#NextMonday#">
-					WHERE scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getNewSchedule.scheduleID#">
-				</cfquery>
-			</cfcase>
-			<cfcase value="4">
-				<!--- Weds --->
-				<cfquery name="setDate" datasource="roundleague">
-					UPDATE schedule
-					SET date = <cfqueryparam cfsqltype="cf_sql_date" value="#NextWeds#">
-					WHERE scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getNewSchedule.scheduleID#">
-				</cfquery>
-			</cfcase>
-		</cfswitch>
-	<cfelse>
-		<!--- Week 2, 3, 4, etc, just update schedule date to be past week + 7, by divisionID --->
-	</cfif>
+	<cfswitch expression="#getNewSchedule.DayOfWeek#">
+		<cfcase value="7">
+			<!--- Sat --->
+			<cfquery name="setDate" datasource="roundleague">
+				UPDATE schedule
+				SET date = <cfqueryparam cfsqltype="cf_sql_date" value="#getStartDate.startDate#">
+				WHERE scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getNewSchedule.scheduleID#">
+			</cfquery>
+		</cfcase>
+		<cfcase value="1">
+			<!--- Sun --->
+			<cfquery name="setDate" datasource="roundleague">
+				UPDATE schedule
+				SET date = <cfqueryparam cfsqltype="cf_sql_date" value="#NextSunday#">
+				WHERE scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getNewSchedule.scheduleID#">
+			</cfquery>
+		</cfcase>
+		<cfcase value="2">
+			<!--- Mon --->
+			<cfquery name="setDate" datasource="roundleague">
+				UPDATE schedule
+				SET date = <cfqueryparam cfsqltype="cf_sql_date" value="#NextMonday#">
+				WHERE scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getNewSchedule.scheduleID#">
+			</cfquery>
+		</cfcase>
+		<cfcase value="4">
+			<!--- Weds --->
+			<cfquery name="setDate" datasource="roundleague">
+				UPDATE schedule
+				SET date = <cfqueryparam cfsqltype="cf_sql_date" value="#NextWeds#">
+				WHERE scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getNewSchedule.scheduleID#">
+			</cfquery>
+		</cfcase>
+	</cfswitch>
 </cfloop>
 
 <cfloop index="i" from="2" to="8">
