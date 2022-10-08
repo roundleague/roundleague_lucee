@@ -59,12 +59,12 @@
   ORDER BY divisionName
 </cfquery>
 
-<cfquery name="getAtlanticDivision" datasource="roundleague">
+<cfquery name="getPremierDivision" datasource="roundleague">
   SELECT teamName, DivisionName, teamID
   FROM teams t
   JOIN divisions d ON t.DivisionID = d.DivisionID
   Where t.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
-  AND DivisionName LIKE '%Atlantic%'
+  AND DivisionName LIKE '%Premier%'
   ORDER BY divisionName
 </cfquery>
 
@@ -107,10 +107,10 @@
               </ul>
             </div>
             <div class="standingsDiv flex-item">
-              <h4 class="standingsh4">Atlantic Division</h4>
+              <h4 class="standingsh4">Premier Division</h4>
               <ul class="standingsUl">
-                <cfloop query="getAtlanticDivision">
-                  <li><a href="team-profile-page.cfm?teamID=#getAtlanticDivision.teamID#">#getAtlanticDivision.teamName#</a></li>
+                <cfloop query="getPremierDivision">
+                  <li><a href="team-profile-page.cfm?teamID=#getPremierDivision.teamID#">#getPremierDivision.teamName#</a></li>
                 </cfloop>
               </ul>
             </div>
