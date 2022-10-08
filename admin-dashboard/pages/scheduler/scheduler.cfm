@@ -41,6 +41,7 @@
   SELECT teamName, teamID
   FROM teams
   WHERE divisionID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.divisionID#">
+  AND status = <cfqueryparam cfsqltype="cf_sql_varchar" value="Active">
   ORDER BY teamName
 </cfquery>
 
