@@ -31,7 +31,7 @@
   JOIN divisions d ON t.DivisionID = d.DivisionID
   Where t.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
   AND DivisionName LIKE '%East%'
-  AND t.status = <cfqueryparam cfsqltype="cf_sql_varchar" value="'Active'">
+  AND t.status = <cfqueryparam cfsqltype="cf_sql_varchar" value="Active">
   ORDER BY divisionName
 </cfquery>
 
@@ -41,7 +41,7 @@
   JOIN divisions d ON t.DivisionID = d.DivisionID
   Where t.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
   AND DivisionName LIKE '%West%'
-  AND t.status = <cfqueryparam cfsqltype="cf_sql_varchar" value="'Active'">
+  AND t.status = <cfqueryparam cfsqltype="cf_sql_varchar" value="Active">
   ORDER BY divisionName
 </cfquery>
 
@@ -51,7 +51,7 @@
   JOIN divisions d ON t.DivisionID = d.DivisionID
   Where t.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
   AND DivisionName LIKE '%Pacific%'
-  AND t.status = <cfqueryparam cfsqltype="cf_sql_varchar" value="'Active'">
+  AND t.status = <cfqueryparam cfsqltype="cf_sql_varchar" value="Active">
   ORDER BY divisionName
 </cfquery>
 
@@ -61,7 +61,7 @@
   JOIN divisions d ON t.DivisionID = d.DivisionID
   Where t.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
   AND DivisionName LIKE '%Women%'
-  AND t.status = <cfqueryparam cfsqltype="cf_sql_varchar" value="'Active'">
+  AND t.status = <cfqueryparam cfsqltype="cf_sql_varchar" value="Active">
   ORDER BY divisionName
 </cfquery>
 
@@ -71,7 +71,7 @@
   JOIN divisions d ON t.DivisionID = d.DivisionID
   Where t.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
   AND DivisionName LIKE '%Premier%'
-  AND t.status = <cfqueryparam cfsqltype="cf_sql_varchar" value="'Active'">
+  AND t.status = <cfqueryparam cfsqltype="cf_sql_varchar" value="Active">
   ORDER BY divisionName
 </cfquery>
 
@@ -81,7 +81,7 @@
   JOIN divisions d ON t.DivisionID = d.DivisionID
   Where t.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
   AND DivisionName LIKE '%Asian%'
-  AND t.status = <cfqueryparam cfsqltype="cf_sql_varchar" value="'Active'">
+  AND t.status = <cfqueryparam cfsqltype="cf_sql_varchar" value="Active">
   ORDER BY divisionName
 </cfquery>
 
