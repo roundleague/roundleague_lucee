@@ -106,14 +106,14 @@
                 </cfloop>
               </ul>
             </div>
-            <div class="standingsDiv flex-item">
+            <!--- <div class="standingsDiv flex-item">
               <h4 class="standingsh4">Pacific Division</h4>
               <ul class="standingsUl">
                 <cfloop query="getPacificDivision">
                   <li><a href="team-profile-page.cfm?teamID=#getPacificDivision.teamID#">#getPacificDivision.teamName#</a></li>
                 </cfloop>
               </ul>
-            </div>
+            </div> --->
             <div class="standingsDiv flex-item">
               <h4 class="standingsh4">Premier Division</h4>
               <ul class="standingsUl">
