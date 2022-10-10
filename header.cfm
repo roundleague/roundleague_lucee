@@ -60,7 +60,7 @@
           <span class="navbar-toggler-bar bar3"></span>
         </button>
       </div>
-      <div class="collapse navbar-collapse justify-content-end" id="navigation">
+      <div class="collapse navbar-collapse justify-content-end initialState" id="navigation">
         <ul class="navbar-nav">
           <li class="nav-item">
             <a class="nav-link" rel="tooltip" title="Follow us on Twitter" data-placement="bottom" href="/pages/landing-page.cfm">
