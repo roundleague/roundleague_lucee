@@ -11,8 +11,10 @@
   FROM schedule s
   LEFT JOIN teams as a ON s.hometeamID = a.teamID
   LEFT JOIN teams as b ON s.awayTeamID = b.teamID
+  JOIN divisions d ON s.DivisionID = d.divisionID
+  JOIN leagues l ON l.leagueID = d.leagueID
   WHERE s.seasonID = (SELECT seasonID From seasons WHERE status = 'Active')
-  AND (S.DivisionID = 24)
+  AND l.leagueName LIKE '%Asian%'
   ORDER BY WEEK, date, startTime
 </cfquery>
 
