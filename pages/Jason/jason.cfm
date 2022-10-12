@@ -6,11 +6,17 @@
 <style>
 .testClass, td{
   border: 1px solid;
-  color: pink;
+  color: black;
 }
 </style>
 </head>
 
+<cfif isDefined("form.deleteBtn")>
+	delete button was clicked
+</cfif>
+<cfif isDefined("form.updateBtn")>
+	update button was clicked
+</cfif>
 <cfif isDefined("form.ethnicity") and isDefined("form.gender")>
 	#form.firstName#
 	#form.lastName#<br>
@@ -35,31 +41,45 @@
 
 
 <cfquery name ="getRichardData" datasource = "roundleague">
-	SELECT firstName, lastName, POSITION
-	FROM players
-	WHERE playerID IN (1001, 1002, 1003)
+SELECT firstName, lastName, Email, playerID
+    FROM players
+    ORDER BY playerid DESC
+    LIMIT 3
+
 </cfquery>
 
 <body>
 
 
-<table class="testClass"> 
+
+
+<form method="POST">
+
+	<table class="testClass"> 
 <tr>
+	<th>playerID</th>
 	<th>firstName</th>
 	<th>lastName</th>
-	<th>POSITION</th>
+	<th>Email</th>
+	<th>Update</th>
+	<th>Delete</th>
 </tr>
 <cfloop query = "getRichardData">
 	<tr>
+	  <td>#getRichardData.playerID#</td>
 		<td>#getRichardData.firstName#</td>
 		<td>#getRichardData.lastName#</td>
-		<td>#getRichardData.position#</td>
+		<td>#getRichardData.Email#</td>
+		<td>
+			<input type="submit" value="Update" name= "updateBtn">
+		</td>
+			<td>
+				<input type="submit" value="Delete" name= "deleteBtn">
+			</td>
 	</tr>
 </cfloop>
-
 </table><br>
 
-<form method="POST">
 	<label>First name:</label><br>
   <input type="text" name="firstName" value=""><br>
   <label>Last name:</label><br>
