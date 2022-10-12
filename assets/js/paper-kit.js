@@ -60,8 +60,9 @@ $(document).ready(function() {
   }
 
   $('.navbar-collapse').click(function() {
+    var initialState = $(this).hasClass("initialState");
     setTimeout(function() {
-      if (pk.misc.navbar_menu_visible == 1) {
+      if (pk.misc.navbar_menu_visible == 1 && !initialState) {
         $('html').removeClass('nav-open');
         pk.misc.navbar_menu_visible = 0;
         $('#bodyClick').remove();

@@ -7,12 +7,14 @@
 <link href="../Schedule/schedule-2.css?v=1.1" rel="stylesheet">
 
 <cfquery name="getSchedule" datasource="roundleague">
-  SELECT scheduleID, WEEK, a.teamName AS Home, b.teamName AS Away, s.startTime, s.date, s.homeTeamID, s.awayTeamID, s.seasonID, s.homeScore, s.awayScore
+  SELECT scheduleID, WEEK, a.teamName AS Home, b.teamName AS Away, s.startTime, s.date, s.homeTeamID, s.awayTeamID, s.seasonID, s.homeScore, s.awayScore, d.divisionID
   FROM schedule s
   LEFT JOIN teams as a ON s.hometeamID = a.teamID
   LEFT JOIN teams as b ON s.awayTeamID = b.teamID
+  JOIN divisions d ON s.DivisionID = d.divisionID
+  JOIN leagues l ON l.leagueID = d.leagueID
   WHERE s.seasonID = (SELECT seasonID From seasons WHERE status = 'Active')
-  AND (S.DivisionID NOT IN (23,24) OR S.DivisionID IS NULL)
+  AND l.leagueName LIKE '%Round%'
   ORDER BY WEEK, date, startTime
 </cfquery>
 

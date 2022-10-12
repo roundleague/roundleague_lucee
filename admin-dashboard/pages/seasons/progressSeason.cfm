@@ -80,5 +80,9 @@
 			AND teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getActiveTeams.teamID#">
 		</cfquery>
 	</cfloop>
+
+	<!--- Schedule Date Logic --->
+	<cfinclude template="updateScheduleDates.cfm">
+
 	<cfset toastMsg = 'Successfully progressed to #getNewSeason.SeasonName# Season!'>
 </cfoutput>

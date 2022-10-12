@@ -2,9 +2,15 @@
 
 <!--- Page Specific CSS/JS Here --->
 <link href="https://demos.creative-tim.com/paper-kit-2-pro/assets/css/paper-kit.min.css?v=2.3.1" rel="stylesheet">
-<link href="../Register/register.css" rel="stylesheet">
+<link href="../Register/register.css?v=1.1" rel="stylesheet">
 
 <cfoutput>
+
+<cfquery name="getCurrentSeason" datasource="roundleague">
+	SELECT seasonName, seasonID
+	FROM seasons
+	WHERE seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+</cfquery>
 
 <cfquery name="getTeams" datasource="roundleague">
 	SELECT teamID, teamName
@@ -98,7 +104,7 @@ I, for myself and on behalf of my heirs, assigns, personal representatives and n
 	                    <label class="teamSelect">Select Season</label><br>
 						<select class="seasonSelect" name="seasonSelect" style="padding: 7px;">
 						  <option value=""></option>
-						  <option value="6">Summer 2022</option>
+						  <option value="#getCurrentSeason.seasonID#">#getCurrentSeason.seasonName#</option>
 						</select>
 	                  </div>
 	                  <div class="form-group">

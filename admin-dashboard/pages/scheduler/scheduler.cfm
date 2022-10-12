@@ -41,6 +41,8 @@
   SELECT teamName, teamID
   FROM teams
   WHERE divisionID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.divisionID#">
+  AND status = <cfqueryparam cfsqltype="cf_sql_varchar" value="Active">
+  ORDER BY teamName
 </cfquery>
 
 <cfoutput>
@@ -69,11 +71,12 @@
                       <td>
                         <select class="teamID" name="teamID" style="padding: 7px;">
                           <cfloop query="getAllActiveTeams">
-                            <option value="#getAllActiveTeams.TeamID#"<cfif getAllActiveTeams.teamID EQ getTeamsInDivision.teamID>selected</cfif>>#getAllActiveTeams.TeamName#</option>
+                            <option data-value="#getAllActiveTeams.TeamID#" value="#getAllActiveTeams.TeamID#"<cfif getAllActiveTeams.teamID EQ getTeamsInDivision.teamID>selected</cfif>>#getAllActiveTeams.TeamName#</option>
                           </cfloop>
                         </select>
                       </td>
                    </tr>
+                <input type="hidden" name="teamID_#getTeamsInDivision.currentRow#" class="teamID_#getTeamsInDivision.currentRow#" value="#getTeamsInDivision.TeamID#">
                 </cfloop>
               </tbody>
           </table>
@@ -153,3 +156,4 @@
 </cfoutput>
 
 <cfinclude template="/admin-dashboard/admin_footer.cfm">
+<script src="/admin-dashboard/pages/scheduler/scheduler.js"></script>
