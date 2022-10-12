@@ -10,6 +10,13 @@
 }
 </style>
 </head>
+<cfif isDefined("form.updateBtn")>
+	update button was clicked
+</cfif>
+
+<cfif isDefined("form.deleteBtn")>
+	delete button was clicked
+</cfif>
 
 <cfif isDefined("form.ethnicity") and isDefined("form.gender")>
 	#form.firstName#
@@ -36,30 +43,44 @@
 
 
 <cfquery name = "getTylerData" datasource = "roundLeague">
-	SELECT firstName, lastName, POSITION
+	SELECT firstName, lastName, Email, PlayerID
 	FROM players
-	WHERE playerID IN (1001, 1002, 1003)
+	ORDER BY playerid DESC
+	LIMIT 3
 </cfquery>
 
 <body>
 
 
 
-<table class="testClass">
+
+<form method="POST">
+	<table class="testClass">
 	<tr>
+		<th>playerID</th>
 		<th>firstName</th>
 		<th>lastName</th>
-		<th>position</th>
+		<th>Email</th>
+		<th>Updates</th>
+		<th>Delete</th>
 	</tr>
 	<cfloop query = "getTylerData"> 
 		<tr>
+			<td>#getTylerData.PlayerID#</td>
 			<td>#getTylerData.firstName#</td>
 			<td>#getTylerData.lastName#</td>
-			<td>#getTylerData.position#</td>
+			<td>#getTylerData.Email#</td>
+			<td>
+					<input type="submit" value = "Update" name="updateBtn">
+			</td>
+			<td>
+					<input type="submit" value = "Delete" name="deleteBtn">
+			</td>
 		</tr>
 	</cfloop>
-</table>
-<form method="POST">
+	</table>
+
+
 	<label>First name:</label><br>
   <input type="text" name="firstName" value="John"><br>
   <label>Last name:</label><br>
