@@ -94,3 +94,7 @@ ul.acknowledge{
 .registerRequired {
   border: 3px solid red;
 }
+
+label {
+    font-weight: 600;
+}

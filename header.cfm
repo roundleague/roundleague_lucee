@@ -60,7 +60,7 @@
           <span class="navbar-toggler-bar bar3"></span>
         </button>
       </div>
-      <div class="collapse navbar-collapse justify-content-end" id="navigation">
+      <div class="collapse navbar-collapse justify-content-end initialState" id="navigation">
         <ul class="navbar-nav">
           <li class="nav-item">
             <a class="nav-link" rel="tooltip" title="Follow us on Twitter" data-placement="bottom" href="/pages/landing-page.cfm">
@@ -74,7 +74,7 @@
           </li>
           <div class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" data-toggle="dropdown" id="dropdownMenuButton" href="##pk" role="button" aria-haspopup="true" aria-expanded="false">Schedule</a>
-            <ul class="dropdown-menu dropdown-info" aria-labelledby="dropdownMenuButton">
+<!---             <ul class="dropdown-menu dropdown-info" aria-labelledby="dropdownMenuButton">
               <a class="dropdown-item" href="/pages/schedule/schedule-2.cfm">Men's Schedule</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="/pages/schedule/schedule-womens.cfm">Women's Schedule</a>
@@ -84,7 +84,7 @@
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="/pages/schedule/playoffs_schedule.cfm">Playoffs Schedule</a>
               </cfif>
-            </ul>
+            </ul> --->
           </div>
           <li class="nav-item">
             <a class="nav-link" rel="tooltip" data-placement="bottom" href="/pages/teams/teams-2.cfm">

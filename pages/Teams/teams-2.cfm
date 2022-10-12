@@ -11,6 +11,7 @@
   JOIN divisions d ON t.DivisionID = d.DivisionID
   Where t.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
   AND DivisionName LIKE '%North%'
+  AND t.status = 'Active'
   ORDER BY divisionName
 </cfquery>
 
@@ -20,6 +21,7 @@
   JOIN divisions d ON t.DivisionID = d.DivisionID
   Where t.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
   AND DivisionName LIKE '%South%'
+  AND t.status = 'Active'
   ORDER BY divisionName
 </cfquery>
 
@@ -29,6 +31,7 @@
   JOIN divisions d ON t.DivisionID = d.DivisionID
   Where t.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
   AND DivisionName LIKE '%East%'
+  AND t.status = <cfqueryparam cfsqltype="cf_sql_varchar" value="Active">
   ORDER BY divisionName
 </cfquery>
 
@@ -38,6 +41,7 @@
   JOIN divisions d ON t.DivisionID = d.DivisionID
   Where t.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
   AND DivisionName LIKE '%West%'
+  AND t.status = <cfqueryparam cfsqltype="cf_sql_varchar" value="Active">
   ORDER BY divisionName
 </cfquery>
 
@@ -47,6 +51,7 @@
   JOIN divisions d ON t.DivisionID = d.DivisionID
   Where t.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
   AND DivisionName LIKE '%Pacific%'
+  AND t.status = <cfqueryparam cfsqltype="cf_sql_varchar" value="Active">
   ORDER BY divisionName
 </cfquery>
 
@@ -56,15 +61,17 @@
   JOIN divisions d ON t.DivisionID = d.DivisionID
   Where t.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
   AND DivisionName LIKE '%Women%'
+  AND t.status = <cfqueryparam cfsqltype="cf_sql_varchar" value="Active">
   ORDER BY divisionName
 </cfquery>
 
-<cfquery name="getAtlanticDivision" datasource="roundleague">
+<cfquery name="getPremierDivision" datasource="roundleague">
   SELECT teamName, DivisionName, teamID
   FROM teams t
   JOIN divisions d ON t.DivisionID = d.DivisionID
   Where t.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
-  AND DivisionName LIKE '%Atlantic%'
+  AND DivisionName LIKE '%Premier%'
+  AND t.status = <cfqueryparam cfsqltype="cf_sql_varchar" value="Active">
   ORDER BY divisionName
 </cfquery>
 
@@ -74,6 +81,7 @@
   JOIN divisions d ON t.DivisionID = d.DivisionID
   Where t.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
   AND DivisionName LIKE '%Asian%'
+  AND t.status = <cfqueryparam cfsqltype="cf_sql_varchar" value="Active">
   ORDER BY divisionName
 </cfquery>
 
@@ -98,19 +106,19 @@
                 </cfloop>
               </ul>
             </div>
-            <div class="standingsDiv flex-item">
+            <!--- <div class="standingsDiv flex-item">
               <h4 class="standingsh4">Pacific Division</h4>
               <ul class="standingsUl">
                 <cfloop query="getPacificDivision">
                   <li><a href="team-profile-page.cfm?teamID=#getPacificDivision.teamID#">#getPacificDivision.teamName#</a></li>
                 </cfloop>
               </ul>
-            </div>
+            </div> --->
             <div class="standingsDiv flex-item">
-              <h4 class="standingsh4">Atlantic Division</h4>
+              <h4 class="standingsh4">Premier Division</h4>
               <ul class="standingsUl">
-                <cfloop query="getAtlanticDivision">
-                  <li><a href="team-profile-page.cfm?teamID=#getAtlanticDivision.teamID#">#getAtlanticDivision.teamName#</a></li>
+                <cfloop query="getPremierDivision">
+                  <li><a href="team-profile-page.cfm?teamID=#getPremierDivision.teamID#">#getPremierDivision.teamName#</a></li>
                 </cfloop>
               </ul>
             </div>

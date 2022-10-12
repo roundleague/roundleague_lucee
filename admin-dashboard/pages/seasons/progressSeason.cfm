@@ -57,6 +57,32 @@
 		FROM schedule s 
 		WHERE seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getPreviousSeasonID.PreviousSeasonID#">
 	</cfquery>
-	<cfset toastMsg = 'Successfully progressed to #getNewSeason.SeasonName# Season!'>
+	<!--- Update teams divisionID in teams table to new divisions --->
+	<cfquery name="getActiveTeams">
+		SELECT teamID
+		FROM teams
+		WHERE STATUS = 'active'
+	</cfquery>
+	<!--- Technical Debt: Ideally we want to loop while we are in cfquery, just don't remember syntax for it --->
+	<cfloop query="getActiveTeams">
+		<!--- Order by week ONLY WORKS if first game of season is NOT a Non-Divisional Game --->
+		<cfquery name="transferScheduleToNextSeason" datasource="roundleague" result="updateQuery">
+			UPDATE teams
+			SET divisionID = (	
+								SELECT divisionID
+								FROM schedule
+								WHERE (hometeamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getActiveTeams.teamID#"> OR awayteamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getActiveTeams.teamID#">)
+								AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.progressToSeasonId#">
+								ORDER BY WEEK
+								LIMIT 1	
+							)
+			WHERE seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#progressToSeasonId#">
+			AND teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getActiveTeams.teamID#">
+		</cfquery>
+	</cfloop>
 
+	<!--- Schedule Date Logic --->
+	<cfinclude template="updateScheduleDates.cfm">
+
+	<cfset toastMsg = 'Successfully progressed to #getNewSeason.SeasonName# Season!'>
 </cfoutput>

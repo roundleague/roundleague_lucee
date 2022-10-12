@@ -38,6 +38,10 @@
         <div class="form-group">
           <label>Add New Season Name</label>
           <input type="text" required class="form-control border-input" placeholder="New Season Name" name="newSeasonName">
+          <br>
+          <p>Start Date: <input type="date" name="startDate"></p>
+          <br>
+          <p>End Date: <input type="date" name="endDate"></p>
         </div>
     	</form>
 

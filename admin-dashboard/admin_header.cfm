@@ -15,6 +15,14 @@ Coded by www.creative-tim.com
 <!doctype html>
 <html lang="en">
 
+<!--- Session / Application Variables --->
+<cfquery name="currentSeason" datasource="roundleague">
+  SELECT SeasonID
+  FROM Seasons
+  Where Status = 'Active'
+</cfquery>
+<cfset session.currentSeasonID = currentSeason.seasonID>
+
 <head>
   <meta charset="utf-8" />
   <link rel="apple-touch-icon" sizes="76x76" href="/admin-dashboard/assets/img/apple-icon.png">
@@ -48,7 +56,7 @@ Coded by www.creative-tim.com
       </div>
       <div class="sidebar-wrapper">
         <ul class="nav">
-          <li>
+<!---           <li>
             <a href="javascript:;">
               <i class="nc-icon nc-ruler-pencil"></i>
               <p>StatsApp</p>
@@ -58,6 +66,12 @@ Coded by www.creative-tim.com
             <a href="javascript:;">
               <i class="nc-icon nc-laptop"></i>
               <p>Scoreboard</p>
+            </a>
+          </li> --->
+          <li <cfif findNoCase("scheduler", CGI.REQUEST_URL)>class="active"</cfif>>
+            <a href="/admin-dashboard/pages/scheduler/scheduler.cfm">
+              <i class="nc-icon nc-laptop"></i>
+              <p>Scheduler</p>
             </a>
           </li>
           <li <cfif findNoCase("playerLookUp", CGI.REQUEST_URL)>class="active"</cfif>>
