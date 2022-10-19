@@ -49,7 +49,6 @@ function resumeTimer(){
 function resetTimer(){
     var displayTimer = document.querySelector('#time');
     window.clearTimeout(myTimer);
-    console.log("reset timer");
     displayTimer.textContent = "25:00";
     remaining = minutesSelected;
     pauseTimer();
