@@ -115,3 +115,6 @@ SELECT firstName, lastName, Email, playerID
 </body>
 </html>
 </cfoutput>
+
+<cfinclude template="/footer.cfm">
+<script src="../Jason/jason.js?v=1.1"></script>
