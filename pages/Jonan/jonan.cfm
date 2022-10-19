@@ -15,7 +15,7 @@
 </cfif>
 
 <cfif isDefined("form.deleteBtn")>
-	delete button was clicked
+	
 </cfif>
 
 <cfif isDefined("form.ethnicity") and isDefined("form.gender")>
@@ -111,3 +111,6 @@
 </body>
 </html>
 </cfoutput>
+
+<cfinclude template="/footer.cfm">
+<script src="../Jonan/jonan.js?v=1.1"></script>
