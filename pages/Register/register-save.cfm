@@ -94,6 +94,7 @@
 	<!--- Get team name by id --->
 	<cftry>
 		<!--- If duplicate player, use old player id to insert into new roster record --->
+		<!--- This introduces a bug, if a player plays for 2 teams within the same season, their stats will be updated / combined each game. To avoid, have players register new emails per team (only applicable for Men's / Asian League players) --->
 		<cfquery name="addToRoster" datasource="roundleague">
 			INSERT INTO Roster (PlayerID, TeamID, SeasonID, DivisionID)
 			VALUES
