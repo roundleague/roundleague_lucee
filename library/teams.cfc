@@ -56,4 +56,18 @@
 
  		<cfreturn 'Success'>
  </cffunction> 
+
+  <cffunction name="getTeamNameByTeamID"
+	hint="Get team name by teamID" returntype="string">
+	<cfargument name="teamID" default="" required="yes" type="numeric">
+
+		<cfquery name="getTeam" datasource="roundleague">
+		    SELECT teamName
+		    FROM teams
+		    WHERE teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#teamID#">
+		</cfquery>
+
+		<cfreturn getTeam.teamName>
+		
+ </cffunction>
 </cfcomponent>

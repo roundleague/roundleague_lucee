@@ -4,8 +4,11 @@
 
 <cfoutput>
 
+<cfset teamObject = createObject("component", "library.teams") />
+<cfset teamName = teamObject.getTeamNameByTeamID(form.teamID)>
+
 <cfquery name="checkDuplicate" datasource="roundleague">
-	SELECT PlayerID
+	SELECT PlayerID, firstName, lastName
 	FROM Players
 	WHERE Email = <cfqueryparam cfsqltype="cf_sql_varchar" value="#form.email#">
 	ORDER BY playerID DESC
@@ -88,18 +91,20 @@
 		From Teams 
 		Where TeamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.teamID#">
 	</cfquery>
+	<!--- Get team name by id --->
 	<cftry>
-		<cfquery name="updateToRoster" datasource="roundleague">
-			UPDATE Roster
-			SET 
-				teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.teamID#">,
-				seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.seasonSelect#">,
-				divisionID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getDivision.DivisionID#">,
-				jersey = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.currentJersey#">
-			WHERE playerID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#checkDuplicate.PlayerID#">
-  			AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+		<!--- If duplicate player, use old player id to insert into new roster record --->
+		<cfquery name="addToRoster" datasource="roundleague">
+			INSERT INTO Roster (PlayerID, TeamID, SeasonID, DivisionID)
+			VALUES
+			(
+				<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#checkDuplicate.playerID#">,
+				<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.teamID#">,
+				<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.seasonSelect#">,
+				<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getDivision.DivisionID#">
+			)
 		</cfquery>
-		<cfset toastMessage = "Player Registration info successfully submitted! Note: If you signed up as a free agent, you will be contacted if a free agent spot opens up.">
+		<cfset toastMessage = "Welcome back #checkDuplicate.firstName#, you have successfully been added to #teamName#.">
 	<cfcatch>
 		<cfdump var="#cfcatch#" /><cfabort />
 	</cfcatch>
