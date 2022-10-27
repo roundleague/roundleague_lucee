@@ -62,7 +62,7 @@
 	</cfquery>
 	<cfset newPlayerId = playerAdd.GENERATEDKEY>
 	<cfquery name="addToRoster" datasource="roundleague">
-		INSERT INTO Roster (PlayerID, TeamID, SeasonID, DivisionID)
+		INSERT INTO Roster (PlayerID, TeamID, SeasonID, DivisionID, Jersey)
 		VALUES
 		(
 			<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#newPlayerId#">,
@@ -72,7 +72,8 @@
 				SELECT DivisionID 
 				From Teams 
 				Where TeamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.teamID#">
-			)
+			),
+			<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.currentJersey#">
 		)
 	</cfquery>
 	<!--- If captain checkbox selected, set them as team captain --->
@@ -96,13 +97,14 @@
 		<!--- If duplicate player, use old player id to insert into new roster record --->
 		<!--- This introduces a bug, if a player plays for 2 teams within the same season, their stats will be updated / combined each game. To avoid, have players register new emails per team (only applicable for Men's / Asian League players) --->
 		<cfquery name="addToRoster" datasource="roundleague">
-			INSERT INTO Roster (PlayerID, TeamID, SeasonID, DivisionID)
+			INSERT INTO Roster (PlayerID, TeamID, SeasonID, DivisionID, Jersey)
 			VALUES
 			(
 				<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#checkDuplicate.playerID#">,
 				<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.teamID#">,
 				<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.seasonSelect#">,
-				<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getDivision.DivisionID#">
+				<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getDivision.DivisionID#">,
+				<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.currentJersey#">
 			)
 		</cfquery>
 		<cfset toastMessage = "Welcome back #checkDuplicate.firstName#, you have successfully been added to #teamName#.">
