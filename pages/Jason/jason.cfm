@@ -6,11 +6,26 @@
 <style>
 .testClass, td{
   border: 1px solid;
-  color: pink;
+  color: black;
 }
 </style>
 </head>
 
+<cfif isDefined("form.deleteBtn")>
+	<cfquery name="deletePlayerByID" datasource="roundleague">
+			DELETE FROM Players
+			WHERE playerID = #form.deletePlayerID#
+	</cfquery>
+	PlayerID: #form.deletePlayerID# was deleted.
+</cfif>
+<cfif isDefined("form.updateBtn")>
+		<cfquery name="updatePlayerByID" datasource="roundleague">
+			UPDATE players 
+			SET firstname = <cfqueryparam cfsqltype="CF_SQL_VARCHAR" value="#form.first#">
+			WHERE playerID = #form.updatePlayerID#
+	</cfquery>
+	PlayerID: #form.updatePlayerID# was updated.
+</cfif>
 <cfif isDefined("form.ethnicity") and isDefined("form.gender")>
 	#form.firstName#
 	#form.lastName#<br>
@@ -35,31 +50,45 @@
 
 
 <cfquery name ="getRichardData" datasource = "roundleague">
-	SELECT firstName, lastName, POSITION
-	FROM players
-	WHERE playerID IN (1001, 1002, 1003)
+SELECT firstName, lastName, Email, playerID
+    FROM players
+    ORDER BY playerid DESC
+    LIMIT 1
+
 </cfquery>
 
 <body>
 
 
-<table class="testClass"> 
+
+
+<form method="POST">
+
+	<table class="testClass"> 
 <tr>
+	<th>playerID</th>
 	<th>firstName</th>
 	<th>lastName</th>
-	<th>POSITION</th>
+	<th>Email</th>
+	<th>Update</th>
+	<th>Delete</th>
 </tr>
 <cfloop query = "getRichardData">
 	<tr>
-		<td>#getRichardData.firstName#</td>
+	  <td>#getRichardData.playerID#</td>
+		<td><input type="text" name="first" value="#getRichardData.firstName#"></td>
 		<td>#getRichardData.lastName#</td>
-		<td>#getRichardData.position#</td>
+		<td>#getRichardData.Email#</td>
+		<td>
+			<input type="submit" value="Update" name= "updateBtn" class="updateBtn" data-value="#getRichardData.playerID#">
+		</td>
+		<td>
+			<input type="submit" value="Delete" name= "deleteBtn" class="deleteBtn" data-value="#getRichardData.playerID#">
+		</td>
 	</tr>
 </cfloop>
-
 </table><br>
 
-<form method="POST">
 	<label>First name:</label><br>
   <input type="text" name="firstName" value=""><br>
   <label>Last name:</label><br>
@@ -88,6 +117,9 @@
   <label for="ethnicity"> Asian</label><br>
   <input type="checkbox" name="ethnicity" value="Hispanic">
   <label for="ethnicity"> Hispanic</label><br>
+
+  <input type="hidden" value="" name="deletePlayerID" class="deletePlayerID">
+  <input type="hidden" value="" name="updatePlayerID" class="updatePlayerID">
   <input type="submit" value="Submit"><br><br>
 
 </form>
@@ -95,3 +127,6 @@
 </body>
 </html>
 </cfoutput>
+
+<cfinclude template="/footer.cfm">
+<script src="../Jason/jason.js?v=1.2"></script>
