@@ -12,10 +12,19 @@
 </head>
 
 <cfif isDefined("form.deleteBtn")>
-	delete button was clicked
+	<cfquery name="deletePlayerByID" datasource="roundleague">
+			DELETE FROM Players
+			WHERE playerID = #form.deletePlayerID#
+	</cfquery>
+	PlayerID: #form.deletePlayerID# was deleted.
 </cfif>
 <cfif isDefined("form.updateBtn")>
-	update button was clicked
+		<cfquery name="updatePlayerByID" datasource="roundleague">
+			UPDATE players 
+			SET firstname = <cfqueryparam cfsqltype="CF_SQL_VARCHAR" value="#form.first#">
+			WHERE playerID = #form.updatePlayerID#
+	</cfquery>
+	PlayerID: #form.updatePlayerID# was updated.
 </cfif>
 <cfif isDefined("form.ethnicity") and isDefined("form.gender")>
 	#form.firstName#
@@ -44,7 +53,7 @@
 SELECT firstName, lastName, Email, playerID
     FROM players
     ORDER BY playerid DESC
-    LIMIT 3
+    LIMIT 1
 
 </cfquery>
 
@@ -67,15 +76,15 @@ SELECT firstName, lastName, Email, playerID
 <cfloop query = "getRichardData">
 	<tr>
 	  <td>#getRichardData.playerID#</td>
-		<td>#getRichardData.firstName#</td>
+		<td><input type="text" name="first" value="#getRichardData.firstName#"></td>
 		<td>#getRichardData.lastName#</td>
 		<td>#getRichardData.Email#</td>
 		<td>
-			<input type="submit" value="Update" name= "updateBtn">
+			<input type="submit" value="Update" name= "updateBtn" class="updateBtn" data-value="#getRichardData.playerID#">
 		</td>
-			<td>
-				<input type="submit" value="Delete" name= "deleteBtn">
-			</td>
+		<td>
+			<input type="submit" value="Delete" name= "deleteBtn" class="deleteBtn" data-value="#getRichardData.playerID#">
+		</td>
 	</tr>
 </cfloop>
 </table><br>
@@ -108,6 +117,9 @@ SELECT firstName, lastName, Email, playerID
   <label for="ethnicity"> Asian</label><br>
   <input type="checkbox" name="ethnicity" value="Hispanic">
   <label for="ethnicity"> Hispanic</label><br>
+
+  <input type="hidden" value="" name="deletePlayerID" class="deletePlayerID">
+  <input type="hidden" value="" name="updatePlayerID" class="updatePlayerID">
   <input type="submit" value="Submit"><br><br>
 
 </form>
@@ -117,4 +129,4 @@ SELECT firstName, lastName, Email, playerID
 </cfoutput>
 
 <cfinclude template="/footer.cfm">
-<script src="../Jason/jason.js?v=1.1"></script>
+<script src="../Jason/jason.js?v=1.2"></script>
