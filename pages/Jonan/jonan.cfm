@@ -10,6 +10,21 @@
 }
 </style>
 </head>
+<cfif isDefined("form.updateBtn")>
+	<cfquery name = "updatePlayerByID" datasource="roundleague">
+		UPDATE players
+		SET firstName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#form.First#">
+		Where playerID = #form.updatePlayerID#
+	</cfquery>
+</cfif>
+
+<cfif isDefined("form.deleteBtn")>
+	<cfquery name = "deltePlayerById" datasource="roundleague">
+		DELETE FROM players
+		Where playerID = #form.deletePlayerID#
+	</cfquery>
+	PlayerID: #form.deletePlayerID# was deleted.
+</cfif>
 
 <cfif isDefined("form.ethnicity") and isDefined("form.gender")>
 	#form.firstName#
@@ -36,30 +51,44 @@
 
 
 <cfquery name = "getTylerData" datasource = "roundLeague">
-	SELECT firstName, lastName, POSITION
+	SELECT firstName, lastName, Email, PlayerID
 	FROM players
-	WHERE playerID IN (1001, 1002, 1003)
+	ORDER BY playerid DESC
+	LIMIT 1
 </cfquery>
 
 <body>
 
 
 
-<table class="testClass">
+
+<form method="POST">
+	<table class="testClass">
 	<tr>
+		<th>playerID</th>
 		<th>firstName</th>
 		<th>lastName</th>
-		<th>position</th>
+		<th>Email</th>
+		<th>Updates</th>
+		<th>Delete</th>
 	</tr>
 	<cfloop query = "getTylerData"> 
 		<tr>
-			<td>#getTylerData.firstName#</td>
+			<td>#getTylerData.PlayerID#</td>
+			<td><input type="text" name="First" value="#getTylerData.firstName#"></td>
 			<td>#getTylerData.lastName#</td>
-			<td>#getTylerData.position#</td>
+			<td>#getTylerData.Email#</td>
+			<td>
+					<input type="submit" value = "Update" name="updateBtn" class="updateBtn" data-value=#getTylerData.PlayerID#>
+			</td>
+			<td>
+					<input type="submit" value = "Delete" name="deleteBtn" class="deleteBtn" data-value=#getTylerData.PlayerID#>
+			</td>
 		</tr>
 	</cfloop>
-</table>
-<form method="POST">
+	</table>
+
+
 	<label>First name:</label><br>
   <input type="text" name="firstName" value="John"><br>
   <label>Last name:</label><br>
@@ -84,9 +113,15 @@
   <label for"gender"> Male </label><br>
   <input type="radio" id="gender" name="gender" value="Female"><br>
   <label for"gender"> Female</label><br><br>
+
+  <input type= "hidden" value ="" name="deletePlayerID" class="deletePlayerID">
+   <input type= "hidden" value ="" name="updatePlayerID" class="updatePlayerID">
   <input type="submit" value="Submit">
 </form>
 <!--- #getTylerData.firstName# #getTylerData.lastName# --->
 </body>
 </html>
 </cfoutput>
+
+<cfinclude template="/footer.cfm">
+<script src="../Jonan/jonan.js?v=1.2"></script>
