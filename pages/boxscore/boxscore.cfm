@@ -14,7 +14,7 @@
 </cfquery>
 
 <cfquery name="getTeamsPlaying" datasource="roundleague">
-    SELECT scheduleID, WEEK, a.teamName AS Home, b.teamName AS Away, s.startTime, Date_FORMAT(s.date, "%M %d %Y") AS Date, s.homeScore, s.awayscore
+    SELECT scheduleID, WEEK, a.teamName AS Home, b.teamName AS Away, s.startTime, Date_FORMAT(s.date, "%M %d %Y") AS Date, s.homeScore, s.awayscore, a.teamID as HomeTeamID, b.teamID as AwayTeamID
     FROM schedule s
     LEFT JOIN teams as a ON s.hometeamID = a.teamID
     LEFT JOIN teams as b ON s.awayTeamID = b.teamID
@@ -27,7 +27,7 @@
     <div class="section text-center">
       <div class="container">
 
-        <h4 class="gameTitle">#getTeamsPlaying.Home# #getTeamsPlaying.HomeScore# | #getTeamsPlaying.Away# #getTeamsPlaying.AwayScore#</h4>
+        <h4 class="gameTitle">#getTeamsPlaying.HomeTeamID# #getTeamsPlaying.Home# #getTeamsPlaying.HomeScore# | #getTeamsPlaying.Away# #getTeamsPlaying.AwayScore# #getTeamsPlaying.AwayTeamID#</h4>
         <h5>#getTeamsPlaying.Date#</h5>
         <table class="bolder smallFont">
             <cfset currentTeamID = ''>
