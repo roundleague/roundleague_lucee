@@ -1,4 +1,7 @@
 <cfoutput>
+<cfif !findNoCase("127.0.0.1", CGI.HTTP_HOST)>
+	<cfdump var="Access Denied." /><cfabort />
+</cfif>
 <!DOCTYPE html>
 <html>
 <head>
