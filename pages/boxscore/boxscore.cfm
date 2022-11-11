@@ -22,12 +22,24 @@
     ORDER BY WEEK, startTime
 </cfquery>
 
+<cfquery name="getWinsAndLossesHomeTeam" datasource="roundleague">
+    SELECT Wins,Losses
+    FROM standings
+    WHERE teamID = #getTeamsPlaying.HomeTeamID# AND SeasonID = #session.CurrentSeasonID#
+</cfquery>
+
+<cfquery name="getWinsAndLossesAwayTeam" datasource="roundleague">
+    SELECT Wins,Losses
+    FROM standings
+    WHERE teamID = #getTeamsPlaying.AwayTeamID# AND seasonID = #session.CurrentSeasonID#
+</cfquery>
+
 <cfoutput>
 <div class="main" style="background-color: white; margin-top: 25px;">
     <div class="section text-center">
       <div class="container">
 
-        <h4 class="gameTitle">#getTeamsPlaying.HomeTeamID# #getTeamsPlaying.Home# #getTeamsPlaying.HomeScore# | #getTeamsPlaying.Away# #getTeamsPlaying.AwayScore# #getTeamsPlaying.AwayTeamID#</h4>
+        <h4 class="gameTitle"> #getTeamsPlaying.Home# #getTeamsPlaying.HomeScore# (#getWinsAndLossesHomeTeam.Wins#-#getWinsAndLossesHomeTeam.Losses#) | #getTeamsPlaying.Away# #getTeamsPlaying.AwayScore# (#getWinsAndLossesAwayTeam.Wins#-#getWinsAndLossesAwayTeam.Losses#)</h4>
         <h5>#getTeamsPlaying.Date#</h5>
         <table class="bolder smallFont">
             <cfset currentTeamID = ''>
