@@ -23,6 +23,15 @@
 </cfquery>
 
 <head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-FSB97VEF6S"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-FSB97VEF6S');
+  </script>
   <meta charset="utf-8" />
   <link rel="apple-touch-icon" sizes="76x76" href="/assets/img//apple-icon.png">
   <link rel="icon" type="image/png" href="/assets/img/Logos/favicon.png">
