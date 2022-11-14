@@ -25,13 +25,15 @@
 <cfquery name="getWinsAndLossesHomeTeam" datasource="roundleague">
     SELECT Wins,Losses
     FROM standings
-    WHERE teamID = #getTeamsPlaying.HomeTeamID# AND SeasonID = #session.CurrentSeasonID#
+    WHERE teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.HomeTeamID#">
+    AND SeasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.CurrentSeasonID#">
 </cfquery>
 
 <cfquery name="getWinsAndLossesAwayTeam" datasource="roundleague">
     SELECT Wins,Losses
     FROM standings
-    WHERE teamID = #getTeamsPlaying.AwayTeamID# AND seasonID = #session.CurrentSeasonID#
+    WHERE teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.AwayTeamID# ">
+    AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
 </cfquery>
 
 <cfoutput>
