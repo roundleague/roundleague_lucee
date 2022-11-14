@@ -24,7 +24,7 @@
 </cfif>
 
 <cfquery name="getPointsLeaders" datasource="roundleague">
-	SELECT ps.playerID, ps.points, p.firstName, p.lastName, r.jersey, t.teamName, ps.gamesplayed
+	SELECT DISTINCT ps.playerID, ps.points, p.firstName, p.lastName, r.jersey, t.teamName, ps.gamesplayed
 	FROM playerstats ps
 	JOIN players p ON p.playerID = ps.playerID
     JOIN teams t ON t.teamID = ps.teamID
@@ -40,7 +40,7 @@
 </cfquery>
 
 <cfquery name="getReboundsLeaders" datasource="roundleague">
-	SELECT ps.playerID, ps.Rebounds, p.firstName, p.lastName, r.jersey, t.teamName, ps.gamesplayed
+	SELECT DISTINCT ps.playerID, ps.Rebounds, p.firstName, p.lastName, r.jersey, t.teamName, ps.gamesplayed
 	FROM playerstats ps
 	JOIN players p ON p.playerID = ps.playerID
     JOIN teams t ON t.teamID = ps.teamID
@@ -56,7 +56,7 @@
 </cfquery>
 
 <cfquery name="getAssistsLeaders" datasource="roundleague">
-	SELECT ps.playerID, ps.Assists, p.firstName, p.lastName, r.jersey, t.teamName, ps.gamesplayed
+	SELECT DISTINCT ps.playerID, ps.Assists, p.firstName, p.lastName, r.jersey, t.teamName, ps.gamesplayed
 	FROM playerstats ps
 	JOIN players p ON p.playerID = ps.playerID
     JOIN teams t ON t.teamID = ps.teamID
@@ -72,7 +72,7 @@
 </cfquery>
 
 <cfquery name="getStealsLeaders" datasource="roundleague">
-    SELECT ps.playerID, ps.Steals, p.firstName, p.lastName, r.jersey, t.teamName, ps.gamesplayed
+    SELECT DISTINCT ps.playerID, ps.Steals, p.firstName, p.lastName, r.jersey, t.teamName, ps.gamesplayed
     FROM playerstats ps
     JOIN players p ON p.playerID = ps.playerID
     JOIN teams t ON t.teamID = ps.teamID
@@ -88,7 +88,7 @@
 </cfquery>
 
 <cfquery name="getBlocksLeaders" datasource="roundleague">
-    SELECT ps.playerID, ps.Blocks, p.firstName, p.lastName, r.jersey, t.teamName, ps.gamesplayed
+    SELECT DISTINCT ps.playerID, ps.Blocks, p.firstName, p.lastName, r.jersey, t.teamName, ps.gamesplayed
     FROM playerstats ps
     JOIN players p ON p.playerID = ps.playerID
     JOIN teams t ON t.teamID = ps.teamID
