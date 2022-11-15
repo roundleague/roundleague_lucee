@@ -14,7 +14,7 @@
 </cfquery>
 
 <cfquery name="getTeamsPlaying" datasource="roundleague">
-    SELECT scheduleID, WEEK, a.teamName AS Home, b.teamName AS Away, s.startTime, Date_FORMAT(s.date, "%M %d %Y") AS Date, s.homeScore, s.awayscore
+    SELECT scheduleID, WEEK, a.teamName AS Home, b.teamName AS Away, s.startTime, Date_FORMAT(s.date, "%M %d %Y") AS Date, s.homeScore, s.awayscore, a.teamID as HomeTeamID, b.teamID as AwayTeamID
     FROM schedule s
     LEFT JOIN teams as a ON s.hometeamID = a.teamID
     LEFT JOIN teams as b ON s.awayTeamID = b.teamID
@@ -22,12 +22,26 @@
     ORDER BY WEEK, startTime
 </cfquery>
 
+<cfquery name="getWinsAndLossesHomeTeam" datasource="roundleague">
+    SELECT Wins,Losses
+    FROM standings
+    WHERE teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.HomeTeamID#">
+    AND SeasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.CurrentSeasonID#">
+</cfquery>
+
+<cfquery name="getWinsAndLossesAwayTeam" datasource="roundleague">
+    SELECT Wins,Losses
+    FROM standings
+    WHERE teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.AwayTeamID# ">
+    AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+</cfquery>
+
 <cfoutput>
 <div class="main" style="background-color: white; margin-top: 25px;">
     <div class="section text-center">
       <div class="container">
 
-        <h4 class="gameTitle">#getTeamsPlaying.Home# #getTeamsPlaying.HomeScore# | #getTeamsPlaying.Away# #getTeamsPlaying.AwayScore#</h4>
+        <h4 class="gameTitle"> #getTeamsPlaying.Home# #getTeamsPlaying.HomeScore# (#getWinsAndLossesHomeTeam.Wins#-#getWinsAndLossesHomeTeam.Losses#) | #getTeamsPlaying.Away# #getTeamsPlaying.AwayScore# (#getWinsAndLossesAwayTeam.Wins#-#getWinsAndLossesAwayTeam.Losses#)</h4>
         <h5>#getTeamsPlaying.Date#</h5>
         <table class="bolder smallFont">
             <cfset currentTeamID = ''>
