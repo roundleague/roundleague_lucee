@@ -32,6 +32,9 @@
 
     gtag('config', 'G-FSB97VEF6S');
   </script>
+  <!-- Google Ads -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7960654087692774"
+     crossorigin="anonymous"></script>
   <meta charset="utf-8" />
   <link rel="apple-touch-icon" sizes="76x76" href="/assets/img//apple-icon.png">
   <link rel="icon" type="image/png" href="/assets/img/Logos/favicon.png">
