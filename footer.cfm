@@ -1,4 +1,21 @@
+<!--- Page Specific CSS/JS Here --->
+<link href="/footer.css" rel="stylesheet" />
+
   <footer class="footer   footer-white ">
+
+        <script type="text/javascript">
+      amzn_assoc_tracking_id = "huynt5530fd-20";
+      amzn_assoc_ad_mode = "manual";
+      amzn_assoc_ad_type = "smart";
+      amzn_assoc_marketplace = "amazon";
+      amzn_assoc_region = "US";
+      amzn_assoc_design = "enhanced_links";
+      amzn_assoc_asins = "B0009KMXWY";
+      amzn_assoc_placement = "adunit";
+      amzn_assoc_linkid = "8535280ab971c8bb2954cb3ce82d7c9e";
+      </script>
+      <script src="//z-na.amazon-adsystem.com/widgets/onejs?MarketPlace=US"></script>
+
     <div class="container">
       <div class="row">
         <nav class="footer-nav">
@@ -26,6 +43,7 @@
           </span>
         </div>
       </div>
+
     </div>
   </footer>
   <!--   Core JS Files   -->
