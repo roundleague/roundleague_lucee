@@ -21,11 +21,9 @@
 </cfquery>
 
 <cfquery name="getPlayerAwards" datasource="roundleague">
-    SELECT AwardName,awards.seasonID, seasons.SeasonName
+    SELECT AwardName, awards.seasonID, seasons.SeasonName
     FROM Awards
-    JOIN 
-    Seasons
-    ON awards.SeasonID = Seasons.SeasonID
+    JOIN Seasons ON awards.SeasonID = Seasons.SeasonID
     WHERE PlayerID = <cfqueryparam cfsqltype="INTEGER" value="#url.playerID#">
 </cfquery>
 
@@ -224,7 +222,8 @@
                     </tr>
                 </cfloop>
 	          </tbody>
-	        </table>        
+	        </table>
+		
             <table class="bolder">
               <caption>Awards</caption>
               <thead>
