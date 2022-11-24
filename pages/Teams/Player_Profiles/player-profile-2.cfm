@@ -21,9 +21,10 @@
 </cfquery>
 
 <cfquery name="getPlayerAwards" datasource="roundleague">
-	SELECT AwardName
-	FROM Awards
-	WHERE PlayerID = <cfqueryparam cfsqltype="INTEGER" value="#url.playerID#">
+    SELECT AwardName, awards.seasonID, seasons.SeasonName
+    FROM Awards
+    JOIN Seasons ON awards.SeasonID = Seasons.SeasonID
+    WHERE PlayerID = <cfqueryparam cfsqltype="INTEGER" value="#url.playerID#">
 </cfquery>
 
 <cfquery name="getPlayerGameLog" datasource="roundleague">
@@ -42,6 +43,9 @@
 	returnvariable="careerStats">
     <cfinvokeargument name="playerID" value="#url.playerID#">
 </cfinvoke>
+
+
+
 
 <cfoutput>
 <div class="main" style="background-color: white; margin-top: 50px;">
@@ -218,7 +222,25 @@
                     </tr>
                 </cfloop>
 	          </tbody>
-	        </table>        
+	        </table>
+		
+            <table class="bolder">
+              <caption>Awards</caption>
+              <thead>
+                <tr class="headers">
+                    <th>Season</th>
+                    <th>Awards</th>
+                </tr>
+              </thead>
+              <tbody>
+                <cfloop query="getPlayerAwards">
+                    <tr>
+                        <td data-label="Season">#getPlayerAwards.SeasonName#</td>
+                        <td data-label="Awards">#getPlayerAwards.AwardName#</td>
+                    </tr>
+                </cfloop>
+              </tbody>
+            </table>        
 
       </div>
     </div>
