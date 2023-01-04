@@ -1,0 +1,32 @@
+<title>The Round League Scoreboard</title>
+<link rel="stylesheet" href="new_scoreboard.css">
+
+<link href="https://fonts.cdnfonts.com/css/confidel" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" crossorigin="anonymous"></script>
+<script src="https://kit.fontawesome.com/356f7c17e2.js" crossorigin="anonymous"></script>
+<script src="scoreboard.js"></script>
+<script src="timer.js"></script>
+
+
+<div class="container">
+  <img src="blank_new_scoreboard.png" alt="Snow" style="width:1000px;">
+  <div class="bottom-left homeScore team1">0</div>
+  <div class="top-left homeTeam"></div>
+  <div class="top-right">Top Right</div>
+  <div class="bottom-right awayScore team2">0</div>
+  <div class="centered awayTeam"></div>
+</div>
+
+<p>Clock Status: <span class="clockStatus"></span></p>
+<button class="resetBtn">Reset Clock</button>
+<button class="modifyBtn">Modify Clock</button>
+<ul>
+  <li>1: Red Score +1</li>
+  <li>2: Blue Score +1</li>
+  <li>3: Red Score -1</li>
+  <li>4: Blue Score -1</li>
+  <li>5: Pause Clock</li>
+  <li>6: Start Clock</li>
+  <li>7: Next Half</li>
+</ul>
