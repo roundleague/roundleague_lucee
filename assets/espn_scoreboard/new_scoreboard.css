@@ -10,15 +10,15 @@ body {
 /* Bottom left text */
 .bottom-left {
   position: absolute;
-  bottom: 32px;
-  left: 189px;
+  bottom: 18px;
+  left: 219px;
 }
 
 /* Top left text */
 .top-left {
   position: absolute;
-  top: 68px;
-  left: 160px;
+  top: 60px;
+  left: 100px;
 }
 
 /* Top right text */
@@ -31,26 +31,48 @@ body {
 /* Bottom right text */
 .bottom-right {
   position: absolute;
-  bottom: 26px;
-  left: 726px;
+  bottom: 17px;
+  left: 746px;
 }
 
 /* Centered text */
-.centered {
+.centered.awayTeam {
   position: absolute;
   top: 45%;
-  left: 54%;
+  left: 60%;
   transform: translate(-50%, -50%);
+}
+
+.centered.halfLabel {
+    position: absolute;
+    top: 68%;
+    left: 28%;
+    transform: translate(-50%, -50%);
+    color: yellow;
+    font-family: "Montserrat", "Arial";
+    font-size: x-large;
+    font-weight: bold;
+}
+
+.centered.clock {
+    position: absolute;
+    top: 68%;
+    left: 36%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-family: "Montserrat", "Arial";
+    font-size: xxx-large;
+    font-weight: bold;
 }
 
 .homeTeam, .awayTeam {
   font-family: 'Confidel', sans-serif;
-  font-size: 22px;
+  font-size: 34px;
   color: white;
 }
 
 .homeScore, .awayScore {
   color: white;
   font-family: 'Confidel', sans-serif;
-  font-size: 32px;
+  font-size: 48px;
 }
