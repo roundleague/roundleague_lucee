@@ -11,6 +11,19 @@
 </cfif>
 
 <cfif isDefined("form.removePlayer")>
+  <cfquery name="duplicateFreeAgentCheck" datasource="roundleague">
+  	SELECT rosterID
+  	FROM roster
+  	WHERE playerID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.removePlayer#">
+  	AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+  	AND teamID = 0
+  </cfquery>
+  <cfif duplicateFreeAgentCheck.recordCount>
+	<cfquery name="removePlayer" datasource="roundleague">
+		DELETE FROM roster
+		WHERE rosterID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#duplicateFreeAgentCheck.rosterID#">
+	</cfquery>
+  </cfif>
 	<cfquery name="removePlayer" datasource="roundleague">
 		UPDATE roster
 		SET teamID = 0
@@ -73,9 +86,6 @@
 	JOIN seasons s ON s.seasonID = t.seasonID
 	WHERE r.seasonID = s.seasonID
 	AND t.captainPlayerID = <cfqueryparam cfsqltype="INTEGER" value="#url.playerID#">
-	<cfif findNoCase("127.0.0.1", CGI.HTTP_HOST)>
-			OR t.captainPlayerID = 1002
-	</cfif>
 	ORDER BY Starter desc, lastName
 </cfquery>
 

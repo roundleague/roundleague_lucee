@@ -132,7 +132,7 @@
 			                <th>Height</th>
 			                <th>Weight</th>
 			                <th>Instagram</th>
-			                <th>Phone</th>
+			                <!--- <th>Phone</th> --->
 			                <th>Sign</th>
 			            </tr>
 			        </thead>
@@ -145,7 +145,7 @@
 				        		<td data-label="Height"><cfif PermissionToShare EQ 'YES'>#freeAgentPool.Height#</cfif></td>
 				        		<td data-label="Weight"><cfif PermissionToShare EQ 'YES'>#freeAgentPool.Weight#</cfif></td>
 				        		<td data-label="Instagram"><cfif PermissionToShare EQ 'YES'>#freeAgentPool.Instagram#</cfif></td>
-				        		<td data-label="Phone"><cfif PermissionToShare EQ 'YES'>#freeAgentPool.Phone#</cfif></td>
+				        		<!--- <td data-label="Phone"><cfif PermissionToShare EQ 'YES'>#freeAgentPool.Phone#</cfif></td> --->
 				        		<td data-label="Sign">
 			            		<button type="submit" class="btn btn-outline-success btn-round removeBtn" name="signPlayerID"value="#playerID#">Sign</button>
 				        		</td>

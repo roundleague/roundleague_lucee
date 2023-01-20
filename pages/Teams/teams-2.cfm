@@ -114,17 +114,14 @@
                 </cfloop>
               </ul>
             </div> --->
-            <div class="standingsDiv flex-item">
+            <!--- <div class="standingsDiv flex-item">
               <h4 class="standingsh4">Premier Division</h4>
               <ul class="standingsUl">
                 <cfloop query="getPremierDivision">
                   <li><a href="team-profile-page.cfm?teamID=#getPremierDivision.teamID#">#getPremierDivision.teamName#</a></li>
                 </cfloop>
               </ul>
-            </div>
-        </div>
-
-        <div class="standingsContainer">
+            </div> --->
             <div class="standingsDiv flex-item">
               <h4 class="standingsh4">East Division</h4>
               <ul class="standingsUl">
@@ -133,6 +130,17 @@
                 </cfloop>
               </ul>
             </div>
+        </div>
+
+        <div class="standingsContainer">
+            <!--- <div class="standingsDiv flex-item">
+              <h4 class="standingsh4">East Division</h4>
+              <ul class="standingsUl">
+                <cfloop query="getEastDivision">
+                  <li><a href="team-profile-page.cfm?teamID=#getEastDivision.teamID#">#getEastDivision.teamName#</a></li>
+                </cfloop>
+              </ul>
+            </div> --->
             <div class="standingsDiv flex-item">
               <h4 class="standingsh4">West Division</h4>
               <ul class="standingsUl">
