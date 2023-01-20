@@ -7,7 +7,7 @@ Please contact huynt553@gmail.com for any inquiries or interest in contribution.
 
 ## Licensing
 
-- Copyright 2022 The Round League (https://www.theroundleague.com)
+- Copyright 2023 The Round League (https://www.theroundleague.com)
 
 ### Social Media
 

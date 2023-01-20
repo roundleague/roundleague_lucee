@@ -1,0 +1,78 @@
+/* Container holding the image and the text */
+.container {
+  position: relative;
+}
+
+body {
+  margin: 0px;
+}
+
+/* Bottom left text */
+.bottom-left {
+  position: absolute;
+  bottom: 18px;
+  left: 219px;
+}
+
+/* Top left text */
+.top-left {
+  position: absolute;
+  top: 60px;
+  left: 100px;
+}
+
+/* Top right text */
+.top-right {
+  position: absolute;
+  top: 8px;
+  right: 16px;
+}
+
+/* Bottom right text */
+.bottom-right {
+  position: absolute;
+  bottom: 17px;
+  left: 746px;
+}
+
+/* Centered text */
+.centered.awayTeam {
+  position: absolute;
+  top: 45%;
+  left: 60%;
+  transform: translate(-50%, -50%);
+}
+
+.centered.halfLabel {
+    position: absolute;
+    top: 68%;
+    left: 28%;
+    transform: translate(-50%, -50%);
+    color: yellow;
+    font-family: "Montserrat", "Arial";
+    font-size: x-large;
+    font-weight: bold;
+}
+
+.centered.clock {
+    position: absolute;
+    top: 68%;
+    left: 36%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-family: "Montserrat", "Arial";
+    font-size: xxx-large;
+    font-weight: bold;
+}
+
+.homeTeam, .awayTeam {
+  font-family: 'Confidel', sans-serif;
+  font-size: 34px;
+  color: white;
+}
+
+.homeScore, .awayScore {
+  color: white;
+  font-family: 'Confidel', sans-serif;
+  font-size: 48px;
+}
