@@ -8,6 +8,10 @@ $( document ).ready(function() {
     openCity('PlayerStats')
   });
 
+  $(".franchiseInfoBtn").click(function(){
+    openCity('FranchiseInfo')
+  });
+
   function openCity(cityName) {
     var i, tabcontent, tablinks;
     tabcontent = document.getElementsByClassName("tabcontent");
