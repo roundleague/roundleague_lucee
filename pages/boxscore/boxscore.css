@@ -13,3 +13,56 @@ tr.smallFont th {
 a.playerLink {
 	font-weight: 800;
 }
+
+.mobile{
+	display: none;
+}
+
+.rotateTip {
+	display: none;
+}
+
+@media only screen and (max-width: 435px){
+
+.desktop {
+	display: none;
+}
+
+.mobile, .rotateTip {
+	display: initial;
+}
+
+.rotateTip{
+    margin-bottom: 5px;
+    font-style: italic;
+}
+
+.teamInfo{
+	display: flex;
+	flex-direction:column;
+	width: 25px
+	border: 1px solid black;
+}
+
+.homeTeamInfo{
+	display: flex;
+	flex-direction:row;
+}
+.homeTeamScore {
+	margin-left: 10px;
+	line-height: 28px;
+	font-family: -apple-system,BlinkMacSystemFont,Roboto,Arial,Helvetica Neue,Helvetica,sans-serif;
+	font-weight: 500;
+	font-size: 22px;
+}
+
+.finalScoreSection{
+	display: flex;
+	flex-direction:row;
+	padding: 10px;
+}
+.finalTextDiv{
+	width:33.33%;
+}
+
+}
