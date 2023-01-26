@@ -24,7 +24,7 @@
 </cfif>
 
 <cfquery name="getPointsLeaders" datasource="roundleague">
-	SELECT DISTINCT ps.playerID, ps.points, p.firstName, p.lastName, r.jersey, t.teamName, ps.gamesplayed
+	SELECT DISTINCT ps.playerID, p.permissionToShare, ps.points, p.firstName, p.lastName, r.jersey, t.teamName, ps.gamesplayed
 	FROM playerstats ps
 	JOIN players p ON p.playerID = ps.playerID
     JOIN teams t ON t.teamID = ps.teamID
@@ -35,12 +35,13 @@
     AND r.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
     AND l.leagueID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.leagueSelect#">
     AND ps.gamesplayed >= <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#gamesLimit#">
+    AND r.teamID != 0
     ORDER BY points desc
 	LIMIT 10
 </cfquery>
 
 <cfquery name="getReboundsLeaders" datasource="roundleague">
-	SELECT DISTINCT ps.playerID, ps.Rebounds, p.firstName, p.lastName, r.jersey, t.teamName, ps.gamesplayed
+	SELECT DISTINCT ps.playerID, p.permissionToShare, ps.Rebounds, p.firstName, p.lastName, r.jersey, t.teamName, ps.gamesplayed
 	FROM playerstats ps
 	JOIN players p ON p.playerID = ps.playerID
     JOIN teams t ON t.teamID = ps.teamID
@@ -51,12 +52,13 @@
     AND r.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
     AND l.leagueID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.leagueSelect#">
     AND ps.gamesplayed >= <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#gamesLimit#">
+    AND r.teamID != 0
     ORDER BY Rebounds desc
 	LIMIT 10
 </cfquery>
 
 <cfquery name="getAssistsLeaders" datasource="roundleague">
-	SELECT DISTINCT ps.playerID, ps.Assists, p.firstName, p.lastName, r.jersey, t.teamName, ps.gamesplayed
+	SELECT DISTINCT ps.playerID, p.permissionToShare, ps.Assists, p.firstName, p.lastName, r.jersey, t.teamName, ps.gamesplayed
 	FROM playerstats ps
 	JOIN players p ON p.playerID = ps.playerID
     JOIN teams t ON t.teamID = ps.teamID
@@ -67,12 +69,13 @@
     AND r.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
     AND l.leagueID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.leagueSelect#">
     AND ps.gamesplayed >= <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#gamesLimit#">
+    AND r.teamID != 0
     ORDER BY Assists desc
 	LIMIT 10
 </cfquery>
 
 <cfquery name="getStealsLeaders" datasource="roundleague">
-    SELECT DISTINCT ps.playerID, ps.Steals, p.firstName, p.lastName, r.jersey, t.teamName, ps.gamesplayed
+    SELECT DISTINCT ps.playerID, p.permissionToShare, ps.Steals, p.firstName, p.lastName, r.jersey, t.teamName, ps.gamesplayed
     FROM playerstats ps
     JOIN players p ON p.playerID = ps.playerID
     JOIN teams t ON t.teamID = ps.teamID
@@ -83,12 +86,13 @@
     AND r.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
     AND l.leagueID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.leagueSelect#">
     AND ps.gamesplayed >= <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#gamesLimit#">
+    AND r.teamID != 0
     ORDER BY Steals desc
     LIMIT 10
 </cfquery>
 
 <cfquery name="getBlocksLeaders" datasource="roundleague">
-    SELECT DISTINCT ps.playerID, ps.Blocks, p.firstName, p.lastName, r.jersey, t.teamName, ps.gamesplayed
+    SELECT DISTINCT ps.playerID, p.permissionToShare, ps.Blocks, p.firstName, p.lastName, r.jersey, t.teamName, ps.gamesplayed
     FROM playerstats ps
     JOIN players p ON p.playerID = ps.playerID
     JOIN teams t ON t.teamID = ps.teamID
@@ -99,6 +103,7 @@
     AND r.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
     AND l.leagueID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.leagueSelect#">
     AND ps.gamesplayed >= <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#gamesLimit#">
+    AND r.teamID != 0
     ORDER BY Blocks desc
     LIMIT 10
 </cfquery>
@@ -116,6 +121,7 @@
     AND r.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
     AND l.leagueID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.leagueSelect#">
     AND ps.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+    AND r.teamID != 0
     GROUP BY PlayerID
     ORDER BY 3PTS DESC
     LIMIT 10
