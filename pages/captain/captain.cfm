@@ -18,20 +18,21 @@
 	<!--- We are going to go with the logic that if a returning player --->
 	<!--- signed up with a new team, we take the lower rosterID and delete it --->
 	<cfquery name="checkForPreviousPlayerNewTeam" datasource="roundleague">
-		SELECT rosterID
+		SELECT rosterID, teamID
 	  	FROM roster
 	  	WHERE playerID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.removePlayer#">
 	  	AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
 	</cfquery>
 	<cfif checkForPreviousPlayerNewTeam.recordCount GTE 2>
 		<!--- Player is currently on two teams in same season --->
-		<cfquery name="getEarlierRosterID" dbtype="query">
-			Select Min(rosterID) as RosterID
+		<cfquery name="getRosterIdToRemove" dbtype="query">
+			Select rosterID
 			FROM [checkForPreviousPlayerNewTeam]
+			WHERE teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#teamStruct.teamID#">
 		</cfquery>
 		<cfquery name="removePlayer" datasource="roundleague">
 			DELETE FROM roster
-			WHERE rosterID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getEarlierRosterID.RosterID#">
+			WHERE rosterID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getRosterIdToRemove.RosterID#">
 		</cfquery>
 	<cfelse>
 		<!--- Player is not currently on another team --->
