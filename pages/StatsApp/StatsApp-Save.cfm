@@ -98,6 +98,7 @@
                 SET <cfif form.homeScore GT form.awayScore>WINS<cfelse>LOSSES</cfif> = <cfif form.homeScore GT form.awayScore>WINS<cfelse>LOSSES</cfif> + 1,
                     PointDifferential = PointDifferential + #HomeDifference#
                 WHERE teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.homeTeamID#">
+                AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.seasonID#"> 
             </cfquery>
         <cfelse>
             <cfquery name="insertStandings" datasource="roundleague">
@@ -127,6 +128,7 @@
                 SET <cfif form.awayScore GT form.homeScore>WINS<cfelse>LOSSES</cfif> = <cfif form.awayScore GT form.homeScore>WINS<cfelse>LOSSES</cfif> + 1,
                     PointDifferential = PointDifferential + #AwayDifference#
                 WHERE teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.awayTeamID#">
+                AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.seasonID#">
             </cfquery>
         <cfelse>
             <cfquery name="insertStandings" datasource="roundleague">
