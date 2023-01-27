@@ -50,7 +50,6 @@
               <a href="##week_#getLatestWeek.latestWeek#">Jump to latest week</a><br>
           </div> --->
           <div class="container">
-            <!--- <input type="text" class="bottomSpacing" id="myInput" onkeyup="myFunction()" placeholder="Search for teams.." title="Type in a team"> --->
 
           <!--- Divisions Dropdown --->
           <label for="DivisionID">Division</label>
@@ -58,7 +57,10 @@
             <cfloop query="getDivisions">
               <option value="#getDivisions.DivisionID#"<cfif getDivisions.DivisionID EQ form.DivisionID> selected</cfif>>#getDivisions.DivisionName#</option>
             </cfloop>
-          </select>
+          </select><br><br>
+
+          <input type="text" class="bottomSpacing" id="myInput" onkeyup="myFunction()" placeholder="Search for teams.." title="Type in a team">
+
 
           <h1>#getSchedule.DivisionName#</h1> <!--- Should show latest Season name --->
 
