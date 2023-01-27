@@ -11,51 +11,74 @@
 </cfif>
 
 <cfif isDefined("form.removePlayer")>
-  <cfquery name="duplicateFreeAgentCheck" datasource="roundleague">
-  	SELECT rosterID
-  	FROM roster
-  	WHERE playerID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.removePlayer#">
-  	AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
-  	AND teamID = 0
-  </cfquery>
-  <cfif duplicateFreeAgentCheck.recordCount>
-	<cfquery name="removePlayer" datasource="roundleague">
-		DELETE FROM roster
-		WHERE rosterID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#duplicateFreeAgentCheck.rosterID#">
-	</cfquery>
-  </cfif>
-	<cfquery name="removePlayer" datasource="roundleague">
-		UPDATE roster
-		SET teamID = 0
-		WHERE playerID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.removePlayer#">
-		AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
-	</cfquery>
-
-  <!--- Insert Transaction History Record --->
-  <cfquery name="checkDup" datasource="roundleague">
-  	SELECT playerID
-  	FROM transactions
-  	WHERE playerID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.removePlayer#">
-  	AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
-  </cfquery>
 
 	<cfset teamObject = createObject("component", "library.teams") />
 	<cfset teamStruct = teamObject.getCurrentSessionTeam(session.captainID)>
+	  
+	<!--- We are going to go with the logic that if a returning player --->
+	<!--- signed up with a new team, we take the lower rosterID and delete it --->
+	<cfquery name="checkForPreviousPlayerNewTeam" datasource="roundleague">
+		SELECT rosterID
+	  	FROM roster
+	  	WHERE playerID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.removePlayer#">
+	  	AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+	</cfquery>
+	<cfif checkForPreviousPlayerNewTeam.recordCount GTE 2>
+		<!--- Player is currently on two teams in same season --->
+		<cfquery name="getEarlierRosterID" dbtype="query">
+			Select Min(rosterID) as RosterID
+			FROM [checkForPreviousPlayerNewTeam]
+		</cfquery>
+		<cfquery name="removePlayer" datasource="roundleague">
+			DELETE FROM roster
+			WHERE rosterID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getEarlierRosterID.RosterID#">
+		</cfquery>
+	<cfelse>
+		<!--- Player is not currently on another team --->
+		<cfquery name="duplicateFreeAgentCheck" datasource="roundleague">
+		  	SELECT rosterID
+		  	FROM roster
+		  	WHERE playerID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.removePlayer#">
+		  	AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+		  	AND teamID = 0
+		</cfquery>
+		<cfif duplicateFreeAgentCheck.recordCount>
+			<cfquery name="removePlayer" datasource="roundleague">
+				DELETE FROM roster
+				WHERE rosterID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#duplicateFreeAgentCheck.rosterID#">
+			</cfquery>
+		</cfif>
+		<!--- Do not set player as free agent if checkForPreviousPlayerNewTeam has records --->
+		<cfquery name="removePlayer" datasource="roundleague">
+			UPDATE roster
+			SET teamID = 0
+			WHERE playerID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.removePlayer#">
+			AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+		</cfquery>
 
-  <cfif checkDup.recordCount EQ 0>
-	  <cfquery name="transactionRecord" datasource="roundleague">
-	  	INSERT INTO transactions (PlayerID, FromTeamID, ToTeamID, SeasonID, CaptainModifiedBy, DateModified)
-	  	VALUES 
-	  	(
-	  		<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.removePlayer#">,
-	  		<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#teamStruct.teamID#">,
-	  		<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="0">,
-	  		<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">,
-	  		<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.captainID#">,
-	  		<cfqueryparam cfsqltype="cf_sql_date" value="#now()#">
-		)	
-	  </cfquery>
-  </cfif>
+		<!--- Insert Transaction History Record --->
+		<cfquery name="checkDup" datasource="roundleague">
+			SELECT playerID
+			FROM transactions
+			WHERE playerID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.removePlayer#">
+			AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+		</cfquery>
+
+		<cfif checkDup.recordCount EQ 0>
+		  <cfquery name="transactionRecord" datasource="roundleague">
+		  	INSERT INTO transactions (PlayerID, FromTeamID, ToTeamID, SeasonID, CaptainModifiedBy, DateModified)
+		  	VALUES 
+		  	(
+		  		<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.removePlayer#">,
+		  		<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#teamStruct.teamID#">,
+		  		<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="0">,
+		  		<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">,
+		  		<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.captainID#">,
+		  		<cfqueryparam cfsqltype="cf_sql_date" value="#now()#">
+			)	
+		  </cfquery>
+		</cfif>
+	</cfif>
 
   	<!-- The actual snackbar -->
   	<div id="snackbar">Player has been removed.</div>
