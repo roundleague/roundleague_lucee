@@ -80,6 +80,12 @@ Coded by www.creative-tim.com
               <p>Player Info Lookup</p>
             </a>
           </li>
+          <li <cfif findNoCase("playerPhotos", CGI.REQUEST_URL)>class="active"</cfif>>
+            <a href="/admin-dashboard/pages/playerPhotos/playerPhotos.cfm">
+              <i class="nc-icon nc-album-2"></i>
+              <p>Player Photos Tool</p>
+            </a>
+          </li>
           <li <cfif findNoCase("teamsOverview", CGI.REQUEST_URL)>class="active"</cfif>>
             <a href="/admin-dashboard/pages/teamsOverview/teamsOverview.cfm">
               <i class="nc-icon nc-bullet-list-67"></i>
