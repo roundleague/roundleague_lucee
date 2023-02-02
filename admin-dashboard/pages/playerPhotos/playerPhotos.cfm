@@ -1,8 +1,13 @@
 
 <cfinclude template="/admin-dashboard/admin_header.cfm">
-<!--- Page Specific CSS/JS Here --->
 
 <cfoutput>
+<!--- Page Specific CSS/JS Here --->
+<link href="playerPhotos.css?v=1.0" rel="stylesheet">
+
+<cfif isDefined("form.savePhotosButton")>
+    <cfinclude template="playerPhotoUpload.cfm">
+</cfif>
 
 <!--- CFQuery --->
 <cfquery name="getPlayers" datasource="roundleague">
@@ -16,23 +21,15 @@
   ORDER BY teamName
 </cfquery>
 
-<!--- CF Path to Pictures --->
-<cfif findNoCase("127.0.0.1", CGI.HTTP_HOST)>
-  <!--- Local Path --->
-  <cfset path = expandPath("/assets/img/PlayerProfiles")>
-<cfelse>
-  <!--- Production Path --->
-  <!--- Change this later --->
-  <!--- Or it might actually be the same... --->
-  <cfset path = expandPath("/assets/img/PlayerProfiles")>>
-</cfif>
+<!--- Path to player photos --->
+<cfset path = expandPath("/assets/img/PlayerProfiles")>
 
 <!-- End Navbar -->
 <div class="content">
 <div class="row">
   <div class="col-md-12">
-    <h3 class="description">Player Look Up</h3>
-      <form action="playerPhotoUpload.cfm" method="POST">
+    <h3 class="description">Player Photo Upload</h3>
+      <form method="POST" enctype="multipart/form-data">
         <!--- Content Here --->
         <table id="playerLookupTable" class="display" style="width:100%">
                 <thead>
@@ -55,6 +52,7 @@
                             Photo already exists
                           <cfelse>
                             <input type="file" id="myFile" name="photo_player_#getPlayers.PlayerID#">
+                            <input type="hidden" name="playerIDList" value="#getPlayers.playerID#">
                           </cfif>
                       </td>
                     </tr>
@@ -70,4 +68,4 @@
 
 <cfinclude template="/admin-dashboard/admin_footer.cfm">
 <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js" type="text/javascript"></script>
-<script src="/admin-dashboard/pages/playerLookup/playerLookup.js"></script>
+<script src="/admin-dashboard/pages/playerPhotos/playerPhotos.js"></script>
