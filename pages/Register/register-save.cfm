@@ -96,6 +96,20 @@
 	<cftry>
 		<!--- If duplicate player, use old player id to insert into new roster record --->
 		<!--- This introduces a bug, if a player plays for 2 teams within the same season, their stats will be updated / combined each game. To avoid, have players register new emails per team (only applicable for Men's / Asian League players) --->
+
+		<cfquery name="checkForPreviousPlayerNewTeam" datasource="roundleague">
+			SELECT rosterID
+		  	FROM roster
+		  	WHERE playerID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#checkDuplicate.playerID#">
+		  	AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+		</cfquery>
+		<cfif checkForPreviousPlayerNewTeam.recordCount>
+			<cfquery name="removePlayer" datasource="roundleague">
+				DELETE FROM roster
+				WHERE rosterID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#checkForPreviousPlayerNewTeam.rosterID#">
+			</cfquery>
+		</cfif>
+
 		<cfquery name="addToRoster" datasource="roundleague">
 			INSERT INTO Roster (PlayerID, TeamID, SeasonID, DivisionID, Jersey)
 			VALUES

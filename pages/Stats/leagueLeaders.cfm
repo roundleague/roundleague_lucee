@@ -17,7 +17,14 @@
 
 <cfparam name="form.leagueSelect" default="#getLeagues.leagueID#">
 
-<cfif getMinGamesLimit.totalGames NEQ ''>
+<cfquery name="onlyLimitAfterWeek5" datasource="roundleague">
+  SELECT max(week)+1 as latestWeek
+  FROM schedule
+  WHERE homeScore IS NOT NULL
+  AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+</cfquery>
+
+<cfif getMinGamesLimit.totalGames NEQ '' AND onlyLimitAfterWeek5.latestWeek GT 5>
     <cfset gamesLimit = getMinGamesLimit.TotalGames / 2>
 <cfelse>
     <cfset gamesLimit = 1>
