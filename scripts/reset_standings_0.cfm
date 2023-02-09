@@ -10,7 +10,11 @@ Script for Resetting Standings to 0
 }
 </style>
 
-
+<cfquery name="updateStandingsOutsideTheLoop" datasource="roundleague">
+    UPDATE standings
+    SET Wins = 0, Losses = 0
+    WHERE seasonID < 7
+</cfquery>
 
 <cfquery name="resetStandings" datasource="roundleague">
 	SELECT TeamID, Wins, Losses
@@ -47,18 +51,6 @@ Script for Resetting Standings to 0
 	</tbody>
 </table>
 
-</cfoutput>
-
-
-</cfquery>
-
-<cfloop query="resetStandings">
-	<br>
-	TeamID = #TeamID# <br>
-	Wins = #Wins# <br> 
-	Losses = #Losses# <br>
-	<br>
-</cfloop>
 
 </cfoutput>
 
