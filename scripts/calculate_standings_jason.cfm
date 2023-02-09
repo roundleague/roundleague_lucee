@@ -2,20 +2,10 @@
 
 Loop through each season and calculate standings <br>
 
-<!--- This will be the real query --->
-<!--- <cfquery name="getSeasons" datasource="roundleague">
-    SELECT *
-    FROM schedule
-    WHERE seasonID IN (3,4,5,6)
-</cfquery> --->
-
-<!--- This is our small smaple size test query --->
 <cfquery name="getGamesInSelectedSeasons" datasource="roundleague">
     SELECT homeTeamID, awayTeamID, HomeScore, AwayScore, SeasonID
     FROM schedule
-    WHERE seasonID = 3
-    AND divisionID = 4
-    AND WEEK = 1
+    WHERE seasonID in (3,4,5,6)
 </cfquery>
 
 <cfloop query="getGamesInSelectedSeasons">

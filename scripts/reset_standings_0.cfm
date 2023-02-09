@@ -13,13 +13,13 @@ Script for Resetting Standings to 0
 <cfquery name="updateStandingsOutsideTheLoop" datasource="roundleague">
     UPDATE standings
     SET Wins = 0, Losses = 0
-    WHERE seasonID < 7
+    WHERE seasonID in (3,4,5,6)
 </cfquery>
 
 <cfquery name="resetStandings" datasource="roundleague">
 	SELECT TeamID, Wins, Losses
 	FROM standings
-	WHERE seasonID < 7
+	WHERE seasonID in (3,4,5,6)
 </cfquery>
 
 <cfloop query="resetStandings">
