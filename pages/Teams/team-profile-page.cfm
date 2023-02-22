@@ -60,6 +60,13 @@
   WHERE HomeTeamID = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#">
 </cfquery>
 
+<cfquery name="getTeamStandings" datasource="roundleague">
+  SELECT wins, losses, teamID, seasonID
+  FROM standings
+  WHERE teamID = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#">
+  AND seasonID > 2
+</cfquery>
+
 <cfoutput>
 <div class="main" style="background-color: white; margin-top: 50px;">
     <div class="section text-center">
@@ -157,47 +164,44 @@
         </table>
       </div>
 
-      <!--- Franchise Info tab --->
+      <!--- FranchiseInfo Tab --->
       <div id="FranchiseInfo" class="container tabcontent">
+
         <!--- Content Here --->
-        <h1>#getTeamData.teamName# - This is a test, franchise tab</h1>
+        <h1>#getTeamData.teamName#</h1>
 
         <table class="bolder">
           <caption>Seasons: #getTeamDataM.seasonsPlayed#</caption>
           <thead>
             <tr>
-              <td>Name</td>
-              <td>Jersey</td>
-              <td>Points</td>
-              <td>Rebounds</td>
-              <td>Asts</td>
-              <td>Blks</td>
-              <td>Stls</td>
+              <td>Season</td>
+              <td>Wins</td>
+              <td>Losses</td>
+              <td>W/L%</td>
+              <td>Playoffs W/L%</td>
+              <td>Leading Score</td>
             </tr>
           </thead>
           <tbody>
-            <cfloop query="getTeamDataStats">
+            <cfloop query="getTeamStandings">
+
+              <!--- Behind the scenes, calculate wins / losses percentage --->
+              <cfset totalGames = getTeamStandings.Wins + getTeamStandings.Losses>
+              <cfset winPercentage = NumberFormat(getTeamStandings.Wins / totalGames, '.999')>
+
               <tr>
-                <td data-label="Name">
-                  <cfif PermissionToShare EQ 'YES'>
-                    <a href="Player_Profiles/player-profile-2.cfm?playerID=#playerID#" style="font-weight: bold;">
-                      #firstName# #lastName# <cfif getTeamDataStats.captainPlayerID EQ getTeamDataStats.playerID>(C)</cfif>
-                    </a>
-                  <cfelse>
-                    #firstName# #lastName# <cfif getTeamDataStats.captainPlayerID EQ getTeamDataStats.playerID>(C)</cfif>
-                  </cfif>
+                <td data-label="Season">
+                  #getTeamStandings.seasonID#
                 </td>
-                <td data-label="Jersey">#Jersey#</td>
-                <td data-label="Points">#NumberFormat(Points, "0.0")#</td>
-                <td data-label="Rebounds">#NumberFormat(Rebounds, "0.0")#</td>
-                <td data-label="Asts">#NumberFormat(Assists, "0.0")#</td>
-                <td data-label="Blks">#NumberFormat(Blocks, "0.0")#</td>
-                <td data-label="Stls">#NumberFormat(Steals, "0.0")#</td>
+                <td data-label="Wins">#getTeamStandings.wins#</td>
+                <td data-label="Losses">#getTeamStandings.losses#</td>
+                <td data-label="W/L%">#winPercentage#</td>
+                <td data-label="Asts"></td>
+                <td data-label="Blks"></td>
               </tr>
           </cfloop>
           </tbody>
         </table>
-
       </div>
     </div>
 </div>
