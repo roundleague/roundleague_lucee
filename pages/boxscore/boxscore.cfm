@@ -1,7 +1,7 @@
 <cfinclude template="/header.cfm">
 
 <!--- Page Specific CSS/JS Here --->
-<link href="../boxscore/boxscore.css?v=1.2" rel="stylesheet">
+<link href="../boxscore/boxscore.css?v=1.3" rel="stylesheet">
 
 <cfquery name="getPlayerLogs" datasource="roundleague">
 	SELECT DISTINCT pgl.PlayerID, p.firstName, p.lastName, FGM, FGA, 3FGM, 3FGA, FTM, FTA, Points, Rebounds, Assists, Steals, Blocks, Turnovers, pgl.teamID, t.teamName, pgl.Fouls, r.jersey, p.PermissionToShare
@@ -46,26 +46,49 @@
 
         <!--- Test --->
         <div class="finalScoreSection mobile">
+            <cfset bolderScore = (getTeamsPlaying.HomeScore GT getTeamsPlaying.AwayScore) ? 'bolderScore' : ''>
             <!--- First Div Section is Home Team Info --->
-            <div class="homeTeamInfo">
+            <div class="teamInfoContainer">
                 <div class="teamInfo">
                   <div class="teamInfo_teamName"><b>#getTeamsPlaying.Home#</b></div>
                   <div class="teamInfo_record">#getWinsAndLossesHomeTeam.Wins#-#getWinsAndLossesHomeTeam.Losses#</div>
                 </div>
-                <div class="homeTeamScore">#getTeamsPlaying.HomeScore#</div>
+                <div class="homeTeamScore #bolderScore#">#getTeamsPlaying.HomeScore#</div>
             </div>
 
             <!--- Second will be 'FINAL' --->
             <div class="finalTextDiv">FINAL</div>
 
             <!--- Third will be Away Team Info --->
-            <div class="homeTeamInfo">
-                <div class="homeTeamScore">#getTeamsPlaying.HomeScore#</div>
+            <cfset bolderScore = (getTeamsPlaying.AwayScore GT getTeamsPlaying.HomeScore) ? 'bolderScore' : ''>
+            <div class="teamInfoContainer">
+                <div class="awayTeamScore #bolderScore#">#getTeamsPlaying.AwayScore#</div>
                 <div class="teamInfo">
-                  <div class="teamInfo_teamName"><b>#getTeamsPlaying.Home#</b></div>
-                  <div class="teamInfo_record">#getWinsAndLossesHomeTeam.Wins#-#getWinsAndLossesHomeTeam.Losses#</div>
+                  <div class="teamInfo_teamName"><b>#getTeamsPlaying.Away#</b></div>
+                  <div class="teamInfo_record">#getWinsAndLossesAwayTeam.Wins#-#getWinsAndLossesAwayTeam.Losses#</div>
                 </div>
             </div>
+        </div>
+
+        <div class="playerOfTheGame">
+            <table class="mobile">
+                <thead>
+                    <tr>
+                        <th>Player of the Game</th>
+                        <th>Points</th>
+                        <th>Rebounds</th>
+                        <th>Assists</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td data-label="Name">Tim Huynh</td>
+                        <td data-label="Points">25</td>
+                        <td data-label="Rebounds">12</td>
+                        <td data-label="Assists">6</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
         <div class="rotateTip">Rotate your device to see the full box score</div>
