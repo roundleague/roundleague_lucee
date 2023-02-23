@@ -22,65 +22,111 @@ a.playerLink {
 	display: none;
 }
 
-@media only screen and (max-width: 435px){
+@media only screen and (max-width: 480px){
 
-.desktop {
-	display: none;
-}
+	.desktop {
+		display: none;
+	}
 
-.mobile, .rotateTip {
-	display: initial;
-}
+	.mobile, .rotateTip {
+		display: initial;
+	}
 
-.rotateTip{
-    margin-bottom: 5px;
-    font-style: italic;
-}
+	.rotateTip{
+	    margin-bottom: 5px;
+	    font-style: italic;
+	}
 
-.teamInfo{
-	display: flex;
-	flex-direction:column;
-	width: 25px
-	border: 1px solid black;
-}
+	.teamInfo{
+		display: flex;
+		flex-direction:column;
+		width: 25px
+		border: 1px solid black;
+	}
 
-.teamInfoContainer{
-	display: flex;
-	flex-direction:row;
-	width: 125px;
-}
+	.teamInfoContainer{
+		display: flex;
+		flex-direction:row;
+		width: 30%;
+		justify-content: center;
+		align-items: center;
+		
+	}
 
-.homeTeamScore {
-	margin-left: 10px;
-	line-height: 28px;
-	font-family: -apple-system,BlinkMacSystemFont,Roboto,Arial,Helvetica Neue,Helvetica,sans-serif;
-	font-weight: 300;
-	font-size: 24px;
-}
+	.homeTeamScore {
+		margin-left: 10px;
+		line-height: 28px;
+		font-family: -apple-system,BlinkMacSystemFont,Roboto,Arial,Helvetica Neue,Helvetica,sans-serif;
+		font-weight: 300;
+		font-size: 24px;
+	}
 
-.awayTeamScore {
-	margin-right: 10px;
-	line-height: 28px;
-	font-family: -apple-system,BlinkMacSystemFont,Roboto,Arial,Helvetica Neue,Helvetica,sans-serif;
-	font-weight: 300;
-	font-size: 24px;
-}
+	.awayTeamScore {
+		margin-right: 10px;
+		line-height: 28px;
+		font-family: -apple-system,BlinkMacSystemFont,Roboto,Arial,Helvetica Neue,Helvetica,sans-serif;
+		font-weight: 300;
+		font-size: 24px;
+	}
 
-.finalScoreSection{
-	display: flex;
-	flex-direction:row;
-	padding: 10px;
-}
-.finalTextDiv{
-	width:33.33%;
-}
+	.finalScoreSection{
+		display: flex;
+		flex-direction:row;
+		padding: 10px;
+		border: 1px solid black;
+	}
 
-.bolderScore{
-	font-weight: 500;
-}
+	.playerOfTheGame {
+		width: 100%;
+	}
 
-.playerOfTheGame {
-	width: 100%;
-}
+	.scoresContainer {
+	  display: flex;
+	  justify-content: space-between;
+	  align-items: center;
+	  width: 33.33%;
+	  order: 2;
+	  flex: 1;
+	}
+
+	.homeTeamContainer,
+	.awayTeamContainer,
+	.finalTextDiv {
+	  flex: 1;
+	  text-align: center;
+	}
+
+	.homeTeamContainer {
+	  font-weight: 500;
+	}
+
+	.finalTextDiv {
+		font-weight: 500;
+	}
+
+	.awayTeamContainer {
+	  font-weight: 500;
+	}
+
+	.scoresContainer {
+	  order: 2;
+	  flex: 1;
+	}
+
+	.teamInfoContainer:first-child {
+	  order: 1;
+	}
+
+	.teamInfoContainer:last-child {
+	  order: 3;
+	}
+
+	.homeBolderScore, .awayBolderScore {
+		font-weight: bold;
+	}
+
+	.teamInfo_record {
+		font-weight: 500;
+	}
 
 }

@@ -1,7 +1,7 @@
 <cfinclude template="/header.cfm">
 
 <!--- Page Specific CSS/JS Here --->
-<link href="../boxscore/boxscore.css?v=1.3" rel="stylesheet">
+<link href="../boxscore/boxscore.css?v=1.4" rel="stylesheet">
 
 <cfquery name="getPlayerLogs" datasource="roundleague">
 	SELECT DISTINCT pgl.PlayerID, p.firstName, p.lastName, FGM, FGA, 3FGM, 3FGA, FTM, FTA, Points, Rebounds, Assists, Steals, Blocks, Turnovers, pgl.teamID, t.teamName, pgl.Fouls, r.jersey, p.PermissionToShare
@@ -14,7 +14,7 @@
 </cfquery>
 
 <cfquery name="getTeamsPlaying" datasource="roundleague">
-    SELECT scheduleID, WEEK, a.teamName AS Home, b.teamName AS Away, s.startTime, Date_FORMAT(s.date, "%M %d %Y") AS Date, s.homeScore, s.awayscore, a.teamID as HomeTeamID, b.teamID as AwayTeamID
+    SELECT scheduleID, WEEK, a.teamName AS Home, b.teamName AS Away, s.startTime, Date_FORMAT(s.date, "%M %d, %Y") AS Date, s.homeScore, s.awayscore, a.teamID as HomeTeamID, b.teamID as AwayTeamID
     FROM schedule s
     LEFT JOIN teams as a ON s.hometeamID = a.teamID
     LEFT JOIN teams as b ON s.awayTeamID = b.teamID
@@ -44,25 +44,30 @@
         <h4 class="gameTitle desktop"> #getTeamsPlaying.Home# #getTeamsPlaying.HomeScore# (#getWinsAndLossesHomeTeam.Wins#-#getWinsAndLossesHomeTeam.Losses#) | #getTeamsPlaying.Away# #getTeamsPlaying.AwayScore# (#getWinsAndLossesAwayTeam.Wins#-#getWinsAndLossesAwayTeam.Losses#)</h4>
         <h5>#getTeamsPlaying.Date#</h5>
 
-        <!--- Test --->
+        <!--- Mobile score section --->
         <div class="finalScoreSection mobile">
-            <cfset bolderScore = (getTeamsPlaying.HomeScore GT getTeamsPlaying.AwayScore) ? 'bolderScore' : ''>
             <!--- First Div Section is Home Team Info --->
             <div class="teamInfoContainer">
                 <div class="teamInfo">
                   <div class="teamInfo_teamName"><b>#getTeamsPlaying.Home#</b></div>
                   <div class="teamInfo_record">#getWinsAndLossesHomeTeam.Wins#-#getWinsAndLossesHomeTeam.Losses#</div>
                 </div>
-                <div class="homeTeamScore #bolderScore#">#getTeamsPlaying.HomeScore#</div>
+                <!--- <div class="homeTeamScore #bolderScore#">#getTeamsPlaying.HomeScore#</div> --->
             </div>
 
             <!--- Second will be 'FINAL' --->
-            <div class="finalTextDiv">FINAL</div>
+            <div class="scoresContainer">
+                <cfset homeBolderScore = (getTeamsPlaying.HomeScore GT getTeamsPlaying.AwayScore) ? 'homeBolderScore' : ''>
+                <div class="homeTeamContainer #homeBolderScore#">#getTeamsPlaying.HomeScore#</div>
+                <div class="finalTextDiv">FINAL</div>
+                <cfset awayBolderScore = (getTeamsPlaying.AwayScore GT getTeamsPlaying.HomeScore) ? 'awayBolderScore' : ''>
+                <div class="awayTeamContainer #awayBolderScore#">#getTeamsPlaying.AwayScore#</div>
+            </div>
 
             <!--- Third will be Away Team Info --->
             <cfset bolderScore = (getTeamsPlaying.AwayScore GT getTeamsPlaying.HomeScore) ? 'bolderScore' : ''>
             <div class="teamInfoContainer">
-                <div class="awayTeamScore #bolderScore#">#getTeamsPlaying.AwayScore#</div>
+                <!--- <div class="awayTeamScore #bolderScore#">#getTeamsPlaying.AwayScore#</div> --->
                 <div class="teamInfo">
                   <div class="teamInfo_teamName"><b>#getTeamsPlaying.Away#</b></div>
                   <div class="teamInfo_record">#getWinsAndLossesAwayTeam.Wins#-#getWinsAndLossesAwayTeam.Losses#</div>
@@ -70,7 +75,8 @@
             </div>
         </div>
 
-        <div class="playerOfTheGame">
+        <!--- Player of the game should span the whole width of phone and desktop --->
+        <!--- <div class="playerOfTheGame">
             <table class="mobile">
                 <thead>
                     <tr>
@@ -89,7 +95,7 @@
                     </tr>
                 </tbody>
             </table>
-        </div>
+        </div> --->
 
         <div class="rotateTip">Rotate your device to see the full box score</div>
 
