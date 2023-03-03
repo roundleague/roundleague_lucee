@@ -60,6 +60,15 @@
   WHERE HomeTeamID = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#">
 </cfquery>
 
+<cfquery name="getTeamStandings" datasource="roundleague">
+  SELECT standings.TeamID, standings.Wins, standings.Losses, standings.SeasonID, Seasons.SeasonName
+  FROM standings
+  JOIN seasons
+  ON standings.SeasonID = seasons.SeasonID
+  WHERE standings.teamID = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#">
+  AND standings.seasonID > 2
+
+</cfquery>
 
 <cfoutput>
 <div class="main" style="background-color: white; margin-top: 50px;">
@@ -169,31 +178,28 @@
           <thead>
             <tr>
               <td>Season</td>
-              <td>W</td>
-              <td>L</td>
-              <td>W/L%</td>
-              <td>Playoffs W/L%</td>
+              <td>Wins</td>
+              <td>Losses</td>
+              <td>Win%</td>
+              <td>Playoffs Win%</td>
               <td>Leading Score</td>
             </tr>
           </thead>
           <tbody>
-            <cfloop query="getTeamDataStats">
+            <cfloop query="getTeamStandings">
+
+              <!--- Behind the scenes, calculate wins / losses percentage --->
+              <cfset totalGames = getTeamStandings.wins + getTeamStandings.losses>
+              <cfset winPercentage = NumberFormat(getTeamStandings.wins / totalGames, '.999')>
+
+
               <tr>
-                <td data-label="Name">
-                  <cfif PermissionToShare EQ 'YES'>
-                    <a href="Player_Profiles/player-profile-2.cfm?playerID=#playerID#" style="font-weight: bold;">
-                      #firstName# #lastName# <cfif getTeamDataStats.captainPlayerID EQ getTeamDataStats.playerID>(C)</cfif>
-                    </a>
-                  <cfelse>
-                    #firstName# #lastName# <cfif getTeamDataStats.captainPlayerID EQ getTeamDataStats.playerID>(C)</cfif>
-                  </cfif>
-                </td>
-                <td data-label="Jersey">#Jersey#</td>
-                <td data-label="Points">#NumberFormat(Points, "0.0")#</td>
-                <td data-label="Rebounds">#NumberFormat(Rebounds, "0.0")#</td>
-                <td data-label="Asts">#NumberFormat(Assists, "0.0")#</td>
-                <td data-label="Blks">#NumberFormat(Blocks, "0.0")#</td>
-                <td data-label="Stls">#NumberFormat(Steals, "0.0")#</td>
+                <td data-label="Season">#getTeamStandings.seasonName#</td>
+                <td data-label="Wins">#getTeamStandings.wins#</td>
+                <td data-label="Losses">#getTeamStandings.losses#</td>
+                <td data-label="Win%">#winPercentage#</td>
+                <td data-label="Playoffs Win%"></td>
+                <td data-label="Leading Score"></td>
               </tr>
           </cfloop>
           </tbody>
