@@ -43,6 +43,7 @@
     WHERE r.seasonID = s.seasonID
     AND s.seasonID = (SELECT SeasonID From Seasons Where Status = 'Active')
     AND t.teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.teamID#">
+    GROUP BY lastName, firstName
     ORDER BY r.Starter desc, p.lastName
 </cfquery>
 
