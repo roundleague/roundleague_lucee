@@ -1,0 +1,94 @@
+body {
+	background-color: #f2f2f2;
+	font-family: Arial, sans-serif;
+}
+
+.statline {
+	width: 66%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	margin: 0 auto;
+	background-color: #fff;
+	border-radius: 5px;
+	padding: 20px;
+	box-shadow: 0 0 10px rgba(0,0,0,0.1);
+	height: 114px;
+	position: relative;
+	top: 10px;
+}
+
+.player-info {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+	top: 77px;
+}
+
+.player-name, .jersey-number {
+	font-size: 24px;
+	font-weight: bold;
+	color: #333;
+	text-align: center;
+	margin-bottom: 5px;
+}
+
+.team-logo {
+	margin-bottom: 20px;
+}
+
+.team-logo img {
+	max-width: 90%;
+	height: auto;
+	display: block;
+	margin: 0 auto;
+}
+
+.stats {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	margin-top: 12px;
+}
+
+.stat {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	margin-bottom: 20px;
+	margin-right: 10px;
+	margin-left: 10px;
+}
+
+.stat-header {
+	font-size: 18px;
+	font-weight: bold;
+	color: #555;
+	text-align: center;
+	margin-bottom: 10px;
+}
+
+.stat-value {
+	font-size: 24px;
+	font-weight: bold;
+	color: #333;
+	text-align: center;
+	margin-bottom: 5px;
+}
+
+.stat-label {
+	font-size: 14px;
+	color: #555;
+	text-align: center;
+}
+
+.pure-form {
+	margin: 10px;
+}
