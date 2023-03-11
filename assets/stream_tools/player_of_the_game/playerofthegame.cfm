@@ -41,15 +41,15 @@
 			<input class="name" type="text" placeholder="First Name Last Name #3" />
 
 			<label for="stacked-password">Stat 1</label>
-			<input class="categoryName1" type="text" placeholder="Points" />
+			<input class="categoryName1" type="text" placeholder="Stats Category" />
 			<input class="categoryValue1" type="text" placeholder="VALUE" />
 
 			<label for="stacked-password">Stat 2</label>
-			<input class="categoryName2" type="text" placeholder="Rebounds" />
+			<input class="categoryName2" type="text" placeholder="Stats Category" />
 			<input class="categoryValue2" type="text" placeholder="VALUE" />
 
 			<label for="stacked-password">Stat 3</label>
-			<input class="categoryName3" type="text" placeholder="Assists" />
+			<input class="categoryName3" type="text" placeholder="Stats Category" />
 			<input class="categoryValue3" type="text" placeholder="VALUE" />
 		</fieldset>
 	</form>
