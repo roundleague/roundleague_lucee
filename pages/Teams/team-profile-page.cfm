@@ -58,6 +58,7 @@
   SELECT count(DISTINCT seasonID) AS seasonsPlayed
   FROM schedule 
   WHERE HomeTeamID = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#">
+  AND seasonID > 3
 </cfquery>
 
 <cfquery name="getTeamStandings" datasource="roundleague">
@@ -66,9 +67,27 @@
   JOIN seasons
   ON standings.SeasonID = seasons.SeasonID
   WHERE standings.teamID = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#">
-  AND standings.seasonID > 2
+  AND standings.seasonID > 3
 
 </cfquery>
+
+<cfquery name="getLeadingScore" datasource="roundleague">
+  SELECT ps.PlayerID, ps.points, s.SeasonName, t.teamName
+  FROM playerstats ps
+  JOIN seasons s ON s.seasonID = ps.seasonID
+  JOIN teams t ON ps.teamID = t.teamID
+  WHERE ps.Points IN (
+            SELECT
+              MAX(ps.Points) AS MaxPoints
+            FROM seasons s
+            JOIN playerstats ps ON s.SeasonID = ps.SeasonID
+            JOIN teams t ON ps.teamID = t.teamID
+            WHERE t.teamID = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#">
+            GROUP BY s.SeasonName
+            ORDER BY s.SeasonName ASC )
+  AND t.teamID = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#">
+</cfquery>
+
 
 <cfoutput>
 <div class="main" style="background-color: white; margin-top: 50px;">
@@ -199,7 +218,7 @@
                 <td data-label="Losses">#getTeamStandings.losses#</td>
                 <td data-label="Win%">#winPercentage#</td>
                 <td data-label="Playoffs Win%"></td>
-                <td data-label="Leading Score"></td>
+                <td data-label="Leading Score">#getLeadingScore.PlayerID#</td>
               </tr>
           </cfloop>
           </tbody>
