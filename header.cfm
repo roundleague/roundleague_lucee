@@ -75,12 +75,12 @@
       <div class="collapse navbar-collapse justify-content-end initialState" id="navigation">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link" rel="tooltip" title="Follow us on Twitter" data-placement="bottom" href="/pages/landing-page.cfm">
+            <a class="nav-link" rel="tooltip" data-placement="bottom" href="/pages/landing-page.cfm">
               Home
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" rel="tooltip" title="Like us on Facebook" data-placement="bottom" href="/pages/Standings/standings_divisions.cfm">
+            <a class="nav-link" rel="tooltip" data-placement="bottom" href="/pages/Standings/standings_divisions.cfm">
               Standings
             </a>
           </li>
