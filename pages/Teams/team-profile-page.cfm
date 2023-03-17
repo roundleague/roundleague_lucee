@@ -69,10 +69,11 @@
 </cfquery>
 
 <cfquery name="getLeadingScorer" datasource="roundleague">
-  SELECT ps.PlayerID, ps.points, s.SeasonName, t.teamName
+  SELECT ps.PlayerID, ps.points, s.SeasonName, t.teamName, s.seasonID, p.firstName, p.lastName
   FROM playerstats ps
   JOIN seasons s ON s.seasonID = ps.seasonID
   JOIN teams t ON ps.teamID = t.teamID
+  JOIN players p on p.playerID = ps.playerID
   WHERE ps.Points IN (
         SELECT
           MAX(ps.Points) AS MaxPoints
@@ -84,8 +85,6 @@
         ORDER BY s.SeasonName ASC )
   AND t.teamID = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#">
 </cfquery>
-
-<cfdump var="#getLeadingScorer#" />
 
 <cfoutput>
 <div class="main" style="background-color: white; margin-top: 50px;">
@@ -198,12 +197,25 @@
               <td>Wins</td>
               <td>Losses</td>
               <td>W/L%</td>
-              <td>Playoffs W/L%</td>
+              <td>Playoffs</td>
               <td>Leading Scorer</td>
             </tr>
           </thead>
           <tbody>
             <cfloop query="getTeamStandings">
+
+              <cfquery name="getPlayerIdBySeason" dbtype="query">
+                Select PlayerID, FirstName, LastName, Points
+                From [getLeadingScorer]
+                Where seasonID = #getTeamStandings.seasonID#
+              </cfquery>
+
+              <!--- Get first initial --->
+              <cfset playerName = getPlayerIdBySeason.FirstName>
+              <cfset firstInitial = Mid(playerName, 1, 1)>
+
+              <!--- Format points --->
+              <cfset formattedPoints = NumberFormat(getPlayerIdBySeason.points, "0.0")>
 
               <!--- Behind the scenes, calculate wins / losses percentage --->
               <cfset totalGames = getTeamStandings.Wins + getTeamStandings.Losses>
@@ -216,8 +228,10 @@
                 <td data-label="Wins">#getTeamStandings.wins#</td>
                 <td data-label="Losses">#getTeamStandings.losses#</td>
                 <td data-label="W/L%">#winPercentage#</td>
-                <td data-label="Playoffs W/L%"></td>
-                <td data-label="Leading Scorer">#getLeadingScorer.playerID#</td>
+                <td data-label="Playoffs"></td>
+                <td data-label="Leading Scorer">
+                  #firstInitial#. #getPlayerIdBySeason.LastName# (#formattedPoints#)
+                </td>
               </tr>
           </cfloop>
           </tbody>
