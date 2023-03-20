@@ -62,10 +62,11 @@
 </cfquery>
 
 <cfquery name="getTeamStandings" datasource="roundleague">
-  SELECT wins, losses, teamID, seasonID
-  FROM standings
+  SELECT wins, losses, teamID, s.seasonID, sea.seasonName
+  FROM standings s
+  JOIN seasons sea on sea.seasonID = s.seasonID
   WHERE teamID = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#">
-  AND seasonID > 3
+  AND s.seasonID > 3
 </cfquery>
 
 <cfquery name="getLeadingScorer" datasource="roundleague">
@@ -85,6 +86,8 @@
         ORDER BY s.SeasonName ASC )
   AND t.teamID = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#">
 </cfquery>
+
+<cfset playoffsObject = createObject("component", "library.playoffs") />
 
 <cfoutput>
 <div class="main" style="background-color: white; margin-top: 50px;">
@@ -210,6 +213,15 @@
                 Where seasonID = #getTeamStandings.seasonID#
               </cfquery>
 
+              <cfquery name="getPlayoffFinish" datasource="roundleague">
+                SELECT t.teamName, ps.seasonID, max(ps.bracketRoundID) as maxBracketRoundID, pb.MaxTeamSize, pb.Playoffs_bracketID
+                FROM playoffs_schedule ps
+                JOIN playoffs_bracket pb ON ps.Playoffs_BracketID = pb.Playoffs_bracketID
+                JOIN teams t ON t.teamId = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#">
+                WHERE (hometeamID = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#"> OR awayteamID = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#">)
+                AND ps.seasonID = #getTeamStandings.seasonID#
+              </cfquery>
+
               <!--- Get first initial --->
               <cfset playerName = getPlayerIdBySeason.FirstName>
               <cfset firstInitial = Mid(playerName, 1, 1)>
@@ -221,16 +233,26 @@
               <cfset totalGames = getTeamStandings.Wins + getTeamStandings.Losses>
               <cfset winPercentage = NumberFormat(getTeamStandings.Wins / totalGames, '.999')>
 
+              <!--- Playoffs Finished Logic --->
+              <cfif getPlayoffFinish.maxBracketRoundID NEQ ''>
+                <cfset playoffsFinishedText = playoffsObject.getPlayoffTextByMaxBracketRoundID(getPlayoffFinish.maxBracketRoundID, getPlayoffFinish.MaxTeamSize)>
+              <cfelse>
+                <cfset playoffsFinishedText = ''>
+              </cfif>
+
               <tr>
                 <td data-label="Season">
-                  #getTeamStandings.seasonID#
+                  #getTeamStandings.seasonName#
                 </td>
                 <td data-label="Wins">#getTeamStandings.wins#</td>
                 <td data-label="Losses">#getTeamStandings.losses#</td>
                 <td data-label="W/L%">#winPercentage#</td>
-                <td data-label="Playoffs"></td>
+                <td data-label="Playoffs">#playoffsFinishedText#</td>
                 <td data-label="Leading Scorer">
-                  #firstInitial#. #getPlayerIdBySeason.LastName# (#formattedPoints#)
+                    <a href="Player_Profiles/player-profile-2.cfm?playerID=#getPlayerIdBySeason.playerID#" style="font-weight: bold;">
+                      #firstInitial#. #getPlayerIdBySeason.LastName#
+                    </a>
+                    (#formattedPoints#)
                 </td>
               </tr>
           </cfloop>
