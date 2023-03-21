@@ -26,12 +26,12 @@
             </cfswitch>
         <cfelseif numTeams EQ 22>
             <cfswitch expression="#fromGameId#"> 
-                <cfcase value="1"><cfreturn 7></cfcase>
-                <cfcase value="2"><cfreturn 8></cfcase>
-                <cfcase value="3"><cfreturn 9></cfcase>
-                <cfcase value="4"><cfreturn 10></cfcase>
-                <cfcase value="5"><cfreturn 11></cfcase>
-                <cfcase value="6"><cfreturn 12></cfcase>
+                <cfcase value="1"><cfreturn 12></cfcase>
+                <cfcase value="2"><cfreturn 11></cfcase>
+                <cfcase value="3"><cfreturn 10></cfcase>
+                <cfcase value="4"><cfreturn 9></cfcase>
+                <cfcase value="5"><cfreturn 8></cfcase>
+                <cfcase value="6"><cfreturn 14></cfcase>
                 <cfcase value="7,14"><cfreturn 15></cfcase>
                 <cfcase value="8,13"><cfreturn 16></cfcase>
                 <cfcase value="9,12"><cfreturn 17></cfcase>
