@@ -3,9 +3,9 @@
      <cffunction name="getAdvanceToGameId"
         hint="Get the next bracketGameId to advance to for playoffs" returntype="number">
         <cfargument name="fromGameId" default="" required="yes" type="number">
-        <cfargument name="numRounds" default="" required="yes" type="number">
+        <cfargument name="numTeams" default="" required="yes" type="number">
 
-        <cfif numRounds EQ 5>
+        <cfif numTeams EQ 32>
             <cfswitch expression="#fromGameId#"> 
                 <cfcase value="1,2"><cfreturn 17></cfcase>
                 <cfcase value="3,4"><cfreturn 18></cfcase>
@@ -24,14 +24,31 @@
                 <cfcase value="29,30"><cfreturn 31></cfcase>
                 <cfdefaultcase><cfreturn 0></cfdefaultcase> 
             </cfswitch>
-        <cfelseif numRounds EQ 3>
+        <cfelseif numTeams EQ 22>
+            <cfswitch expression="#fromGameId#"> 
+                <cfcase value="1"><cfreturn 7></cfcase>
+                <cfcase value="2"><cfreturn 8></cfcase>
+                <cfcase value="3"><cfreturn 9></cfcase>
+                <cfcase value="4"><cfreturn 10></cfcase>
+                <cfcase value="5"><cfreturn 11></cfcase>
+                <cfcase value="6"><cfreturn 12></cfcase>
+                <cfcase value="7,14"><cfreturn 15></cfcase>
+                <cfcase value="8,13"><cfreturn 16></cfcase>
+                <cfcase value="9,12"><cfreturn 17></cfcase>
+                <cfcase value="10,11"><cfreturn 18></cfcase>
+                <cfcase value="15,18"><cfreturn 19></cfcase>
+                <cfcase value="16,17"><cfreturn 20></cfcase>
+                <cfcase value="19,20"><cfreturn 21></cfcase>
+                <cfdefaultcase><cfreturn 0></cfdefaultcase> 
+            </cfswitch> 
+        <cfelseif numTeams EQ 8>
             <cfswitch expression="#fromGameId#"> 
                 <cfcase value="1,2"><cfreturn 5></cfcase>
                 <cfcase value="3,4"><cfreturn 6></cfcase>
                 <cfcase value="5,6"><cfreturn 7></cfcase>
                 <cfdefaultcase><cfreturn 0></cfdefaultcase> 
             </cfswitch>
-        <cfelseif numRounds EQ 2>
+        <cfelseif numTeams EQ 4>
             <cfswitch expression="#fromGameId#"> 
                 <cfcase value="1,2"><cfreturn 3></cfcase>
                 <cfdefaultcase><cfreturn 0></cfdefaultcase> 
@@ -44,9 +61,9 @@
 
     <cftry>
     <!--- Get the max rounds for current bracket --->
-    <cfquery name="getMaxRounds" datasource="roundleague">
-        SELECT max(bracketRoundID) as MaxRounds
-        FROM playoffs_schedule
+    <cfquery name="getMaxTeams" datasource="roundleague">
+        SELECT MaxTeamSize
+        FROM playoffs_bracket
         WHERE Playoffs_BracketID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.Playoffs_BracketID#">
     </cfquery>
 
@@ -133,7 +150,7 @@
 
 
         <!--- Advance Winning Team --->
-        <cfset nextGameId = getAdvanceToGameId(url.bracketGameID, getMaxRounds.maxRounds)>
+        <cfset nextGameId = getAdvanceToGameId(url.bracketGameID, getMaxTeams.MaxTeamSize)>
         <cfquery name="advanceSchedule" datasource="roundleague">
             SELECT Playoffs_scheduleID, HomeTeamID, AwayTeamID
             FROM Playoffs_Schedule
