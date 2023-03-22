@@ -36,6 +36,7 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7960654087692774"
      crossorigin="anonymous"></script>
   <meta charset="utf-8" />
+  <meta property="og:image" content="/assets/img/Logos/4.png" />
   <link rel="apple-touch-icon" sizes="76x76" href="/assets/img//apple-icon.png">
   <link rel="icon" type="image/png" href="/assets/img/Logos/favicon.png">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
