@@ -58,7 +58,34 @@
   SELECT count(DISTINCT seasonID) AS seasonsPlayed
   FROM schedule 
   WHERE HomeTeamID = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#">
+  and seasonID > 3
 </cfquery>
+<cfquery name="getTeamStandings" datasource="roundleague">
+  SELECT standings.TeamID, standings.Wins, standings.Losses, standings.SeasonID, Seasons.SeasonName
+  FROM standings
+  JOIN seasons
+  ON standings.SeasonID = seasons.SeasonID
+  WHERE standings.teamID = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#">
+  AND standings.seasonID > 3
+</cfquery>
+
+<cfquery name = "getLeadingScore" datasource = "roundleague">
+  SELECT playerstats.PlayerID, playerstats.points, seasons.SeasonName, teams.teamName, seasons.SeasonID, players.firstName, players.lastName
+  FROM playerstats
+  JOIN seasons ON seasons.SeasonID = playerstats.SeasonID
+  Join players ON playerstats.PlayerID = players.playerID
+  JOIN teams ON playerstats.teamID = teams.teamID
+  WHERE playerstats.Points IN (
+    Select MAX(playerstats.Points) AS MaxPoints
+    FROM seasons
+    JOIN playerstats ON seasons.SeasonID = playerstats.SeasonID
+    JOIN teams ON playerstats.teamID = teams.teamID
+    WHERE teams.teamID = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#">
+    GROUP BY seasons.SeasonName
+    ORDER BY seasons.SeasonName ASC)
+  AND teams.teamId = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#">
+</cfquery>
+
 
 <cfoutput>
 <div class="main" style="background-color: white; margin-top: 50px;">
@@ -157,45 +184,70 @@
         </table>
       </div>
 
+    <!--- FranchiseInfo Tab --->
       <div id="FranchiseInfo" class="container tabcontent">
-        <h1>#getTeamData.teamName#-This is a test, franchise tab</h1>
+
+        <!--- Content Here --->
+        <h1>#getTeamData.teamName#</h1>
+
         <table class="bolder">
           <caption>Seasons: #getTeamDataM.seasonsPlayed#</caption>
           <thead>
             <tr>
-              <td>Name</td>
-              <td>Jersey</td>
-              <td>Points</td>
-              <td>Rebounds</td>
-              <td>Asts</td>
-              <td>Blks</td>
-              <td>Stls</td>
+              <td>Season</td>
+              <td>Wins</td>
+              <td>Losses</td>
+              <td>PCT</td>
+              <td>Playoffs</td>
+              <td>Leading Score</td>
             </tr>
           </thead>
           <tbody>
-            <cfloop query="getTeamDataStats">
+            <cfloop query="getTeamStandings">
+
+              <!--- Query of Queries --->
+              <cfquery name = "getPlayerIDBySeason" dbtype= "query">
+                SELECT PlayerID, lastName, firstName, points
+                FROM [getLeadingScore]
+                Where seasonID = #getTeamStandings.seasonID#
+              </cfquery>
+
+              <cfquery name = "getPlayoffsFinish" datasource="roundleague">
+                SELECT t.teamName, ps.seasonID, max(ps.bracketRoundID) as maxBracketRoundID, pb.MaxTeamSize, pb.Playoffs_bracketID
+                FROM playoffs_schedule ps
+                JOIN playoffs_bracket pb ON ps.Playoffs_BracketID = pb.Playoffs_bracketID
+                JOIN teams t ON t.teamId = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#">
+                WHERE (hometeamID = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#"> OR awayteamID = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#">)
+                AND ps.seasonID = #getTeamStandings.seasonID#
+              </cfquery>
+
+              <!---setting variables for initial and points --->
+              <cfset firstInitial = Mid(#getPlayerIDBySeason.firstName#, 1, 1)>
+              <cfset formatPoints = NumberFormat(#getPlayerIDBySeason.points#, '0.0')>
+
+             <!--- Behind the scenes, calculate wins / losses percentage --->
+             <cfset totalGames = getTeamStandings.Wins + getTeamStandings.Losses>
+             <cfset wins_percentage = NumberFormat(getTeamStandings.Wins/totalGames, '.999')>
+
               <tr>
-                <td data-label="Name">
-                  <cfif PermissionToShare EQ 'YES'>
-                    <a href="Player_Profiles/player-profile-2.cfm?playerID=#playerID#" style="font-weight: bold;">
-                      #firstName# #lastName# <cfif getTeamDataStats.captainPlayerID EQ getTeamDataStats.playerID>(C)</cfif>
-                    </a>
-                  <cfelse>
-                    #firstName# #lastName# <cfif getTeamDataStats.captainPlayerID EQ getTeamDataStats.playerID>(C)</cfif>
-                  </cfif>
+
+                <!--- data area--->
+                <td data-label="Seasons">#getTeamStandings.SeasonName#</td>
+                <td data-label="Wins">#getTeamStandings.Wins#</td>
+                <td data-label="Losses">#getTeamStandings.Losses#</td>
+                <td data-label="Win Percentage">#wins_percentage#</td>
+                <td data-label="Playoffs"></td>
+                <td data-label="Leading Score">
+                  <a href="Player_Profiles/player-profile-2.cfm?playerID=#getPlayerIDBySeason.playerID#" style="font-weight: bold;">
+                      #firstInitial#. #getPlayerIDBySeason.lastName#
+                  </a>(#formatPoints#)
                 </td>
-                <td data-label="Jersey">#Jersey#</td>
-                <td data-label="Points">#NumberFormat(Points, "0.0")#</td>
-                <td data-label="Rebounds">#NumberFormat(Rebounds, "0.0")#</td>
-                <td data-label="Asts">#NumberFormat(Assists, "0.0")#</td>
-                <td data-label="Blks">#NumberFormat(Blocks, "0.0")#</td>
-                <td data-label="Stls">#NumberFormat(Steals, "0.0")#</td>
+
               </tr>
           </cfloop>
           </tbody>
         </table>
       </div>
-    </div>
 </div>
 </cfoutput>
 <cfinclude template="/footer.cfm">
