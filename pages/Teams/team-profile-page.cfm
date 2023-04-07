@@ -213,6 +213,15 @@
                 Where seasonID = #getTeamStandings.seasonID#
               </cfquery>
 
+              <cfquery name="getPlayoffsFinish" datasource="roundleague">
+                SELECT t.teamName, ps.seasonID, max(ps.bracketRoundID) as maxBracketRoundID, pb.MaxTeamSize, pb.Playoffs_bracketID
+                FROM playoffs_schedule ps
+                JOIN playoffs_bracket pb ON ps.Playoffs_BracketID = pb.Playoffs_bracketID
+                JOIN teams t ON t.teamId = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#">
+                WHERE (hometeamID = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#"> OR awayteamID = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#">)
+                AND ps.seasonID = #getTeamStandings.seasonID#
+              </cfquery>
+
               <!--- Get first initial --->
               <cfset playerName = getPlayerIdBySeason.FirstName>
               <cfset firstInitial = Mid(playerName, 1, 1)>
@@ -230,7 +239,7 @@
                 <td data-label="Wins">#getTeamStandings.wins#</td>
                 <td data-label="Losses">#getTeamStandings.losses#</td>
                 <td data-label="Win%">#winPercentage#</td>
-                <td data-label="Playoffs"></td>
+                <td data-label="Playoffs">#getPlayoffsFinish.maxBracketRoundID#</td>
                 <td data-label="Leading Score">
                     <a href="Player_Profiles/player-profile-2.cfm?playerID=#getPlayerIdBySeason.playerID#" style="font-weight: bold;">
                        #firstInitial#. #getPlayerIdBySeason.lastName# 
