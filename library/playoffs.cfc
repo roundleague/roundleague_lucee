@@ -3,11 +3,11 @@
   <cffunction name="getPlayoffTextByMaxBracketRoundID"
 	hint="Print out the team's finished playoff spot based on Bracket Round ID" returntype="string">
 	<cfargument name="maxBracketRoundID" default="" required="yes" type="numeric">
-	<cfargument name="maxTeamSize" default="" required="yes" type="numeric">
+	<cfargument name="bracketSize" default="" required="yes" type="numeric">
 		<cfoutput>
 			<cfset playoffFinishedText = ''>
 			<!--- This logic is subject to change based on playoff scheduling for future brackets --->
-	        <cfif maxTeamSize EQ 32>
+	        <cfif bracketSize EQ 32>
 	          <!--- 32 Team Logic --->
 	          <cfswitch expression="#maxBracketRoundID#">
 	             <cfcase value="1">
@@ -26,7 +26,7 @@
 	             	<cfset playoffFinishedText = 'Championship Game'>
 	             </cfcase>
 	          </cfswitch>
-	        <cfelseif maxTeamSize EQ 8>
+	        <cfelseif bracketSize EQ 8>
 	          <!--- 8 Team Logic --->
 	          <cfswitch expression="#maxBracketRoundID#">
 	             <cfcase value="1">
@@ -39,7 +39,7 @@
 	             	<cfset playoffFinishedText = 'Championship Game'>
 	             </cfcase>
 	          </cfswitch>
-	        <cfelseif maxTeamSize EQ 4>
+	        <cfelseif bracketSize EQ 4>
 	          <!--- 4 Team Logic --->
 	          <cfswitch expression="#maxBracketRoundID#">
 	             <cfcase value="1">

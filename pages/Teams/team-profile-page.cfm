@@ -247,7 +247,9 @@
                 <td data-label="Wins">#getTeamStandings.wins#</td>
                 <td data-label="Losses">#getTeamStandings.losses#</td>
                 <td data-label="W/L%">#winPercentage#</td>
-                <td data-label="Playoffs">#playoffsFinishedText#</td>
+                <td data-label="Playoffs">
+                  #playoffsFinishedText#
+                </td>
                 <td data-label="Leading Scorer">
                     <a href="Player_Profiles/player-profile-2.cfm?playerID=#getPlayerIdBySeason.playerID#" style="font-weight: bold;">
                       #firstInitial#. #getPlayerIdBySeason.LastName#
