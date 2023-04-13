@@ -214,12 +214,21 @@
               </cfquery>
 
               <cfquery name="getPlayoffFinish" datasource="roundleague">
-                SELECT t.teamName, ps.seasonID, max(ps.bracketRoundID) as maxBracketRoundID, pb.MaxTeamSize, pb.Playoffs_bracketID
+                SELECT t.teamName, ps.seasonID, max(ps.bracketRoundID) as maxBracketRoundID, pb.MaxTeamSize, pb.Playoffs_bracketID, pb.Name
                 FROM playoffs_schedule ps
                 JOIN playoffs_bracket pb ON ps.Playoffs_BracketID = pb.Playoffs_bracketID
                 JOIN teams t ON t.teamId = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#">
                 WHERE (hometeamID = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#"> OR awayteamID = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#">)
-                AND ps.seasonID = #getTeamStandings.seasonID#
+                AND ps.seasonID = <cfqueryparam cfsqltype="INTEGER" value="#getTeamStandings.seasonID#">
+              </cfquery>
+
+              <!--- There is no way to tell which team played in which bracket... --->
+              <!--- If the teamID is in this query, they are a champion --->
+              <cfquery name="getChampion" datasource="roundleague">
+                SELECT championsID
+                FROM champions
+                WHERE teamID = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#">
+                AND seasonID = <cfqueryparam cfsqltype="INTEGER" value="#getTeamStandings.seasonID#">
               </cfquery>
 
               <!--- Get first initial --->
@@ -234,10 +243,19 @@
               <cfset winPercentage = NumberFormat(getTeamStandings.Wins / totalGames, '.999')>
 
               <!--- Playoffs Finished Logic --->
-              <cfif getPlayoffFinish.maxBracketRoundID NEQ ''>
+              <!--- Check champion query first --->
+              <cfif getChampion.recordCount>
+                <cfset playoffsFinishedText = '<b>Champion</b>'>
+              <cfelseif getPlayoffFinish.maxBracketRoundID NEQ ''>
+                <!--- If the team is not the champion that season --->
                 <cfset playoffsFinishedText = playoffsObject.getPlayoffTextByMaxBracketRoundID(getPlayoffFinish.maxBracketRoundID, getPlayoffFinish.MaxTeamSize)>
               <cfelse>
                 <cfset playoffsFinishedText = ''>
+              </cfif>
+
+              <!--- NIT Prefix Logic --->
+              <cfif getPlayoffFinish.Name EQ 'NIT'>
+                <cfset playoffsFinishedText &= " (NIT)">
               </cfif>
 
               <tr>
