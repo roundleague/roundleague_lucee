@@ -88,7 +88,7 @@
           <div class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" data-toggle="dropdown" id="dropdownMenuButton" href="##pk" role="button" aria-haspopup="true" aria-expanded="false">Schedule</a>
             <ul class="dropdown-menu dropdown-info" aria-labelledby="dropdownMenuButton">
-              <a class="dropdown-item" href="/pages/schedule/schedule-2.cfm">Regular Season Schedule</a>
+              <!--- <a class="dropdown-item" href="/pages/schedule/schedule-2.cfm">Regular Season Schedule</a> --->
 <!---               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="/pages/schedule/schedule-womens.cfm">Women's Schedule</a>
               <div class="dropdown-divider"></div>
