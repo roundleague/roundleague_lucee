@@ -68,7 +68,6 @@
   ON standings.SeasonID = seasons.SeasonID
   WHERE standings.teamID = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#">
   AND standings.seasonID > 3
-
 </cfquery>
 
 <cfquery name="getLeadingScore" datasource="roundleague">
@@ -88,6 +87,10 @@
             ORDER BY s.SeasonName ASC )
   AND t.teamID = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#">
 </cfquery>
+
+<cfset playoffsObject = createObject("component", "library.playoffs") />
+
+
 
 <cfoutput>
 <div class="main" style="background-color: white; margin-top: 50px;">
@@ -233,13 +236,20 @@
               <cfset totalGames = getTeamStandings.wins + getTeamStandings.losses>
               <cfset winPercentage = NumberFormat(getTeamStandings.wins / totalGames, '.999')>
 
+              <!--- Use playoffsobject here --->
+              <cfif getPlayoffsFinish.maxBracketRoundID NEQ ''>
+                <cfset playoffsFinishedText = playoffsObject.getPlayoffTextByMaxBracketRoundID(getPlayoffsFinish.maxBracketRoundID, getPlayoffsFinish.MaxTeamSize)>
+              <cfelse>
+                <cfset playoffsFinishedText = ''>
+              </cfif>
+
 
               <tr>
                 <td data-label="Season">#getTeamStandings.seasonName#</td>
                 <td data-label="Wins">#getTeamStandings.wins#</td>
                 <td data-label="Losses">#getTeamStandings.losses#</td>
                 <td data-label="Win%">#winPercentage#</td>
-                <td data-label="Playoffs">#getPlayoffsFinish.maxBracketRoundID#</td>
+                <td data-label="Playoffs">#playoffsFinishedText#</td>
                 <td data-label="Leading Score">
                     <a href="Player_Profiles/player-profile-2.cfm?playerID=#getPlayerIdBySeason.playerID#" style="font-weight: bold;">
                        #firstInitial#. #getPlayerIdBySeason.lastName# 
