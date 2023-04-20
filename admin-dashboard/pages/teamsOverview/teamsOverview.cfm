@@ -53,6 +53,7 @@
 		              </cfloop>
 		            </tbody>
 		    </table>
+		    <a href="addTeam.cfm"><input type="button" class="btn btn-outline-danger btn-round addTeam" value="Add Team" name="addTeam"></a>
 		</form>
   </div>
 </div>
