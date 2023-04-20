@@ -86,6 +86,8 @@
   AND teams.teamId = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#">
 </cfquery>
 
+<cfset playoffsObject = createObject("component", "library.playoffs")/>
+
 
 <cfoutput>
 <div class="main" style="background-color: white; margin-top: 50px;">
@@ -229,6 +231,12 @@
              <cfset totalGames = getTeamStandings.Wins + getTeamStandings.Losses>
              <cfset wins_percentage = NumberFormat(getTeamStandings.Wins/totalGames, '.999')>
 
+              <!---Use playoffsObject here --->
+              <cfif getPlayoffsFinish.maxBracketRoundID NEQ ''>
+                  <cfset playoffsFinishText = playoffsObject.getPlayoffTextByMaxBracketRoundID(getPlayoffsFinish.maxBracketRoundID, getPlayoffsFinish.MaxTeamSize)> 
+              <cfelse>
+                <cfset playoffsFinishText = ''>
+              </cfif>
               <tr>
 
                 <!--- data area--->
@@ -236,13 +244,14 @@
                 <td data-label="Wins">#getTeamStandings.Wins#</td>
                 <td data-label="Losses">#getTeamStandings.Losses#</td>
                 <td data-label="Win Percentage">#wins_percentage#</td>
-                <td data-label="Playoffs"></td>
+                <td data-label="Playoffs">
+                  #playoffsFinishText#
+                </td>
                 <td data-label="Leading Score">
                   <a href="Player_Profiles/player-profile-2.cfm?playerID=#getPlayerIDBySeason.playerID#" style="font-weight: bold;">
                       #firstInitial#. #getPlayerIDBySeason.lastName#
                   </a>(#formatPoints#)
                 </td>
-
               </tr>
           </cfloop>
           </tbody>
