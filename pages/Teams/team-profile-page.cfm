@@ -215,12 +215,19 @@
               </cfquery>
 
               <cfquery name = "getPlayoffsFinish" datasource="roundleague">
-                SELECT t.teamName, ps.seasonID, max(ps.bracketRoundID) as maxBracketRoundID, pb.MaxTeamSize, pb.Playoffs_bracketID
+                SELECT t.teamName, ps.seasonID, max(ps.bracketRoundID) as maxBracketRoundID, pb.MaxTeamSize, pb.Playoffs_bracketID, pb.Name
                 FROM playoffs_schedule ps
                 JOIN playoffs_bracket pb ON ps.Playoffs_BracketID = pb.Playoffs_bracketID
                 JOIN teams t ON t.teamId = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#">
                 WHERE (hometeamID = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#"> OR awayteamID = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#">)
                 AND ps.seasonID = #getTeamStandings.seasonID#
+              </cfquery>
+
+              <cfquery name = "getChampion" datasource="roundleague">
+                Select championsID
+                From champions
+                WHERE teamID = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#"> 
+                AND seasonID = <cfqueryparam cfsqltype="INTEGER" value="#getTeamStandings.seasonID#">
               </cfquery>
 
               <!---setting variables for initial and points --->
@@ -238,6 +245,16 @@
                 <cfset playoffsFinishText = ''>
               </cfif>
               <tr>
+
+              <!---Championship Logic --->
+              <cfif getChampion.recordCount>
+                <cfset playoffsFinishedText = '<b>Champion</b>'>
+              <cfelseif getPlayoffFinish.maxBracketRoundID NEQ ''>
+              <!--- If the team is not the champion that season --->
+              <cfset playoffsFinishedText = playoffsObject.getPlayoffTextByMaxBracketRoundID(getPlayoffFinish.maxBracketRoundID, getPlayoffFinish.MaxTeamSize)>
+              <cfelse>
+                <cfset playoffsFinishedText = ''>
+              </cfif>
 
                 <!--- data area--->
                 <td data-label="Seasons">#getTeamStandings.SeasonName#</td>
