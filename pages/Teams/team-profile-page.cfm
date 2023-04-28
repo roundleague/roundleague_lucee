@@ -54,7 +54,7 @@
   GROUP BY lastName, firstName
 </cfquery>
 
-<cfquery name="getTeamDataM" datasource="roundleague"> 
+<cfquery name="checkTeamPlayedSeason" datasource="roundleague"> 
   SELECT count(DISTINCT seasonID) AS seasonsPlayed
   FROM schedule 
   WHERE HomeTeamID = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#">
@@ -193,7 +193,7 @@
         <h1>#getTeamData.teamName#</h1>
 
         <table class="bolder">
-          <caption>Seasons: #getTeamDataM.seasonsPlayed#</caption>
+          <caption>Seasons: #checkTeamPlayedSeason.seasonsPlayed#</caption>
           <thead>
             <tr>
               <td>Season</td>
