@@ -240,7 +240,11 @@
 
               <!--- Behind the scenes, calculate wins / losses percentage --->
               <cfset totalGames = getTeamStandings.Wins + getTeamStandings.Losses>
-              <cfset winPercentage = NumberFormat(getTeamStandings.Wins / totalGames, '.999')>
+              <cfif totalGames NEQ 0>
+                <cfset winPercentage = NumberFormat(getTeamStandings.Wins / totalGames, '.999')>
+              <cfelse>
+                <cfset winPercentage = NumberFormat(0, '.999')>
+              </cfif>
 
               <!--- Playoffs Finished Logic --->
               <!--- Check champion query first --->
