@@ -1,14 +1,18 @@
 $( document ).ready(function() {
 
   $(".playerInfoBtn").click(function(){
-    openCity('PlayerInfo')
+    openTab('PlayerInfo')
   });
 
   $(".playerStatsBtn").click(function(){
-    openCity('PlayerStats')
+    openTab('PlayerStats')
   });
 
-  function openCity(cityName) {
+  $(".franchiseInfoBtn").click(function(){
+    openTab('FranchiseInfo')
+  });
+
+  function openTab(tabName) {
     var i, tabcontent, tablinks;
     tabcontent = document.getElementsByClassName("tabcontent");
     for (i = 0; i < tabcontent.length; i++) {
@@ -18,7 +22,7 @@ $( document ).ready(function() {
     for (i = 0; i < tablinks.length; i++) {
       tablinks[i].className = tablinks[i].className.replace(" active", "");
     }
-    document.getElementById(cityName).style.display = "block";
+    document.getElementById(tabName).style.display = "block";
   }
 
   document.getElementById("defaultOpen").click();
