@@ -230,6 +230,7 @@
                 AND seasonID = <cfqueryparam cfsqltype="INTEGER" value="#getTeamStandings.seasonID#">
               </cfquery>
 
+
               <!---setting variables for initial and points --->
               <cfset firstInitial = Mid(#getPlayerIDBySeason.firstName#, 1, 1)>
               <cfset formatPoints = NumberFormat(#getPlayerIDBySeason.points#, '0.0')>
@@ -238,23 +239,22 @@
              <cfset totalGames = getTeamStandings.Wins + getTeamStandings.Losses>
              <cfset wins_percentage = NumberFormat(getTeamStandings.Wins/totalGames, '.999')>
 
-              <!---Use playoffsObject here --->
-              <cfif getPlayoffsFinish.maxBracketRoundID NEQ ''>
-                  <cfset playoffsFinishText = playoffsObject.getPlayoffTextByMaxBracketRoundID(getPlayoffsFinish.maxBracketRoundID, getPlayoffsFinish.MaxTeamSize)> 
-              <cfelse>
-                <cfset playoffsFinishText = ''>
-              </cfif>
-              <tr>
-
               <!---Championship Logic --->
               <cfif getChampion.recordCount>
                 <cfset playoffsFinishedText = '<b>Champion</b>'>
-              <cfelseif getPlayoffFinish.maxBracketRoundID NEQ ''>
+              <cfelseif getPlayoffsFinish.maxBracketRoundID NEQ ''>
               <!--- If the team is not the champion that season --->
-              <cfset playoffsFinishedText = playoffsObject.getPlayoffTextByMaxBracketRoundID(getPlayoffFinish.maxBracketRoundID, getPlayoffFinish.MaxTeamSize)>
+                <cfset playoffsFinishedText = playoffsObject.getPlayoffTextByMaxBracketRoundID(getPlayoffsFinish.maxBracketRoundID, getPlayoffsFinish.MaxTeamSize)>
               <cfelse>
-                <cfset playoffsFinishedText = ''>
+                <cfset playoffsFinishedText = '-'>
               </cfif>
+
+              <!--- NIT Profix Logic --->
+              <cfif getPlayoffsFinish.Name EQ 'NIT'>
+                <cfset playoffsFinishedText &= " (NIT)">
+              </cfif>
+
+               <tr>
 
                 <!--- data area--->
                 <td data-label="Seasons">#getTeamStandings.SeasonName#</td>
@@ -262,7 +262,7 @@
                 <td data-label="Losses">#getTeamStandings.Losses#</td>
                 <td data-label="Win Percentage">#wins_percentage#</td>
                 <td data-label="Playoffs">
-                  #playoffsFinishText#
+                  #playoffsFinishedText#
                 </td>
                 <td data-label="Leading Score">
                   <a href="Player_Profiles/player-profile-2.cfm?playerID=#getPlayerIDBySeason.playerID#" style="font-weight: bold;">
