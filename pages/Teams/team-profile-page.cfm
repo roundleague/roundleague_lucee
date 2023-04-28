@@ -250,7 +250,7 @@
                 <!--- If the team is not the champion that season --->
                 <cfset playoffsFinishedText = playoffsObject.getPlayoffTextByMaxBracketRoundID(getPlayoffFinish.maxBracketRoundID, getPlayoffFinish.MaxTeamSize)>
               <cfelse>
-                <cfset playoffsFinishedText = ''>
+                <cfset playoffsFinishedText = '-'>
               </cfif>
 
               <!--- NIT Prefix Logic --->
