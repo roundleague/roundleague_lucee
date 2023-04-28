@@ -8,7 +8,7 @@
     			<cfset playoffsFinishedText = ''>
 
     		<!--- 32 Team Logic --->
-    			<cfif MaxTeamSize EQ 32>
+    			<cfif MaxTeamSize EQ 32 OR MaxTeamSize EQ 22>
     			<cfswitch expression="#maxBracketRoundID#">
                  <cfcase value="1">
                      <cfset playoffsFinishedText = 'Playoffs'>
@@ -26,27 +26,6 @@
                      <cfset playoffsFinishedText = 'Championship Game'>
                  </cfcase>
               	</cfswitch>
-
-            <!--- 22 Team Logic --->
-    			<cfelseif MaxTeamSize EQ 22>
-    			<cfswitch expression="#maxBracketRoundID#">
-                 <cfcase value="1">
-                     <cfset playoffsFinishedText = 'Playoffs'>
-                 </cfcase>
-                 <cfcase value="2">
-                     <cfset playoffsFinishedText = 'Sweet 16'>
-                 </cfcase>
-                 <cfcase value="3">
-                     <cfset playoffsFinishedText = 'Elite 8'>
-                 </cfcase>
-                 <cfcase value="4">
-                     <cfset playoffsFinishedText = 'Final 4'>
-                 </cfcase>
-                 <cfcase value="5">
-                     <cfset playoffsFinishedText = 'Championship Game'>
-                 </cfcase>
-              	</cfswitch>
-
 
             <!--- 8 Team Logic --->
 				<cfelseif MaxTeamSize EQ 8>
