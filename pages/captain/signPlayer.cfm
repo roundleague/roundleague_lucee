@@ -10,11 +10,20 @@
 </cfif>
 
 <cfif isDefined("form.confirmSignPlayer")>
+  <!--- Get single and latest roster record to prevent duplicates --->
+  <cfquery name="getSingleRosterRecord" datasource="roundleague">
+  	SELECT rosterID
+  	FROM roster
+  	WHERE playerID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.confirmSignPlayer#">
+  	AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+  	ORDER BY divisionID desc
+  	LIMIT 1
+  </cfquery>
+
   <cfquery name="transferPlayer" datasource="roundleague">
   	UPDATE roster
   	SET teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.toTeamID#">
-  	WHERE playerID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.confirmSignPlayer#">
-  	AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+  	WHERE rosterID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getSingleRosterRecord.rosterID#">
   </cfquery>
 
   <!--- Insert Transaction History Record --->
@@ -55,7 +64,7 @@
 	FROM players p
 	LEFT OUTER JOIN playerstats ps ON p.playerID = ps.playerID AND ps.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getLatestSeasons.previousSeasonID#">
 	JOIN roster r on r.playerID = p.playerID AND r.SeasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getLatestSeasons.seasonID#">
-	LEFT OUTER JOIN teams t on r.teamID = t.teamID
+	JOIN teams t on r.teamID = t.teamID AND t.status = 'Active'
 	WHERE r.seasonID IN (#getLatestSeasons.seasonID#, #getLatestSeasons.previousSeasonID#)
 	AND r.teamID != 0
 	ORDER BY points desc
