@@ -7,6 +7,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-7m/EwMxK0ABDm0gxtYzUKbAaE0WTzr7aBUh/Rka2kHwGx8j+DpMSn6oEGYbFddDjpE67nsFzRSLgxJyktj+CTw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <title>Basketball League Newsletter</title>
     <style>
         /* Reset styles to ensure consistent rendering across email clients */
@@ -96,17 +97,19 @@
 <div class="container">
     <div class="header">
         <img src="https://static.wixstatic.com/media/b16829_f3a215a62a9f485990b0e43a0a993d3d~mv2.png/v1/fill/w_909,h_335,al_c,q_85,usm_0.66_1.00_0.01/4_edited.webp" alt="Basketball League Logo">
-        <h1>Welcome to The Round League Newsletter</h1>
+        <h1>Captain's Notice</h1>
     </div>
     <div class="content">
-        <h2 class="title">Latest News</h2>
+        <h2 class="title">Team Size Reminder</h2>
         <img src="https://embedsocial.com/admin/media/feed-media/17980/17980164305026657/image_0_large.jpeg" alt="Latest News Image">
-        <p class="text">Stay updated with the latest news about your favorite basketball teams and players.</p>
-        <h2 class="subtitle">Upcoming Games</h2>
-        <p class="text">Don't miss out on the exciting upcoming games of the season. Check the schedule and mark your calendars.</p>
-        <h2 class="subtitle">Player Spotlight</h2>
-        <p class="text">Learn more about the star players of the league and their achievements on and off the court.</p>
-        <a target="_blank" href="https://www.theroundleague.com" class="cta-button">The Round League Website</a>
+        <p class="text">
+            Hello, captain! <br><br>
+            We are excited to start the upcoming Spring 2023 season with you. Your team is currently over the 
+            maximum roster limit (12). <br><br>
+            Please log into your captains portal remove any players that are no longer on the team. You can do so by pressing the link below. <br><br>
+            If you have forgotten your email / password, please email theroundleague@gmail.com to reset your account.
+        </p>
+        <a target="_blank" href="https://www.theroundleague.com/pages/login/captains_login.cfm" class="cta-button">Captain's Login</a>
     </div>
     <div class="footer">
         <p>Follow us on social media for more updates:</p>
@@ -121,6 +124,17 @@
 </body>
 </html>
 </cfsavecontent>
+
+<!--- Query Section --->
+<cfquery name="getTeamsAboveRosterLimit"  datasource="roundleague">
+    SELECT COUNT(playerID) AS teamSize, t.teamName
+    FROM roster r
+    JOIN teams t ON r.teamID = t.teamID
+    WHERE t.status = 'Active'
+    AND r.seasonID = 9
+    GROUP BY r.teamID
+    HAVING COUNT(playerID) > 12
+</cfquery>
 
 <cfoutput>
 <!-- End Navbar -->
