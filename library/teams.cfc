@@ -27,6 +27,7 @@
 		    JOIN teams t on t.teamID = r.teamID 
 		    WHERE r.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
 		    AND p.playerID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#playerID#">
+		    AND t.status = 'Active'
 		</cfquery>
 
 		<cfset teamObject = {
