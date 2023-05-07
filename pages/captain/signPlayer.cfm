@@ -64,7 +64,7 @@
 	FROM players p
 	LEFT OUTER JOIN playerstats ps ON p.playerID = ps.playerID AND ps.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getLatestSeasons.previousSeasonID#">
 	JOIN roster r on r.playerID = p.playerID AND r.SeasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getLatestSeasons.seasonID#">
-	JOIN teams t on r.teamID = t.teamID AND t.status = 'Active'
+	JOIN teams t on r.teamID = t.teamID
 	WHERE r.seasonID IN (#getLatestSeasons.seasonID#, #getLatestSeasons.previousSeasonID#)
 	AND r.teamID != 0
 	ORDER BY points desc
