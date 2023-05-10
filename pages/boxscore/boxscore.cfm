@@ -41,8 +41,12 @@
     <div class="section text-center">
       <div class="container">
 
-        <h4 class="gameTitle desktop"> #getTeamsPlaying.Home# #getTeamsPlaying.HomeScore# (#getWinsAndLossesHomeTeam.Wins#-#getWinsAndLossesHomeTeam.Losses#) | #getTeamsPlaying.Away# #getTeamsPlaying.AwayScore# (#getWinsAndLossesAwayTeam.Wins#-#getWinsAndLossesAwayTeam.Losses#)</h4>
+        <h4 class="gameTitle desktop">
+            <a class="playerLink" href="/pages/teams/team-profile-page.cfm?teamID=#getTeamsPlaying.HomeTeamID#"> #getTeamsPlaying.Home# #getTeamsPlaying.HomeScore#</a> (#getWinsAndLossesHomeTeam.Wins#-#getWinsAndLossesHomeTeam.Losses#) | 
+            <a class="playerLink" href="/pages/teams/team-profile-page.cfm?teamID=#getTeamsPlaying.AwayTeamID#">#getTeamsPlaying.Away# #getTeamsPlaying.AwayScore#</a> (#getWinsAndLossesAwayTeam.Wins#-#getWinsAndLossesAwayTeam.Losses#)
+        </h4>
         <h5>#getTeamsPlaying.Date#</h5>
+
 
         <!--- Mobile score section --->
         <div class="finalScoreSection mobile">
