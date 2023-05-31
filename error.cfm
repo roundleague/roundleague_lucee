@@ -1,1 +1,1 @@
-<cfdump var="#cfcatch#" /><cfabort />
+Sorry, something went wrong.

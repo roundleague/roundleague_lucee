@@ -15,7 +15,6 @@
 
 <cfset teamObject = createObject("component", "library.teams") />
 <cfset teamStruct = teamObject.getCurrentSessionTeam(session.captainID)>
-
 <!--- If current captain played for a previous team --->
 <cfif teamStruct.teamID EQ getPlayerInfo.teamID>
     <cfquery name="getNewTeamPrevCaptain" datasource="roundleague">
