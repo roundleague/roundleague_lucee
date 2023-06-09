@@ -157,7 +157,7 @@
         </ul>
 
             <!--- Player Emails --->
-            <!--- <cfloop query="getTeamsAboveRosterLimit">
+            <cfloop query="getTeamsAboveRosterLimit">
                 <cfmail
                   from="mailadmin@theroundleague.com"
                   to="#getTeamsAboveRosterLimit.email#"
@@ -167,7 +167,7 @@
                 #htmlEmail#
 
                 </cfmail>
-            </cfloop> --->
+            </cfloop>
 
             <!--- Admin Emails --->
             <cfloop list="#adminEmails#" index="i">
