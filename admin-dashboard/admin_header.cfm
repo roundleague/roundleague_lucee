@@ -105,9 +105,9 @@ Coded by www.creative-tim.com
             </a>
           </li>
           <li <cfif findNoCase("ideas", CGI.REQUEST_URL)>class="active"</cfif>>
-            <a href="/admin-dashboard/pages/ideas/ideas.cfm">
+            <a href="/admin-dashboard/scripts/emailCaptains_teamSize.cfm">
               <i class="nc-icon nc-settings"></i>
-              <p>Future Ideas</p>
+              <p>Email Captains Over Roster Limit</p>
             </a>
           </li>
         </ul>

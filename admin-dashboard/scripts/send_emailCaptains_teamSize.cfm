@@ -144,7 +144,7 @@
 <div class="content">
   <div class="row">
     <div class="col-md-12">
-      <h3 class="description">Preview Email page! Sending to</h3>
+      <h3 class="description">Live Email! Sending to</h3>
         <ul> Player Emails
             <cfloop query="getTeamsAboveRosterLimit">
                 <li>#getTeamsAboveRosterLimit.email#</li>
@@ -170,7 +170,7 @@
             </cfloop> --->
 
             <!--- Admin Emails --->
-            <!--- <cfloop list="#adminEmails#" index="i">
+            <cfloop list="#adminEmails#" index="i">
                 <cfmail
                   from="The Round League <mailadmin@theroundleague.com>"
                   to="#i#"
@@ -180,14 +180,9 @@
                 #htmlEmail#
 
                 </cfmail>
-            </cfloop> --->
+            </cfloop>
 
-        <h2>Email Preview</h2>
-        #htmlEmail#
-
-        <form action="send_emailCaptains_teamSize.cfm" method="post">
-            <input type="submit" class="btn btn-outline-danger btn-round savePhotosButton" value="Send Email" name="sendEmailBtn">
-        </form>
+            <h1>Emails have been sent!</h1>
     </div>
   </div>
 </div>
