@@ -224,25 +224,32 @@
 	          </tbody>
 	        </table>
 		
-            <table class="bolder">
+             <cfif getPlayerAwards.recordCount EQ 0>
+              <!--- No data available, hide the table --->
+              <cfset tableStyle = 'display:none;'>
+            <cfelse>
+              <!--- Data available, show the table --->
+              <cfset tableStyle = 'display:table;'>
+            </cfif>
+
+            <table class="bolder" style="#tableStyle#">
               <caption>Awards</caption>
               <thead>
                 <tr class="headers">
-                    <th>Season</th>
-                    <th>Awards</th>
+                  <th>Season</th>
+                  <th>Awards</th>
                 </tr>
               </thead>
               <tbody>
                 <cfloop query="getPlayerAwards">
-                    <tr>
-                        <td data-label="Season">#getPlayerAwards.SeasonName#</td>
-                        <td data-label="Awards">#getPlayerAwards.AwardName#</td>
-                    </tr>
+                  <tr>
+                    <td data-label="Season">#getPlayerAwards.SeasonName#</td>
+                    <td data-label="Awards">#getPlayerAwards.AwardName#</td>
+                  </tr>
                 </cfloop>
               </tbody>
-            </table>        
-
-      </div>
+            </table>
+        </div>
     </div>
 </div>
 </cfoutput>

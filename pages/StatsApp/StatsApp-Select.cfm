@@ -31,7 +31,7 @@
 
 <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.6/build/pure-min.css" integrity="sha384-Uu6IeWbM+gzNVXJcM9XV3SohHtmWE+3VGi496jvgX1jyvDTXfdK+rfZc8C1Aehk5" crossorigin="anonymous">
 <link rel="stylesheet" href="StatsApp.css">
-<link rel="stylesheet" href="StatsApp-Select.css">
+<link rel="stylesheet" href="StatsApp-Select.css?v-1.1">
 
 <!--- Page Specific CSS/JS Here --->
 <link href="/pages/Standings/purekitpro.css" rel="stylesheet" />
@@ -75,15 +75,19 @@
 </cfif>
 
 <body>
+  <div class="container">
+    <h1>Game Selection</h1>
     <form id="mainForm" name="selectForm" method="POST">
       <div class="gameSelect">
-        <label for="seasonID">Select Team: </label>
-        <select name="teamID" id="Team" class="teamSelect">
-            <option value=""></option>
-            <cfloop query="getTeams">
-                <option value="#getTeams.teamID#" <cfif form.teamID EQ getTeams.TeamID>selected</cfif>>#getTeams.teamName#</option>
-            </cfloop>
-        </select>
+        <div class="form-group">
+          <label for="seasonID">Select Team: </label>
+          <select name="teamID" id="Team" class="teamSelect">
+              <option value=""></option>
+              <cfloop query="getTeams">
+                  <option value="#getTeams.teamID#" <cfif form.teamID EQ getTeams.TeamID>selected</cfif>>#getTeams.teamName#</option>
+              </cfloop>
+          </select>
+        </div>
         <br>
         <cfif isDefined("form.teamID")>
           <label for="seasonID">Select Week: </label>
@@ -100,11 +104,13 @@
         </cfif>
         <br>
         <br>
-        <input type="hidden" class="isPlayoffsValue" name="isPlayoffsValue" value="">
-        <input type="hidden" class="BracketGameID" name="BracketGameID" value="">
-        <input type="hidden" class="BracketRoundID" name="BracketRoundID" value="">
-        <input type="hidden" class="Playoffs_BracketID" name="Playoffs_BracketID" value="">
-        <input type="submit" value="Submit">
+        <div class="btn-container">
+          <input type="hidden" class="isPlayoffsValue" name="isPlayoffsValue" value="">
+          <input type="hidden" class="BracketGameID" name="BracketGameID" value="">
+          <input type="hidden" class="BracketRoundID" name="BracketRoundID" value="">
+          <input type="hidden" class="Playoffs_BracketID" name="Playoffs_BracketID" value="">
+          <input type="submit" value="Submit" class="submitButton">
+        </div>
       </div>
 
       <div class="scrimmageSelect">
@@ -114,9 +120,10 @@
         <br>
         Player Count: <input type="number" value="0" name="playerCount"><br>
         <br>
-        <input type="submit" value="Scrimmage Game" name="scrimmage">
+        <input type="submit" value="Scrimmage Game" name="scrimmage" class="scrimmageButton">
       </div>
     </form>
+  </div>
 
     <cfif form.scheduleID>
       <cflocation url="StatsApp.cfm?teamID=#form.teamID#&scheduleID=#form.scheduleID#&isPlayoffs=#form.isPlayoffsValue#&BracketGameID=#form.BracketGameID#&BracketRoundID=#form.BracketRoundID#&Playoffs_BracketID=#form.Playoffs_BracketID#">
