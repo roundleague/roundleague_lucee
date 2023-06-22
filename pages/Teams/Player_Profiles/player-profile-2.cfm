@@ -223,7 +223,8 @@
                 </cfloop>
 	          </tbody>
 	        </table>
-		
+
+		 <cfif getPlayerAwards.recordCount NEQ 0>
             <table class="bolder">
               <caption>Awards</caption>
               <thead>
@@ -240,8 +241,8 @@
                     </tr>
                 </cfloop>
               </tbody>
-            </table>        
-
+            </table>     
+         </cfif>   
       </div>
     </div>
 </div>
