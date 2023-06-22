@@ -223,6 +223,26 @@
                 </cfloop>
 	          </tbody>
 	        </table>
+
+            <cfif getPlayerAwards.recordCount NEQ 0>
+                <table class="bolder">
+                  <caption>Awards</caption>
+                  <thead>
+                    <tr class="headers">
+                      <th>Season</th>
+                      <th>Awards</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <cfloop query="getPlayerAwards">
+                      <tr>
+                        <td data-label="Season">#getPlayerAwards.SeasonName#</td>
+                        <td data-label="Awards">#getPlayerAwards.AwardName#</td>
+                      </tr>
+                    </cfloop>
+                  </tbody>
+                </table>
+            </cfif>
         </div>
     </div>
 </div>
