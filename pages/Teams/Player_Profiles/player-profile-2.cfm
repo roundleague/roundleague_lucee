@@ -244,6 +244,7 @@
                   </tbody>
                 </table>
             </cfif>
+            
         </div>
     </div>
 </div>
