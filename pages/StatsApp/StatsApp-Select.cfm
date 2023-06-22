@@ -31,7 +31,7 @@
 
 <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.6/build/pure-min.css" integrity="sha384-Uu6IeWbM+gzNVXJcM9XV3SohHtmWE+3VGi496jvgX1jyvDTXfdK+rfZc8C1Aehk5" crossorigin="anonymous">
 <link rel="stylesheet" href="StatsApp.css">
-<link rel="stylesheet" href="StatsApp-Select.css">
+<link rel="stylesheet" href="StatsApp-Select.css?v-1.2">
 
 <!--- Page Specific CSS/JS Here --->
 <link href="/pages/Standings/purekitpro.css" rel="stylesheet" />
@@ -75,49 +75,59 @@
 </cfif>
 
 <body>
-    <form id="mainForm" name="selectForm" method="POST">
-      <div class="gameSelect">
-        <label for="seasonID">Select Team: </label>
-        <select name="teamID" id="Team" class="teamSelect">
-            <option value=""></option>
-            <cfloop query="getTeams">
-                <option value="#getTeams.teamID#" <cfif form.teamID EQ getTeams.TeamID>selected</cfif>>#getTeams.teamName#</option>
-            </cfloop>
-        </select>
-        <br>
-        <cfif isDefined("form.teamID")>
-          <label for="seasonID">Select Week: </label>
-          <select name="scheduleID" id="Schedule" class="scheduleSelect">
-              <cfloop query="getTeamMatchups">
-                  <cfif form.teamID EQ getTeamMatchups.hometeamID>
-                    <cfset opponentTeam = getTeamMatchups.away>
-                  <cfelse>
-                    <cfset opponentTeam = getTeamMatchups.home>
-                  </cfif>
-                  <option data-bracketid="#getTeamMatchups.Playoffs_BracketID#" data-bracketroundid="#getTeamMatchups.bracketRoundID#" data-bracketgameid="#getTeamMatchups.BracketGameID#" data-playoffs="#getTeamMatchups.isPlayoffs#" value="#getTeamMatchups.scheduleID#"<cfif form.scheduleID EQ getTeamMatchups.scheduleID>selected</cfif>>Week #getTeamMatchups.Week# VS #opponentTeam# <cfif homeScore NEQ ''>(Already Played)</cfif></option>
-              </cfloop>
-          </select>
-        </cfif>
-        <br>
-        <br>
-        <input type="hidden" class="isPlayoffsValue" name="isPlayoffsValue" value="">
-        <input type="hidden" class="BracketGameID" name="BracketGameID" value="">
-        <input type="hidden" class="BracketRoundID" name="BracketRoundID" value="">
-        <input type="hidden" class="Playoffs_BracketID" name="Playoffs_BracketID" value="">
-        <input type="submit" value="Submit">
-      </div>
+    <div class="container">
 
-      <div class="scrimmageSelect">
-        <br>
-        <br>
-        OR
-        <br>
-        Player Count: <input type="number" value="0" name="playerCount"><br>
-        <br>
-        <input type="submit" value="Scrimmage Game" name="scrimmage">
-      </div>
-    </form>
+      <img src="https://static.wixstatic.com/media/b16829_f3a215a62a9f485990b0e43a0a993d3d~mv2.png/v1/fill/w_909,h_335,al_c,q_85,usm_0.66_1.00_0.01/4_edited.webp" alt="The Round League Logo">
 
+    <h1>Game Selection</h1>
+
+      <form id="mainForm" name="selectForm" method="POST">
+          <div class="gameSelect">
+          <div class="form-group">
+            <label for="seasonID">Select Team: </label>
+            <select name="teamID" id="Team" class="teamSelect">
+                <option value=""></option>
+                <cfloop query="getTeams">
+                    <option value="#getTeams.teamID#" <cfif form.teamID EQ getTeams.TeamID>selected</cfif>>#getTeams.teamName#</option>
+                </cfloop>
+            </select>
+          </div>
+          <br>
+          <cfif isDefined("form.teamID")>
+            <label for="seasonID">Select Week: </label>
+            <select name="scheduleID" id="Schedule" class="scheduleSelect">
+                <cfloop query="getTeamMatchups">
+                    <cfif form.teamID EQ getTeamMatchups.hometeamID>
+                      <cfset opponentTeam = getTeamMatchups.away>
+                    <cfelse>
+                      <cfset opponentTeam = getTeamMatchups.home>
+                    </cfif>
+                    <option data-bracketid="#getTeamMatchups.Playoffs_BracketID#" data-bracketroundid="#getTeamMatchups.bracketRoundID#" data-bracketgameid="#getTeamMatchups.BracketGameID#" data-playoffs="#getTeamMatchups.isPlayoffs#" value="#getTeamMatchups.scheduleID#"<cfif form.scheduleID EQ getTeamMatchups.scheduleID>selected</cfif>>Week #getTeamMatchups.Week# VS #opponentTeam# <cfif homeScore NEQ ''>(Already Played)</cfif></option>
+                </cfloop>
+            </select>
+          </cfif>
+          <br>
+          <br>
+          <div class="btn-container">
+            <input type="hidden" class="isPlayoffsValue" name="isPlayoffsValue" value="">
+            <input type="hidden" class="BracketGameID" name="BracketGameID" value="">
+            <input type="hidden" class="BracketRoundID" name="BracketRoundID" value="">
+            <input type="hidden" class="Playoffs_BracketID" name="Playoffs_BracketID" value="">
+            <input type="submit" value="Submit" class ="submitButton">
+          </div>
+        </div>
+
+        <div class="scrimmageSelect">
+          <br>
+          <br>
+          OR
+          <br>
+          Player Count: <input type="number" value="0" name="playerCount"><br>
+          <br>
+          <input type="submit" value="Scrimmage Game" name="scrimmage" class="scrimmageButton">
+        </div>
+      </form>
+    </div>
     <cfif form.scheduleID>
       <cflocation url="StatsApp.cfm?teamID=#form.teamID#&scheduleID=#form.scheduleID#&isPlayoffs=#form.isPlayoffsValue#&BracketGameID=#form.BracketGameID#&BracketRoundID=#form.BracketRoundID#&Playoffs_BracketID=#form.Playoffs_BracketID#">
     </cfif>
