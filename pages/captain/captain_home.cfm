@@ -171,7 +171,7 @@
 		                    <div class="col-lg-7 col-md-4 col-4  ml-auto mr-auto">
 		                      <h6>#opponentTeam#
 		                        <br/>
-		                        <b>#DateFormat(date, "mmm d, yyyy")# | #DateTimeFormat(StartTime, "h:nn ")# PM</b>
+		                        <b>#DateFormat(date, "mmm d, yyyy")# | #DateTimeFormat(StartTime, "h:nn tt")#</b>
 		                      </h6>
 		                    </div>
 		                    <div class="col-lg-3 col-md-4 col-4  ml-auto mr-auto">
