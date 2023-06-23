@@ -193,8 +193,8 @@
                         <a href="../Teams/Player_Profiles/player-profile-2.cfm?playerID=#playerID#" style="font-weight: bold;">
                     #getReboundsLeaders.FirstName# #getReboundsLeaders.LastName#
                         </a>
-                     - #NumberFormat(getReboundsLeaders.Rebounds, "0.0")
-            #</h4>
+                     - #NumberFormat(getReboundsLeaders.Rebounds, "0.0")#
+                </h4>
         	</cfloop>
         </div>
     </div>
