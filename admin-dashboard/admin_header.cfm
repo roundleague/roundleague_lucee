@@ -104,9 +104,15 @@ Coded by www.creative-tim.com
               <p>Playoffs</p>
             </a>
           </li>
+          <li <cfif findNoCase("statswapper", CGI.REQUEST_URL)>class="active"</cfif>>
+            <a href="/admin-dashboard/pages/statswapper/statswapper.cfm">
+              <i class="nc-icon nc-refresh-69"></i>
+              <p>Stat Swapper</p>
+            </a>
+          </li>
           <li <cfif findNoCase("ideas", CGI.REQUEST_URL)>class="active"</cfif>>
             <a href="/admin-dashboard/scripts/emailCaptains_teamSize.cfm">
-              <i class="nc-icon nc-settings"></i>
+              <i class="nc-icon nc-chat-33"></i>
               <p>Email Captains Over Roster Limit</p>
             </a>
           </li>
