@@ -74,6 +74,8 @@
     <div class="col-md-12">
       <h3 class="description">Stat Swapper 1.0</h3>
       <form method="POST" class="statSwapForm">
+        <p>Use the Points, Rebs, Asts Table to verify the game you want to stat swap.</p>
+        <p><b>All stats</b> will be swapped, not just Points, Rebs, Asts.</p>
       <div class="row">
         <div class="col-md-6 col-sm-6">
           <div class="form-group">
