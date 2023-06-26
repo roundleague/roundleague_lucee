@@ -80,18 +80,18 @@ function populateGameSelector(playerID) {
     var pointsElement = statsTable.querySelector('.points');
     var reboundsElement = statsTable.querySelector('.rebounds');
     var assistsElement = statsTable.querySelector('.assists');
-    pointsElement.textContent = game.points;
-    reboundsElement.textContent = game.rebounds;
-    assistsElement.textContent = game.assists;
+    pointsElement.textContent = games[0].points;
+    reboundsElement.textContent = games[0].rebounds;
+    assistsElement.textContent = games[0].assists;
 
     // populate statsConfirm table
     var statsTableConfirm = document.querySelector('.statsTableConfirm');
     var pointsElement = statsTableConfirm.querySelector('.points');
     var reboundsElement = statsTableConfirm.querySelector('.rebounds');
     var assistsElement = statsTableConfirm.querySelector('.assists');
-    pointsElement.textContent = game.points;
-    reboundsElement.textContent = game.rebounds;
-    assistsElement.textContent = game.assists;
+    pointsElement.textContent = games[0].points;
+    reboundsElement.textContent = games[0].rebounds;
+    assistsElement.textContent = games[0].assists;
       });
     },
     error: function(xhr, status, error) {
@@ -181,6 +181,7 @@ function selectResultTo(playerNameTeam, playerID) {
 } 
 
 $('.modalBtn').click(function(){
+  $('.errorMsg').hide();
   var playerFrom = $('#searchBox').val();
   var playerTo = $('#searchBoxTo').val();
   $('.playerFromConfirmText').text(playerFrom);
@@ -189,13 +190,22 @@ $('.modalBtn').click(function(){
 
 // Confirm button clicked
 $('.confirmBtn').click(function(){
-      const playerFrom = $('#searchBox').data('playerid');
-      const playerTo = $('#searchBoxTo').data('playerid');
-      const playerGameLogID = $('#gameSelector').val();
-      $('.fromPlayer').val(playerFrom);
-      $('.toPlayer').val(playerTo);
-      $('.playerGameLogID').val(playerGameLogID);
-      $('.statSwapForm').submit();
+  const playerFrom = $('#searchBox').data('playerid');
+  const playerTo = $('#searchBoxTo').data('playerid');
+
+  // validate that both player from and player to input is valid
+  console.log('playerFrom: ', playerFrom)
+  console.log('playerTo: ', playerTo)
+  if(!playerFrom || !playerTo) {
+    $('.errorMsg').show();
+    return false;
+  }
+
+  const playerGameLogID = $('#gameSelector').val();
+  $('.fromPlayer').val(playerFrom);
+  $('.toPlayer').val(playerTo);
+  $('.playerGameLogID').val(playerGameLogID);
+  $('.statSwapForm').submit();
 });
 
 // Get the snackbar DIV

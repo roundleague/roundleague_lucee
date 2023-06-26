@@ -2,7 +2,7 @@
 <cfinclude template="/admin-dashboard/admin_header.cfm">
 
 <!--- Page Specific CSS/JS Here --->
-<link href="../statswapper/statswapper.css?v=1.5" rel="stylesheet">
+<link href="../statswapper/statswapper.css?v=1.6" rel="stylesheet">
 <link href="/admin-dashboard/assets/css/toast.css" rel="stylesheet">
 
 <cfquery name="playerQuery" datasource="roundleague">
@@ -56,6 +56,8 @@
                    </table>
             </div>
             <div class="playerFromConfirm">Player to move stats to: <span class="playerToConfirmText"></span></div>
+            <br>
+            <div class="errorMsg">Please provide a from player and to player for the stat swap.</div>
           </div>
           <div class="modal-footer">
             <div class="left-side">
@@ -132,4 +134,4 @@
 </cfoutput>
 
 <cfinclude template="/admin-dashboard/admin_footer.cfm">
-<script src="../statswapper/statswapper.js?v=1.0.3"></script>
+<script src="../statswapper/statswapper.js?v=1.0.7"></script>

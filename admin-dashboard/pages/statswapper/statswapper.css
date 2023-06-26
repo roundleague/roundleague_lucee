@@ -24,3 +24,9 @@
 #gameSelector {
 	padding: 6px;
 }
+
+.errorMsg {
+	display: none;
+	font-weight: bolder;
+	color: red;
+}
