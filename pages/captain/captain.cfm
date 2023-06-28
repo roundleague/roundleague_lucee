@@ -3,6 +3,8 @@
 
 <!--- Page Specific CSS/JS Here --->
 <link href="captain.css?v=1.3" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+
 
 <cfif isDefined("form.updateBtn")>
 	<cfinclude template="saveRosterData.cfm">
@@ -145,14 +147,19 @@
       <div class="container">
 
         <!--- Content Here --->
-        <h1>#getTeamData.teamName#</h1>
+				<h1 id="headerText">
+    		<span id="headerTextValue">#getTeamData.teamName#</span>
+    		<button id="editHeaderBtn" style="font-size: 20px; transform: scale(1.2); background: transparent; border: none; padding: 0; cursor: pointer; vertical-align: middle; padding-left: 10px;">
+        <i class="fas fa-pencil-alt" style="font-size: inherit; background: transparent; border: none;"></i>
+    		</button>
+				</h1>
         <form name="editRosterForm" class="editRosterForm" method="POST">
 	        <table>
 	          <caption>#getTeamData.seasonName# Roster</caption>
 	          <thead>
 	            <tr class="autoWidth">
 	            	<td>Name</td>
-	              	<td>Jersey</td>
+	              <td>Jersey</td>
 	            	<td>Position</td>
 	            	<td>Height</td>
 	            	<td>Weight</td>
@@ -223,5 +230,5 @@
 </div>
 </cfoutput>
 <cfinclude template="/footer.cfm">
-<script src="../captain/captain.js"></script>
+<script src="../captain/captain.js?v1.1"></script>
 
