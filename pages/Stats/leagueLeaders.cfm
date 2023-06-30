@@ -116,7 +116,7 @@
 </cfquery>
 
 <cfquery name="get3FGMLeaders" datasource="roundleague">
-    SELECT pgl.playerID, SUM(pgl.3FGM) AS 3PTS, p.firstName, p.lastName, r.jersey, t.teamName, ps.gamesplayed
+    SELECT pgl.playerID, SUM(pgl.3FGM) AS 3PTS, p.firstName, p.lastName, r.jersey, t.teamName, ps.gamesplayed, p.permissionToShare
     FROM playergamelog pgl
     JOIN playerstats ps ON ps.playerID = pgl.playerID
     JOIN players p ON p.playerID = ps.playerID
@@ -166,9 +166,13 @@
         	<cfloop query="getPointsLeaders">
         		<h4 class="noTopSpace">
                     #getPointsLeaders.currentRow#.
+                    <cfif PermissionToShare EQ 'YES'>
                         <a href="../Teams/Player_Profiles/player-profile-2.cfm?playerID=#playerID#" style="font-weight: bold;">
-                    #getPointsLeaders.FirstName# #getPointsLeaders.LastName# 
+                            #getPointsLeaders.FirstName# #getPointsLeaders.LastName# 
                         </a>
+                    <cfelse>
+                        #getPointsLeaders.FirstName# #getPointsLeaders.LastName#
+                    </cfif>
                     - #NumberFormat(getPointsLeaders.Points, "0.0")#
                 </h4>
         	</cfloop>
@@ -189,10 +193,14 @@
         <div class="listing">
         	<cfloop query="getReboundsLeaders">
         		<h4 class="noTopSpace">
-                    #getReboundsLeaders.currentRow#. 
+                    #getReboundsLeaders.currentRow#.
+                    <cfif PermissionToShare EQ 'YES'> 
                         <a href="../Teams/Player_Profiles/player-profile-2.cfm?playerID=#playerID#" style="font-weight: bold;">
-                    #getReboundsLeaders.FirstName# #getReboundsLeaders.LastName#
+                            #getReboundsLeaders.FirstName# #getReboundsLeaders.LastName#
                         </a>
+                    <cfelse>
+                        #getReboundsLeaders.FirstName# #getReboundsLeaders.LastName#
+                    </cfif>
                      - #NumberFormat(getReboundsLeaders.Rebounds, "0.0")#
                 </h4>
         	</cfloop>
@@ -213,10 +221,14 @@
         <div class="listing">
         	<cfloop query="getAssistsLeaders">
         		<h4 class="noTopSpace">
-                    #getAssistsLeaders.currentRow#. 
+                    #getAssistsLeaders.currentRow#.
+                    <cfif PermissionToShare EQ 'YES'> 
                         <a href="../Teams/Player_Profiles/player-profile-2.cfm?playerID=#playerID#" style="font-weight: bold;">
-                    #getAssistsLeaders.FirstName# #getAssistsLeaders.LastName#
+                            #getAssistsLeaders.FirstName# #getAssistsLeaders.LastName#
                         </a>
+                    <cfelse>
+                        #getAssistsLeaders.FirstName# #getAssistsLeaders.LastName#
+                    </cfif>
                     - #NumberFormat(getAssistsLeaders.Assists, "0.0")#</h4>
         	</cfloop>
         </div>
@@ -236,10 +248,14 @@
         <div class="listing">
             <cfloop query="get3FGMLeaders">
                 <h4 class="noTopSpace">
-                    #get3FGMLeaders.currentRow#. 
+                    #get3FGMLeaders.currentRow#.
+                    <cfif PermissionToShare EQ 'YES'> 
                         <a href="../Teams/Player_Profiles/player-profile-2.cfm?playerID=#playerID#" style="font-weight: bold;">
-                    #get3FGMLeaders.FirstName# #get3FGMLeaders.LastName# 
+                            #get3FGMLeaders.FirstName# #get3FGMLeaders.LastName# 
                         </a>
+                    <cfelse>
+                         #get3FGMLeaders.FirstName# #get3FGMLeaders.LastName#
+                    </cfif>
                     - #get3FGMLeaders.3PTS#</h4>
             </cfloop>
         </div>
@@ -260,9 +276,13 @@
             <cfloop query="getStealsLeaders">
                 <h4 class="noTopSpace">
                     #getStealsLeaders.currentRow#. 
+                    <cfif PermissionToShare EQ 'YES'>
                         <a href="../Teams/Player_Profiles/player-profile-2.cfm?playerID=#playerID#" style="font-weight: bold;">
-                    #getStealsLeaders.FirstName# #getStealsLeaders.LastName# 
+                            #getStealsLeaders.FirstName# #getStealsLeaders.LastName# 
                         </a>
+                    <cfelse>
+                        #getStealsLeaders.FirstName# #getStealsLeaders.LastName#
+                    </cfif>
                     - #NumberFormat(getStealsLeaders.Steals, "0.0")#</h4>
             </cfloop>
         </div>
@@ -283,9 +303,13 @@
             <cfloop query="getBlocksLeaders">
                 <h4 class="noTopSpace">
                     #getBlocksLeaders.currentRow#. 
+                    <cfif PermissionToShare EQ 'YES'>
                         <a href="../Teams/Player_Profiles/player-profile-2.cfm?playerID=#playerID#" style="font-weight: bold;">
-                    #getBlocksLeaders.FirstName# #getBlocksLeaders.LastName# 
+                            #getBlocksLeaders.FirstName# #getBlocksLeaders.LastName# 
                         </a>
+                    <cfelse>
+                        #getBlocksLeaders.FirstName# #getBlocksLeaders.LastName#
+                    </cfif>
                     - #NumberFormat(getBlocksLeaders.Blocks, "0.0")#</h4>
             </cfloop>
         </div>
