@@ -198,19 +198,19 @@
 
                 <!--- Total Scores --->
                 <cfif getPlayerlogs.recordCount EQ getPlayerLogs.currentRow OR currentTeamID NEQ nextTeamID>
-                        <tr class="smallFont">
-                            <th colspan="2">Totals</th>
-                            <th>#TotalFGM# - #TotalFGA#</th>
-                            <th>#Total3FGM# - #Total3FGA#</th> 
-                            <th>#TotalFTM# - #TotalFTA#</th>
-                            <th>#TotalREB#</th>
-                            <th>#TotalAST#</th>
-                            <th>#TotalSTL#</th>
-                            <th>#TotalBLK#</th>
-                            <th>#TotalTO#</th>
-                            <th>#TotalFLS#</th>
-                            <th>#TotalPTS#</th>
-                        </tr>
+                    <tr class="smallFont">
+                        <td colspan="2" style="text-align: center; font-weight: bold;">TOTALS</td>
+                        <td data-label="FG"><b>#TotalFGM# - #TotalFGA#</b></td> 
+                        <td data-label="3FG"><b>#Total3FGM# - #Total3FGA#</b></td>
+                        <td data-label="FT"><b>#TotalFTM# - #TotalFTA#</b></td>
+                        <td data-label="REBS"><b>#TotalREB#</b></td>
+                        <td data-label="ASTS"><b>#TotalAST#</b></td>
+                        <td data-label="STLS"><b>#TotalSTL#</b></td>
+                        <td data-label="BLKS"><b>#TotalBLK#</b></td>
+                        <td data-label="TO"><b>#TotalTO#</b></td>
+                        <td data-label="FLS"><b>#TotalFLS#</b></td>
+                        <td data-label="PTS"><b>#TotalPTS#</b></td>
+                    </tr>
                 </cfif>
         	</cfloop>
         </table>
