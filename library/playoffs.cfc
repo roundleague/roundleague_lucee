@@ -7,7 +7,7 @@
 		<cfoutput>
 			<cfset playoffFinishedText = ''>
 			<!--- This logic is subject to change based on playoff scheduling for future brackets --->
-	        <cfif bracketSize EQ 32 OR bracketSize EQ 22>
+	        <cfif bracketSize EQ 32 OR bracketSize EQ 22 OR bracketSize EQ 20>
 	          <!--- 32 Team Logic --->
 	          <cfswitch expression="#maxBracketRoundID#">
 	             <cfcase value="1">

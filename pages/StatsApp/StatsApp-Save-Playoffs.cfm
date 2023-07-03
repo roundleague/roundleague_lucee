@@ -41,6 +41,21 @@
                 <cfcase value="19,20"><cfreturn 21></cfcase>
                 <cfdefaultcase><cfreturn 0></cfdefaultcase> 
             </cfswitch> 
+        <cfelseif numTeams EQ 20>
+            <cfswitch expression="#fromGameId#"> 
+                <cfcase value="1"><cfreturn 8></cfcase>
+                <cfcase value="2"><cfreturn 7></cfcase>
+                <cfcase value="3"><cfreturn 6></cfcase>
+                <cfcase value="4"><cfreturn 5></cfcase>
+                <cfcase value="5,12"><cfreturn 13></cfcase>
+                <cfcase value="6,11"><cfreturn 14></cfcase>
+                <cfcase value="7,10"><cfreturn 15></cfcase>
+                <cfcase value="8,9"><cfreturn 16></cfcase>
+                <cfcase value="13,16"><cfreturn 17></cfcase>
+                <cfcase value="14,15"><cfreturn 18></cfcase>
+                <cfcase value="17,18"><cfreturn 19></cfcase>
+                <cfdefaultcase><cfreturn 0></cfdefaultcase> 
+            </cfswitch> 
         <cfelseif numTeams EQ 8>
             <cfswitch expression="#fromGameId#"> 
                 <cfcase value="1,2"><cfreturn 5></cfcase>
