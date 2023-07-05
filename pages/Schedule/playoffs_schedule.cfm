@@ -80,13 +80,21 @@
                       <cfif getSchedule.homeScore NEQ ''>
                         <td data-label="Home"><a class="#homeBoldClass#" href="/pages/boxscore/playoffs_boxscore.cfm?scheduleID=#getSchedule.playoffs_scheduleID#">#getSchedule.Home# #getSchedule.HomeScore#</a></td>
                       <cfelse>
-                        <td data-label="Home">#getSchedule.Home# #getSchedule.HomeScore#</td>
+                            <cfif evaluate("getSchedule.Home & getSchedule.HomeScore") neq "">
+                              <td data-label="Home">#getSchedule.Home# #getSchedule.HomeScore#</td>
+                            <cfelse>
+                              <td data-label="Home">-</td>
+                            </cfif>
                       </cfif>
 
                       <cfif getSchedule.AwayScore NEQ ''>
                         <td data-label="Away"><a class="#awayBoldClass#" href="/pages/boxscore/playoffs_boxscore.cfm?scheduleID=#getSchedule.playoffs_scheduleID#">#getSchedule.Away# #getSchedule.AwayScore#</a></td>
                       <cfelse>
-                        <td data-label="Away">#getSchedule.Away# #getSchedule.AwayScore#</td>
+                            <cfif evaluate("getSchedule.Away & getSchedule.AwayScore") neq "">
+                              <td data-label="Away">#getSchedule.Away# #getSchedule.AwayScore#</td>
+                            <cfelse>
+                              <td data-label="Away">-</td>
+                            </cfif>
                       </cfif>
                       
                       <td data-label="Date">#DateFormat(getSchedule.Date, "mm/dd/yyyy")#</td>
