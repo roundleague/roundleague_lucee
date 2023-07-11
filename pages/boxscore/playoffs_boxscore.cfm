@@ -4,16 +4,17 @@
 <link href="../boxscore/boxscore.css" rel="stylesheet">
 
 <cfquery name="getPlayerLogs" datasource="roundleague">
-	SELECT pgl.PlayerID, p.firstName, p.lastName, FGM, FGA, 3FGM, 3FGA, FTM, FTA, Points, Rebounds, Assists, Steals, Blocks, Turnovers, pgl.teamID, t.teamName, pgl.Fouls
+	SELECT pgl.PlayerID, p.firstName, p.lastName, FGM, FGA, 3FGM, 3FGA, FTM, FTA, Points, Rebounds, Assists, Steals, Blocks, Turnovers, pgl.teamID, t.teamName, pgl.Fouls, p.PermissionToShare, r.jersey
 	FROM Playoffs_PlayerGameLog pgl
 	JOIN Players p on p.playerID = pgl.playerID
     JOIN Teams t on t.teamID = pgl.teamID
+    JOIN Roster r on r.playerID = p.playerID and r.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
 	WHERE Playoffs_scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">
     ORDER by t.teamName
 </cfquery>
 
 <cfquery name="getTeamsPlaying" datasource="roundleague">
-    SELECT Playoffs_scheduleID, WEEK, a.teamName AS Home, b.teamName AS Away, s.startTime, Date_FORMAT(s.date, "%M %d %Y") AS Date, s.homeScore, s.awayscore
+    SELECT Playoffs_scheduleID, WEEK, a.teamName AS Home, b.teamName AS Away, s.startTime, Date_FORMAT(s.date, "%M %d, %Y") AS Date, s.homeScore, s.awayscore, a.teamID as HomeTeamID, b.teamID as AwayTeamID
     FROM Playoffs_schedule s
     LEFT JOIN teams as a ON s.hometeamID = a.teamID
     LEFT JOIN teams as b ON s.awayTeamID = b.teamID
@@ -26,8 +27,16 @@
     <div class="section text-center">
       <div class="container">
 
-        <h4 class="gameTitle">#getTeamsPlaying.Home# #getTeamsPlaying.HomeScore# | #getTeamsPlaying.Away# #getTeamsPlaying.AwayScore#</h4>
+        <h4 class="gameTitle"> 
+            <a class="playerLink" href="/pages/teams/team-profile-page.cfm?teamID=#getTeamsPlaying.HomeTeamID#">
+                #getTeamsPlaying.Home# #getTeamsPlaying.HomeScore# 
+            </a> | 
+            <a class="playerLink" href="/pages/teams/team-profile-page.cfm?teamID=#getTeamsPlaying.AwayTeamID#">
+                #getTeamsPlaying.Away# #getTeamsPlaying.AwayScore# 
+            </a> 
+        </h4>
         <h5>#getTeamsPlaying.Date#</h5>
+
         <table class="bolder smallFont">
             <cfset currentTeamID = ''>
 
@@ -97,7 +106,15 @@
                 <cfset totalPTS += getPlayerLogs.Points>
 
     			<tr>
-    				<td data-label="Player" colspan="2">#getPlayerLogs.firstName# #getPlayerLogs.LastName#</td>
+    				<td data-label="Player" colspan="2">
+                        <cfif getPlayerlogs.PermissionToShare EQ 'Yes'>
+                            <a class="playerLink" href="/pages/teams/Player_Profiles/player-profile-2.cfm?playerID=#playerID#">
+                                #getPlayerLogs.firstName# #getPlayerLogs.LastName# ###getPlayerlogs.jersey#
+                            </a>
+                        <cfelse> 
+                             #getPlayerLogs.firstName# #getPlayerLogs.LastName# ###getPlayerlogs.jersey#
+                        </cfif>
+                    </td>
     				<td data-label="FG">#getPlayerLogs.FGM# - #getPlayerLogs.FGA#</td>
     				<td data-label="3FG">#getPlayerLogs.3FGM# - #getPlayerLogs.3FGA#</td>
     				<td data-label="FT">#getPlayerLogs.FTM# - #getPlayerLogs.FTA#</td>
@@ -119,17 +136,17 @@
                 <!--- Total Scores --->
                 <cfif getPlayerlogs.recordCount EQ getPlayerLogs.currentRow OR currentTeamID NEQ nextTeamID>
                         <tr class="smallFont">
-                            <th colspan="2">Totals</th>
-                            <th>#TotalFGM# - #TotalFGA#</th>
-                            <th>#Total3FGM# - #Total3FGA#</th> 
-                            <th>#TotalFTM# - #TotalFTA#</th>
-                            <th>#TotalREB#</th>
-                            <th>#TotalAST#</th>
-                            <th>#TotalSTL#</th>
-                            <th>#TotalBLK#</th>
-                            <th>#TotalTO#</th>
-                            <th>#TotalFLS#</th>
-                            <th>#TotalPTS#</th>
+                            <td colspan="2" style="text-align: center; font-weight: bold;">TOTALS</td>
+                            <td data-label="FG"><b>#TotalFGM# - #TotalFGA#</b></td> 
+                            <td data-label="3FG"><b>#Total3FGM# - #Total3FGA#</b></td>
+                            <td data-label="FT"><b>#TotalFTM# - #TotalFTA#</b></td>
+                            <td data-label="REBS"><b>#TotalREB#</b></td>
+                            <td data-label="ASTS"><b>#TotalAST#</b></td>
+                            <td data-label="STLS"><b>#TotalSTL#</b></td>
+                            <td data-label="BLKS"><b>#TotalBLK#</b></td>
+                            <td data-label="TO"><b>#TotalTO#</b></td>
+                            <td data-label="FLS"><b>#TotalFLS#</b></td>
+                            <td data-label="PTS"><b>#TotalPTS#</b></td>
                         </tr>
                 </cfif>
         	</cfloop>
