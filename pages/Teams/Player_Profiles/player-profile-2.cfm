@@ -27,7 +27,23 @@
     WHERE PlayerID = <cfqueryparam cfsqltype="INTEGER" value="#url.playerID#">
 </cfquery>
 
-<cfparam name="form.seasonSelect" default="#session.currentSeasonID#">
+<cfquery name="getSeasons" datasource="roundleague">
+    SELECT DISTINCT s.seasonID, s.seasonName
+    FROM seasons s
+    JOIN playergamelog pgl ON pgl.seasonID = s.seasonID
+    WHERE pgl.playerID = <cfqueryparam cfsqltype="INTEGER" value="#url.playerID#">
+    ORDER by seasonID desc
+</cfquery>
+
+<!--- Create a list of all seasonIDs from the getSeasons query --->
+<cfset seasonIDList = ValueList(getSeasons.seasonID)>
+
+<!--- Check if session.currentSeasonID is in the list --->
+<cfif ListFind(seasonIDList, session.currentSeasonID)>
+    <cfparam name="form.seasonSelect" default="#session.currentSeasonID#">
+<cfelse>
+    <cfparam name="form.seasonSelect" default="#getSeasons.seasonID#">
+</cfif>
 
 <cfquery name="getPlayerGameLog" datasource="roundleague">
     SELECT pgl.PlayerID, FGM, FGA, 3FGM, 3FGA, FTM, FTA, Points, Rebounds, Assists, Steals, Blocks, Turnovers, pgl.teamID, pgl.Fouls, pgl.scheduleID, a.teamName AS HomeTeam, b.teamName AS AwayTeam, s.week
@@ -37,13 +53,6 @@
         LEFT JOIN teams as b ON s.awayTeamID = b.teamID
     WHERE PlayerID = <cfqueryparam cfsqltype="INTEGER" value="#url.playerID#">
     AND pgl.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.seasonSelect#">
-</cfquery>
-
-<cfquery name="getSeasons" datasource="roundleague">
-    SELECT DISTINCT s.seasonID, s.seasonName
-    FROM seasons s
-    JOIN playergamelog pgl ON pgl.seasonID = s.seasonID
-    WHERE pgl.playerID = <cfqueryparam cfsqltype="INTEGER" value="#url.playerID#">
 </cfquery>
 
 <!--- Career Totals --->
