@@ -27,6 +27,8 @@
     WHERE PlayerID = <cfqueryparam cfsqltype="INTEGER" value="#url.playerID#">
 </cfquery>
 
+<cfparam name="form.seasonSelect" default="#session.currentSeasonID#">
+
 <cfquery name="getPlayerGameLog" datasource="roundleague">
     SELECT pgl.PlayerID, FGM, FGA, 3FGM, 3FGA, FTM, FTA, Points, Rebounds, Assists, Steals, Blocks, Turnovers, pgl.teamID, pgl.Fouls, pgl.scheduleID, a.teamName AS HomeTeam, b.teamName AS AwayTeam, s.week
     FROM PlayerGameLOG pgl
@@ -34,7 +36,14 @@
         LEFT JOIN teams as a ON s.hometeamID = a.teamID
         LEFT JOIN teams as b ON s.awayTeamID = b.teamID
     WHERE PlayerID = <cfqueryparam cfsqltype="INTEGER" value="#url.playerID#">
-    AND pgl.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+    AND pgl.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.seasonSelect#">
+</cfquery>
+
+<cfquery name="getSeasons" datasource="roundleague">
+    SELECT DISTINCT s.seasonID, s.seasonName
+    FROM seasons s
+    JOIN playergamelog pgl ON pgl.seasonID = s.seasonID
+    WHERE pgl.playerID = <cfqueryparam cfsqltype="INTEGER" value="#url.playerID#">
 </cfquery>
 
 <!--- Career Totals --->
@@ -152,8 +161,15 @@
         </section>
 
         <!--- Player Game Log --->
-          <table class="bolder">
-              <caption>Player Game Log</caption>
+        <form id="gameLogForm" method="post">
+          <table class="bolder" <cfif isDefined("form.seasonSelectHasChanged")>id="playerGameLogTable"</cfif>>
+              <caption>
+                <select class="seasonSelect" name="seasonSelect" style="padding: 7px;" onchange="this.form.submit();">
+                  <cfloop query="getSeasons">
+                    <option value="#getSeasons.seasonID#" <cfif getSeasons.seasonID EQ form.seasonSelect>selected</cfif>>#getSeasons.seasonName#</option>
+                  </cfloop>
+                </select>
+              </caption>
               <thead>
                 <tr class="headers">
                     <th>Week</th>
@@ -178,7 +194,13 @@
 
                     <tr>
                         <td data-label="Week">#getPlayerGameLog.week#</td>
-                        <td data-label="Opponent">#opponent#</td>
+                        <td data-label="Opponent">
+                          <cfif len(trim(opponent))>
+                            #opponent#
+                          <cfelse>
+                            -
+                          </cfif>
+                        </td>
                         <td data-label="FG">#getPlayerGameLog.FGM# - #getPlayerGameLog.FGA#</td>
                         <td data-label="3FG">#getPlayerGameLog.3FGM# - #getPlayerGameLog.3FGA#</td>
                         <td data-label="FT">#getPlayerGameLog.FTM# - #getPlayerGameLog.FTA#</td>
@@ -192,7 +214,9 @@
                     </tr>
                 </cfloop>
               </tbody>
-            </table>        
+          </table>
+          <input type="hidden" name="seasonSelectHasChanged" />
+        </form>        
 
 	        <table class="bolder">
 	          <caption>Career Stats</caption>
@@ -248,4 +272,4 @@
 </div>
 </cfoutput>
 <cfinclude template="/footer.cfm">
-
+<script src="../../Teams/Player_Profiles/player-profile-2.js?v=1.1"></script>
