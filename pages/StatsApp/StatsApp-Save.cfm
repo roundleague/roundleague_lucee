@@ -85,6 +85,23 @@
         <cfset HomeDifference = homeScore - awayScore>
         <cfset AwayDifference = awayScore - homeScore>
 
+        <!--- Get TeamID that won --->
+
+        <cfif form.homeScore GT form.awayScore>
+            <cfset WinningTeamID = getTeamsPlaying.homeTeamID>
+        <cfelse>
+            <cfset WinningTeamID = getTeamsPlaying.AwayTeamID>
+        </cfif>
+
+        <cfquery name="PlayerOfTheGame" datasource="roundleague">
+            SELECT playerID
+            FROM playergamelog
+            WHERE scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">
+            AND teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#WinningTeamID#">
+            ORDER BY (Points + Rebounds + Assists + Steals + Blocks - Turnovers) DESC
+            LIMIT 1;
+        </cfquery>
+
         <!--- home team section --->
         <cfquery name="checkHomeStandings" datasource="roundleague">
             SELECT teamID
