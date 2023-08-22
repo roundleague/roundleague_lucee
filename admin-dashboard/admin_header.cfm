@@ -55,68 +55,70 @@ Coded by www.creative-tim.com
         </a>
       </div>
       <div class="sidebar-wrapper">
-        <ul class="nav">
-<!---           <li>
-            <a href="javascript:;">
-              <i class="nc-icon nc-ruler-pencil"></i>
-              <p>StatsApp</p>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:;">
-              <i class="nc-icon nc-laptop"></i>
-              <p>Scoreboard</p>
-            </a>
-          </li> --->
-          <li <cfif findNoCase("scheduler", CGI.REQUEST_URL)>class="active"</cfif>>
-            <a href="/admin-dashboard/pages/scheduler/scheduler.cfm">
-              <i class="nc-icon nc-laptop"></i>
-              <p>Scheduler</p>
-            </a>
-          </li>
-          <li <cfif findNoCase("playerLookUp", CGI.REQUEST_URL)>class="active"</cfif>>
-            <a href="/admin-dashboard/pages/playerLookup/playerLookup.cfm">
-              <i class="nc-icon nc-pin-3"></i>
-              <p>Player Info Lookup</p>
-            </a>
-          </li>
-          <li <cfif findNoCase("playerPhotos", CGI.REQUEST_URL)>class="active"</cfif>>
-            <a href="/admin-dashboard/pages/playerPhotos/playerPhotos.cfm">
-              <i class="nc-icon nc-album-2"></i>
-              <p>Player Photos Tool</p>
-            </a>
-          </li>
-          <li <cfif findNoCase("teamsOverview", CGI.REQUEST_URL)>class="active"</cfif>>
-            <a href="/admin-dashboard/pages/teamsOverview/teamsOverview.cfm">
-              <i class="nc-icon nc-bullet-list-67"></i>
-              <p>Teams Overview</p>
-            </a>
-          </li>
-          <li <cfif findNoCase("seasons", CGI.REQUEST_URL)>class="active"</cfif>>
-            <a href="/admin-dashboard/pages/seasons/seasons.cfm">
-              <i class="nc-icon nc-paper"></i>
-              <p>Seasons Manager</p>
-            </a>
-          </li>
-          <li <cfif findNoCase("playoffs", CGI.REQUEST_URL)>class="active"</cfif>>
-            <a href="/admin-dashboard/pages/playoffs/playoffs.cfm">
-              <i class="nc-icon nc-trophy"></i>
-              <p>Playoffs</p>
-            </a>
-          </li>
-          <li <cfif findNoCase("statswapper", CGI.REQUEST_URL)>class="active"</cfif>>
-            <a href="/admin-dashboard/pages/statswapper/statswapper.cfm">
-              <i class="nc-icon nc-refresh-69"></i>
-              <p>Stat Swapper</p>
-            </a>
-          </li>
-          <li <cfif findNoCase("ideas", CGI.REQUEST_URL)>class="active"</cfif>>
-            <a href="/admin-dashboard/scripts/emailCaptains_teamSize.cfm">
-              <i class="nc-icon nc-chat-33"></i>
-              <p>Email Captains Over Roster Limit</p>
-            </a>
-          </li>
-        </ul>
+        <cfif !findNoCase("statswapper", CGI.REQUEST_URL)>
+          <ul class="nav">
+    <!---           <li>
+                <a href="javascript:;">
+                  <i class="nc-icon nc-ruler-pencil"></i>
+                  <p>StatsApp</p>
+                </a>
+              </li>
+              <li>
+                <a href="javascript:;">
+                  <i class="nc-icon nc-laptop"></i>
+                  <p>Scoreboard</p>
+                </a>
+              </li> --->
+              <li <cfif findNoCase("scheduler", CGI.REQUEST_URL)>class="active"</cfif>>
+                <a href="/admin-dashboard/pages/scheduler/scheduler.cfm">
+                  <i class="nc-icon nc-laptop"></i>
+                  <p>Scheduler</p>
+                </a>
+              </li>
+              <li <cfif findNoCase("playerLookUp", CGI.REQUEST_URL)>class="active"</cfif>>
+                <a href="/admin-dashboard/pages/playerLookup/playerLookup.cfm">
+                  <i class="nc-icon nc-pin-3"></i>
+                  <p>Player Info Lookup</p>
+                </a>
+              </li>
+              <li <cfif findNoCase("playerPhotos", CGI.REQUEST_URL)>class="active"</cfif>>
+                <a href="/admin-dashboard/pages/playerPhotos/playerPhotos.cfm">
+                  <i class="nc-icon nc-album-2"></i>
+                  <p>Player Photos Tool</p>
+                </a>
+              </li>
+              <li <cfif findNoCase("teamsOverview", CGI.REQUEST_URL)>class="active"</cfif>>
+                <a href="/admin-dashboard/pages/teamsOverview/teamsOverview.cfm">
+                  <i class="nc-icon nc-bullet-list-67"></i>
+                  <p>Teams Overview</p>
+                </a>
+              </li>
+              <li <cfif findNoCase("seasons", CGI.REQUEST_URL)>class="active"</cfif>>
+                <a href="/admin-dashboard/pages/seasons/seasons.cfm">
+                  <i class="nc-icon nc-paper"></i>
+                  <p>Seasons Manager</p>
+                </a>
+              </li>
+              <li <cfif findNoCase("playoffs", CGI.REQUEST_URL)>class="active"</cfif>>
+                <a href="/admin-dashboard/pages/playoffs/playoffs.cfm">
+                  <i class="nc-icon nc-trophy"></i>
+                  <p>Playoffs</p>
+                </a>
+              </li>
+              <li <cfif findNoCase("statswapper", CGI.REQUEST_URL)>class="active"</cfif>>
+                <a href="/admin-dashboard/pages/statswapper/statswapper.cfm">
+                  <i class="nc-icon nc-refresh-69"></i>
+                  <p>Stat Swapper</p>
+                </a>
+              </li>
+              <li <cfif findNoCase("ideas", CGI.REQUEST_URL)>class="active"</cfif>>
+                <a href="/admin-dashboard/scripts/emailCaptains_teamSize.cfm">
+                  <i class="nc-icon nc-chat-33"></i>
+                  <p>Email Captains Over Roster Limit</p>
+                </a>
+              </li>
+            </ul>
+        </cfif>
       </div>
     </div>
 
