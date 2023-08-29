@@ -4,9 +4,12 @@
 <link href="/pages/Stats/leagueLeaders.css?v=1.1" rel="stylesheet" />
 
 <cfquery name="getMinGamesLimit" datasource="roundleague">
-    SELECT max(gamesPlayed) as TotalGames
-    FROM playerstats
+    SELECT COUNT(*) AS totalGames
+    FROM playergamelog
     WHERE seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+    GROUP BY playerID
+    ORDER BY totalGames DESC
+    LIMIT 1
 </cfquery>
 
 <cfquery name="getLeagues" datasource="roundleague">
