@@ -70,21 +70,31 @@
 </cfquery>
 
 <cfquery name="getLeadingScorer" datasource="roundleague">
-  SELECT ps.PlayerID, ps.points, s.SeasonName, t.teamName, s.seasonID, p.firstName, p.lastName
+   WITH MaxPointsPerSeason AS (
+    SELECT
+      s.SeasonName,
+      MAX(ps.Points) AS MaxPoints
+    FROM playerstats ps
+    JOIN seasons s ON s.SeasonID = ps.SeasonID
+    JOIN teams t ON ps.teamID = t.teamID
+    WHERE t.teamID = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#">
+    GROUP BY s.SeasonName
+  )
+
+  SELECT
+    ps.PlayerID,
+    ps.Points,
+    s.SeasonName,
+    t.teamName,
+    s.SeasonID,
+    p.firstName,
+    p.lastName
   FROM playerstats ps
-  JOIN seasons s ON s.seasonID = ps.seasonID
+  JOIN seasons s ON s.SeasonID = ps.SeasonID
   JOIN teams t ON ps.teamID = t.teamID
-  JOIN players p on p.playerID = ps.playerID
-  WHERE ps.Points IN (
-        SELECT
-          MAX(ps.Points) AS MaxPoints
-        FROM seasons s
-        JOIN playerstats ps ON s.SeasonID = ps.SeasonID
-        JOIN teams t ON ps.teamID = t.teamID
-        WHERE t.teamID = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#">
-        GROUP BY s.SeasonName
-        ORDER BY s.SeasonName ASC )
-  AND t.teamID = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#">
+  JOIN players p ON p.PlayerID = ps.PlayerID
+  JOIN MaxPointsPerSeason mps ON s.SeasonName = mps.SeasonName
+  WHERE ps.Points = mps.MaxPoints AND t.teamID = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#">;
 </cfquery>
 
 <cfset playoffsObject = createObject("component", "library.playoffs") />
