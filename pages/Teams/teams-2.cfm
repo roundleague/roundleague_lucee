@@ -90,22 +90,31 @@
       <div class="container">
 
         <div class="standingsContainer">
+
+          <cfif getNorthDivision.recordCount>
             <div class="standingsDiv flex-item">
-              <h4 class="standingsh4">North Division</h4>
+                <h4 class="standingsh4">North Division</h4>
               <ul class="standingsUl">
                 <cfloop query="getNorthDivision">
                   <li><a href="team-profile-page.cfm?teamID=#getNorthDivision.teamID#">#getNorthDivision.teamName#</a></li>
                 </cfloop>
               </ul>
             </div>
+          </cfif>
+
+          <cfif getSouthDivision.recordCount>
             <div class="standingsDiv flex-item">
-              <h4 class="standingsh4">South Division</h4>
+              <cfif getSouthDivision.recordCount>
+                <h4 class="standingsh4">South Division</h4>
+              </cfif>
               <ul class="standingsUl">
                 <cfloop query="getSouthDivision">
                   <li><a href="team-profile-page.cfm?teamID=#getSouthDivision.teamID#">#getSouthDivision.teamName#</a></li>
                 </cfloop>
               </ul>
             </div>
+          </cfif>
+
             <!--- <div class="standingsDiv flex-item">
               <h4 class="standingsh4">Pacific Division</h4>
               <ul class="standingsUl">
@@ -122,14 +131,17 @@
                 </cfloop>
               </ul>
             </div> --->
-            <div class="standingsDiv flex-item">
-              <h4 class="standingsh4">East Division</h4>
-              <ul class="standingsUl">
-                <cfloop query="getEastDivision">
-                  <li><a href="team-profile-page.cfm?teamID=#getEastDivision.teamID#">#getEastDivision.teamName#</a></li>
-                </cfloop>
-              </ul>
-            </div>
+
+            <cfif getEastDivision.recordCount>
+              <div class="standingsDiv flex-item">
+                <h4 class="standingsh4">East Division</h4>
+                <ul class="standingsUl">
+                  <cfloop query="getEastDivision">
+                    <li><a href="team-profile-page.cfm?teamID=#getEastDivision.teamID#">#getEastDivision.teamName#</a></li>
+                  </cfloop>
+                </ul>
+              </div>
+            </cfif>
         </div>
 
         <div class="standingsContainer">
@@ -141,30 +153,37 @@
                 </cfloop>
               </ul>
             </div> --->
-            <div class="standingsDiv flex-item">
-              <h4 class="standingsh4">West Division</h4>
-              <ul class="standingsUl">
-                <cfloop query="getWestDivision">
-                  <li><a href="team-profile-page.cfm?teamID=#getWestDivision.teamID#">#getWestDivision.teamName#</a></li>
-                </cfloop>
-              </ul>
-            </div>
-            <div class="standingsDiv flex-item">
-              <h4 class="standingsh4">Asian Division</h4>
-              <ul class="standingsUl">
-                <cfloop query="getAsianDivision">
-                  <li><a href="team-profile-page.cfm?teamID=#getAsianDivision.teamID#">#getAsianDivision.teamName#</a></li>
-                </cfloop>
-              </ul>
-            </div>
-            <div class="standingsDiv flex-item">
-              <h4 class="standingsh4">Women's Division</h4>
-              <ul class="standingsUl">
-                <cfloop query="getWomensDivision">
-                  <li><a href="team-profile-page.cfm?teamID=#getWomensDivision.teamID#">#getWomensDivision.teamName#</a></li>
-                </cfloop>
-              </ul>
-            </div>
+            <cfif getWestDivision.recordCount>
+              <div class="standingsDiv flex-item">
+                <h4 class="standingsh4">West Division</h4>
+                <ul class="standingsUl">
+                  <cfloop query="getWestDivision">
+                    <li><a href="team-profile-page.cfm?teamID=#getWestDivision.teamID#">#getWestDivision.teamName#</a></li>
+                  </cfloop>
+                </ul>
+              </div>
+            </cfif>
+
+            <cfif getAsianDivision.recordCount>
+              <div class="standingsDiv flex-item">
+                <ul class="standingsUl">
+                  <cfloop query="getAsianDivision">
+                    <li><a href="team-profile-page.cfm?teamID=#getAsianDivision.teamID#">#getAsianDivision.teamName#</a></li>
+                  </cfloop>
+                </ul>
+              </div>
+            </cfif>
+
+            <cfif getWomensDivision.recordCount>
+              <div class="standingsDiv flex-item">
+                <h4 class="standingsh4">Women's Division</h4>
+                <ul class="standingsUl">
+                  <cfloop query="getWomensDivision">
+                    <li><a href="team-profile-page.cfm?teamID=#getWomensDivision.teamID#">#getWomensDivision.teamName#</a></li>
+                  </cfloop>
+                </ul>
+              </div>
+            </cfif>
         </div>
 
       </div>
