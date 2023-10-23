@@ -94,7 +94,7 @@
   JOIN teams t ON ps.teamID = t.teamID
   JOIN players p ON p.PlayerID = ps.PlayerID
   JOIN MaxPointsPerSeason mps ON s.SeasonName = mps.SeasonName
-  WHERE ps.Points = mps.MaxPoints AND t.teamID = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#">;
+  WHERE ps.Points = mps.MaxPoints AND t.teamID = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#">
 </cfquery>
 
 <cfset playoffsObject = createObject("component", "library.playoffs") />
