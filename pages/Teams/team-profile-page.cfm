@@ -70,21 +70,25 @@
 </cfquery>
 
 <cfquery name="getLeadingScorer" datasource="roundleague">
-  SELECT ps.PlayerID, ps.points, s.SeasonName, t.teamName, s.seasonID, p.firstName, p.lastName
+  SELECT
+    ps.PlayerID,
+    ps.Points,
+    s.SeasonName,
+    t.teamName,
+    s.SeasonID,
+    p.firstName,
+    p.lastName
   FROM playerstats ps
-  JOIN seasons s ON s.seasonID = ps.seasonID
+  JOIN seasons s ON s.SeasonID = ps.SeasonID
   JOIN teams t ON ps.teamID = t.teamID
-  JOIN players p on p.playerID = ps.playerID
-  WHERE ps.Points IN (
-        SELECT
-          MAX(ps.Points) AS MaxPoints
-        FROM seasons s
-        JOIN playerstats ps ON s.SeasonID = ps.SeasonID
-        JOIN teams t ON ps.teamID = t.teamID
-        WHERE t.teamID = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#">
-        GROUP BY s.SeasonName
-        ORDER BY s.SeasonName ASC )
-  AND t.teamID = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#">
+  JOIN players p ON p.PlayerID = ps.PlayerID
+  WHERE t.teamID = <cfqueryparam cfsqltype="INTEGER" value="#url.teamID#">
+  AND ps.Points = (
+    SELECT MAX(ps2.Points)
+    FROM playerstats ps2
+    WHERE ps2.SeasonID = ps.SeasonID
+    AND ps2.teamID = t.teamID
+  )
 </cfquery>
 
 <cfset playoffsObject = createObject("component", "library.playoffs") />
