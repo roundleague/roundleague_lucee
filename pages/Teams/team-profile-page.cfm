@@ -88,7 +88,7 @@
     FROM playerstats ps2
     WHERE ps2.SeasonID = ps.SeasonID
     AND ps2.teamID = t.teamID
-  );
+  )
 </cfquery>
 
 <cfset playoffsObject = createObject("component", "library.playoffs") />
