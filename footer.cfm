@@ -17,7 +17,7 @@
               <a href="https://www.linkedin.com/company/the-round-league/" target="_blank"><i class="fa fa-linkedin" aria-hidden="true"></i></a>
             </li>
             <li>
-              <a href="https://goo.gl/maps/tUs7Jvvfgn4hi4HY8" target="_blank">4150 SW Watson Ave, Beaverton, OR 97005</a>
+              <a href="https://www.google.com/maps/dir/Current+Location/The+Round+League" target="_blank">4150 SW Watson Ave, Beaverton, OR 97005</a>
             </li>
           </ul>
         </nav>
