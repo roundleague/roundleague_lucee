@@ -4,12 +4,11 @@
 <link href="/pages/Teams/Player_Profiles/player-profile-2.css" rel="stylesheet" />
 
 <cfquery name="getPlayerData" datasource="roundleague">
-	SELECT lastName, firstName, position, height, weight, hometown, school, t.teamName
-	FROM Players p
-	JOIN Roster r on r.playerID = p.playerID
-	JOIN Teams t on r.teamID = t.teamID
-	WHERE p.PlayerID = <cfqueryparam cfsqltype="INTEGER" value="#url.playerID#">
-    AND r.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+    SELECT p.lastName, p.firstName, p.position, p.height, p.weight, p.hometown, p.school, t.teamName
+    FROM Players p
+    LEFT JOIN Roster r on r.playerID = p.playerID AND r.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+    LEFT JOIN Teams t on r.teamID = t.teamID
+    WHERE p.PlayerID = <cfqueryparam cfsqltype="INTEGER" value="#url.playerID#">
 </cfquery>
 
 <cfquery name="getPlayerStats" datasource="roundleague">
