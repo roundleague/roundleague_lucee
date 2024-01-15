@@ -35,7 +35,11 @@
 			Instagram,
 			Gender,
 			MastersLeague,
-			ZipCode
+			ZipCode,
+			ShoeSize,
+			ShoeType,
+			AdidasConflict,
+			AdidasInterestTesting
 		)
 		VALUES
 		(
@@ -57,7 +61,11 @@
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.Instagram#">,
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.Gender#">,
 			<cfif isDefined("form.MastersLeague")>'Yes'<cfelse>'No'</cfif>,
-			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.zipCode#">
+			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.zipCode#">,
+			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.shoeSize#">,
+			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.shoeType#">,
+			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.brandTestingConflict#">,
+			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.adidasTesting#">
 		)
 	</cfquery>
 	<cfset newPlayerId = playerAdd.GENERATEDKEY>
