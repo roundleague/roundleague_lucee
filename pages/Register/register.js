@@ -19,13 +19,12 @@ $( document ).ready(function() {
 	// Custom Validation of form controls
 	$('.saveBtn').click(function(){
 		let highestLevel = $('input[name="highestLevel"]:checked').val();
-		let FullyVaccinated = $('input[name="FullyVaccinated"]:checked').val();
 		let position = $('input[name="position"]:checked').val();
 		let gender = $('.gender').val();
 		let seasonSelect = $('.seasonSelect').val();
 		let registerTeam = $('.teamID').val();
 
-		if(highestLevel && FullyVaccinated && position && gender.length && seasonSelect.length){
+		if(highestLevel && position && gender.length && seasonSelect.length){
 			$('.errorMessage').text("");
 		}
 		else{
