@@ -24,7 +24,6 @@
 			BirthDate, 
 			Phone, 
 			HighestLevel, 
-			FullyVaccinated,
 			FreeAgent,
 			Position,
 			Height,
@@ -50,7 +49,6 @@
 			<cfqueryparam cfsqltype="cf_sql_date" value="#DateFormat(form.birthDate, "mm/dd/yyyy")#">,
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.Phone#">,
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.HighestLevel#">,
-			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.FullyVaccinated#">,
 			<cfif isDefined("form.freeAgent")>'Yes'<cfelse>'No'</cfif>,
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.Position#">,
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.Height#">,
@@ -129,6 +127,17 @@
 				<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.currentJersey#">
 			)
 		</cfquery>
+
+		<!--- If returning player, save Adidas Information --->
+		<cfquery name="updateAdidasInfo" datasource="roundleague">
+			UPDATE players
+				SET ShoeSize = <cfqueryparam cfsqltype="cf_sql_varchar" value="#form.shoeSize#">,
+					ShoeType = <cfqueryparam cfsqltype="cf_sql_varchar" value="#form.shoeType#">,
+					AdidasConflict = <cfqueryparam cfsqltype="cf_sql_varchar" value="#form.brandTestingConflict#">,
+					AdidasInterestTesting = <cfqueryparam cfsqltype="cf_sql_varchar" value="#form.adidasTesting#">
+			WHERE playerID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#checkDuplicate.playerID#">
+		</cfquery>
+
 		<cfset toastMessage = "Welcome back #checkDuplicate.firstName#, you have successfully been added to #teamName#.">
 	<cfcatch>
 		<cfdump var="#cfcatch#" /><cfabort />

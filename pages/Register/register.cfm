@@ -21,7 +21,6 @@
 </cfquery>
 
 <cfset basketballExp = 'Recreational,High School Varsity,College,D-1 University,Professional'>
-<cfset vaccinationStatus = 'Yes,No,Prefer Not To Say'>
 <cfset bballPosition = 'Point Guard,Shooting Guard,Small Forward,Power Forward,Center'>
 <cfset heightOptions = "4'11,5'1,5'2,5'3,5'4',5'5,5'6,5'7,5'8,5'9,5'10,5'11,6'0,6'1,6'2,6'3,6'4,6'5,6'6,6'7,6'8,6'9,6'10,6'11,7'0,7'1,7'2,7'3,7'4,7'5">
 
@@ -194,19 +193,6 @@ I, for myself and on behalf of my heirs, assigns, personal representatives and n
 						            <div class="form-check-radio">
 						              <label class="form-check-label">
 						                <input class="form-check-input" type="radio" name="highestLevel" value="#x#"> #x#
-						                <span class="form-check-sign"></span>
-						              </label>
-						            </div>
-					        	</cfloop>
-		              		</div>
-		              </div>
-		              <div class="row">
-			              <div class="col-md-6 ml-auto mr-auto nonTextQuestions">
-			              		<label class="biggerLabel">COVID-19 Vaccination Status</label>
-			              		<cfloop list="#vaccinationStatus#" index="i" item="x">
-						            <div class="form-check-radio">
-						              <label class="form-check-label">
-						                <input class="form-check-input" type="radio" name="FullyVaccinated" value="#x#"> #x#
 						                <span class="form-check-sign"></span>
 						              </label>
 						            </div>
