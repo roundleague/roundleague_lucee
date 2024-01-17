@@ -367,4 +367,4 @@ I, for myself and on behalf of my heirs, assigns, personal representatives and n
 </cfoutput>
 
 <cfinclude template="/footer.cfm">
-<script src="../Register/register.js?v=1.1"></script>
+<script src="../Register/register.js?v=1.2"></script>
