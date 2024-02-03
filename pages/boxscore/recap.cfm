@@ -16,7 +16,7 @@
 <cfif getExistingRecap.recordCount>
 	<cfset recapMessageText = getExistingRecap.recapText>
 <cfelse>
-	<cfset apiKey = "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">
+	<cfinclude template="config.cfm">
 	<cfset openaiApiUrl = "https://api.openai.com/v1/chat/completions">
 
 	<cfset totalMessage = firstTeamTotals & secondTeamTotals & teamScores & playerListPrompts>
@@ -44,7 +44,6 @@
 	</cfhttp>
 
 	<cfset response = DeserializeJSON(cfhttp.fileContent)>
-
 	<!--- One time insert into database to prevent future calls for this scheduleID --->
 	<!--- We should check response before inserting --->
 	<cfquery name="insertGameRecap" datasource="roundleague">
