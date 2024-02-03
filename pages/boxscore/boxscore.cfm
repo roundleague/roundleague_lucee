@@ -36,6 +36,8 @@
     AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
 </cfquery>
 
+<cfset boxscore = createObject("component", "boxscore")>
+
 <cfoutput>
 <div class="main" style="background-color: white; margin-top: 25px;">
     <div class="section text-center">
@@ -43,6 +45,7 @@
 
         <h4 class="gameTitle desktop"> <a class="playerLink" href="/pages/teams/team-profile-page.cfm?teamID=#getTeamsPlaying.HomeTeamID#"> #getTeamsPlaying.Home# #getTeamsPlaying.HomeScore# </a>(#getWinsAndLossesHomeTeam.Wins#-#getWinsAndLossesHomeTeam.Losses#) | <a class="playerLink" href="/pages/teams/team-profile-page.cfm?teamID=#getTeamsPlaying.AwayTeamID#"> #getTeamsPlaying.Away# #getTeamsPlaying.AwayScore# </a> (#getWinsAndLossesAwayTeam.Wins#-#getWinsAndLossesAwayTeam.Losses#)</h4>
         <h5>#getTeamsPlaying.Date#</h5> 
+        <cfset teamScores = '#getTeamsPlaying.Home# #getTeamsPlaying.HomeScore# | ' & '#getTeamsPlaying.Away# #getTeamsPlaying.AwayScore#' />
 
 
         <!--- Mobile score section --->
@@ -120,7 +123,11 @@
             <cfset totalFLS = 0>
             <cfset totalPTS = 0>
 
+            <cfset playerListPrompts = ''>
     		<cfloop query="getPlayerLogs">
+
+                <cfset playerPrompt = boxscore.generatePlayerStatsPrompt(getPlayerLogs, getPlayerlogs.teamID)>
+                <cfset playerListPrompts = playerPrompt & playerListPrompts>
 
                 <cfif getPlayerlogs.teamID NEQ currentTeamID>
                     <cfset totalFGM = 0>
@@ -211,13 +218,51 @@
                         <td data-label="FLS"><b>#TotalFLS#</b></td>
                         <td data-label="PTS"><b>#TotalPTS#</b></td>
                     </tr>
+                    <cfif currentTeamID NEQ nextTeamID>
+                        <cfset firstTeamStruct = {
+                            "TotalFGM": TotalFGM,
+                            "TotalFGA": TotalFGA,
+                            "Total3FGM": Total3FGM,
+                            "Total3FGA": Total3FGA,
+                            "TotalFTM": TotalFTM,
+                            "TotalFTA": TotalFTA,
+                            "TotalREB": TotalREB,
+                            "TotalAST": TotalAST,
+                            "TotalSTL": TotalSTL,
+                            "TotalBLK": TotalBLK,
+                            "TotalTO": TotalTO,
+                            "TotalFLS": TotalFLS,
+                            "TotalPTS": TotalPTS
+                        }>
+                        <cfset firstTeamTotals = boxscore.generateTeamStatsPrompt(GetPlayerLogs.teamName, firstTeamStruct)>
+                    </cfif>
+                    <cfif getPlayerlogs.recordCount EQ getPlayerLogs.currentRow>
+                        <cfset secondTeamStruct = {
+                            "TotalFGM": TotalFGM,
+                            "TotalFGA": TotalFGA,
+                            "Total3FGM": Total3FGM,
+                            "Total3FGA": Total3FGA,
+                            "TotalFTM": TotalFTM,
+                            "TotalFTA": TotalFTA,
+                            "TotalREB": TotalREB,
+                            "TotalAST": TotalAST,
+                            "TotalSTL": TotalSTL,
+                            "TotalBLK": TotalBLK,
+                            "TotalTO": TotalTO,
+                            "TotalFLS": TotalFLS,
+                            "TotalPTS": TotalPTS
+                        }>
+                        <cfset secondTeamTotals = boxscore.generateTeamStatsPrompt(GetPlayerLogs.teamName, secondTeamStruct)>
+                    </cfif>
                 </cfif>
         	</cfloop>
         </table>
-
+        <br>
+        <cfinclude template="recap.cfm">
       </div>
     </div>
 </div>
+
 </cfoutput>
 <cfinclude template="/footer.cfm">
-
+<script src="../boxscore/recap.js?v=1.1"></script>
