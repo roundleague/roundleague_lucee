@@ -34,7 +34,7 @@
             <cfqueryparam cfsqltype="char" value="#hash(form.createPassword,'SHA')#">,
             <cfqueryparam cfsqltype="cf_sql_date" value="#now()#">,
             <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.playerID#">,
-            <cfqueryparam cfsqltype="cf_sql_varchar" value="Pending">
+            <cfqueryparam cfsqltype="cf_sql_varchar" value="Active">
           );
         </cfquery>
 
@@ -60,11 +60,11 @@
           subject="Registration - #getAndCheckCaptain.firstName# #getAndCheckCaptain.lastName#"
           type="HTML">
         
-        <h3>Thank you for registering! Please click <a href="https://#CGI.HTTP_HOST#/pages/Login/completeVerify.cfm?userID=#newUserId#&hashCode=#verifyLink.confirmationCode#">here</a> to complete your account.</h3>
+        <h3>Thank you for registering!</h3>
 
         </cfmail>
 
-        <div class="successMsg">An email with a verification link to #getAndCheckCaptain.email# has been sent (please allow 3-5 minutes and check spam folders).</div>
+        <div class="successMsg"><a href="/pages/Login/captains_login.cfm">Click here</a> to login to your new captain account.</div>
         <cfabort />
       </cfif>
 
