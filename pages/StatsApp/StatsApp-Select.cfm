@@ -32,6 +32,8 @@
 <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.6/build/pure-min.css" integrity="sha384-Uu6IeWbM+gzNVXJcM9XV3SohHtmWE+3VGi496jvgX1jyvDTXfdK+rfZc8C1Aehk5" crossorigin="anonymous">
 <link rel="stylesheet" href="StatsApp.css">
 <link rel="stylesheet" href="StatsApp-Select.css">
+<link rel="stylesheet" href="StatsApp-Select-Modern.css">
+
 
 <!--- Page Specific CSS/JS Here --->
 <link href="/pages/Standings/purekitpro.css" rel="stylesheet" />
