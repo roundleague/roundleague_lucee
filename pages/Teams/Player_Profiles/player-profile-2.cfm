@@ -204,7 +204,7 @@
                         <td data-label="Week">#getPlayerGameLog.week#</td>
                         <td data-label="Opponent">
                           <cfif len(trim(opponent))>
-                            #opponent#
+                            <a href="/pages/boxscore/boxscore.cfm?scheduleID=#getPlayerGameLog.scheduleID#">#opponent#</a>
                           <cfelse>
                             -
                           </cfif>
