@@ -46,7 +46,6 @@
   <script src="/assets/js/plugins/bootstrap-datepicker.js" type="text/javascript"></script>
   <!-- Control Center for Paper Kit: parallax effects, scripts for the example pages etc -->
   <script src="/assets/js/paper-kit.js?v=2.2.2" type="text/javascript"></script>
-  <script id="messenger-widget-b" src="https://cdn.botpenguin.com/website-bot.js" defer>661f3ffd3b6a7602dc05f5f9,661f3f9ccb5d6803c06baedb</script>
 </body>
 
 </html>
