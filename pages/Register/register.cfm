@@ -253,39 +253,6 @@ I, for myself and on behalf of my heirs, assigns, personal representatives and n
 		                </div>
 		              </div>
 
-		              <!--- Adidas Registration Section --->
-		              <h3>Adidas Partnership Info</h3>
-		              <br>
-		              <div class="row">
-		                <div class="col-md-6 col-sm-6">
-		                  <div class="form-group">
-		                    <label>Shoe Size</label>
-		                    <input type="text" class="form-control border-input" placeholder="Shoe Size" name="shoeSize">
-		                  </div>
-		                </div>
-		                <div class="col-md-6 col-sm-6">
-		                  <div class="form-group">
-		                    <label>Shoe Type / Model</label>
-		                    <input type="text" class="form-control border-input" placeholder="Ex: Dame 8 EXPTLY" name="shoeType">
-		                  </div>
-		                </div>
-		              </div>
-		              <div class="row">
-		                <div class="col-md-6 col-sm-6">
-		                  <div class="form-group">
-		                    <label>Do you work for or currently participate in product testing for a competitor company?</label>
-		                    <input type="text" class="form-control border-input" placeholder="Yes / No" name="brandTestingConflict">
-		                  </div>
-		                </div>
-		                <div class="col-md-6 col-sm-6">
-		                  <div class="form-group">
-		                    <label>Are you interested in product testing for Adidas Basketball Innovation?</label>
-		                    <input type="text" class="form-control border-input" placeholder="Yes / No" name="adidasTesting">
-		                  </div>
-		                </div>
-		              </div>
-		              <!--- End Adidas Registration Section --->
-
 	                  <!--- <div class="form-group">
 						  Are you over 18?
 						 <input class="registerRadio firstRadio" type="radio" name="over18" value="1"> Yes

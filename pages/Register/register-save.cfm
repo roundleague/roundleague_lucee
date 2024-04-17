@@ -34,11 +34,7 @@
 			Instagram,
 			Gender,
 			MastersLeague,
-			ZipCode,
-			ShoeSize,
-			ShoeType,
-			AdidasConflict,
-			AdidasInterestTesting
+			ZipCode
 		)
 		VALUES
 		(
@@ -59,11 +55,7 @@
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.Instagram#">,
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.Gender#">,
 			<cfif isDefined("form.MastersLeague")>'Yes'<cfelse>'No'</cfif>,
-			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.zipCode#">,
-			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.shoeSize#">,
-			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.shoeType#">,
-			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.brandTestingConflict#">,
-			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.adidasTesting#">
+			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.zipCode#">
 		)
 	</cfquery>
 	<cfset newPlayerId = playerAdd.GENERATEDKEY>
@@ -127,17 +119,6 @@
 				<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.currentJersey#">
 			)
 		</cfquery>
-
-		<!--- If returning player, save Adidas Information --->
-		<cfquery name="updateAdidasInfo" datasource="roundleague">
-			UPDATE players
-				SET ShoeSize = <cfqueryparam cfsqltype="cf_sql_varchar" value="#form.shoeSize#">,
-					ShoeType = <cfqueryparam cfsqltype="cf_sql_varchar" value="#form.shoeType#">,
-					AdidasConflict = <cfqueryparam cfsqltype="cf_sql_varchar" value="#form.brandTestingConflict#">,
-					AdidasInterestTesting = <cfqueryparam cfsqltype="cf_sql_varchar" value="#form.adidasTesting#">
-			WHERE playerID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#checkDuplicate.playerID#">
-		</cfquery>
-
 		<cfset toastMessage = "Welcome back #checkDuplicate.firstName#, you have successfully been added to #teamName#.">
 	<cfcatch>
 		<cfdump var="#cfcatch#" /><cfabort />
