@@ -96,7 +96,7 @@
                   <cfelse>
                     <cfset opponentTeam = getTeamMatchups.home>
                   </cfif>
-                  <option data-bracketid="#getTeamMatchups.Playoffs_BracketID#" data-bracketroundid="#getTeamMatchups.bracketRoundID#" data-bracketgameid="#getTeamMatchups.BracketGameID#" data-playoffs="#getTeamMatchups.isPlayoffs#" value="#getTeamMatchups.scheduleID#"<cfif form.scheduleID EQ getTeamMatchups.scheduleID>selected</cfif>>Week #getTeamMatchups.Week# VS #opponentTeam# <cfif homeScore NEQ ''>(Already Played)</cfif></option>
+                  <option <cfif homeScore NEQ ''>disabled</cfif> data-bracketid="#getTeamMatchups.Playoffs_BracketID#" data-bracketroundid="#getTeamMatchups.bracketRoundID#" data-bracketgameid="#getTeamMatchups.BracketGameID#" data-playoffs="#getTeamMatchups.isPlayoffs#" value="#getTeamMatchups.scheduleID#"<cfif form.scheduleID EQ getTeamMatchups.scheduleID>selected</cfif>>Week #getTeamMatchups.Week# VS #opponentTeam# <cfif homeScore NEQ ''>(Already Played)</cfif></option>
               </cfloop>
           </select>
         </cfif>
