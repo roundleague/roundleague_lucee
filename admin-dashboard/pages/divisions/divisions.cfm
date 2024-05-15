@@ -18,10 +18,10 @@
             <div id="teams-no-divisions">
                 <h3>Teams with no divisions</h3>
                 <ul id="teams-list">
-                    <li>Team 1</li>
-                    <li>Team 2</li>
-                    <li>Team 3</li>
-                </ul>
+				    <li draggable="true" id="team1" ondragstart="drag(event)">Team 1</li>
+				    <li draggable="true" id="team2" ondragstart="drag(event)">Team 2</li>
+				    <li draggable="true" id="team3" ondragstart="drag(event)">Team 3</li>
+				</ul>
             </div>
             <div id="adds-to-here">
                 <h3>Adds to here</h3>
@@ -33,15 +33,15 @@
             </div>
         </div>
         <div class="divisions-container">
-            <div id="north" class="highlight-on-hover">
+            <div id="north" class="highlight-on-hover" ondrop="drop(event)" ondragover="allowDrop(event)">
                 <h3>North</h3>
                 <!-- North content -->
             </div>
-            <div id="south" class="highlight-on-hover">
+            <div id="south" class="highlight-on-hover" ondrop="drop(event)" ondragover="allowDrop(event)">
                 <h3>South</h3>
                 <!-- South content -->
             </div>
-            <div id="east" class="highlight-on-hover">
+            <div id="east" class="highlight-on-hover" ondrop="drop(event)" ondragover="allowDrop(event)">
                 <h3>East</h3>
                 <!-- East content -->
             </div>
@@ -52,11 +52,15 @@
 </div>
 </cfoutput>
 
+<cfinclude template="/admin-dashboard/admin_footer.cfm">
+
 <script>
     function createNewTeam() {
         const teamList = document.getElementById('teams-list');
         const newTeam = document.createElement('li');
         newTeam.textContent = 'New Team';
+        newTeam.draggable = true;
+        newTeam.ondragstart = drag;
         teamList.appendChild(newTeam);
     }
 
@@ -70,6 +74,22 @@
         document.querySelector('.divisions-container').appendChild(newDivision);
     }
 
+    function allowDrop(event) {
+        event.preventDefault();
+    }
+
+    function drag(event) {
+        event.dataTransfer.setData("text", event.target.id);
+    }
+
+    function drop(event) {
+        event.preventDefault();
+        const data = event.dataTransfer.getData("text");
+        const element = document.getElementById(data);
+        event.target.appendChild(element);
+        element.draggable = true;
+    }
+
     document.querySelectorAll('.highlight-on-hover').forEach(element => {
         element.addEventListener('dragover', event => {
             event.preventDefault();
@@ -80,8 +100,12 @@
             element.classList.remove('highlight');
         });
 
-        element.addEventListener('drop', () => {
+        element.addEventListener('drop', event => {
+            event.preventDefault();
             element.classList.remove('highlight');
+            const data = event.dataTransfer.getData("text");
+            const draggableElement = document.getElementById(data);
+            element.appendChild(draggableElement);
         });
     });
 </script>
@@ -123,5 +147,3 @@
         background-color: yellow;
     }
 </style>
-
-<cfinclude template="/admin-dashboard/admin_footer.cfm">
