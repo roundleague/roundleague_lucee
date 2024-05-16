@@ -50,5 +50,24 @@ document.querySelectorAll('.highlight-on-hover').forEach(element => {
         const data = event.dataTransfer.getData("text");
         const draggableElement = document.getElementById(data);
         element.appendChild(draggableElement);
+        
+        // AJAX call to update team in division
+        const teamID = data;
+        const divisionID = element.id;
+        
+        fetch('updateTeamInDivision.cfm', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ teamID, divisionID })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
     });
 });

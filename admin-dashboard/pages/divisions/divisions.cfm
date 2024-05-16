@@ -4,6 +4,13 @@
 <link href="divisions.css?v=1.0" rel="stylesheet">
 
 <cfoutput>
+
+<cfquery name="getDivisions" datasource="roundleague">
+  SELECT DivisionID, DivisionName
+  FROM Divisions
+  Where SeasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+</cfquery>
+
 <!-- End Navbar -->
 <div class="content">
   <div class="row">
@@ -26,18 +33,28 @@
             </div>
         </div>
         <div class="divisions-container">
-            <div id="north" class="highlight-on-hover" ondrop="drop(event)" ondragover="allowDrop(event)">
-                <h3>North</h3>
-                <!-- North content -->
-            </div>
-            <div id="south" class="highlight-on-hover" ondrop="drop(event)" ondragover="allowDrop(event)">
-                <h3>South</h3>
-                <!-- South content -->
-            </div>
-            <div id="east" class="highlight-on-hover" ondrop="drop(event)" ondragover="allowDrop(event)">
-                <h3>East</h3>
-                <!-- East content -->
-            </div>
+            <cfloop query="getDivisions">
+
+                <!--- Get teams within division --->
+                <cfquery name="getTeamsInDivision" datasource="roundleague">
+                  SELECT teamName, DivisionName, teamID
+                  FROM teams t
+                  JOIN divisions d ON t.DivisionID = d.DivisionID
+                  Where t.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+                  AND DivisionName = <cfqueryparam cfsqltype="cf_sql_char" value="#getDivisions.DivisionName#">
+                  AND t.status = 'Active'
+                  ORDER BY divisionName
+                </cfquery>
+
+                <div id="#getDivisions.divisionID#" class="highlight-on-hover" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h3>#getDivisions.divisionName#</h3>
+                    <ul id="teams-list">
+                        <cfloop query="getTeamsInDivision">
+                            <li draggable="true" id="#getTeamsInDivision.teamID#" ondragstart="drag(event)">#getTeamsInDivision.teamName#</li>
+                        </cfloop>
+                    </ul>
+                </div>
+            </cfloop>
         </div>
       </div>
     </div>
