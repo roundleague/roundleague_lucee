@@ -32,30 +32,31 @@
 				</ul>
             </div>
         </div>
+        
         <div class="divisions-container">
             <cfloop query="getDivisions">
-
                 <!--- Get teams within division --->
                 <cfquery name="getTeamsInDivision" datasource="roundleague">
-                  SELECT teamName, DivisionName, teamID
-                  FROM teams t
-                  JOIN divisions d ON t.DivisionID = d.DivisionID
-                  Where t.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
-                  AND DivisionName = <cfqueryparam cfsqltype="cf_sql_char" value="#getDivisions.DivisionName#">
-                  AND t.status = 'Active'
-                  ORDER BY divisionName
+                    SELECT teamName, DivisionName, teamID
+                    FROM teams t
+                    JOIN divisions d ON t.DivisionID = d.DivisionID
+                    WHERE t.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+                    AND DivisionName = <cfqueryparam cfsqltype="cf_sql_char" value="#getDivisions.DivisionName#">
+                    AND t.status = 'Active'
+                    ORDER BY divisionName
                 </cfquery>
 
-                <div id="#getDivisions.divisionID#" class="highlight-on-hover" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div id="#getDivisions.divisionID#" class="highlight-on-hover division" ondrop="drop(event)" ondragover="allowDrop(event)">
                     <h3>#getDivisions.divisionName#</h3>
-                    <ul id="teams-list">
+                    <ul id="teams-list" class="teams-list">
                         <cfloop query="getTeamsInDivision">
-                            <li draggable="true" id="#getTeamsInDivision.teamID#" ondragstart="drag(event)">#getTeamsInDivision.teamName#</li>
+                            <li draggable="true" id="#getTeamsInDivision.teamID#" class="team-block" ondragstart="drag(event)">#getTeamsInDivision.teamName#</li>
                         </cfloop>
                     </ul>
                 </div>
             </cfloop>
         </div>
+
       </div>
     </div>
   </div>

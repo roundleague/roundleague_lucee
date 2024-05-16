@@ -33,3 +33,18 @@
 .highlight {
     background-color: yellow;
 }
+.teams-list {
+        list-style-type: none;
+        padding: 0;
+    }
+.team-block {
+    background-color: #e0e0e0;
+    margin: 5px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: grab;
+}
+.team-block:active {
+    cursor: grabbing;
+}
