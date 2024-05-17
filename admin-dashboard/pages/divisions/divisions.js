@@ -1,12 +1,34 @@
 
 function createNewTeam() {
-    const teamList = document.getElementById('teams-list');
-    const newTeam = document.createElement('li');
-    newTeam.textContent = 'New Team';
-    newTeam.draggable = true;
-    newTeam.ondragstart = drag;
-    teamList.appendChild(newTeam);
+    const teamName = prompt("Enter the new team's name:");
+    if (teamName) {
+        fetch('insertNewTeam.cfm', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ teamName })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                const teamList = document.getElementById('teams-list');
+                const newTeam = document.createElement('li');
+                newTeam.textContent = teamName;
+                newTeam.draggable = true;
+                newTeam.id = data.teamID; // Set the ID to the newly created team ID
+                newTeam.ondragstart = drag;
+                teamList.appendChild(newTeam);
+            } else {
+                alert('Error: ' + data.message);
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
 }
+
 
 function createNewDivision() {
     const newDivision = document.createElement('div');
@@ -51,6 +73,9 @@ document.querySelectorAll('.highlight-on-hover').forEach(element => {
         const draggableElement = document.getElementById(data);
         element.appendChild(draggableElement);
         
+        // Remove the "teamNoDivision" class from the dropped element
+        draggableElement.classList.remove('teamNoDivision');
+
         // AJAX call to update team in division
         const teamID = data;
         const divisionID = element.id;

@@ -1,7 +1,7 @@
 <cfinclude template="/admin-dashboard/admin_header.cfm">
 
 <!--- Page Specific CSS/JS Here --->
-<link href="divisions.css?v=1.0" rel="stylesheet">
+<link href="divisions.css?v=1.1" rel="stylesheet">
 
 <cfoutput>
 
@@ -25,11 +25,19 @@
         <div class="teams-container">
             <div id="teams-no-divisions">
                 <h3>Teams with no divisions</h3>
-                <ul id="teams-list">
-				    <li draggable="true" id="team1" ondragstart="drag(event)">Team 1</li>
-				    <li draggable="true" id="team2" ondragstart="drag(event)">Team 2</li>
-				    <li draggable="true" id="team3" ondragstart="drag(event)">Team 3</li>
-				</ul>
+
+                <cfquery name="getTeamsNoDivision" datasource="roundleague">
+                    SELECT teamId, teamName
+                    FROM teams
+                    WHERE STATUS = 'Active'
+                    AND divisionID = 0
+                </cfquery>
+
+                <ul id="teams-list" class="teams-list">
+                  <cfloop query="getTeamsNoDivision">
+                      <li draggable="true" id="#teamId#" class="team-block teamNoDivision" ondragstart="drag(event)">#teamName#</li>
+                  </cfloop>
+				        </ul>
             </div>
         </div>
         

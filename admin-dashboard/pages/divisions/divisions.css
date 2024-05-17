@@ -48,3 +48,10 @@
 .team-block:active {
     cursor: grabbing;
 }
+.team-block:hover {
+    background-color: #c1c1c1;
+}
+.teamNoDivision {
+    text-align: center;
+    width: 33%;
+}
