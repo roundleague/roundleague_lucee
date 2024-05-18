@@ -5,8 +5,12 @@
 
 <cfquery name="getMinGamesLimit" datasource="roundleague">
     SELECT COUNT(*) AS totalGames
-    FROM playergamelog
-    WHERE seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+    FROM playergamelog pgl
+    JOIN teams t ON t.teamID = pgl.teamID
+    JOIN divisions d ON t.divisionID = d.divisionID
+    JOIN leagues l on l.leagueID = d.leagueID
+    WHERE pgl.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+    AND l.leagueID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.leagueSelect#">
     GROUP BY playerID
     ORDER BY totalGames DESC
     LIMIT 1
