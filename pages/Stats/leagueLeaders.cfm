@@ -3,6 +3,8 @@
 <!--- Page Specific CSS/JS Here --->
 <link href="/pages/Stats/leagueLeaders.css?v=1.1" rel="stylesheet" />
 
+<cfparam name="form.leagueSelect" default="#getLeagues.leagueID#">
+
 <cfquery name="getMinGamesLimit" datasource="roundleague">
     SELECT COUNT(*) AS totalGames
     FROM playergamelog pgl
@@ -21,8 +23,6 @@
     FROM leagues
     WHERE seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
 </cfquery>
-
-<cfparam name="form.leagueSelect" default="#getLeagues.leagueID#">
 
 <cfquery name="onlyLimitAfterWeek5" datasource="roundleague">
   SELECT max(week)+1 as latestWeek
