@@ -166,6 +166,7 @@
 
             <cfif getSixFTUnderDivision.recordCount>
               <div class="standingsDiv flex-item">
+                <h4 class="standingsh4">6 FT and Under Division</h4>
                 <ul class="standingsUl">
                   <cfloop query="getSixFTUnderDivision">
                     <li><a href="team-profile-page.cfm?teamID=#getSixFTUnderDivision.teamID#">#getSixFTUnderDivision.teamName#</a></li>
