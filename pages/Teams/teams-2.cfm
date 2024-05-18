@@ -75,12 +75,12 @@
   ORDER BY divisionName
 </cfquery>
 
-<cfquery name="getAsianDivision" datasource="roundleague">
+<cfquery name="getUnderDivision" datasource="roundleague">
   SELECT teamName, DivisionName, teamID
   FROM teams t
   JOIN divisions d ON t.DivisionID = d.DivisionID
   Where t.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
-  AND DivisionName LIKE '%Asian%'
+  AND DivisionName LIKE '%Under%'
   AND t.status = <cfqueryparam cfsqltype="cf_sql_varchar" value="Active">
   ORDER BY divisionName
 </cfquery>
@@ -164,11 +164,12 @@
               </div>
             </cfif>
 
-            <cfif getAsianDivision.recordCount>
+            <cfif getUnderDivision.recordCount>
               <div class="standingsDiv flex-item">
+                <h4 class="standingsh4">6 FT Under Division</h4>
                 <ul class="standingsUl">
-                  <cfloop query="getAsianDivision">
-                    <li><a href="team-profile-page.cfm?teamID=#getAsianDivision.teamID#">#getAsianDivision.teamName#</a></li>
+                  <cfloop query="getUnderDivision">
+                    <li><a href="team-profile-page.cfm?teamID=#getUnderDivision.teamID#">#getUnderDivision.teamName#</a></li>
                   </cfloop>
                 </ul>
               </div>
