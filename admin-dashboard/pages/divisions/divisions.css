@@ -1,0 +1,57 @@
+.container {
+        margin: 20px;
+    }
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+.button-container button {
+    padding: 10px;
+    font-size: 16px;
+}
+.teams-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+.teams-container div {
+    border: 1px solid #000;
+    padding: 10px;
+    width: 100%;
+}
+.divisions-container {
+    display: flex;
+    justify-content: space-between;
+}
+.divisions-container div {
+    border: 1px solid #000;
+    padding: 20px;
+    width: 30%;
+    text-align: center;
+}
+.highlight {
+    background-color: yellow;
+}
+.teams-list {
+        list-style-type: none;
+        padding: 0;
+    }
+.team-block {
+    background-color: #e0e0e0;
+    margin: 5px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: grab;
+}
+.team-block:active {
+    cursor: grabbing;
+}
+.team-block:hover {
+    background-color: #c1c1c1;
+}
+.teamNoDivision {
+    text-align: center;
+    width: 33%;
+}

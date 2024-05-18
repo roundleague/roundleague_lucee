@@ -75,6 +75,12 @@ Coded by www.creative-tim.com
                   <p>Scheduler</p>
                 </a>
               </li>
+              <li <cfif findNoCase("divisions", CGI.REQUEST_URL)>class="active"</cfif>>
+                <a href="/admin-dashboard/pages/divisions/divisions.cfm">
+                  <i class="nc-icon nc-bank"></i>
+                  <p>Divisions</p>
+                </a>
+              </li>
               <li <cfif findNoCase("playerLookUp", CGI.REQUEST_URL)>class="active"</cfif>>
                 <a href="/admin-dashboard/pages/playerLookup/playerLookup.cfm">
                   <i class="nc-icon nc-pin-3"></i>

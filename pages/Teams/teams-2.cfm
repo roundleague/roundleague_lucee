@@ -75,6 +75,7 @@
   ORDER BY divisionName
 </cfquery>
 
+
 <cfquery name="getSixFTUnderDivision" datasource="roundleague">
   SELECT teamName, DivisionName, teamID
   FROM teams t
