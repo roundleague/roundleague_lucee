@@ -75,7 +75,8 @@
   ORDER BY divisionName
 </cfquery>
 
-<cfquery name="getUnderDivision" datasource="roundleague">
+
+<cfquery name="getSixFTUnderDivision" datasource="roundleague">
   SELECT teamName, DivisionName, teamID
   FROM teams t
   JOIN divisions d ON t.DivisionID = d.DivisionID
@@ -164,12 +165,12 @@
               </div>
             </cfif>
 
-            <cfif getUnderDivision.recordCount>
+            <cfif getSixFTUnderDivision.recordCount>
               <div class="standingsDiv flex-item">
-                <h4 class="standingsh4">6 FT Under Division</h4>
+                <h4 class="standingsh4">6 FT and Under Division</h4>
                 <ul class="standingsUl">
-                  <cfloop query="getUnderDivision">
-                    <li><a href="team-profile-page.cfm?teamID=#getUnderDivision.teamID#">#getUnderDivision.teamName#</a></li>
+                  <cfloop query="getSixFTUnderDivision">
+                    <li><a href="team-profile-page.cfm?teamID=#getSixFTUnderDivision.teamID#">#getSixFTUnderDivision.teamName#</a></li>
                   </cfloop>
                 </ul>
               </div>
