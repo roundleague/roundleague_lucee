@@ -5,9 +5,9 @@
 <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.6/build/pure-min.css" integrity="sha384-Uu6IeWbM+gzNVXJcM9XV3SohHtmWE+3VGi496jvgX1jyvDTXfdK+rfZc8C1Aehk5" crossorigin="anonymous">
 <link href="../scheduler/scheduler.css?v=1.2" rel="stylesheet">
 
-<!--- Save Logic --->
-<cfif isDefined("form.updateTeamsDivision")>
-  <cfinclude template="updateTeamsDivision.cfm">
+<!--- Auto Scheduler Save Button Logic --->
+<cfif isDefined("form.autoGenerateBtn")>
+  <cfinclude template="autoScheduler.cfm">
 </cfif>
 
 <cfquery name="getDivisions" datasource="roundleague">
@@ -80,6 +80,12 @@
                 <input type="number" id="gamesPerWeek" name="gamesPerWeek">
             </div>
             <div class="form-group">
+                <!--- Auto increment 1 HR 5 mins each game (we can user prompt this later) --->
+                <!--- This is not being used yet, testing without for now change later --->
+                <label for="startTime">Start Time</label>
+                <input type="time" id="startTime" name="startTime">
+            </div>
+            <div class="form-group">
                 <label for="startDate">Start Date</label>
                 <input type="date" id="startDate" name="startDate">
             </div>
@@ -91,7 +97,7 @@
                 <label for="skipWeek">Skip Week</label>
                 <input type="date" id="skipWeek" name="skipWeek">
             </div>
-            <button type="submit">Auto Generate Schedule</button>
+            <button type="submit" class="btn btn-outline-danger btn-round" name="autoGenerateBtn">Auto Generate Schedule</button>
         </div>
     </div>
     <br>
