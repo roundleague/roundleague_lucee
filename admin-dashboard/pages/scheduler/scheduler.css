@@ -1,11 +1,32 @@
-.boldClass{
-	font-weight: bold;
+.boldClass {
+    font-weight: bold;
 }
 
 .bottomSpacing {
-	margin-bottom: 10px;
+    margin-bottom: 10px;
 }
 
 .saveBtn {
-	margin-top: -11px;
+    margin-top: -11px;
+}
+
+#container {
+    display: flex;
+}
+
+#scheduler {
+    width: 28%;
+    padding: 20px;
+    border: 1px solid #ccc;
+}
+
+#autoscheduler {
+    width: 50%;
+    padding: 20px;
+    border: 1px solid #ccc;
+    margin-left: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
 }
