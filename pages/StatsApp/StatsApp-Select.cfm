@@ -133,7 +133,7 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" crossorigin="anonymous"></script>
     <script src="https://kit.fontawesome.com/356f7c17e2.js" crossorigin="anonymous"></script>
     <script src="StatsApp.js"></script>
-    <script src="StatsApp-Select.js"></script>
+    <script src="StatsApp-Select.js?v=1.1"></script>
 </body>
 </html>
 </cfoutput>
