@@ -105,6 +105,12 @@ Coded by www.creative-tim.com
                   <p>Seasons Manager</p>
                 </a>
               </li>
+              <li <cfif findNoCase("bracket", CGI.REQUEST_URL)>class="active"</cfif>>
+                <a href="/admin-dashboard/pages/playoffBrackets/playoffBrackets.cfm">
+                  <i class="nc-icon nc-vector"></i>
+                  <p>Playoff Bracket Maker</p>
+                </a>
+              </li>
               <li <cfif findNoCase("playoffs", CGI.REQUEST_URL)>class="active"</cfif>>
                 <a href="/admin-dashboard/pages/playoffs/playoffs.cfm">
                   <i class="nc-icon nc-trophy"></i>
