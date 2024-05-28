@@ -67,6 +67,16 @@
                 <cfcase value="13,14"><cfreturn 15></cfcase>
                 <cfdefaultcase><cfreturn 0></cfdefaultcase> 
             </cfswitch>
+        <cfelseif numTeams EQ 11>
+            <cfswitch expression="#fromGameId#"> 
+                <cfcase value="1"><cfreturn 6></cfcase>
+                <cfcase value="2"><cfreturn 5></cfcase>
+                <cfcase value="3"><cfreturn 4></cfcase>
+                <cfcase value="4,5"><cfreturn 8></cfcase>
+                <cfcase value="6,7"><cfreturn 9></cfcase>
+                <cfcase value="8,9"><cfreturn 10></cfcase>
+                <cfdefaultcase><cfreturn 0></cfdefaultcase> 
+            </cfswitch>
         <cfelseif numTeams EQ 8>
             <cfswitch expression="#fromGameId#"> 
                 <cfcase value="1,2"><cfreturn 5></cfcase>
