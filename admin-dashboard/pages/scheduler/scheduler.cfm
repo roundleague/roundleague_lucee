@@ -54,30 +54,31 @@
       <form method="POST">
 
         <div id="container">
+
         <div id="scheduler">
-            <label for="DivisionID">Division</label>
-            <select name="DivisionID" id="Divisions" onchange="this.form.submit()">
+          <label for="DivisionID">Division</label>
+          <select name="DivisionID" id="Divisions" onchange="this.form.submit()">
               <cfloop query="getDivisions">
-                <option value="#getDivisions.DivisionID#"<cfif getDivisions.DivisionID EQ form.DivisionID> selected</cfif>>#getDivisions.DivisionName#</option>
+                  <option value="#getDivisions.DivisionID#"<cfif getDivisions.DivisionID EQ form.DivisionID> selected</cfif>>#getDivisions.DivisionName#</option>
               </cfloop>
-            </select>
-            <br>
-            <ul>
+          </select>
+          <br>
+          <ul>
               <cfloop query="getAllActiveTeams">
-                <li>#getAllActiveTeams.TeamName#</li>
+                  <li>
+                      #getAllActiveTeams.TeamName#
+                      <input type="time" id="preferredStartTime_#getAllActiveTeams.TeamID#" name="preferredStartTime_#getAllActiveTeams.TeamID#">
+                  </li>
               </cfloop>
-            </ul>
-            <br>
-        </div>
+          </ul>
+          <br>
+      </div>
+
         <div id="autoscheduler">
             <h3>Autoscheduler Settings</h3>
             <div class="form-group">
                 <label for="numberOfWeeks">Number of Weeks</label>
                 <input type="number" id="numberOfWeeks" name="numberOfWeeks">
-            </div>
-            <div class="form-group">
-                <label for="gamesPerWeek">Games Per Week</label>
-                <input type="number" id="gamesPerWeek" name="gamesPerWeek">
             </div>
             <div class="form-group">
                 <!--- Auto increment 1 HR 5 mins each game (we can user prompt this later) --->
@@ -88,10 +89,6 @@
             <div class="form-group">
                 <label for="startDate">Start Date</label>
                 <input type="date" id="startDate" name="startDate">
-            </div>
-            <div class="form-group">
-                <label for="endDate">End Date</label>
-                <input type="date" id="endDate" name="endDate">
             </div>
             <div class="form-group">
                 <label for="skipWeek">Skip Week</label>
