@@ -3,7 +3,7 @@
     <cfargument name="startDate" type="date" required="yes">
     <cfargument name="startTime" type="string" required="yes">
     <cfargument name="preferredStartTimes" type="struct" required="yes">
-    <cfargument name="skipWeek" type="date" required="no" default="">
+    <cfargument name="skipWeek" type="string" required="no" default="">
     <cfargument name="divisionID" type="numeric" required="yes">
 
     <!--- Get all active teams in the division --->
@@ -59,49 +59,38 @@
         </cfloop>
 
         <!--- Slot teams with preferred start times first --->
-        <cfset gameTime = createDateTime(year(currentDate), month(currentDate), day(currentDate), listFirst(arguments.startTime, ":"), listLast(arguments.startTime, ":"), 0)>
         <cfset usedTeams = []>
-        <cfloop list="#structKeyList(arguments.preferredStartTimes)#" index="teamID">
-            <cfif arguments.preferredStartTimes[teamID] neq "" and arguments.preferredStartTimes[teamID] neq arguments.startTime>
-                <cfset homeStartTime = arguments.preferredStartTimes[teamID]>
-                <cfset homeStartHour = listFirst(homeStartTime, ":")>
-                <cfset homeStartMinute = listLast(homeStartTime, ":")>
-                <cfset preferredGameTime = createDateTime(year(currentDate), month(currentDate), day(currentDate), homeStartHour, homeStartMinute, 0)>
-                
-                <!--- Find the matching game and assign the preferred time --->
-                <cfloop array="#weeklyGames#" index="game" item="weeklyGame">
-                    <cfif (weeklyGame.homeTeamID EQ teamID OR weeklyGame.awayTeamID EQ teamID) AND NOT (arrayContains(usedTeams, weeklyGame.homeTeamID) OR arrayContains(usedTeams, weeklyGame.awayTeamID))>
-                        <cfset arrayAppend(schedule, {
-                            homeTeamID: weeklyGame.homeTeamID,
-                            awayTeamID: weeklyGame.awayTeamID,
-                            week: week,
-                            startTime: timeFormat(preferredGameTime, "HH:mm:ss"),
-                            date: dateFormat(currentDate, "yyyy-mm-dd"),
-                            divisionID: arguments.divisionID,
-                            seasonID: session.currentSeasonID
-                        })>
-                        <cfset arrayAppend(usedTeams, weeklyGame.homeTeamID)>
-                        <cfset arrayAppend(usedTeams, weeklyGame.awayTeamID)>
-                        <cfset arrayDeleteAt(weeklyGames, arrayIndex(weeklyGames, weeklyGame))>
-                        <cfbreak>
-                    </cfif>
-                </cfloop>
-            </cfif>
-        </cfloop>
-
-        <!--- Assign the remaining games --->
         <cfloop array="#weeklyGames#" index="weeklyGame">
+            <!--- Default game time takes precedence --->
+            <cfif structKeyExists(arguments.preferredStartTimes, weeklyGame.homeTeamID) OR structKeyExists(arguments.preferredStartTimes, weeklyGame.awayTeamID)>
+                <cfset homePreferredTime = structKeyExists(arguments.preferredStartTimes, weeklyGame.homeTeamID) ? arguments.preferredStartTimes[weeklyGame.homeTeamID] : "">
+                <cfset awayPreferredTime = structKeyExists(arguments.preferredStartTimes, weeklyGame.awayTeamID) ? arguments.preferredStartTimes[weeklyGame.awayTeamID] : "">
+                
+                <!--- Assign preferred start time only if it fits within the schedule --->
+                <cfif homePreferredTime neq "" AND dateCompare(createDateTime(year(currentDate), month(currentDate), day(currentDate), listFirst(homePreferredTime, ":"), listLast(homePreferredTime, ":"), 0), gameTime, "h") GT 0>
+                    <cfset preferredGameTime = createDateTime(year(currentDate), month(currentDate), day(currentDate), listFirst(homePreferredTime, ":"), listLast(homePreferredTime, ":"), 0)>
+                <cfelseif awayPreferredTime neq "" AND dateCompare(createDateTime(year(currentDate), month(currentDate), day(currentDate), listFirst(awayPreferredTime, ":"), listLast(awayPreferredTime, ":"), 0), gameTime, "h") GT 0>
+                    <cfset preferredGameTime = createDateTime(year(currentDate), month(currentDate), day(currentDate), listFirst(awayPreferredTime, ":"), listLast(awayPreferredTime, ":"), 0)>
+                <cfelse>
+                    <cfset preferredGameTime = gameTime>
+                </cfif>
+            <cfelse>
+                <cfset preferredGameTime = gameTime>
+            </cfif>
+
             <cfif NOT (arrayContains(usedTeams, weeklyGame.homeTeamID) OR arrayContains(usedTeams, weeklyGame.awayTeamID))>
                 <cfset arrayAppend(schedule, {
                     homeTeamID: weeklyGame.homeTeamID,
                     awayTeamID: weeklyGame.awayTeamID,
                     week: week,
-                    startTime: timeFormat(gameTime, "HH:mm:ss"),
+                    startTime: timeFormat(preferredGameTime, "HH:mm:ss"),
                     date: dateFormat(currentDate, "yyyy-mm-dd"),
                     divisionID: arguments.divisionID,
                     seasonID: session.currentSeasonID
                 })>
-                <cfset gameTime = dateAdd("n", 65, gameTime)>
+                <cfset arrayAppend(usedTeams, weeklyGame.homeTeamID)>
+                <cfset arrayAppend(usedTeams, weeklyGame.awayTeamID)>
+                <cfset gameTime = dateAdd("n", 65, preferredGameTime)>
             </cfif>
         </cfloop>
         
@@ -138,3 +127,29 @@
     <cfset var dateParts = listToArray(arguments.dateStr, "-")>
     <cfreturn createDate(dateParts[1], dateParts[2], dateParts[3])>
 </cffunction>
+
+<!--- Get all active teams in the division --->
+<cfquery name="getAllActiveTeams" datasource="roundleague">
+    SELECT teamID, teamName
+    FROM teams
+    WHERE status = 'Active'
+    AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+    AND divisionID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.divisionID#">
+    ORDER BY teamName
+</cfquery>
+
+<!--- Collect preferred start times from the form --->
+<cfset preferredStartTimes = structNew()>
+<cfloop query="getAllActiveTeams">
+    <cfset preferredStartTimes[getAllActiveTeams.teamID] = form["preferredStartTime_" & getAllActiveTeams.teamID]>
+</cfloop>
+
+<!--- Call the function to generate the schedule --->
+<cfset generateRoundRobinSchedule(
+    form.numberOfWeeks,
+    form.startDate,
+    form.startTime,
+    preferredStartTimes,
+    form.skipWeek,
+    form.divisionID
+)>
