@@ -3,11 +3,11 @@
 
 <!--- Page Specific CSS/JS Here --->
 <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.6/build/pure-min.css" integrity="sha384-Uu6IeWbM+gzNVXJcM9XV3SohHtmWE+3VGi496jvgX1jyvDTXfdK+rfZc8C1Aehk5" crossorigin="anonymous">
-<link href="../scheduler/scheduler.css?v=1.1" rel="stylesheet">
+<link href="../scheduler/scheduler.css?v=1.2" rel="stylesheet">
 
-<!--- Save Logic --->
-<cfif isDefined("form.updateTeamsDivision")>
-  <cfinclude template="updateTeamsDivision.cfm">
+<!--- Auto Scheduler Save Button Logic --->
+<cfif isDefined("form.autoGenerateBtn")>
+  <cfinclude template="autoScheduler.cfm">
 </cfif>
 
 <cfquery name="getDivisions" datasource="roundleague">
@@ -27,12 +27,13 @@
   ORDER BY WEEK, date, startTime
 </cfquery>
 
-<!--- Get all active teams for drop down --->
+<!--- Get all active teams for within division --->
 <cfquery name="getAllActiveTeams" datasource="roundleague">
   SELECT teamName, teamID
   FROM teams
   WHERE status = 'Active'
   AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+  AND divisionID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.divisionID#">
   ORDER BY teamName
 </cfquery>
 
@@ -52,44 +53,51 @@
       <h3 class="description">Scheduler</h3>
       <form method="POST">
 
-        <label for="DivisionID">Division</label>
-        <select name="DivisionID" id="Divisions" onchange="this.form.submit()">
-          <cfloop query="getDivisions">
-            <option value="#getDivisions.DivisionID#"<cfif getDivisions.DivisionID EQ form.DivisionID> selected</cfif>>#getDivisions.DivisionName#</option>
-          </cfloop>
-        </select>
-        <br>
-          <table id="myTable" class="grid pure-table pure-table-horizontal bolder" style="width: 33%">
-              <thead>
-                  <tr>
-                      <th>Team</th>
-                  </tr>
-              </thead>
-              <tbody>
-                <cfloop query="getTeamsInDivision">
-                   <tr>
-                      <td>
-                        <select class="teamID" name="teamID" style="padding: 7px;">
-                          <cfloop query="getAllActiveTeams">
-                            <option data-value="#getAllActiveTeams.TeamID#" value="#getAllActiveTeams.TeamID#"<cfif getAllActiveTeams.teamID EQ getTeamsInDivision.teamID>selected</cfif>>#getAllActiveTeams.TeamName#</option>
-                          </cfloop>
-                        </select>
-                      </td>
-                   </tr>
-                <input type="hidden" name="teamID_#getTeamsInDivision.currentRow#" class="teamID_#getTeamsInDivision.currentRow#" value="#getTeamsInDivision.TeamID#">
-                </cfloop>
-              </tbody>
-          </table>
-        <br>
-        <button type="submit" class="btn btn-wd btn-info btn-round saveBtn" name="updateTeamsDivision">Update Teams in Division</button>
-        <br>
-        <br>
-        <!--- Toggle for replace all or single update --->
-        <label>
-          Update All (If toggled, changing a team will replace all instances of that team)
-          <input type="checkbox" data-toggle="switch" checked="" data-on-color="primary" data-off-color="primary">
-          <span class="toggle"></span>
-        </label>
+        <div id="container">
+
+        <div id="scheduler">
+          <label for="DivisionID">Division</label>
+          <select name="DivisionID" id="Divisions" onchange="this.form.submit()">
+              <cfloop query="getDivisions">
+                  <option value="#getDivisions.DivisionID#"<cfif getDivisions.DivisionID EQ form.DivisionID> selected</cfif>>#getDivisions.DivisionName#</option>
+              </cfloop>
+          </select>
+          <br>
+          <ul>
+              <cfloop query="getAllActiveTeams">
+                  <li>
+                      #getAllActiveTeams.TeamName#
+                      <input type="time" id="preferredStartTime_#getAllActiveTeams.TeamID#" name="preferredStartTime_#getAllActiveTeams.TeamID#">
+                  </li>
+              </cfloop>
+          </ul>
+          <br>
+      </div>
+
+        <div id="autoscheduler">
+            <h3>Autoscheduler Settings</h3>
+            <div class="form-group">
+                <label for="numberOfWeeks">Number of Weeks</label>
+                <input type="number" id="numberOfWeeks" name="numberOfWeeks">
+            </div>
+            <div class="form-group">
+                <!--- Auto increment 1 HR 5 mins each game (we can user prompt this later) --->
+                <!--- This is not being used yet, testing without for now change later --->
+                <label for="startTime">Start Time</label>
+                <input type="time" id="startTime" name="startTime">
+            </div>
+            <div class="form-group">
+                <label for="startDate">Start Date</label>
+                <input type="date" id="startDate" name="startDate">
+            </div>
+            <div class="form-group">
+                <label for="skipWeek">Skip Week</label>
+                <input type="date" id="skipWeek" name="skipWeek">
+            </div>
+            <button type="submit" class="btn btn-outline-danger btn-round" name="autoGenerateBtn">Auto Generate Schedule</button>
+        </div>
+    </div>
+    <br>
 
         <!--- Display schedule based on selected division --->
         <table id="myTable" class="grid pure-table pure-table-horizontal bolder" style="width: 80%">

@@ -83,6 +83,8 @@
 
 	<!--- Schedule Date Logic --->
 	<cfinclude template="updateScheduleDates.cfm">
+	<!--- I know this is terrible tech debt --->
+	<cfinclude template="deleteScheduleDates.cfm">
 
 	<cfset toastMsg = 'Successfully progressed to #getNewSeason.SeasonName# Season!'>
 </cfoutput>
