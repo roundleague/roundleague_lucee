@@ -165,7 +165,7 @@
               </div>
             </cfif>
 
-            <cfif getSixFTUnderDivision.recordCount>
+            <!--- <cfif getSixFTUnderDivision.recordCount>
               <div class="standingsDiv flex-item">
                 <h4 class="standingsh4">6 FT and Under Division</h4>
                 <ul class="standingsUl">
@@ -174,7 +174,7 @@
                   </cfloop>
                 </ul>
               </div>
-            </cfif>
+            </cfif> --->
 
             <cfif getWomensDivision.recordCount>
               <div class="standingsDiv flex-item">
