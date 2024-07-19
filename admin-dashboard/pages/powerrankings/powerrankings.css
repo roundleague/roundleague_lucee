@@ -1,0 +1,46 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.team-bank, .power-rankings {
+    width: 80%;
+    margin-bottom: 20px;
+    border: 2px solid #ccc;
+    padding: 10px;
+}
+
+.team-bank div, .power-rankings div {
+    padding: 8px;
+    margin: 5px 0;
+    border: 1px solid #000;
+    cursor: grab;
+    background-color: #f9f9f9;
+}
+
+.power-rankings {
+    min-height: 200px;
+}
+
+.power-rankings div {
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+}
+
+/* Highlight effect when dragging over */
+div.drag-over {
+    border: 2px dashed #000;
+    background-color: #e0e0e0;
+}
+
+.rank-with-team {
+    width: 30px !important;
+    display: inline-block;
+}
+
+.rank-container {
+    display: flex;
+    align-items: center;
+}

@@ -93,6 +93,12 @@ Coded by www.creative-tim.com
                   <p>Player Photos Tool</p>
                 </a>
               </li>
+              <li <cfif findNoCase("powerrankings", CGI.REQUEST_URL)>class="active"</cfif>>
+                <a href="/admin-dashboard/pages/powerrankings/powerrankings.cfm">
+                  <i class="nc-icon nc-chart-bar-32"></i>
+                  <p>Power Rankings</p>
+                </a>
+              </li>
               <li <cfif findNoCase("teamsOverview", CGI.REQUEST_URL)>class="active"</cfif>>
                 <a href="/admin-dashboard/pages/teamsOverview/teamsOverview.cfm">
                   <i class="nc-icon nc-bullet-list-67"></i>
