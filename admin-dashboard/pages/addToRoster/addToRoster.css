@@ -1,0 +1,32 @@
+.autocomplete-result {
+  padding: 8px;
+  cursor: pointer;
+  background-color: white;
+}
+
+.autocomplete-result:hover {
+  background-color: #ebebeb;
+}
+
+.statsTable, .statsTableConfirm th, td {
+	border: 1px solid black;
+	padding: 3px;
+}
+
+.selectGame, .statsTableWrapper {
+	display: none;
+}
+
+.playerToConfirm, .playerFromConfirm, .statsConfirm {
+	padding: 10px;
+}
+
+#gameSelector {
+	padding: 6px;
+}
+
+.errorMsg {
+	display: none;
+	font-weight: bolder;
+	color: red;
+}
