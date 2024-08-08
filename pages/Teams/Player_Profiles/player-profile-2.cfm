@@ -9,6 +9,8 @@
     LEFT JOIN Roster r on r.playerID = p.playerID AND r.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
     LEFT JOIN Teams t on r.teamID = t.teamID
     WHERE p.PlayerID = <cfqueryparam cfsqltype="INTEGER" value="#url.playerID#">
+    ORDER BY teamName desc
+    LIMIT 1
 </cfquery>
 
 <cfquery name="getPlayerStats" datasource="roundleague">
@@ -197,7 +199,6 @@
               <tbody>
                 <cfset teamObject = createObject("component", "library.teams") />
                 <cfloop query="getPlayerGameLog">
-
                 <cfset opponent = teamObject.getOpponent(getPlayerGameLog.homeTeam, getPlayerGameLog.awayTeam, getPlayerData.teamName)>
 
                     <tr>
