@@ -105,7 +105,7 @@
             <ul class="dropdown-menu dropdown-info" aria-labelledby="dropdownMenuButton">
               <a class="dropdown-item" href="/pages/register/register.cfm">Register Player</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="https://forms.gle/apAEaVGKYT3U9NUJ8" target="_blank">Register Team</a>
+              <a class="dropdown-item" href="/pages/registerTeam/registerTeam.cfm">Register Team</a>
             </ul>
           </div>
           <!--- <li class="nav-item">
