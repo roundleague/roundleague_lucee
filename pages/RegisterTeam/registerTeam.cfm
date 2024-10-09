@@ -8,7 +8,9 @@
 
 <cfset basketballExp = 'Recreational,High School Varsity,College,D-1 University,Professional'>
 <cfset daysOptions = 'Saturday, Sunday'>
-<cfset numberOfPlayerOptions = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15+">
+<cfset numberOfPlayerOptions = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15">
+<cfset timeOptions = "9:00 AM - 12:00 PM, 10:00 AM - 1:00 PM, 11:00 AM - 2:00 PM, 12:00 PM - 3:00 PM, 1:00 PM - 4:00 PM, 2:00 PM - 5:00 PM, 3:00 PM - 6:00 PM, 4:00 PM - 7:00 PM, 5:00 PM - 8:00 PM">
+
 
 <cfif isDefined("form.teamName")>
 	<cfinclude template="registerTeamSave.cfm">
@@ -33,8 +35,8 @@
 	                    <label class="divisionSelectText">Select Division</label><br>
 						<select class="divisionSelect" name="divisionSelect" style="padding: 7px;">
 						  <option value=""></option>
-						  <option value="Mens">Men's Division</option>
-						  <option value="Womens">Women's Division</option>
+						  <option value="Men's Division">Men's Division</option>
+						  <option value="Women's Division">Women's Division</option>
 						</select>
 	                  </div>
 		              <div class="form-group">
@@ -75,7 +77,7 @@
 		              </div>
 		              <div class="row">
 			              <div class="col-md-6 ml-auto mr-auto nonTextQuestions">
-			              		<label class="biggerLabel">Basketball Experience</label>
+			              		<label class="biggerLabel">Your Team's Average Basketball Experience</label>
 			              		<cfloop list="#basketballExp#" index="i" item="x">
 						            <div class="form-check-radio">
 						              <label class="form-check-label">
@@ -88,6 +90,19 @@
 		              </div>
 		              <div class="row">
 			              <div class="col-md-6 ml-auto mr-auto nonTextQuestions">
+								<div class="form-group">
+			                    <label>Number Of Players (Estimate)</label><br>
+								<select name="numberOfPlayers" style="padding: 7px;">
+								  <cfloop list="#numberOfPlayerOptions#" index="i" item="x">
+								  	<option value="#x#">#x#</option>
+								  </cfloop>
+								</select>
+			                  </div>
+		              		</div>
+		              </div>
+
+					<div class="row">
+			              <div class="col-md-6 ml-auto mr-auto nonTextQuestions">
 			              		<label class="biggerLabel">Day Preference</label>
 			              		<cfloop list="#daysOptions#" index="i" item="x">
 						            <div class="form-check-radio">
@@ -98,13 +113,29 @@
 						            </div>
 					        	</cfloop>
 		              		</div>
-		              </div>
+		              </div>	   	   
+
 		              <div class="row">
 			              <div class="col-md-6 ml-auto mr-auto nonTextQuestions">
 			                  <div class="form-group">
-			                    <label>Number Of Players (Estimate)</label><br>
-								<select name="numberOfPlayers" style="padding: 7px;">
-								  <cfloop list="#numberOfPlayerOptions#" index="i" item="x">
+			                    <label>Primary Time Preference</label><br>
+								<select name="primaryTimePref" style="padding: 7px;">
+								  <option value="Anytime">Anytime (More likely to be approved)</option>
+								  <cfloop list="#timeOptions#" index="i" item="x">
+								  	<option value="#x#">#x#</option>
+								  </cfloop>
+								</select>
+			                  </div>
+			               </div>
+		              </div>
+
+		              <div class="row">
+			              <div class="col-md-6 ml-auto mr-auto nonTextQuestions">
+			                  <div class="form-group">
+			                    <label>Secondary Time Preference</label><br>
+								<select name="secondaryTimePref" style="padding: 7px;">
+								  <option value="Anytime">Anytime (More likely to be approved)</option>	
+								  <cfloop list="#timeOptions#" index="i" item="x">
 								  	<option value="#x#">#x#</option>
 								  </cfloop>
 								</select>

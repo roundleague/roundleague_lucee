@@ -19,6 +19,7 @@
 			dateAdded,
 			teamName,
 			status,
+			selectedDivision,
 			captainFirstName,
 			captainLastName,
 			age,
@@ -26,6 +27,8 @@
 			phoneNumber,
 			highestLevel,
 			dayPreference,
+			primaryTimePref,
+			secondaryTimePref,
 			playerCountEstimate
 		)
 		VALUES
@@ -33,6 +36,7 @@
 			<cfqueryparam cfsqltype="cf_sql_date" value="#DateFormat(now(), "mm/dd/yyyy")#">,
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.teamName#">,
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="Pending">,
+			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.divisionSelect#">,
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.firstName#">,
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.lastName#">,
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.age#">,
@@ -40,6 +44,8 @@
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.phone#">,
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.highestLevel#">,
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.dayPreference#">,
+			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.primaryTimePref#">,
+			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.secondaryTimePref#">,
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.numberOfPlayers#">
 		)
 	</cfquery>	
