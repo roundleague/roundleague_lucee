@@ -96,7 +96,7 @@ Coded by www.creative-tim.com
               <li <cfif findNoCase("teamsOverview", CGI.REQUEST_URL)>class="active"</cfif>>
                 <a href="/admin-dashboard/pages/teamsOverview/teamsOverview.cfm">
                   <i class="nc-icon nc-bullet-list-67"></i>
-                  <p>Pending Teams Overview</p>
+                  <p>Teams Overview</p>
                 </a>
               </li>
               <li <cfif findNoCase("seasons", CGI.REQUEST_URL)>class="active"</cfif>>

@@ -95,6 +95,12 @@
                 )
             </cfquery>
 
+			<cfquery name="updatePendingStatusToActive" datasource="roundleague">
+				UPDATE pending_teams
+				SET status = 'Active'
+				WHERE teamName = <cfqueryparam cfsqltype="CF_SQL_VARCHAR" value="#arguments.teamName#">
+			</cfquery>
+
 			<!--- Do we need insert for division, level, day preference --->
 
             <cfset result.success = true>

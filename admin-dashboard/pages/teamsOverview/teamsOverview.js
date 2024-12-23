@@ -1,4 +1,14 @@
 $(document).ready(function () {
+  // Initialize the tabs
+  $("#teamsTab a").on("click", function (e) {
+    e.preventDefault();
+    $(this).tab("show");
+  });
+
+  // DataTables
+  $("#teamsOverviewTable").DataTable();
+  $("#pendingTeamsOverviewTable").DataTable();
+
   // Populate the form fields with the selected team details when the button is clicked
   $(".clickOnTeam").click(function () {
     var teamName = $(this).data("team-name");
