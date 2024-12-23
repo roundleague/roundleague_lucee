@@ -1,4 +1,9 @@
 $(document).ready(function () {
+  if (localStorage.getItem("teamAdded") === "true") {
+    toastr.success("Team added successfully!");
+    localStorage.removeItem("teamAdded"); // Clear the flag
+  }
+
   // Initialize the tabs
   $("#teamsTab a").on("click", function (e) {
     e.preventDefault();
@@ -43,7 +48,8 @@ $(document).ready(function () {
       data: teamData,
       success: function (response) {
         console.log("Team added successfully:", response);
-        // Optionally, update the UI to reflect the new team
+        localStorage.setItem("teamAdded", "true"); // Set the flag
+        location.reload(); // Refresh the page to load teams in the right spot
       },
       error: function (error) {
         console.error("Error adding team:", error);

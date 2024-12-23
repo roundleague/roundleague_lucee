@@ -1,6 +1,8 @@
 
 <cfinclude template="/admin-dashboard/admin_header.cfm">
 <!--- Page Specific CSS/JS Here --->
+<!-- Toastr CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
 <cfoutput>
 
@@ -174,3 +176,5 @@
 <cfinclude template="/admin-dashboard/admin_footer.cfm">
 <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js" type="text/javascript"></script>
 <script src="/admin-dashboard/pages/teamsOverview/teamsOverview.js?v=1.1"></script>
+<!-- Toastr JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
