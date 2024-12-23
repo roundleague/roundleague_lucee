@@ -1,35 +1,43 @@
-$( document ).ready(function() {
-	$('#teamsOverviewTable').DataTable();
+$(document).ready(function () {
+  // Populate the form fields with the selected team details when the button is clicked
+  $(".clickOnTeam").click(function () {
+    var teamName = $(this).data("team-name");
+    var division = $(this).data("division");
+    var level = $(this).data("level");
+    var dayPreference = $(this).data("day-preference");
+    var primaryTime = $(this).data("primary-time");
+    var secondaryTime = $(this).data("secondary-time");
 
-	$('.statusSelect').change(function(){
-		console.log("Update Status");
+    $("#teamName").val(teamName);
+    $("#division").val(division);
+    $("#level").val(level);
+    $("#dayPreference").val(dayPreference);
+    $("#primaryTime").val(primaryTime);
+    $("#secondaryTime").val(secondaryTime);
+  });
 
-		/* Get and set form variables for ajax call */
-		var newStatus = $(this).val();
-		var teamID = $(this).data('value');
+  // Handle the form submission to add the team
+  $(".confirmTeamApproval").click(function () {
+    var teamData = {
+      teamName: $("#teamName").val(),
+      division: $("#division").val(),
+      level: $("#level").val(),
+      dayPreference: $("#dayPreference").val(),
+      primaryTime: $("#primaryTime").val(),
+      secondaryTime: $("#secondaryTime").val(),
+    };
 
-		console.log("newStatus", newStatus);
-		console.log("teamID", teamID);
-
-		var jsonOBJ = {};
-
-		$.ajaxSetup({
-			data: {
-				status: newStatus,
-				teamID: teamID
-			}
-		});
-
-		$.ajax({
-		  type: "POST",
-		  url: "/library/teams.cfc?method=updateTeamStatus",
-		  cache: false,
-		  success: function(data){
-		  	 console.log(data);
-		     // for (var key in jsonOBJ) {
-		     //   $("input[name=" + key + "]").val(jsonOBJ[key]);
-		     // }
-		  },
-		});
-	});
+    $.ajax({
+      url: "/library/teams.cfc?method=addTeam", // The endpoint to handle the request
+      type: "POST",
+      data: teamData,
+      success: function (response) {
+        console.log("Team added successfully:", response);
+        // Optionally, update the UI to reflect the new team
+      },
+      error: function (error) {
+        console.error("Error adding team:", error);
+      },
+    });
+  });
 });
