@@ -128,7 +128,7 @@
                             <select name="secondaryTimePreference" class="secondaryTimeSelect" data-value="#getApprovedTeams.teamID#">
                                 <option></option>
                                 <cfloop array="#timeOptions#" index="time">
-                                    <cfif trim(getApprovedTeams.secondaryTimePreference) EQ trim(time)>selected</cfif>>#time#</option>
+                                    <option value="#time#" <cfif trim(getApprovedTeams.secondaryTimePreference) EQ trim(time)>selected</cfif>>#time#</option>
                                 </cfloop>
                             </select>
                         </td>

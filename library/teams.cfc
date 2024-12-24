@@ -113,4 +113,29 @@
 
         <cfreturn result>
     </cffunction>
+
+    <cffunction name="updatePreference" access="remote" returntype="struct" hint="Update a preference for a team">
+        <cfargument name="teamID" required="yes" type="numeric">
+        <cfargument name="column" required="yes" type="string">
+        <cfargument name="value" required="yes" type="string">
+
+        <cfset var result = {}>
+
+        <cftry>
+            <cfquery name="updatePreference" datasource="roundleague">
+                UPDATE teams
+                SET #arguments.column# = <cfqueryparam cfsqltype="CF_SQL_VARCHAR" value="#arguments.value#">
+                WHERE teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#arguments.teamID#">
+            </cfquery>
+
+            <cfset result.success = true>
+            <cfset result.message = "#arguments.column# updated successfully">
+        <cfcatch>
+            <cfset result.success = false>
+            <cfset result.message = "Error updating #arguments.column#: " & cfcatch.message>
+        </cfcatch>
+        </cftry>
+
+        <cfreturn result>
+    </cffunction>
 </cfcomponent>

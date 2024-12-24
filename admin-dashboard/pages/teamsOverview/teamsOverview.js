@@ -4,6 +4,33 @@ $(document).ready(function () {
     localStorage.removeItem("teamAdded"); // Clear the flag
   }
 
+  $(document).ready(function () {
+    // Handle change event for preference selects
+    $(".dayPreferenceSelect, .primaryTimeSelect, .secondaryTimeSelect").change(
+      function () {
+        var teamID = $(this).data("value");
+        var column = $(this).attr("name");
+        var value = $(this).val();
+
+        $.ajax({
+          url: "/library/teams.cfc?method=updatePreference", // The endpoint to handle the request
+          type: "POST",
+          data: {
+            teamID: teamID,
+            column: column,
+            value: value,
+          },
+          success: function (response) {
+            toastr.success(column + " updated successfully!");
+          },
+          error: function (error) {
+            toastr.error("Error updating " + column + ".");
+          },
+        });
+      }
+    );
+  });
+
   // Initialize the tabs
   $("#teamsTab a").on("click", function (e) {
     e.preventDefault();
