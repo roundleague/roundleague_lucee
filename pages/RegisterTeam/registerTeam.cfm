@@ -7,7 +7,7 @@
 <cfoutput>
 
 <cfset basketballExp = 'Recreational,High School Varsity,College,D-1 University,Professional'>
-<cfset daysOptions = 'Saturday, Sunday'>
+<cfset daysOptions = 'Saturday, Sunday, Monday (Womens League), Wednesday (Womens League)'>
 <cfset numberOfPlayerOptions = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15">
 <cfset timeOptions = "9:00 AM - 12:00 PM, 10:00 AM - 1:00 PM, 11:00 AM - 2:00 PM, 12:00 PM - 3:00 PM, 1:00 PM - 4:00 PM, 2:00 PM - 5:00 PM, 3:00 PM - 6:00 PM, 4:00 PM - 7:00 PM, 5:00 PM - 8:00 PM">
 
@@ -30,7 +30,6 @@
 		        <div class="row">
 		          <div class="col-md-6 ml-auto mr-auto">
 		            <form class="settings-form" method="POST">
-					<!--- <div class="registerNote">Note: We are currently not taking free agent sign ups. Please only register if you have verified with your team captain!</div class="registerNote"> --->
 	                  <div class="form-group">
 	                    <label class="divisionSelectText">Select Division</label><br>
 						<select class="divisionSelect" name="divisionSelect" style="padding: 7px;">

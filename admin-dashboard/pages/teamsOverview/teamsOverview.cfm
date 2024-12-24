@@ -14,14 +14,17 @@
 	ORDER BY STATUS	
 </cfquery>
 
-<cfquery name="getActiveTeams" datasource="roundleague">
-	SELECT teamID, t.STATUS, teamName, t.registerDate, p.firstName, p.lastName, d.DivisionName, s.SeasonName
+<cfquery name="getApprovedTeams" datasource="roundleague">
+	SELECT teamID, t.STATUS, teamName, t.registerDate, p.firstName, p.lastName, d.DivisionName, s.SeasonName, t.dayPreference, t.primaryTimePreference, t.secondaryTimePreference
 	FROM teams t
 	LEFT JOIN players p ON p.PlayerID = t.captainPlayerID
 	LEFT JOIN divisions d ON d.divisionID = t.DivisionID
 	LEFT JOIN seasons s ON s.seasonID = t.seasonID 
 	ORDER BY STATUS
 </cfquery>
+
+<cfset dayChoices = ["Saturday", "Sunday", "Monday (Womens League)", "Wednesday (Womens League)"]>
+<cfset timeOptions = ["9:00 AM - 12:00 PM", "10:00 AM - 1:00 PM", "11:00 AM - 2:00 PM", "12:00 PM - 3:00 PM", "1:00 PM - 4:00 PM", "2:00 PM - 5:00 PM", "3:00 PM - 6:00 PM", "4:00 PM - 7:00 PM", "5:00 PM - 8:00 PM"]>
 
 <!--- Approve Team Modal --->
 <div class="modal fade" id="approveTeam" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -65,9 +68,9 @@
     <h3 class="description">Teams Overview</h3>
 
       <!-- Tab Menu -->
-      <ul class="nav nav-tabs" id="teamsTab" role="tablist">
+      <ul class="nav nav-tabs" id="teamsTab" role="tablist" style="margin-bottom: 20px;">
         <li class="nav-item">
-          <a class="nav-link active" id="active-teams-tab" data-toggle="tab" href="##active-teams" role="tab" aria-controls="active-teams" aria-selected="true">Active</a>
+          <a class="nav-link active" id="active-teams-tab" data-toggle="tab" href="##active-teams" role="tab" aria-controls="active-teams" aria-selected="true">Approved</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" id="pending-teams-tab" data-toggle="tab" href="##pending-teams" role="tab" aria-controls="pending-teams" aria-selected="false">Pending</a>
@@ -85,29 +88,52 @@
 		                    <th>Status</th>
 		                    <th>Team</th>
 		                    <th>Captain</th>
-		                    <th>Register Date</th>
 		                    <th>Current Division</th>
-		                    <th>Current Season</th>
+                        <th>Day Preference</th>
+                        <th>Primary Time Preference</th>
+                        <th>Secondary Time Preference</th>
 		                </tr>
 		            </thead>
 		            <tbody>
-		              <cfloop query="getActiveTeams">
-		                <tr>
-		                  <td data-label="Status">
-		            		<select name="status" class="statusSelect" data-value="#getActiveTeams.teamID#">
-		            			<option value=""></option>
-		            			<option value="Active" <cfif getActiveTeams.status EQ 'Active'>selected</cfif>>Active</option>
-		            			<option value="Pending" <cfif getActiveTeams.status EQ 'Pending'>selected</cfif>>Pending</option>
-		            			<option value="Inactive" <cfif getActiveTeams.status EQ 'Inactive'>selected</cfif>>Inactive</option>
-		            		</select>
-		                  </td>
-		                  <td data-label="Team">#getActiveTeams.teamname#</td>
-		                  <td data-label="Captain">#getActiveTeams.firstName# #getActiveTeams.lastName#</td>
-		                  <td data-label="Register Date">#DateFormat(getActiveTeams.RegisterDate, "mm/dd/yyyy")#</td>
-		                  <td data-label="Current Division">#getActiveTeams.divisionName#</td>
-		                  <td data-label="Current Season">#getActiveTeams.seasonName#</td>
-		                </tr>
-		              </cfloop>
+		                  <cfloop query="getApprovedTeams">
+                      <tr>
+                          <td data-label="Status">
+                              <select name="status" class="statusSelect" data-value="#getApprovedTeams.teamID#">
+                                  <option value=""></option>
+                                  <option value="Active" <cfif getApprovedTeams.status EQ 'Active'>selected</cfif>>Active</option>
+                                  <option value="Pending" <cfif getApprovedTeams.status EQ 'Pending'>selected</cfif>>Pending</option>
+                                  <option value="Inactive" <cfif getApprovedTeams.status EQ 'Inactive'>selected</cfif>>Inactive</option>
+                              </select>
+                          </td>
+                          <td data-label="Team">#getApprovedTeams.teamname#</td>
+                          <td data-label="Captain">#getApprovedTeams.firstName# #getApprovedTeams.lastName#</td>
+                          <td data-label="Current Division">#getApprovedTeams.divisionName# </td>
+                          <td data-label="Day Preference">
+                            <select name="dayPreference" class="dayPreferenceSelect" data-value="#getApprovedTeams.teamID#">
+                                <option></option>
+                                <cfloop array="#dayChoices#" index="day">
+                                     <option value="#day#" <cfif trim(getApprovedTeams.dayPreference) EQ trim(day)>selected</cfif>>#day#</option>
+                                </cfloop>
+                            </select>
+                        </td>
+                        <td data-label="Primary Time Preference">
+                            <select name="primaryTimePreference" class="primaryTimeSelect" data-value="#getApprovedTeams.teamID#">
+                              <option></option>
+                                <cfloop array="#timeOptions#" index="time">
+                                     <option value="#time#" <cfif trim(getApprovedTeams.primaryTimePreference) EQ trim(time)>selected</cfif>>#time#</option>
+                                </cfloop>
+                            </select>
+                        </td>
+                        <td data-label="Secondary Time Preference">
+                            <select name="secondaryTimePreference" class="secondaryTimeSelect" data-value="#getApprovedTeams.teamID#">
+                                <option></option>
+                                <cfloop array="#timeOptions#" index="time">
+                                    <cfif trim(getApprovedTeams.secondaryTimePreference) EQ trim(time)>selected</cfif>>#time#</option>
+                                </cfloop>
+                            </select>
+                        </td>
+                      </tr>
+                  </cfloop>
 		            </tbody>
 		    </table>
 		    <a href="addTeam.cfm"><input type="button" class="btn btn-outline-danger btn-round addTeam" value="Add Team" name="addTeam"></a>
@@ -125,13 +151,10 @@
                   <th>Division</th>
                   <th>Register Date</th>
                   <th>Captain</th>
-                  <th>Age</th>
                   <th>Email</th>
                   <th>Phone Number</th>
                   <th>Highest Level</th>
                   <th>Day Preference</th>
-                  <th>Primary Time</th>
-                  <th>Secondary Time</th>
                   <th>Player Count Estimate</th>
                   <th>Approval Status</th>
                 </tr>
@@ -143,13 +166,10 @@
                     <td data-label="Division" data-value="#getTeam.teamName#">#getTeam.selectedDivision#</td>
                     <td data-label="Register Date">#DateFormat(getTeam.dateAdded, "mm/dd/yyyy")#</td>
                     <td data-label="Captain">#getTeam.captainFirstName# #getTeam.captainLastName#</td>
-                    <td data-label="Age">#getTeam.age#</td>
                     <td data-label="Email">#getTeam.email#</td>
-                    <td data-label="Phone Number">#getTeam.phoneNumber#</td>
+                    <td data-label="Phone Number">#REReplace(getTeam.phoneNumber, "(\d{3})(\d{3})(\d{4})", "\1-\2-\3", "ALL")#</td>
                     <td data-label="Highest Level" data-value="#getTeam.highestLevel#">#getTeam.highestLevel#</td>
                     <td data-label="Day Preference" data-value="#getTeam.dayPreference#">#getTeam.dayPreference#</td>
-                    <td data-label="Primary Time" data-value="#getTeam.primaryTimePref#">#getTeam.primaryTimePref#</td>
-                    <td data-label="Secondary Time" data-value="#getTeam.secondaryTimePref#">#getTeam.secondaryTimePref#</td>
                     <td data-label="Player Count Estimate">#getTeam.playerCountEstimate#</td>
                     <td data-label="Approval Status">
                       <input type="button" class="btn btn-outline-danger btn-round clickOnTeam" value="Approve" name="addTeam" data-toggle="modal" data-target="##approveTeam"
