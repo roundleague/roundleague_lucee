@@ -71,4 +71,71 @@
 		<cfreturn getTeam.teamName>
 		
  </cffunction>
+
+ <cffunction name="addTeam" access="remote" returntype="struct" hint="Add a new team to the database">
+        <cfargument name="teamName" required="yes" type="string">
+        <cfargument name="division" required="yes" type="string">
+        <cfargument name="level" required="yes" type="string">
+        <cfargument name="dayPreference" required="yes" type="string">
+        <cfargument name="primaryTime" required="yes" type="string">
+        <cfargument name="secondaryTime" required="yes" type="string">
+
+        <cfset var result = {}>
+
+        <cftry>
+            <cfquery name="insertTeam" datasource="roundleague">
+                INSERT INTO teams (teamName, registerDate, status, dayPreference, primaryTimePreference, secondaryTimePreference)
+                VALUES (
+                    <cfqueryparam cfsqltype="CF_SQL_VARCHAR" value="#arguments.teamName#">,
+                    <cfqueryparam cfsqltype="CF_SQL_DATE" value="#now()#">,
+                    <cfqueryparam cfsqltype="CF_SQL_VARCHAR" value="Active">,
+					<cfqueryparam cfsqltype="CF_SQL_VARCHAR" value="#arguments.dayPreference#">,
+                    <cfqueryparam cfsqltype="CF_SQL_VARCHAR" value="#arguments.primaryTime#">,
+                    <cfqueryparam cfsqltype="CF_SQL_VARCHAR" value="#arguments.secondaryTime#">
+                )
+            </cfquery>
+
+			<cfquery name="updatePendingStatusToActive" datasource="roundleague">
+				UPDATE pending_teams
+				SET status = 'Active'
+				WHERE teamName = <cfqueryparam cfsqltype="CF_SQL_VARCHAR" value="#arguments.teamName#">
+			</cfquery>
+
+			<!--- Do we need insert for division, level, day preference --->
+
+            <cfset result.success = true>
+            <cfset result.message = "Team added successfully">
+        <cfcatch>
+            <cfset result.success = false>
+            <cfset result.message = "Error adding team: " & cfcatch.message>
+        </cfcatch>
+        </cftry>
+
+        <cfreturn result>
+    </cffunction>
+
+    <cffunction name="updatePreference" access="remote" returntype="struct" hint="Update a preference for a team">
+        <cfargument name="teamID" required="yes" type="numeric">
+        <cfargument name="column" required="yes" type="string">
+        <cfargument name="value" required="yes" type="string">
+
+        <cfset var result = {}>
+
+        <cftry>
+            <cfquery name="updatePreference" datasource="roundleague">
+                UPDATE teams
+                SET #arguments.column# = <cfqueryparam cfsqltype="CF_SQL_VARCHAR" value="#arguments.value#">
+                WHERE teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#arguments.teamID#">
+            </cfquery>
+
+            <cfset result.success = true>
+            <cfset result.message = "#arguments.column# updated successfully">
+        <cfcatch>
+            <cfset result.success = false>
+            <cfset result.message = "Error updating #arguments.column#: " & cfcatch.message>
+        </cfcatch>
+        </cftry>
+
+        <cfreturn result>
+    </cffunction>
 </cfcomponent>
