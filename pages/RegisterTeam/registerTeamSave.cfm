@@ -26,9 +26,6 @@
 			email,
 			phoneNumber,
 			highestLevel,
-			dayPreference,
-			primaryTimePref,
-			secondaryTimePref,
 			playerCountEstimate
 		)
 		VALUES
@@ -43,10 +40,25 @@
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.email#">,
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.phone#">,
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.highestLevel#">,
-			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.dayPreference#">,
-			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.primaryTimePref#">,
-			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.secondaryTimePref#">,
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.numberOfPlayers#">
+		)
+	</cfquery>
+	<cfquery name="addTeamSchedulePref" datasource="roundleague">
+		INSERT INTO team_schedule_preference
+		(
+			teamName,
+			seasonID,
+			dayPreference,
+			primaryTimePreference,
+			secondaryTimePreference
+		)
+		VALUES
+		(
+			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.teamName#">,
+			<cfqueryparam cfsqltype="cf_sql_integer" value="#session.currentSeasonID#">,
+			<cfqueryparam cfsqltype="cf_sql_varchar" value="#trim(form.dayPreference)#">,
+			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.primaryTimePref#">,
+			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.secondaryTimePref#">
 		)
 	</cfquery>	
 </cfif>

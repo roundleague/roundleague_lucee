@@ -4,6 +4,8 @@
 <!--- Page Specific CSS/JS Here --->
 <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.6/build/pure-min.css" integrity="sha384-Uu6IeWbM+gzNVXJcM9XV3SohHtmWE+3VGi496jvgX1jyvDTXfdK+rfZc8C1Aehk5" crossorigin="anonymous">
 <link href="../scheduler/scheduler.css?v=1.2" rel="stylesheet">
+<!-- flatpickr CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
 <!--- Auto Scheduler Save Button Logic --->
 <cfif isDefined("form.autoGenerateBtn")>
@@ -63,11 +65,12 @@
               </cfloop>
           </select>
           <br>
+                    <h4>Bye Dates</h4>
           <ul>
               <cfloop query="getAllActiveTeams">
                   <li>
                       #getAllActiveTeams.TeamName#
-                      <input type="time" id="preferredStartTime_#getAllActiveTeams.TeamID#" name="preferredStartTime_#getAllActiveTeams.TeamID#">
+                      <input type="text" id="preferredStartTime_#getAllActiveTeams.TeamID#" name="preferredStartTime_#getAllActiveTeams.TeamID#" class="datepicker">
                   </li>
               </cfloop>
           </ul>
@@ -165,3 +168,5 @@
 
 <cfinclude template="/admin-dashboard/admin_footer.cfm">
 <script src="/admin-dashboard/pages/scheduler/scheduler.js"></script>
+<!-- flatpickr JS -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>

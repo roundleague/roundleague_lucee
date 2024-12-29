@@ -15,12 +15,18 @@
 </cfquery>
 
 <cfquery name="getApprovedTeams" datasource="roundleague">
-	SELECT teamID, t.STATUS, teamName, t.registerDate, p.firstName, p.lastName, d.DivisionName, s.SeasonName, t.dayPreference, t.primaryTimePreference, t.secondaryTimePreference
+	SELECT teamID, t.STATUS, teamName, t.registerDate, p.firstName, p.lastName, d.DivisionName, s.SeasonName
 	FROM teams t
 	LEFT JOIN players p ON p.PlayerID = t.captainPlayerID
 	LEFT JOIN divisions d ON d.divisionID = t.DivisionID
 	LEFT JOIN seasons s ON s.seasonID = t.seasonID 
 	ORDER BY STATUS
+</cfquery>
+
+<cfquery name="getTeamSchedulePreferences" datasource="roundleague">
+  SELECT teamID, teamName, dayPreference, primaryTimePreference, secondaryTimePreference
+  FROM team_schedule_preference
+  WHERE seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
 </cfquery>
 
 <cfset dayChoices = ["Saturday", "Sunday", "Monday (Womens League)", "Wednesday (Womens League)"]>
@@ -96,6 +102,11 @@
 		            </thead>
 		            <tbody>
 		                  <cfloop query="getApprovedTeams">
+                      <cfquery name="getTeamSchedulePreference" dbtype="query">
+                        SELECT *
+                        FROM getTeamSchedulePreferences
+                        WHERE teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getApprovedTeams.teamID#">
+                      </cfquery>
                       <tr>
                           <td data-label="Status">
                               <select name="status" class="statusSelect" data-value="#getApprovedTeams.teamID#">
@@ -109,26 +120,26 @@
                           <td data-label="Captain">#getApprovedTeams.firstName# #getApprovedTeams.lastName#</td>
                           <td data-label="Current Division">#getApprovedTeams.divisionName# </td>
                           <td data-label="Day Preference">
-                            <select name="dayPreference" class="dayPreferenceSelect" data-value="#getApprovedTeams.teamID#">
+                            <select name="dayPreference" class="dayPreferenceSelect" data-value="#getTeamSchedulePreference.teamID#">
                                 <option></option>
                                 <cfloop array="#dayChoices#" index="day">
-                                     <option value="#day#" <cfif trim(getApprovedTeams.dayPreference) EQ trim(day)>selected</cfif>>#day#</option>
+                                     <option value="#day#" <cfif trim(getTeamSchedulePreference.dayPreference) EQ trim(day)>selected</cfif>>#day#</option>
                                 </cfloop>
                             </select>
                         </td>
                         <td data-label="Primary Time Preference">
-                            <select name="primaryTimePreference" class="primaryTimeSelect" data-value="#getApprovedTeams.teamID#">
+                            <select name="primaryTimePreference" class="primaryTimeSelect" data-value="#getTeamSchedulePreference.teamID#">
                               <option></option>
                                 <cfloop array="#timeOptions#" index="time">
-                                     <option value="#time#" <cfif trim(getApprovedTeams.primaryTimePreference) EQ trim(time)>selected</cfif>>#time#</option>
+                                     <option value="#time#" <cfif trim(getTeamSchedulePreference.primaryTimePreference) EQ trim(time)>selected</cfif>>#time#</option>
                                 </cfloop>
                             </select>
                         </td>
                         <td data-label="Secondary Time Preference">
-                            <select name="secondaryTimePreference" class="secondaryTimeSelect" data-value="#getApprovedTeams.teamID#">
+                            <select name="secondaryTimePreference" class="secondaryTimeSelect" data-value="#getTeamSchedulePreference.teamID#">
                                 <option></option>
                                 <cfloop array="#timeOptions#" index="time">
-                                    <option value="#time#" <cfif trim(getApprovedTeams.secondaryTimePreference) EQ trim(time)>selected</cfif>>#time#</option>
+                                    <option value="#time#" <cfif trim(getTeamSchedulePreference.secondaryTimePreference) EQ trim(time)>selected</cfif>>#time#</option>
                                 </cfloop>
                             </select>
                         </td>
@@ -161,6 +172,11 @@
               </thead>
               <tbody>
                 <cfloop query="getTeam">
+                  <cfquery name="getPendingTeamSchedulePreference" dbtype="query">
+                    SELECT *
+                    FROM getTeamSchedulePreferences
+                    WHERE teamName = <cfqueryparam cfsqltype="CF_SQL_VARCHAR" value="#getTeam.teamName#">
+                  </cfquery>
                   <tr class="#getTeam.pending_teamsID#_teamID">
                     <td data-label="Team" data-value="#getTeam.teamName#">#getTeam.teamName#</td>
                     <td data-label="Division" data-value="#getTeam.teamName#">#getTeam.selectedDivision#</td>
@@ -169,16 +185,16 @@
                     <td data-label="Email">#getTeam.email#</td>
                     <td data-label="Phone Number">#REReplace(getTeam.phoneNumber, "(\d{3})(\d{3})(\d{4})", "\1-\2-\3", "ALL")#</td>
                     <td data-label="Highest Level" data-value="#getTeam.highestLevel#">#getTeam.highestLevel#</td>
-                    <td data-label="Day Preference" data-value="#getTeam.dayPreference#">#getTeam.dayPreference#</td>
+                    <td data-label="Day Preference" data-value="#getPendingTeamSchedulePreference.dayPreference#">#getPendingTeamSchedulePreference.dayPreference#</td>
                     <td data-label="Player Count Estimate">#getTeam.playerCountEstimate#</td>
                     <td data-label="Approval Status">
                       <input type="button" class="btn btn-outline-danger btn-round clickOnTeam" value="Approve" name="addTeam" data-toggle="modal" data-target="##approveTeam"
                         data-team-name="#getTeam.teamName#"
                         data-division="#getTeam.selectedDivision#"
                         data-level="#getTeam.highestLevel#"
-                        data-day-preference="#getTeam.dayPreference#"
-                        data-primary-time="#getTeam.primaryTimePref#"
-                        data-secondary-time="#getTeam.secondaryTimePref#"
+                        data-day-preference="#getPendingTeamSchedulePreference.dayPreference#"
+                        data-primary-time="#getPendingTeamSchedulePreference.primaryTimePreference#"
+                        data-secondary-time="#getPendingTeamSchedulePreference.secondaryTimePreference#"
                         data-pending-teams-id="#getTeam.pending_teamsID#">
                     </td>
                   </tr>

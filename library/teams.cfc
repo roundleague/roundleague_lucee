@@ -83,21 +83,34 @@
         <cfset var result = {}>
 
         <cftry>
-            <cfquery name="insertTeam" datasource="roundleague">
-                INSERT INTO teams (teamName, registerDate, status, dayPreference, primaryTimePreference, secondaryTimePreference)
+			<cfquery name="insertTeam" datasource="roundleague">
+				INSERT INTO teams (teamName, registerDate, status)
+				VALUES (
+					<cfqueryparam cfsqltype="CF_SQL_VARCHAR" value="#arguments.teamName#">,
+					<cfqueryparam cfsqltype="CF_SQL_DATE" value="#now()#">,
+					<cfqueryparam cfsqltype="CF_SQL_VARCHAR" value="Active">
+				)
+			</cfquery>
+
+            <!--- <cfquery name="insertTeamSchedulePreference" datasource="roundleague">
+                INSERT INTO team_schedule_preference (teamName, dayPreference, primaryTimePreference, secondaryTimePreference)
                 VALUES (
                     <cfqueryparam cfsqltype="CF_SQL_VARCHAR" value="#arguments.teamName#">,
-                    <cfqueryparam cfsqltype="CF_SQL_DATE" value="#now()#">,
-                    <cfqueryparam cfsqltype="CF_SQL_VARCHAR" value="Active">,
 					<cfqueryparam cfsqltype="CF_SQL_VARCHAR" value="#arguments.dayPreference#">,
                     <cfqueryparam cfsqltype="CF_SQL_VARCHAR" value="#arguments.primaryTime#">,
                     <cfqueryparam cfsqltype="CF_SQL_VARCHAR" value="#arguments.secondaryTime#">
                 )
-            </cfquery>
+            </cfquery> --->
 
 			<cfquery name="updatePendingStatusToActive" datasource="roundleague">
 				UPDATE pending_teams
 				SET status = 'Active'
+				WHERE teamName = <cfqueryparam cfsqltype="CF_SQL_VARCHAR" value="#arguments.teamName#">
+			</cfquery>
+
+			<cfquery name="updateTeamIDinTeamSchedulePref" datasource="roundleague">
+				UPDATE team_schedule_preference
+				SET teamID = (SELECT teamID FROM teams WHERE teamName = <cfqueryparam cfsqltype="CF_SQL_VARCHAR" value="#arguments.teamName#">)
 				WHERE teamName = <cfqueryparam cfsqltype="CF_SQL_VARCHAR" value="#arguments.teamName#">
 			</cfquery>
 
