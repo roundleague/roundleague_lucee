@@ -118,6 +118,11 @@
               League Rules
             </a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" rel="tooltip" data-placement="bottom" href="/pages/blazers-tickets.cfm">
+              Buy Blazer Tickets
+            </a>
+          </li>
             <div class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" data-toggle="dropdown" id="dropdownMenuButton" href="##pk" role="button" aria-haspopup="true" aria-expanded="false">More</a>
               <ul class="dropdown-menu dropdown-info" aria-labelledby="dropdownMenuButton">
