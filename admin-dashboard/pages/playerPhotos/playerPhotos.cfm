@@ -1,9 +1,17 @@
-
 <cfinclude template="/admin-dashboard/admin_header.cfm">
 
 <cfoutput>
 <!--- Page Specific CSS/JS Here --->
 <link href="playerPhotos.css?v=1.0" rel="stylesheet">
+
+<cfif isDefined("form.deletePhoto")>
+    <cfset deletePath = expandPath("/assets/img/PlayerProfiles/#form.deletePhotoPlayerID#.jpg")>
+    <cfif FileExists(deletePath)>
+        <cffile action="delete" file="#deletePath#">
+    </cfif>
+    <!-- The actual snackbar -->
+    <div id="snackbar">Photo deleted</div>
+</cfif>
 
 <cfif isDefined("form.savePhotosButton")>
     <cfinclude template="playerPhotoUpload.cfm">
@@ -49,10 +57,13 @@
                       <td data-label="Team">#getPlayers.teamname#</td>
                       <td data-label="Upload">
                           <cfif FileExists(playerPath)>
-                            Photo already exists
+                              <form method="POST">
+                                  <input type="hidden" name="deletePhotoPlayerID" value="#getPlayers.PlayerID#">
+                                  <input type="submit" name="deletePhoto" class="btn btn-outline-danger btn-sm" value="Delete">
+                              </form>
                           <cfelse>
-                            <input type="file" id="myFile" name="photo_player_#getPlayers.PlayerID#">
-                            <input type="hidden" name="playerIDList" value="#getPlayers.playerID#">
+                              <input type="file" id="myFile" name="photo_player_#getPlayers.PlayerID#">
+                              <input type="hidden" name="playerIDList" value="#getPlayers.playerID#">
                           </cfif>
                       </td>
                     </tr>
