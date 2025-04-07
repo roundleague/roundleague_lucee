@@ -78,11 +78,8 @@
                     <div class="col-lg-6">
                         <div class="about-avatar">
 					      <cfset imgPath = "/assets/img/PlayerProfiles/#url.playerID#.JPG">
-					      <cfset altPath = "/assets/img/PlayerProfiles/#getPlayerData.teamName#/#getPlayerData.FirstName# #getPlayerData.lastName# - 1.JPG"> <!--- Alt Path so we don't have to reorder pictures for now lol --->
 					      <cfif FileExists(imgPath)>
 					      	<img src="/assets/img/PlayerProfiles/#url.playerID#.JPG" alt="Player Photo" style="width:100%">
-					      <cfelseif FileExists(altPath)>
-					      	<img src="/assets/img/PlayerProfiles/#getPlayerData.teamName#/#getPlayerData.FirstName# #getPlayerData.lastName# - 1.JPG" alt="Player Photo" style="width:100%">
 					      <cfelse>
 							<img src="/assets/img/PlayerProfiles/default.JPG" alt="Player Photo" style="width:100%">
 					      </cfif>
