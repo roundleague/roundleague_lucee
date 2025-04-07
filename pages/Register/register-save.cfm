@@ -155,6 +155,25 @@
 			)
 		</cfquery>
 
+		<cfquery name="addPlayerUser" datasource="roundleague">
+			INSERT INTO player_users (
+				playerID,
+				email,
+				passwordHash
+			)
+			SELECT 
+				<cfqueryparam cfsqltype="cf_sql_integer" value="#checkDuplicate.playerID#">,
+				<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.email#">,
+				<cfqueryparam cfsqltype="cf_sql_varchar" value="#hash(form.password, 'SHA')#">
+			FROM dual
+			WHERE NOT EXISTS (
+				SELECT 1 
+				FROM player_users 
+				WHERE email = <cfqueryparam cfsqltype="cf_sql_varchar" value="#form.email#">
+			)
+		</cfquery>
+
+
 		<!--- If captain checkbox selected, set them as team captain --->
 		<cfif isDefined("form.captainCheck")>
 			<cfquery name="setCaptainId" datasource="roundleague">
