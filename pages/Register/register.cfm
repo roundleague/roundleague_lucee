@@ -118,6 +118,10 @@ I, for myself and on behalf of my heirs, assigns, personal representatives and n
 		                <label>Email</label>
 		                <input type="email" required class="form-control border-input" placeholder="Email" name="email">
 		              </div>
+		              <div class="form-group">
+		                <label>Password</label>
+		                <input type="password" required class="form-control border-input" placeholder="Password" name="password">
+		              </div>
 		              <div class="row">
 		                <div class="col-md-6 col-sm-6">
 		                  <div class="form-group">
@@ -266,7 +270,7 @@ I, for myself and on behalf of my heirs, assigns, personal representatives and n
 		              <label>Notifications</label> ---> 
 		              <ul class="notifications">
 		                <li class="notification-item">
-		                  Are you the captain of this team?
+		                  <strong>Are you the captain of this team?</strong>
 		                  <input type="checkbox" name="captainCheck" data-toggle="switch" data-on-color="info" data-off-color="info"><span class="toggle"></span>
 		                </li>
 		                <li class="notification-item">

@@ -59,6 +59,18 @@
 		)
 	</cfquery>
 	<cfset newPlayerId = playerAdd.GENERATEDKEY>
+	<cfquery name="addPlayerUser" datasource="roundleague">
+		INSERT INTO player_users (
+			playerID,
+			email,
+			passwordHash
+		)
+		VALUES (
+			<cfqueryparam cfsqltype="cf_sql_integer" value="#newPlayerId#">,
+			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.email#">,
+			<cfqueryparam cfsqltype="cf_sql_varchar" value="#hash(form.password, 'SHA')#">
+		)
+	</cfquery>
 	<cfquery name="addToRoster" datasource="roundleague">
 		INSERT INTO Roster (PlayerID, TeamID, SeasonID, DivisionID, Jersey)
 		VALUES
@@ -81,6 +93,24 @@
 			SET captainPlayerID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#newPlayerId#">
 			WHERE teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.teamID#">
 		</cfquery>
+
+		<cfquery name="addUserIfCaptain" datasource="roundleague">
+			INSERT INTO users (
+				userName,
+				password,
+				dateModified,
+				playerID,
+				status
+			)
+			VALUES (
+				<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.email#">,
+				<cfqueryparam cfsqltype="cf_sql_varchar" value="#hash(form.password, 'SHA')#">,
+				<cfqueryparam cfsqltype="cf_sql_date" value="#DateFormat(now(), 'yyyy-mm-dd')#">,
+				<cfqueryparam cfsqltype="cf_sql_integer" value="#newPlayerId#">,
+				<cfqueryparam cfsqltype="cf_sql_varchar" value="Active">
+			)
+		</cfquery>
+
 	</cfif>
 
 	<cfset toastMessage = "Player Registration info successfully submitted! Note: If you signed up as a free agent, you will be contacted if a free agent spot opens up.">
