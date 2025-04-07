@@ -54,8 +54,8 @@
                   <input name="password" type="password" class="form-control" placeholder="Password">
                   <button class="btn btn-danger btn-block btn-round" name="submitLogin">Log In</button>
                   <!--- <button class="btn btn-danger btn-block btn-round" name="forgotPassword">Forgot Password</button> --->
-                  <br>OR
-                  <button class="btn btn-danger btn-block btn-round" name="createLogin">Register New Captains Account</button>
+                  <!--- <br>OR
+                  <button class="btn btn-danger btn-block btn-round" name="createLogin">Register New Captains Account</button> --->
                </form>
             </div>
           </div>

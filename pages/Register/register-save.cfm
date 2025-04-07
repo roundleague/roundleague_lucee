@@ -86,6 +86,7 @@
 			<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.currentJersey#">
 		)
 	</cfquery>
+
 	<!--- If captain checkbox selected, set them as team captain --->
 	<cfif isDefined("form.captainCheck")>
 		<cfquery name="setCaptainId" datasource="roundleague">
@@ -102,16 +103,20 @@
 				playerID,
 				status
 			)
-			VALUES (
+			SELECT 
 				<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.email#">,
 				<cfqueryparam cfsqltype="cf_sql_varchar" value="#hash(form.password, 'SHA')#">,
 				<cfqueryparam cfsqltype="cf_sql_date" value="#DateFormat(now(), 'yyyy-mm-dd')#">,
 				<cfqueryparam cfsqltype="cf_sql_integer" value="#newPlayerId#">,
 				<cfqueryparam cfsqltype="cf_sql_varchar" value="Active">
+			FROM dual
+			WHERE NOT EXISTS (
+				SELECT 1 FROM users WHERE userName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#form.email#">
 			)
 		</cfquery>
 
 	</cfif>
+
 
 	<cfset toastMessage = "Player Registration info successfully submitted! Note: If you signed up as a free agent, you will be contacted if a free agent spot opens up.">
 <cfelse>
@@ -149,6 +154,38 @@
 				<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.currentJersey#">
 			)
 		</cfquery>
+
+		<!--- If captain checkbox selected, set them as team captain --->
+		<cfif isDefined("form.captainCheck")>
+			<cfquery name="setCaptainId" datasource="roundleague">
+				UPDATE Teams
+				SET captainPlayerID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#checkDuplicate.playerID#">
+				WHERE teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.teamID#">
+			</cfquery>
+
+			<cfquery name="addUserIfCaptain" datasource="roundleague">
+				INSERT INTO users (
+					userName,
+					password,
+					dateModified,
+					playerID,
+					status
+				)
+				SELECT 
+					<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.email#">,
+					<cfqueryparam cfsqltype="cf_sql_varchar" value="#hash(form.password, 'SHA')#">,
+					<cfqueryparam cfsqltype="cf_sql_date" value="#DateFormat(now(), 'yyyy-mm-dd')#">,
+					<cfqueryparam cfsqltype="cf_sql_integer" value="#checkDuplicate.playerID#">,
+					<cfqueryparam cfsqltype="cf_sql_varchar" value="Active">
+				FROM dual
+				WHERE NOT EXISTS (
+					SELECT 1 FROM users WHERE userName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#form.email#">
+				)
+			</cfquery>
+
+		</cfif>
+
+
 		<cfset toastMessage = "Welcome back #checkDuplicate.firstName#, you have successfully been added to #teamName#.">
 	<cfcatch>
 		<cfdump var="#cfcatch#" /><cfabort />
