@@ -14,20 +14,31 @@
 </cfif>
 
 <cfquery name="playerQuery" datasource="roundleague">
-  SELECT CONCAT(firstName, ' ', lastName) AS playerName, p.playerID, t.teamName
-  FROM players p
-  JOIN roster r ON r.playerID = p.playerID
-  JOIN teams t ON t.teamId = r.teamID
-  WHERE r.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
-  AND t.status = 'Active'
-  UNION
-  SELECT CONCAT(firstName, ' ', lastName) AS playerName, p.playerID, 'Free Agent' as teamName
-  FROM players p
-  JOIN roster r ON r.playerID = p.playerID
-  WHERE r.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
-  AND r.TeamID = 0
+  WITH ranked_players AS (
+    SELECT 
+      CONCAT(p.firstName, ' ', p.lastName) AS playerName,
+      p.playerID,
+      COALESCE(t.teamName, 'Free Agent') AS teamName,
+      ROW_NUMBER() OVER (
+        PARTITION BY CONCAT(p.firstName, ' ', p.lastName)
+        ORDER BY 
+          CASE 
+            WHEN t.teamName IS NULL THEN 1  -- 'Free Agent'
+            ELSE 0                          -- real team
+          END
+      ) AS rn
+    FROM players p
+    JOIN roster r ON r.playerID = p.playerID
+    LEFT JOIN teams t ON t.teamId = r.teamID AND t.status = 'Active'
+    WHERE r.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+  )
+  
+  SELECT playerName, playerID, teamName
+  FROM ranked_players
+  WHERE rn = 1
   ORDER BY playerName
 </cfquery>
+
 
 <script>
   var playerList = [
