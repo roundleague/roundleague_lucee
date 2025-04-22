@@ -129,10 +129,10 @@
 	            	<td>
                   <cfif PermissionToShare EQ 'YES'>
                     <a href="Player_Profiles/player-profile-2.cfm?playerID=#playerID#" style="font-weight: bold;">
-                      #firstName# #lastName# <cfif getTeamData.captainPlayerID EQ getTeamData.playerID>(C)</cfif>
+                      #UCase(Left(firstName, 1))##LCase(Mid(firstName, 2))# #UCase(Left(lastName, 1))##LCase(Mid(lastName, 2))# <cfif getTeamData.captainPlayerID EQ getTeamData.playerID>(C)</cfif>
                     </a>
                   <cfelse>
-                    #firstName# #lastName# <cfif getTeamData.captainPlayerID EQ getTeamData.playerID>(C)</cfif>
+                      #UCase(Left(firstName, 1))##LCase(Mid(firstName, 2))# #UCase(Left(lastName, 1))##LCase(Mid(lastName, 2))# <cfif getTeamData.captainPlayerID EQ getTeamData.playerID>(C)</cfif>
                   </cfif>
                 </td>
                 <td>#Jersey#</td>

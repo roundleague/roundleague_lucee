@@ -87,7 +87,7 @@
                     </div>
                     <div class="col-lg-6">
                         <div class="about-text go-to">
-                            <h3 class="dark-color">#getPlayerData.firstName# #getPlayerData.LastName#</h3>
+                        <h3 class="dark-color">#UCase(Left(getPlayerData.firstName, 1))##LCase(Mid(getPlayerData.firstName, 2))# #UCase(Left(getPlayerData.LastName, 1))##LCase(Mid(getPlayerData.LastName, 2))#</h3>
                             <h6 class="theme-color lead">#getPlayerData.position#</h6>
                             <div class="row about-list">
                                 <div class="col-md-6">

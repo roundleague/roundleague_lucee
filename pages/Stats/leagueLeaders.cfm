@@ -175,10 +175,10 @@
                     #getPointsLeaders.currentRow#.
                     <cfif PermissionToShare EQ 'YES'>
                         <a href="../Teams/Player_Profiles/player-profile-2.cfm?playerID=#playerID#" style="font-weight: bold;">
-                            #getPointsLeaders.FirstName# #getPointsLeaders.LastName# 
+                            #UCase(Left(getPointsLeaders.FirstName, 1))##LCase(Mid(getPointsLeaders.FirstName, 2))# #UCase(Left(getPointsLeaders.LastName, 1))##LCase(Mid(getPointsLeaders.LastName, 2))#
                         </a>
                     <cfelse>
-                        #getPointsLeaders.FirstName# #getPointsLeaders.LastName#
+                        #UCase(Left(getPointsLeaders.FirstName, 1))##LCase(Mid(getPointsLeaders.FirstName, 2))# #UCase(Left(getPointsLeaders.LastName, 1))##LCase(Mid(getPointsLeaders.LastName, 2))#
                     </cfif>
                     - #NumberFormat(getPointsLeaders.Points, "0.0")#
                 </h4>
