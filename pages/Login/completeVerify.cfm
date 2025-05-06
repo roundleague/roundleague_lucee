@@ -1,6 +1,8 @@
-<cfinclude template="/header.cfm">
+This page is no longer in use. 
+<cfabort />
 
-<!--- Page Specific CSS/JS Here --->
+<!--- If we want to re-use this logic with new user system down the line... --->
+<cfinclude template="/header.cfm">
 
 <cfoutput>
 <cfquery name="checkConfirmationCode" datasource="roundleague">

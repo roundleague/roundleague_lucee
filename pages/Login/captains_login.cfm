@@ -21,6 +21,8 @@
             Username = <cfqueryparam cfsqltype="varchar" value="#form.username#">
           AND 
             Status = 'Active'
+          AND 
+            role = 'Captain'
         </cfquery>
         <cfif Authenticate.password EQ hash(form.password, "SHA")>
           <cfset session.captainLoggedIn = true>

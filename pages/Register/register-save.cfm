@@ -60,15 +60,21 @@
 	</cfquery>
 	<cfset newPlayerId = playerAdd.GENERATEDKEY>
 	<cfquery name="addPlayerUser" datasource="roundleague">
-		INSERT INTO player_users (
-			playerID,
-			email,
-			passwordHash
-		)
+			INSERT INTO users (
+				userName,
+				password,
+				dateModified,
+				playerID,
+				status,
+				role
+			)
 		VALUES (
-			<cfqueryparam cfsqltype="cf_sql_integer" value="#newPlayerId#">,
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.email#">,
-			<cfqueryparam cfsqltype="cf_sql_varchar" value="#hash(form.password, 'SHA')#">
+			<cfqueryparam cfsqltype="cf_sql_varchar" value="#hash(form.password, 'SHA')#">,
+			<cfqueryparam cfsqltype="cf_sql_date" value="#DateFormat(now(), 'yyyy-mm-dd')#">,
+			<cfqueryparam cfsqltype="cf_sql_integer" value="#newPlayerId#">,
+			<cfqueryparam cfsqltype="cf_sql_varchar" value="Active">,
+			<cfqueryparam cfsqltype="cf_sql_varchar" value="Player">
 		)
 	</cfquery>
 	<cfquery name="addToRoster" datasource="roundleague">
@@ -96,23 +102,9 @@
 		</cfquery>
 
 		<cfquery name="addUserIfCaptain" datasource="roundleague">
-			INSERT INTO users (
-				userName,
-				password,
-				dateModified,
-				playerID,
-				status
-			)
-			SELECT 
-				<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.email#">,
-				<cfqueryparam cfsqltype="cf_sql_varchar" value="#hash(form.password, 'SHA')#">,
-				<cfqueryparam cfsqltype="cf_sql_date" value="#DateFormat(now(), 'yyyy-mm-dd')#">,
-				<cfqueryparam cfsqltype="cf_sql_integer" value="#newPlayerId#">,
-				<cfqueryparam cfsqltype="cf_sql_varchar" value="Active">
-			FROM dual
-			WHERE NOT EXISTS (
-				SELECT 1 FROM users WHERE userName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#form.email#">
-			)
+			UPDATE users
+			SET role = 'Captain'
+			WHERE playerID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#newPlayerId#">
 		</cfquery>
 
 	</cfif>
@@ -155,16 +147,24 @@
 			)
 		</cfquery>
 
-		<cfquery name="addPlayerUser" datasource="roundleague">
-			INSERT INTO player_users (
+		<!--- Update query for Players table here --->
+
+		<cfquery name="addPlayerUser" datasource="roundleague" result="playerAdd">
+			INSERT INTO users (
 				playerID,
-				email,
-				passwordHash
+				userName,
+				password,
+				dateModified,
+				status,
+				role
 			)
 			SELECT 
 				<cfqueryparam cfsqltype="cf_sql_integer" value="#checkDuplicate.playerID#">,
 				<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.email#">,
-				<cfqueryparam cfsqltype="cf_sql_varchar" value="#hash(form.password, 'SHA')#">
+				<cfqueryparam cfsqltype="cf_sql_varchar" value="#hash(form.password, 'SHA')#">,
+				<cfqueryparam cfsqltype="cf_sql_date" value="#DateFormat(now(), 'yyyy-mm-dd')#">,
+				<cfqueryparam cfsqltype="cf_sql_varchar" value="Active">,
+				<cfqueryparam cfsqltype="cf_sql_varchar" value="Player">
 			FROM dual
 			WHERE NOT EXISTS (
 				SELECT 1 
@@ -183,29 +183,16 @@
 			</cfquery>
 
 			<cfquery name="addUserIfCaptain" datasource="roundleague">
-				INSERT INTO users (
-					userName,
-					password,
-					dateModified,
-					playerID,
-					status
-				)
-				SELECT 
-					<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.email#">,
-					<cfqueryparam cfsqltype="cf_sql_varchar" value="#hash(form.password, 'SHA')#">,
-					<cfqueryparam cfsqltype="cf_sql_date" value="#DateFormat(now(), 'yyyy-mm-dd')#">,
-					<cfqueryparam cfsqltype="cf_sql_integer" value="#checkDuplicate.playerID#">,
-					<cfqueryparam cfsqltype="cf_sql_varchar" value="Active">
-				FROM dual
-				WHERE NOT EXISTS (
-					SELECT 1 FROM users WHERE userName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#form.email#">
-				)
+				UPDATE users
+				SET role = 'Captain'
+				WHERE playerID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#checkDuplicate.playerID#">
 			</cfquery>
-
 		</cfif>
 
-
-		<cfset toastMessage = "Welcome back #checkDuplicate.firstName#, you have successfully been added to #teamName#.">
+		<cfset toastMessage = "Welcome back #checkDuplicate.firstName#, you have successfully been added to #teamName#">
+		<cfif isDefined("form.captainCheck")>
+			<cfset toastMessage &= ". You are now the captain of #teamName#.">
+		</cfif>
 	<cfcatch>
 		<cfdump var="#cfcatch#" /><cfabort />
 	</cfcatch>
