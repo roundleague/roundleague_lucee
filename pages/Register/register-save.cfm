@@ -147,7 +147,28 @@
 			)
 		</cfquery>
 
-		<!--- Update query for Players table here --->
+		<cfquery name="updatePlayer" datasource="roundleague">
+			UPDATE Players 
+			SET 
+				Email = <cfqueryparam cfsqltype="cf_sql_varchar" value="#form.email#">,
+				FirstName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#form.firstName#">,
+				LastName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#form.lastName#">,
+				BirthDate = <cfqueryparam cfsqltype="cf_sql_date" value="#DateFormat(form.birthDate, "mm/dd/yyyy")#">,
+				Phone = <cfqueryparam cfsqltype="cf_sql_varchar" value="#form.Phone#">,
+				HighestLevel = <cfqueryparam cfsqltype="cf_sql_varchar" value="#form.HighestLevel#">,
+				FreeAgent = <cfif isDefined("form.freeAgent")>'Yes'<cfelse>'No'</cfif>,
+				Position = <cfqueryparam cfsqltype="cf_sql_varchar" value="#form.Position#">,
+				Height = <cfqueryparam cfsqltype="cf_sql_varchar" value="#form.Height#">,
+				Weight = <cfqueryparam cfsqltype="cf_sql_varchar" value="#form.Weight#">,
+				Hometown = <cfqueryparam cfsqltype="cf_sql_varchar" value="#form.Hometown#">,
+				School = <cfqueryparam cfsqltype="cf_sql_varchar" value="#form.School#">,
+				PermissionToShare = <cfif isDefined("form.PermissionToShare")>'Yes'<cfelse>'No'</cfif>,
+				Instagram = <cfqueryparam cfsqltype="cf_sql_varchar" value="#form.Instagram#">,
+				Gender = <cfqueryparam cfsqltype="cf_sql_varchar" value="#form.Gender#">,
+				MastersLeague = <cfif isDefined("form.MastersLeague")>'Yes'<cfelse>'No'</cfif>,
+				ZipCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#form.zipCode#">
+			WHERE PlayerID = <cfqueryparam cfsqltype="cf_sql_integer" value="#checkDuplicate.playerID#">
+		</cfquery>
 
 		<cfquery name="addPlayerUser" datasource="roundleague" result="playerAdd">
 			INSERT INTO users (
@@ -168,8 +189,8 @@
 			FROM dual
 			WHERE NOT EXISTS (
 				SELECT 1 
-				FROM player_users 
-				WHERE email = <cfqueryparam cfsqltype="cf_sql_varchar" value="#form.email#">
+				FROM users 
+				WHERE userName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#form.email#">
 			)
 		</cfquery>
 

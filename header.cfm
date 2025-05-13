@@ -100,6 +100,7 @@
               Teams
             </a>
           </li>
+          <!--- This should be hidden if we are logged in --->
           <div class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" data-toggle="dropdown" id="dropdownMenuButton" href="##pk" role="button" aria-haspopup="true" aria-expanded="false">Register</a>
             <ul class="dropdown-menu dropdown-info" aria-labelledby="dropdownMenuButton">
@@ -138,8 +139,6 @@
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item" href="/assets/espn_scoreboard/scoreboard.html">Scoreboard</a>
                 </cfif>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="/pages/login/captains_login.cfm">Captain Login</a>
                 <!--- <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="/pages/store/store.cfm">Merch Store</a> --->
                 <!--- <div class="dropdown-divider"></div>
@@ -176,7 +175,7 @@
                       <a class="dropdown-item" href="javascript:;">Payments</a> --->
                     </ul>
                 </li>
-              <cfelseif findNoCase("127.0.0.1", CGI.HTTP_HOST) AND !isDefined("session.captainLoggedIn")>
+              <cfelseif !isDefined("session.captainLoggedIn")>
                 <li class="nav-item">
                   <a class="nav-link" rel="tooltip" data-placement="bottom" href="/pages/Login/captains_login.cfm">
                     Log In
