@@ -14,20 +14,26 @@
       <cfif isDefined("form.submitLogin")>
         <cfquery name="Authenticate">
           SELECT
-            password, playerID
+            password, playerID, role
           FROM
             Users
           WHERE
             Username = <cfqueryparam cfsqltype="varchar" value="#form.username#">
           AND 
             Status = 'Active'
-          AND 
-            role = 'Captain'
         </cfquery>
         <cfif Authenticate.password EQ hash(form.password, "SHA")>
-          <cfset session.captainLoggedIn = true>
-          <cfset session.captainID = Authenticate.playerID>
-          <cflocation url="../captain/captain_home.cfm?playerID=#Authenticate.playerID#">
+          <cfif Authenticate.role EQ "Player">
+            <cfset session.playerLoggedIn = true>
+            <cfset session.playerID = Authenticate.playerID>
+            <cflocation url="../account/account_home.cfm?playerID=#Authenticate.playerID#">
+          <cfelseif Authenticate.role EQ "Captain">
+            <cfset session.playerLoggedIn = true>
+            <cfset session.playerID = Authenticate.playerID>
+            <cfset session.captainLoggedIn = true>
+            <cfset session.captainID = Authenticate.playerID>
+            <cflocation url="../captain/captain_home.cfm?playerID=#Authenticate.playerID#">
+          </cfif>
         <cfelse>
           <cfset invalidLogin = true>
         </cfif>
