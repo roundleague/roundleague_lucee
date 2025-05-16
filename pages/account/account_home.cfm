@@ -2,11 +2,12 @@
 
 <!--- Only check security on prod --->
 <cfif !findNoCase("127.0.0.1", CGI.HTTP_HOST)>
-	<cfinclude template="captain_security_check.cfm">
+    <cfinclude template="captain_security_check.cfm">
 </cfif>
 
 <!--- Page Specific CSS/JS Here --->
 <link href="/pages/captain/captain_home.css" rel="stylesheet" />
+<link href="/pages/account/account_home.css" rel="stylesheet" />
 
 <cfparam name="url.playerID" default="0">
 
@@ -55,143 +56,103 @@
 <cfset defaultPath = "/assets/img/PlayerProfiles/default.JPG">
 
 <cfif FileExists(imgPath)>
-	<cfset playerPhoto = imgPath>
+    <cfset playerPhoto = imgPath>
 <cfelseif FileExists(altPath)>
-	<cfset playerPhoto = altPath>
+    <cfset playerPhoto = altPath>
 <cfelse>
-	<cfset playerPhoto = defaultPath>
+    <cfset playerPhoto = defaultPath>
 </cfif>
 
-<div class="main" style="background-color: white;">
-    <div class="section text-center">
-      <div class="container">
+<div class="main" style="background-color: var(--background-light);">
+    <div class="section">
+        <div class="container">
+            <div class="account-header">
+                <div class="profile-image">
+                    <img src="#playerPhoto#" alt="#GetPlayerData.FirstName# #GetPlayerData.LastName#">
+                </div>
+                <div class="account-info">
+                    <h1>My Account</h1>
+                    <p>#GetPlayerData.FirstName# #GetPlayerData.LastName#</p>
+                    <p class="position">#GetPlayerData.Position#</p>
+                    <p class="team">#GetPlayerData.TeamName#</p>
+                </div>
+            </div>
 
-        <!--- Content Here --->
-		  <div class="section profile-content">
-		    <div class="container profileHome">
-		        <div class="owner">
-		          <div class="avatar">
-		            <img src="#playerPhoto#" alt="Circle Image" class="img-circle img-no-padding img-responsive">
-		          </div>
-		          <div class="name">
-                  <h1 class="title">My Account</h1>
-		            <h4 class="title">#GetPlayerData.FirstName# #GetPlayerData.LastName#
-		              <br />
-		            </h4>
-		            <h6 class="description">#GetPlayerData.Position#</h6>
-		          </div>
-		        </div>
-		        <div class="row bottomProfile">
-		          <div class="col-md-6 ml-auto mr-auto text-center">
-		            <p>#GetPlayerData.TeamName#</p>
-		            <br />
-					<!--- Local --->
-					<btn class="btn btn-outline-default btn-round"><i class="fa fa-cog"></i> Account Settings</btn>
-					<a href="" target="_blank"><btn class="btn btn-outline-default btn-round"><i class="fa fa-credit-card-alt"></i> Payments</btn></a>
-					<a href="" target="_blank"><btn class="btn btn-outline-default btn-round"><i class="fa-solid fa-photo-film"></i> My Media</btn></a>
-					<a href="" target="_blank"><btn class="btn btn-outline-default btn-round"><i class="fa-solid fa-basketball"></i> My Career</btn></a>
-					<a href="" target="_blank"><btn class="btn btn-outline-default btn-round"><i class="fa-solid fa-people-group"></i> Find Players / Team</btn></a>
-					<!--- <a href="/pages/captain/captain.cfm?playerID=#getPlayerData.playerID#"><btn class="btn btn-outline-default btn-round"><i class="fa fa-list"></i> Edit Team</btn></a> --->
-					<!--- <a href="/pages/captain/signPlayer.cfm"><btn class="btn btn-outline-default btn-round"><i class="fa fa-pencil-square-o"></i> Sign Player</btn></a> --->
-		          </div>
-		        </div>
-		        <br/>
-		      <div class="nav-tabs-navigation">
-		        <div class="nav-tabs-wrapper">
-		          <ul class="nav nav-tabs" role="tablist">
-		            <li class="nav-item">
-		              <a class="nav-link active" data-toggle="tab" href="##follows" role="tab">Upcoming Schedule</a>
-		            </li>
-		            <li class="nav-item">
-		              <a class="nav-link" data-toggle="tab" href="##following" role="tab">Previous</a>
-		            </li>
-		          </ul>
-		        </div>
-		      </div>
-		      <!-- Tab panes -->
-		      <div class="tab-content following">
-		        <div class="tab-pane active" id="follows" role="tabpanel">
-		          <div class="row">
-		            <div class="col-md-6 ml-auto mr-auto">
+            <div class="navigation">
+                <btn class="nav-button">
+                    <i class="fa fa-cog"></i> Account Settings
+                </btn>
+                <a href="" class="nav-button">
+                    <i class="fa fa-credit-card-alt"></i> Payments
+                </a>
+                <a href="" class="nav-button">
+                    <i class="fa-solid fa-photo-film"></i> My Media
+                </a>
+                <a href="" class="nav-button">
+                    <i class="fa-solid fa-basketball"></i> My Career
+                </a>
+                <a href="" class="nav-button">
+                    <i class="fa-solid fa-people-group"></i> Find Players / Team
+                </a>
+            </div>
 
-		            <cfloop query="getPlayerSchedule">
+            <div class="schedule-tabs">
+                <div class="tab active" data-toggle="tab" href="##follows" role="tab">Upcoming Schedule</div>
+                <div class="tab" data-toggle="tab" href="##following" role="tab">Previous</div>
+            </div>
 
-	                  <cfif getPlayerData.teamID EQ getPlayerSchedule.hometeamID>
-	                    <cfset opponentTeam = getPlayerSchedule.away>
-	                  <cfelse>
-	                    <cfset opponentTeam = getPlayerSchedule.home>
-	                  </cfif>
+            <div class="tab-content following">
+                <div class="tab-pane active" id="follows" role="tabpanel">
+                    <div class="schedule-content">
+                        <cfloop query="getPlayerSchedule">
+                            <cfif getPlayerData.teamID EQ getPlayerSchedule.hometeamID>
+                                <cfset opponentTeam = getPlayerSchedule.away>
+                            <cfelse>
+                                <cfset opponentTeam = getPlayerSchedule.home>
+                            </cfif>
 
-		              <ul class="list-unstyled follows">
-		                <li>
-		                  <div class="row">
-		                    <div class="col-lg-2 col-md-4 col-4 ml-auto mr-auto">
-		                      <!--- <img src="../../assets/img/PlayerProfiles/79.JPG" alt="Circle Image" class="img-circle img-no-padding img-responsive"> --->
-		                    </div>
-		                    <div class="col-lg-7 col-md-4 col-4  ml-auto mr-auto">
-		                      <h6>#opponentTeam#
-		                        <br/>
-		                        <b>#DateFormat(date, "mmm d, yyyy")# | #DateTimeFormat(StartTime, "h:nn tt")#</b>
-		                      </h6>
-		                    </div>
-		                    <div class="col-lg-3 col-md-4 col-4  ml-auto mr-auto">
-		                      <!--- <div class="form-check">
-		                        <label class="form-check-label">
-		                          <input class="form-check-input" type="checkbox" value="" checked>
-		                          <span class="form-check-sign"></span>
-		                        </label>
-		                      </div> --->
-		                    </div>
-		                  </div>
-		                </li>
-		                <hr />
-		              </ul>
-		          </cfloop>
+                            <div class="event-card">
+                                <div class="event-header">
+                                    <h3>#opponentTeam#</h3>
+                                    <p>Game ##</p>
+                                </div>
+                                <div class="event-details">
+                                    <p class="date-time">
+                                        <i class="fa fa-calendar"></i>
+                                        #DateFormat(date, "mmm d, yyyy")# | #DateTimeFormat(StartTime, "h:nn tt")#
+                                    </p>
+                                </div>
+                            </div>
+                        </cfloop>
+                    </div>
+                </div>
 
-		            </div>
-		          </div>
-		        </div>
-		        <div class="tab-pane text-center" id="following" role="tabpanel">
-		            <cfloop query="getPrevPlayerSchedule">
+                <div class="tab-pane" id="following" role="tabpanel">
+                    <div class="schedule-content">
+                        <cfloop query="getPrevPlayerSchedule">
+                            <cfif getPlayerData.teamID EQ getPrevPlayerSchedule.hometeamID>
+                                <cfset opponentTeam = getPrevPlayerSchedule.away>
+                            <cfelse>
+                                <cfset opponentTeam = getPrevPlayerSchedule.home>
+                            </cfif>
 
-	                  <cfif getPlayerData.teamID EQ getPrevPlayerSchedule.hometeamID>
-	                    <cfset opponentTeam = getPrevPlayerSchedule.away>
-	                  <cfelse>
-	                    <cfset opponentTeam = getPrevPlayerSchedule.home>
-	                  </cfif>
-
-		              <ul class="list-unstyled follows">
-		                <li>
-		                  <div class="row">
-		                    <div class="col-lg-2 col-md-4 col-4 ml-auto mr-auto">
-		                      <!--- <img src="../../assets/img/PlayerProfiles/79.JPG" alt="Circle Image" class="img-circle img-no-padding img-responsive"> --->
-		                    </div>
-		                    <div class="col-lg-7 col-md-4 col-4  ml-auto mr-auto">
-		                      <h6>#opponentTeam#
-		                        <br/>
-		                        <b>#DateFormat(date, "mmm d, yyyy")# | #DateTimeFormat(StartTime, "h:nn tt")#</b>
-		                      </h6>
-		                    </div>
-		                    <div class="col-lg-3 col-md-4 col-4  ml-auto mr-auto">
-		                      <!--- <div class="form-check">
-		                        <label class="form-check-label">
-		                          <input class="form-check-input" type="checkbox" value="" checked>
-		                          <span class="form-check-sign"></span>
-		                        </label>
-		                      </div> --->
-		                    </div>
-		                  </div>
-		                </li>
-		                <hr />
-		              </ul>
-		          </cfloop>
-		        </div>
-		      </div>
-		    </div>
-		  </div>
-
-
-      </div>
+                            <div class="event-card">
+                                <div class="event-header">
+                                    <h3>#opponentTeam#</h3>
+                                    <p>Game ##</p>
+                                </div>
+                                <div class="event-details">
+                                    <p class="date-time">
+                                        <i class="fa fa-calendar"></i>
+                                        #DateFormat(date, "mmm d, yyyy")# | #DateTimeFormat(StartTime, "h:nn tt")#
+                                    </p>
+                                </div>
+                            </div>
+                        </cfloop>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 </cfoutput>
