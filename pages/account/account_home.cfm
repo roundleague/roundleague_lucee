@@ -1,13 +1,8 @@
 <cfinclude template="/header.cfm">
 
-<!--- Only check security on prod --->
-<cfif !findNoCase("127.0.0.1", CGI.HTTP_HOST)>
-    <cfinclude template="captain_security_check.cfm">
-</cfif>
-
 <!--- Page Specific CSS/JS Here --->
 <link href="/pages/captain/captain_home.css" rel="stylesheet" />
-<link href="/pages/account/account_home.css" rel="stylesheet" />
+<link href="/pages/account/account_home.css?v=0.1" rel="stylesheet" />
 
 <cfparam name="url.playerID" default="0">
 
@@ -76,25 +71,23 @@
                     <p class="position">#GetPlayerData.Position#</p>
                     <p class="team">#GetPlayerData.TeamName#</p>
                 </div>
-            </div>
-
-            <div class="navigation">
+            </div>            <div class="navigation">
                 <btn class="nav-button">
                     <i class="fa fa-cog"></i> Account Settings
                 </btn>
-                <a href="" class="nav-button">
+                <a class="nav-button disabled" data-toggle="tooltip" data-trigger="click hover" data-placement="top" title="Coming Soon">
                     <i class="fa fa-credit-card-alt"></i> Payments
                 </a>
-                <a href="" class="nav-button">
+                <a class="nav-button disabled" data-toggle="tooltip" data-trigger="click hover" data-placement="top" title="Coming Soon">
                     <i class="fa-solid fa-photo-film"></i> My Media
                 </a>
-                <a href="" class="nav-button">
+                <a class="nav-button disabled" data-toggle="tooltip" data-trigger="click hover" data-placement="top" title="Coming Soon">
                     <i class="fa-solid fa-basketball"></i> My Career
                 </a>
-                <a href="" class="nav-button">
+                <a class="nav-button disabled" data-toggle="tooltip" data-trigger="click hover" data-placement="top" title="Coming Soon">
                     <i class="fa-solid fa-people-group"></i> Find Players / Team
                 </a>
-            </div>            <div class="schedule-tabs nav nav-tabs" role="tablist">
+            </div><div class="schedule-tabs nav nav-tabs" role="tablist">
                 <a class="tab nav-link active" data-toggle="tab" href="##follows" role="tab">Upcoming Schedule</a>
                 <a class="tab nav-link" data-toggle="tab" href="##following" role="tab">Previous</a>
             </div>
