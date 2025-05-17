@@ -94,60 +94,6 @@
             </div>
             
             <!--- Account Page Content --->
-            <div class="schedule-tabs nav nav-tabs" role="tablist">
-                <a class="tab nav-link active" data-toggle="tab" href="##follows" role="tab">Upcoming Schedule</a>
-                <a class="tab nav-link" data-toggle="tab" href="##following" role="tab">Previous</a>
-            </div>
-
-            <div class="tab-content following">
-                <div class="tab-pane fade show active" id="follows" role="tabpanel">
-                    <div class="schedule-content">
-                        <cfloop query="getPlayerSchedule">
-                            <cfif getPlayerData.teamID EQ getPlayerSchedule.hometeamID>
-                                <cfset opponentTeam = getPlayerSchedule.away>
-                            <cfelse>
-                                <cfset opponentTeam = getPlayerSchedule.home>
-                            </cfif>
-
-                            <div class="event-card">
-                                <div class="event-header">
-                                    <h3>#opponentTeam#</h3>
-                                    <p>Game ##</p>
-                                </div>
-                                <div class="event-details">
-                                    <p class="date-time">
-                                        <i class="fa fa-calendar"></i>
-                                        #DateFormat(date, "mmm d, yyyy")# | #DateTimeFormat(StartTime, "h:nn tt")#
-                                    </p>
-                                </div>
-                            </div>
-                        </cfloop>
-                    </div>
-                </div>                <div class="tab-pane fade" id="following" role="tabpanel">
-                    <div class="schedule-content">
-                        <cfloop query="getPrevPlayerSchedule">
-                            <cfif getPlayerData.teamID EQ getPrevPlayerSchedule.hometeamID>
-                                <cfset opponentTeam = getPrevPlayerSchedule.away>
-                            <cfelse>
-                                <cfset opponentTeam = getPrevPlayerSchedule.home>
-                            </cfif>
-
-                            <div class="event-card">
-                                <div class="event-header">
-                                    <h3>#opponentTeam#</h3>
-                                    <p>Game ##</p>
-                                </div>
-                                <div class="event-details">
-                                    <p class="date-time">
-                                        <i class="fa fa-calendar"></i>
-                                        #DateFormat(date, "mmm d, yyyy")# | #DateTimeFormat(StartTime, "h:nn tt")#
-                                    </p>
-                                </div>
-                            </div>
-                        </cfloop>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </div>
