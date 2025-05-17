@@ -94,15 +94,13 @@
                 <a href="" class="nav-button">
                     <i class="fa-solid fa-people-group"></i> Find Players / Team
                 </a>
-            </div>
-
-            <div class="schedule-tabs">
-                <div class="tab active" data-toggle="tab" href="##follows" role="tab">Upcoming Schedule</div>
-                <div class="tab" data-toggle="tab" href="##following" role="tab">Previous</div>
+            </div>            <div class="schedule-tabs nav nav-tabs" role="tablist">
+                <a class="tab nav-link active" data-toggle="tab" href="##follows" role="tab">Upcoming Schedule</a>
+                <a class="tab nav-link" data-toggle="tab" href="##following" role="tab">Previous</a>
             </div>
 
             <div class="tab-content following">
-                <div class="tab-pane active" id="follows" role="tabpanel">
+                <div class="tab-pane fade show active" id="follows" role="tabpanel">
                     <div class="schedule-content">
                         <cfloop query="getPlayerSchedule">
                             <cfif getPlayerData.teamID EQ getPlayerSchedule.hometeamID>
@@ -125,9 +123,7 @@
                             </div>
                         </cfloop>
                     </div>
-                </div>
-
-                <div class="tab-pane" id="following" role="tabpanel">
+                </div>                <div class="tab-pane fade" id="following" role="tabpanel">
                     <div class="schedule-content">
                         <cfloop query="getPrevPlayerSchedule">
                             <cfif getPlayerData.teamID EQ getPrevPlayerSchedule.hometeamID>

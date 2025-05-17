@@ -104,19 +104,29 @@ body {
   margin-bottom: 20px;
 }
 
-.tab {
+.schedule-tabs .nav-link {
   padding: 12px 24px;
   color: var(--text-light);
   font-weight: 500;
   cursor: pointer;
   position: relative;
+  border: none;
+  background: none;
+  text-decoration: none;
 }
 
-.tab.active {
+.schedule-tabs .nav-link:hover {
+  border: none;
   color: var(--primary-color);
 }
 
-.tab.active::after {
+.schedule-tabs .nav-link.active {
+  color: var(--primary-color);
+  border: none;
+  background: none;
+}
+
+.schedule-tabs .nav-link.active::after {
   content: "";
   position: absolute;
   bottom: -1px;
@@ -171,6 +181,19 @@ body {
 .event-details .date-time {
   color: var(--text-light);
   font-size: 14px;
+}
+
+/* Tab Transition Animations */
+.tab-pane {
+  transition: opacity 0.15s linear;
+}
+
+.tab-pane.fade {
+  opacity: 0;
+}
+
+.tab-pane.fade.show {
+  opacity: 1;
 }
 
 /* Responsive Design */
