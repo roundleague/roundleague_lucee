@@ -54,7 +54,7 @@
                <h3 class="title mx-auto">Welcome</h3>
                <form class="register-form" method="POST">
                   <cfif invalidLogin>
-                      Credentials not found. If you have not signed up for a new captains account, please register.<br>
+                      Credentials not found. If you have not signed up for an account, please register.<br>
                   </cfif>
                   <label>Email</label>
                   <input name="userName" type="text" class="form-control" placeholder="Email">

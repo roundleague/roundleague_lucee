@@ -30,14 +30,16 @@
     AND SeasonID = <cfqueryparam cfsqltype="cf_sql_integer" value="#session.currentSeasonID#">
 </cfquery>
 
-<!--- Update password if provided --->
-<cfif len(trim(form.password))>
-    <cfquery name="updatePassword" datasource="roundleague">
-        UPDATE users
-        SET password = <cfqueryparam cfsqltype="cf_sql_varchar" value="#hash(form.password, 'SHA')#">
-        WHERE playerID = <cfqueryparam cfsqltype="cf_sql_integer" value="#form.playerID#">
-    </cfquery>
-</cfif>
+<!--- Update email and password in users table --->
+<cfquery name="updateUser" datasource="roundleague">
+    UPDATE users
+    SET 
+        userName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#form.email#">
+        <cfif len(trim(form.password))>
+        , password = <cfqueryparam cfsqltype="cf_sql_varchar" value="#hash(form.password, 'SHA')#">
+        </cfif>
+    WHERE playerID = <cfqueryparam cfsqltype="cf_sql_integer" value="#form.playerID#">
+</cfquery>
 
 <div class="main" style="background-color: white; margin-top: 50px;">
     <div class="section text-center">
