@@ -203,6 +203,19 @@ button.nav-button.disabled:hover,
   font-size: 14px;
 }
 
+.event-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  transition: transform 0.2s ease;
+}
+
+.event-card-link:hover {
+  text-decoration: none;
+  color: inherit;
+  transform: translateY(-2px);
+}
+
 /* Tab Transition Animations */
 .tab-pane {
   transition: opacity 0.15s linear;

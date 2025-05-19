@@ -85,18 +85,20 @@
                     <cfset opponentTeam = getPrevPlayerSchedule.home>
                 </cfif>
 
-                <div class="event-card">
-                    <div class="event-header">
-                        <h3>#opponentTeam#</h3>
-                        <p>Week #getPrevPlayerSchedule.week#</p>
+                <a href="/pages/boxscore/boxscore.cfm?scheduleID=#getPrevPlayerSchedule.scheduleID#" class="event-card-link">
+                    <div class="event-card">
+                        <div class="event-header">
+                            <h3>#opponentTeam#</h3>
+                            <p>Week #getPrevPlayerSchedule.week#</p>
+                        </div>
+                        <div class="event-details">
+                            <p class="date-time">
+                                <i class="fa fa-calendar"></i>
+                                #DateFormat(date, "mmm d, yyyy")# | #DateTimeFormat(StartTime, "h:nn tt")#
+                            </p>
+                        </div>
                     </div>
-                    <div class="event-details">
-                        <p class="date-time">
-                            <i class="fa fa-calendar"></i>
-                            #DateFormat(date, "mmm d, yyyy")# | #DateTimeFormat(StartTime, "h:nn tt")#
-                        </p>
-                    </div>
-                </div>
+                </a>
             </cfloop>
         </div>
     </div>
