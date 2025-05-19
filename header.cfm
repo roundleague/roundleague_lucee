@@ -148,7 +148,7 @@
 
               <!--- Account Section --->
               <!--- Toggle on dev using 1 EQ 2 --->
-              <cfif isDefined("session.captainLoggedIn")>
+              <cfif isDefined("session.playerLoggedIn")>
                 <li class="nav-item dropdown">
                     <a href="javascript:;" class="nav-link navbar-brand" data-toggle="dropdown" width="30" height="30" aria-expanded="false">
                       <div class="profile-photo-small">
@@ -156,14 +156,13 @@
                       </div>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-right dropdown-danger">
-                      <div class="dropdown-header">My Account</div>
-
-                        <cfoutput>
-                          <cfset captainLinkURL = "/pages/captain/captain_home.cfm?playerID=#session.captainID#">
+                      <div class="dropdown-header">My Account</div>                        <cfoutput>
+                          <cfset accountHomeLink = "/pages/account/account_home.cfm?playerID=#session.playerID#">
                         </cfoutput>
                         
-
-                        <a class="dropdown-item" <cfoutput> href="#captainLinkURL#" </cfoutput>>My Team</a>
+                        <a class="dropdown-item" <cfoutput> href="#accountHomeLink#" </cfoutput>>My Team</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="/scripts/clearSession.cfm?redirect=/pages/landing-page.cfm">Log Out</a>
 <!---                       <a class="dropdown-item" href="javascript:;">Edit Info</a>
                       <div class="dropdown-divider"></div>
                       <a class="dropdown-item" href="javascript:;">Edit Team</a>
