@@ -65,7 +65,7 @@
                 <div class="event-card">
                     <div class="event-header">
                         <h3>#opponentTeam#</h3>
-                        <p>Game ##</p>
+                        <p>Week #getPlayerSchedule.week#</p>
                     </div>
                     <div class="event-details">
                         <p class="date-time">
@@ -88,7 +88,7 @@
                 <div class="event-card">
                     <div class="event-header">
                         <h3>#opponentTeam#</h3>
-                        <p>Game ##</p>
+                        <p>Week #getPrevPlayerSchedule.week#</p>
                     </div>
                     <div class="event-details">
                         <p class="date-time">
