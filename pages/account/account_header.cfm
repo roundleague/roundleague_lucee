@@ -1,4 +1,5 @@
 <cfoutput>
+<cfinclude template="account_security_check.cfm">
 <!--- Photo logic --->
 <cfset playerPhoto = ''>
 <cfset imgPath = "/assets/img/PlayerProfiles/#url.playerID#.JPG">
