@@ -229,6 +229,20 @@ button.nav-button.disabled:hover,
   opacity: 1;
 }
 
+/* Game Result Styles */
+.game-result {
+  font-weight: 600;
+  margin-top: 5px;
+}
+
+.game-result.win {
+  color: var(--tertiary-color);
+}
+
+.game-result.loss {
+  color: #dc3545;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .account-header {

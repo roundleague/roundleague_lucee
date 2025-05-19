@@ -81,8 +81,14 @@
             <cfloop query="getPrevPlayerSchedule">
                 <cfif getPlayerData.teamID EQ getPrevPlayerSchedule.hometeamID>
                     <cfset opponentTeam = getPrevPlayerSchedule.away>
+                    <cfset isWin = getPrevPlayerSchedule.homeScore GT getPrevPlayerSchedule.awayScore>
+                    <cfset teamScore = getPrevPlayerSchedule.homeScore>
+                    <cfset oppScore = getPrevPlayerSchedule.awayScore>
                 <cfelse>
                     <cfset opponentTeam = getPrevPlayerSchedule.home>
+                    <cfset isWin = getPrevPlayerSchedule.awayScore GT getPrevPlayerSchedule.homeScore>
+                    <cfset teamScore = getPrevPlayerSchedule.awayScore>
+                    <cfset oppScore = getPrevPlayerSchedule.homeScore>
                 </cfif>
 
                 <a href="/pages/boxscore/boxscore.cfm?scheduleID=#getPrevPlayerSchedule.scheduleID#" class="event-card-link">
@@ -90,6 +96,9 @@
                         <div class="event-header">
                             <h3>#opponentTeam#</h3>
                             <p>Week #getPrevPlayerSchedule.week#</p>
+                            <p class="game-result #isWin ? 'win' : 'loss'#">
+                                #isWin ? 'W' : 'L'# #teamScore#-#oppScore#
+                            </p>
                         </div>
                         <div class="event-details">
                             <p class="date-time">
