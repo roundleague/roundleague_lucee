@@ -32,7 +32,7 @@
             <cfset session.playerID = Authenticate.playerID>
             <cfset session.captainLoggedIn = true>
             <cfset session.captainID = Authenticate.playerID>
-            <cflocation url="../captain/captain_home.cfm?playerID=#Authenticate.playerID#">
+            <cflocation url="../account/account_home.cfm?playerID=#Authenticate.playerID#">
           </cfif>
         <cfelse>
           <cfset invalidLogin = true>
