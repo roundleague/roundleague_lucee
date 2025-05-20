@@ -50,9 +50,8 @@
                     <hr style="margin: 10px 0;">
                     <a href="/pages/captain/captain.cfm?playerID=#url.playerID#" class="nav-button" style="text-decoration: none; color: inherit;">
                         <i class="fa fa-list"></i> Edit Team
-                    </a>
-                    <a href="/pages/captain/signPlayer.cfm" class="nav-button" style="text-decoration: none; color: inherit;">
-                        <i class="fa fa-pencil-square-o"></i> Sign Player
+                    </a>                    <a href="/pages/captain/signPlayer.cfm" class="nav-button" style="text-decoration: none; color: inherit;">
+                        <i class="fa-solid fa-user-plus"></i> Sign Player
                     </a>
                 </cfif>
             </div>
