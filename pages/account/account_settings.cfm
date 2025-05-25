@@ -13,29 +13,14 @@
 
 <cfoutput>
 
-<cfquery name="getPlayerData" datasource="roundleague">    SELECT p.*, t.teamName, t.teamID, u.password, r.jersey
+<!--- Get additional player data needed for settings page --->
+<cfquery name="getExtendedPlayerData" datasource="roundleague">
+    SELECT p.*, u.password, r.jersey
     FROM Players p
-    JOIN Roster r on r.playerID = p.playerID
-    JOIN Teams t on r.teamID = t.teamID
-    JOIN users u on u.playerID = p.playerID
+    LEFT JOIN users u on u.playerID = p.playerID
+    LEFT JOIN Roster r on r.playerID = p.playerID AND r.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
     WHERE p.PlayerID = <cfqueryparam cfsqltype="INTEGER" value="#url.playerID#">
-    AND r.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
-    AND t.status = 'Active'
 </cfquery>
-
-<!--- Photo logic --->
-<cfset playerPhoto = ''>
-<cfset imgPath = "/assets/img/PlayerProfiles/#url.playerID#.JPG">
-<cfset altPath = "/assets/img/PlayerProfiles/#getPlayerData.teamName#/#getPlayerData.FirstName# #getPlayerData.lastName# - 1.JPG">
-<cfset defaultPath = "/assets/img/PlayerProfiles/default.JPG">
-
-<cfif FileExists(imgPath)>
-    <cfset playerPhoto = imgPath>
-<cfelseif FileExists(altPath)>
-    <cfset playerPhoto = altPath>
-<cfelse>
-    <cfset playerPhoto = defaultPath>
-</cfif>
 
 <cfinclude template="account_header.cfm">
             
@@ -46,32 +31,30 @@
                         <div class="col-md-8 ml-auto mr-auto">
                             <form action="account_settings_save.cfm" method="post">
                                 <input type="hidden" name="playerID" value="#url.playerID#">
-                                <div class="form-group">
-                                    <label>Gender</label><br>
+                                <div class="form-group">                                    <label>Gender</label><br>
                                     <select class="gender form-control" name="gender" style="padding: 7px;">
-                                        <option value="Male" <cfif getPlayerData.gender EQ "Male">selected</cfif>>Male</option>
-                                        <option value="Female" <cfif getPlayerData.gender EQ "Female">selected</cfif>>Female</option>
+                                        <option value="Male" <cfif getExtendedPlayerData.gender EQ "Male">selected</cfif>>Male</option>
+                                        <option value="Female" <cfif getExtendedPlayerData.gender EQ "Female">selected</cfif>>Female</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
                                     <label>Email</label>
-                                    <input type="email" required class="form-control border-input" placeholder="Email" name="email" value="#getPlayerData.email#">
+                                    <input type="email" required class="form-control border-input" placeholder="Email" name="email" value="#getExtendedPlayerData.email#">
                                 </div>
                                 <div class="form-group">
                                     <label>Password (leave blank to keep current)</label>
                                     <input type="password" class="form-control border-input" placeholder="New Password" name="password">
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
+                                    <div class="col-md-6">                                        <div class="form-group">
                                             <label>First Name</label>
-                                            <input type="text" required class="form-control border-input" placeholder="First Name" name="firstName" value="#getPlayerData.firstName#">
+                                            <input type="text" required class="form-control border-input" placeholder="First Name" name="firstName" value="#getExtendedPlayerData.firstName#">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Last Name</label>
-                                            <input type="text" required class="form-control border-input" placeholder="Last Name" name="lastName" value="#getPlayerData.lastName#">
+                                            <input type="text" required class="form-control border-input" placeholder="Last Name" name="lastName" value="#getExtendedPlayerData.lastName#">
                                         </div>
                                     </div>
                                 </div>
@@ -79,34 +62,32 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Birth Date</label>
-                                            <input type="date" required class="form-control border-input" name="birthDate" value="#dateFormat(getPlayerData.birthDate, "yyyy-mm-dd")#">
+                                            <input type="date" required class="form-control border-input" name="birthDate" value="#dateFormat(getExtendedPlayerData.birthDate, "yyyy-mm-dd")#">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Phone Number</label>
-                                            <input type="tel" required id="phoneField" class="form-control border-input" name="phone" value="#getPlayerData.phone#">
+                                            <input type="tel" required id="phoneField" class="form-control border-input" name="phone" value="#getExtendedPlayerData.phone#">
                                         </div>
                                     </div>
-                                </div>
-                                <div class="form-group">
+                                </div>                                <div class="form-group">
                                     <label>Zip Code</label>
-                                    <input type="text" required class="form-control border-input" placeholder="Zip Code" name="zipCode" maxlength="5" value="#getPlayerData.zipCode#">
+                                    <input type="text" required class="form-control border-input" placeholder="Zip Code" name="zipCode" maxlength="5" value="#getExtendedPlayerData.zipCode#">
                                 </div>
                                 <div class="form-group">
                                     <label>Instagram Handle (No @ Needed)</label>
-                                    <input type="text" class="form-control border-input" placeholder="IG Handle" name="instagram" value="#getPlayerData.instagram#">
+                                    <input type="text" class="form-control border-input" placeholder="IG Handle" name="instagram" value="#getExtendedPlayerData.instagram#">
                                 </div>
                                 <div class="form-group">
                                     <label>Jersey Number</label>
-                                    <input type="number" class="form-control border-input" name="currentJersey" value="#getPlayerData.jersey#">
+                                    <input type="number" class="form-control border-input" name="currentJersey" value="#getExtendedPlayerData.jersey#">
                                 </div>
                                 <div class="form-group">
-                                    <label class="biggerLabel">Basketball Experience</label>
-                                    <cfloop list="#basketballExp#" index="i" item="x">
+                                    <label class="biggerLabel">Basketball Experience</label>                                    <cfloop list="#basketballExp#" index="i" item="x">
                                         <div class="form-check-radio">
                                             <label class="form-check-label">
-                                                <input class="form-check-input" type="radio" name="highestLevel" value="#x#" <cfif getPlayerData.highestLevel EQ x>checked</cfif>> #x#
+                                                <input class="form-check-input" type="radio" name="highestLevel" value="#x#" <cfif getExtendedPlayerData.highestLevel EQ x>checked</cfif>> #x#
                                                 <span class="form-check-sign"></span>
                                             </label>
                                         </div>
@@ -117,7 +98,7 @@
                                     <cfloop list="#bballPosition#" index="i" item="x">
                                         <div class="form-check-radio">
                                             <label class="form-check-label">
-                                                <input class="form-check-input" type="radio" name="position" value="#x#" <cfif getPlayerData.position EQ x>checked</cfif>> #x#
+                                                <input class="form-check-input" type="radio" name="position" value="#x#" <cfif getExtendedPlayerData.position EQ x>checked</cfif>> #x#
                                                 <span class="form-check-sign"></span>
                                             </label>
                                         </div>
@@ -125,9 +106,8 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Height</label><br>
-                                    <select name="height" class="form-control" style="padding: 7px;">
-                                        <cfloop list="#heightOptions#" index="i" item="x">
-                                            <option value="#x#" <cfif getPlayerData.height EQ x>selected</cfif>>#x#</option>
+                                    <select name="height" class="form-control" style="padding: 7px;">                                    <cfloop list="#heightOptions#" index="i" item="x">
+                                            <option value="#x#" <cfif getExtendedPlayerData.height EQ x>selected</cfif>>#x#</option>
                                         </cfloop>
                                     </select>
                                 </div>
@@ -135,21 +115,20 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Weight</label>
-                                            <input type="number" class="form-control border-input" placeholder="Weight" name="weight" value="#getPlayerData.weight#">
+                                            <input type="number" class="form-control border-input" placeholder="Weight" name="weight" value="#getExtendedPlayerData.weight#">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Hometown</label>
-                                            <input type="text" class="form-control border-input" placeholder="Hometown" name="hometown" value="#getPlayerData.hometown#">
+                                            <input type="text" class="form-control border-input" placeholder="Hometown" name="hometown" value="#getExtendedPlayerData.hometown#">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
+                                    <div class="col-md-6">                                        <div class="form-group">
                                             <label>Last School Attended</label>
-                                            <input type="text" class="form-control border-input" placeholder="Last School Attended" name="school" value="#getPlayerData.school#">
+                                            <input type="text" class="form-control border-input" placeholder="Last School Attended" name="school" value="#getExtendedPlayerData.school#">
                                         </div>
                                     </div>
                                 </div>

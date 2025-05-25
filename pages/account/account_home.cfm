@@ -7,60 +7,68 @@
 <cfparam name="url.playerID" default="0">
 
 <cfoutput>
-
-<cfquery name="getPlayerData" datasource="roundleague">
-	SELECT p.playerID, lastName, firstName, position, height, weight, hometown, school, t.teamName, t.teamID
-	FROM Players p
-	JOIN Roster r on r.playerID = p.playerID
-	JOIN Teams t on r.teamID = t.teamID
-	WHERE p.PlayerID = <cfqueryparam cfsqltype="INTEGER" value="#url.playerID#">
-	AND r.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
-	AND t.status = 'Active'
-</cfquery>
-
-<cfquery name="getPlayerSchedule" datasource="roundleague">
-	SELECT scheduleID, hometeamID, awayteamID, WEEK, a.teamName AS Home, b.teamName AS Away, s.homeScore, s.awayScore, s.StartTime, s.date
-	FROM schedule s
-	LEFT JOIN teams as a ON s.hometeamID = a.teamID
-	LEFT JOIN teams as b ON s.awayTeamID = b.teamID
-	WHERE (
-		a.teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getPlayerData.teamID# ">
-		OR 
-		b.teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getPlayerData.teamID#">)
-	AND s.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
-	AND homeScore IS null
-</cfquery>
-
-<cfquery name="getPrevPlayerSchedule" datasource="roundleague">
-	SELECT scheduleID, hometeamID, awayteamID, WEEK, a.teamName AS Home, b.teamName AS Away, s.homeScore, s.awayScore, s.StartTime, s.date
-	FROM schedule s
-	LEFT JOIN teams as a ON s.hometeamID = a.teamID
-	LEFT JOIN teams as b ON s.awayTeamID = b.teamID
-	WHERE (
-		a.teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getPlayerData.teamID# ">
-		OR 
-		b.teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getPlayerData.teamID#">)
-	AND s.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
-	AND homeScore IS NOT null
-</cfquery>
-
 <cfinclude template="account_header.cfm">
+<!--- Player queries are now included in account_header.cfm --->
+
+<!--- If player is on a team, get their schedule --->
+<cfif isDefined("getPlayerData") AND getPlayerData.recordCount GT 0>
+	<cfquery name="getPlayerSchedule" datasource="roundleague">
+		SELECT scheduleID, hometeamID, awayteamID, WEEK, a.teamName AS Home, b.teamName AS Away, s.homeScore, s.awayScore, s.StartTime, s.date
+		FROM schedule s
+		LEFT JOIN teams as a ON s.hometeamID = a.teamID
+		LEFT JOIN teams as b ON s.awayTeamID = b.teamID
+		WHERE (
+			a.teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getPlayerData.teamID#">
+			OR 
+			b.teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getPlayerData.teamID#">)
+		AND s.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+		AND homeScore IS null
+	</cfquery>
+
+	<cfquery name="getPrevPlayerSchedule" datasource="roundleague">
+		SELECT scheduleID, hometeamID, awayteamID, WEEK, a.teamName AS Home, b.teamName AS Away, s.homeScore, s.awayScore, s.StartTime, s.date
+		FROM schedule s
+		LEFT JOIN teams as a ON s.hometeamID = a.teamID
+		LEFT JOIN teams as b ON s.awayTeamID = b.teamID
+		WHERE (
+			a.teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getPlayerData.teamID#">
+			OR 
+			b.teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getPlayerData.teamID#">)
+		AND s.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+		AND homeScore IS NOT null
+	</cfquery>
+<cfelse>
+	<!--- Create empty queries for free agents --->
+	<cfset getPlayerSchedule = queryNew("")>
+	<cfset getPrevPlayerSchedule = queryNew("")>
+</cfif>
 
 <!--- Account Page Content --->
-<div class="schedule-tabs nav nav-tabs" role="tablist">
-    <a class="tab nav-link active" data-toggle="tab" href="##follows" role="tab">Upcoming Schedule</a>
-    <a class="tab nav-link" data-toggle="tab" href="##following" role="tab">Previous</a>
-</div>
+<cfif getPlayerData.recordCount GT 0>
+    <div class="schedule-tabs nav nav-tabs" role="tablist">
+        <a class="tab nav-link active" data-toggle="tab" href="##follows" role="tab">Upcoming Schedule</a>
+        <a class="tab nav-link" data-toggle="tab" href="##following" role="tab">Previous</a>
+    </div>
+<cfelse>
+    <div class="free-agent-notice">
+        <div class="alert alert-info" role="alert">
+            <h4><i class="fa-solid fa-info-circle"></i> You're currently a Free Agent</h4>
+            <p>You are not currently on a team roster. When you join a team, your game schedule will appear here.</p>
+        </div>
+    </div>
+</cfif>
 
+<cfif getPlayerData.recordCount GT 0>
 <div class="tab-content following">
     <div class="tab-pane fade show active" id="follows" role="tabpanel">
         <div class="schedule-content">
-            <cfloop query="getPlayerSchedule">
-                <cfif getPlayerData.teamID EQ getPlayerSchedule.hometeamID>
-                    <cfset opponentTeam = getPlayerSchedule.away>
-                <cfelse>
-                    <cfset opponentTeam = getPlayerSchedule.home>
-                </cfif>
+            <cfif getPlayerSchedule.recordCount GT 0>
+                <cfloop query="getPlayerSchedule">
+                    <cfif getPlayerData.teamID EQ getPlayerSchedule.hometeamID>
+                        <cfset opponentTeam = getPlayerSchedule.away>
+                    <cfelse>
+                        <cfset opponentTeam = getPlayerSchedule.home>
+                    </cfif>
 
                 <div class="event-card">
                     <div class="event-header">
@@ -72,24 +80,30 @@
                             <i class="fa fa-calendar"></i>
                             #DateFormat(date, "mmm d, yyyy")# | #DateTimeFormat(StartTime, "h:nn tt")#
                         </p>
-                    </div>
+                    </div>                </div>
+                </cfloop>
+            <cfelse>
+                <div class="no-games-message">
+                    <p><i class="fa-solid fa-calendar-xmark"></i> No upcoming games scheduled.</p>
                 </div>
-            </cfloop>
+            </cfif>
         </div>
-    </div>                <div class="tab-pane fade" id="following" role="tabpanel">
+    </div>                
+    <div class="tab-pane fade" id="following" role="tabpanel">
         <div class="schedule-content">
-            <cfloop query="getPrevPlayerSchedule">
-                <cfif getPlayerData.teamID EQ getPrevPlayerSchedule.hometeamID>
-                    <cfset opponentTeam = getPrevPlayerSchedule.away>
-                    <cfset isWin = getPrevPlayerSchedule.homeScore GT getPrevPlayerSchedule.awayScore>
-                    <cfset teamScore = getPrevPlayerSchedule.homeScore>
-                    <cfset oppScore = getPrevPlayerSchedule.awayScore>
-                <cfelse>
-                    <cfset opponentTeam = getPrevPlayerSchedule.home>
-                    <cfset isWin = getPrevPlayerSchedule.awayScore GT getPrevPlayerSchedule.homeScore>
-                    <cfset teamScore = getPrevPlayerSchedule.awayScore>
-                    <cfset oppScore = getPrevPlayerSchedule.homeScore>
-                </cfif>
+            <cfif getPrevPlayerSchedule.recordCount GT 0>
+                <cfloop query="getPrevPlayerSchedule">
+                    <cfif getPlayerData.teamID EQ getPrevPlayerSchedule.hometeamID>
+                        <cfset opponentTeam = getPrevPlayerSchedule.away>
+                        <cfset isWin = getPrevPlayerSchedule.homeScore GT getPrevPlayerSchedule.awayScore>
+                        <cfset teamScore = getPrevPlayerSchedule.homeScore>
+                        <cfset oppScore = getPrevPlayerSchedule.awayScore>
+                    <cfelse>
+                        <cfset opponentTeam = getPrevPlayerSchedule.home>
+                        <cfset isWin = getPrevPlayerSchedule.awayScore GT getPrevPlayerSchedule.homeScore>
+                        <cfset teamScore = getPrevPlayerSchedule.awayScore>
+                        <cfset oppScore = getPrevPlayerSchedule.homeScore>
+                    </cfif>
 
                 <a href="/pages/boxscore/boxscore.cfm?scheduleID=#getPrevPlayerSchedule.scheduleID#" class="event-card-link">
                     <div class="event-card">
@@ -106,12 +120,17 @@
                                 #DateFormat(date, "mmm d, yyyy")# | #DateTimeFormat(StartTime, "h:nn tt")#
                             </p>
                         </div>
-                    </div>
-                </a>
-            </cfloop>
+                    </div>                </a>
+                </cfloop>
+            <cfelse>
+                <div class="no-games-message">
+                    <p><i class="fa-solid fa-calendar-xmark"></i> No previous games found.</p>
+                </div>
+            </cfif>
         </div>
     </div>
 </div>
+</cfif>
 </div>
 </div>
 </cfoutput>
