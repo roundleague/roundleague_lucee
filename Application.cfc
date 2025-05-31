@@ -3,8 +3,12 @@
     this.datasource = "roundleague";
     this.sessionManagement = true;
 
-    // Need to come back to this
     function onApplicationStart() {
         session.LoggedIn = false;
+
+        // ✅ Load API keys into application scope
+        include "api-keys.cfm";
+
+        return true;
     }
- }
+}
