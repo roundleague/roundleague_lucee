@@ -1,19 +1,19 @@
 <!-- /pages/account/account_stripe_checkout.cfm -->
 
 <cfoutput>
-<cfinclude template="account_security_check.cfm">
+<cfinclude template="../account_security_check.cfm">
 
 <cfset stripeSecretKey = application.stripeSecretKey>
 <cfset stripePriceID = "price_1RUck2PQ2d9e9sciYmKuycNv" >
 
 <!-- Optional: You can get team/player info here from session or URL -->
 <cfset teamID = url.teamID>
-<cfset playerID = session.playerID>
+<cfset playerID = url.playerID>
 
 <!-- Create Stripe Checkout Session -->
 <cfhttp url="https://api.stripe.com/v1/checkout/sessions" method="post" result="stripeResponse">
   <cfhttpparam type="header" name="Authorization" value="Bearer #stripeSecretKey#">
-  <cfhttpparam type="formField" name="success_url" value="https://theroundleague.com/pages/account/payment_success.cfm?session_id={CHECKOUT_SESSION_ID}">
+  <cfhttpparam type="formField" name="success_url" value="https://theroundleague.com/pages/account/payments/payment_success.cfm?session_id={CHECKOUT_SESSION_ID}">
   <cfhttpparam type="formField" name="cancel_url" value="https://theroundleague.com/pages/account/payment_cancel.cfm">
   <cfhttpparam type="formField" name="mode" value="payment">
   <cfhttpparam type="formField" name="line_items[0][price]" value="#stripePriceID#">
