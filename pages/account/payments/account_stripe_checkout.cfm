@@ -3,7 +3,7 @@
 <cfoutput>
 <cfinclude template="account_security_check.cfm">
 
-<cfset stripeSecretKey = "sk_test_51RSvbjPQ2d9e9sciQOuHZHjmMp62XhIU6XDMC1pKp9M3iec0JmsGjqNV9MI0dntzGskameW1F4F58l4VZtydvfS500swlJm27C" >
+<cfset stripeSecretKey = application.stripeSecretKey>
 <cfset stripePriceID = "price_1RUck2PQ2d9e9sciYmKuycNv" >
 
 <!-- Optional: You can get team/player info here from session or URL -->
