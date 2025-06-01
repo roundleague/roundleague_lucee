@@ -10,11 +10,13 @@
 <cfset teamID = url.teamID>
 <cfset playerID = url.playerID>
 
+<cfset protocol = cgi.server_name CONTAINS "127.0.0.1" ? "http" : "https">
+
 <!-- Create Stripe Checkout Session -->
 <cfhttp url="https://api.stripe.com/v1/checkout/sessions" method="post" result="stripeResponse">
   <cfhttpparam type="header" name="Authorization" value="Bearer #stripeSecretKey#">
-  <cfhttpparam type="formField" name="success_url" value="https://theroundleague.com/pages/account/payments/payment_success.cfm?session_id={CHECKOUT_SESSION_ID}">
-  <cfhttpparam type="formField" name="cancel_url" value="https://theroundleague.com/pages/account/payment_cancel.cfm">
+  <cfhttpparam type="formField" name="success_url" value="#protocol#://#cgi.http_host#/pages/account/payments/payment_success.cfm?session_id={CHECKOUT_SESSION_ID}&playerID=#playerID#">
+  <cfhttpparam type="formField" name="cancel_url" value="#protocol#://#cgi.http_host#/pages/account/account_home.cfm?playerID=#playerID#">
   <cfhttpparam type="formField" name="mode" value="payment">
   <cfhttpparam type="formField" name="line_items[0][price]" value="#stripePriceID#">
   <cfhttpparam type="formField" name="line_items[0][quantity]" value="1">
