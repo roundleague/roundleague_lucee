@@ -8,7 +8,7 @@
 
 <cfoutput>
 
-<!--- Get list of all active teams with their division and captain info --->
+<!--- Get list of only teams that have a record in the team_payments table --->
 <cfquery name="getTeams" datasource="roundleague">
     SELECT 
         t.teamID, 
@@ -30,7 +30,12 @@
     LEFT JOIN 
         players p ON p.PlayerID = t.captainPlayerID
     WHERE 
-        t.STATUS = 'Active'
+        EXISTS (
+            SELECT 1 
+            FROM team_payments tp 
+            WHERE tp.team_id = t.teamID 
+            AND tp.season = <cfqueryparam cfsqltype="CF_SQL_VARCHAR" value="#session.currentSeasonID#">
+        )
     AND 
         t.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
     ORDER BY 
@@ -62,6 +67,14 @@
 <cfset totalRemaining = totalTeamFees - totalCollected>
 <cfset overallPercentage = totalTeamFees GT 0 ? (totalCollected / totalTeamFees) * 100 : 0>
 
+<!--- Get total number of teams for reference --->
+<cfquery name="getAllTeamsCount" datasource="roundleague">
+    SELECT COUNT(*) AS totalTeams
+    FROM teams t
+    WHERE t.STATUS = 'Active'
+    AND t.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+</cfquery>
+
 <!--- Process each team to get payment status --->
 <cfset teamPaymentData = []>
 <cfset divisionTotals = {}>
@@ -84,10 +97,10 @@
 </cfloop>
 
 <!-- End Navbar -->
-<div class="content">
-    <div class="row">
+<div class="content">    <div class="row">
         <div class="col-md-12">
             <h3 class="description">Team Finances - Season <span class="badge badge-primary">#session.currentSeasonID#</span></h3>
+            <p class="text-muted"><i class="fa fa-filter"></i> Showing only teams with payment records</p>
         </div>
     </div>
 
@@ -109,11 +122,10 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="card-footer ">
+                </div>                <div class="card-footer ">
                     <hr>
                     <div class="stats">
-                        <i class="fa fa-users"></i> #getTeams.recordCount# Teams × $1,000
+                        <i class="fa fa-users"></i> #getTeams.recordCount# Teams with payments (out of #getAllTeamsCount.totalTeams# total teams)
                     </div>
                 </div>
             </div>
@@ -247,8 +259,7 @@
                     <h5 class="card-title">Team Payment Details</h5>
                     <p class="card-category">Detailed breakdown by team</p>
                 </div>
-                <div class="card-body">
-                    <div class="table-responsive">
+                <div class="card-body">                    <div class="table-responsive">
                         <table id="financeTable" class="table table-striped">
                             <thead class="text-primary">
                                 <tr>
@@ -266,6 +277,15 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                <cfif getTeams.recordCount EQ 0>
+                                    <tr>
+                                        <td colspan="11" class="text-center">
+                                            <div class="alert alert-info">
+                                                <i class="fa fa-info-circle"></i> No teams have payment records yet.
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </cfif>
                                 <cfset rowIndex = 0>
                                 <cfloop query="getTeams">
                                     <cfset rowIndex++>
@@ -346,10 +366,9 @@
 // Set up division chart
 var divCtx = document.getElementById('divisionChart').getContext('2d');
 var divisionChart = new Chart(divCtx, {
-    type: 'bar',
-    data: {
-        labels: [
-            <cfset divNames = structKeySort(divisionTotals)>
+    type: 'bar',    data: {        labels: [
+            <cfset divNames = structKeyArray(divisionTotals)>
+            <cfset arraySort(divNames, "textnocase")>
             <cfloop array="#divNames#" index="divName">
                 '#divName#',
             </cfloop>
