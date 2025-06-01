@@ -63,7 +63,7 @@
                 <a href="/pages/account/account_settings.cfm?playerID=#url.playerID#" class="nav-button" style="text-decoration: none; color: inherit;">
                     <i class="fa fa-cog"></i> Account Settings
                 </a>
-                <a href="/pages/account/payments/account_stripe_checkout.cfm?playerID=#url.playerID#&teamID=#getPlayerData.teamID#" class="nav-button" style="text-decoration: none; color: inherit;">
+                <a href="/pages/account/payments/payment_status.cfm?playerID=#url.playerID#" class="nav-button" style="text-decoration: none; color: inherit;">
                     <i class="fa fa-credit-card-alt"></i> Payments
                 </a>
                 <a class="nav-button disabled" data-toggle="tooltip" data-trigger="click hover" data-placement="top" title="Coming Soon">

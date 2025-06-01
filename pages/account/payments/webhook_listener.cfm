@@ -13,26 +13,40 @@
         <cfset stripeSessionID = sessionObj.id>
         <cfset amountPaid = sessionObj.amount_total / 100>
         <cfset paymentMethod = "stripe">
-        <cfset metadata = sessionObj.metadata>
-
-        <!-- Safe fallback for test events -->
+        <cfset metadata = sessionObj.metadata>        <!-- Safe fallback for test events -->
         <cfset playerID = structKeyExists(metadata, "player_id") ? metadata.player_id : 0>
         <cfset teamID = structKeyExists(metadata, "team_id") ? metadata.team_id : 0>
         <cfset season = structKeyExists(metadata, "season") ? metadata.season : 0>
+        <cfset paymentType = structKeyExists(metadata, "payment_type") ? metadata.payment_type : "player">
 
-        <!-- Insert into DB -->
-        <cfquery datasource="roundleague">
-            INSERT INTO team_payments (
-                team_id, season, amount_paid, payment_method, paid_by_player_id, stripe_session_id
-            ) VALUES (
-                <cfqueryparam value="#teamID#" cfsqltype="cf_sql_integer">,
-                <cfqueryparam value="#season#" cfsqltype="cf_sql_varchar">,
-                <cfqueryparam value="#amountPaid#" cfsqltype="cf_sql_decimal">,
-                <cfqueryparam value="#paymentMethod#" cfsqltype="cf_sql_varchar">,
-                <cfqueryparam value="#playerID#" cfsqltype="cf_sql_integer">,
-                <cfqueryparam value="#stripeSessionID#" cfsqltype="cf_sql_varchar">
-            )
-        </cfquery>
+        <!-- Process payment based on payment type -->
+        <cfif paymentType EQ "captain">
+            <!-- Insert into team_payments for full team fee -->
+            <cfquery datasource="roundleague">
+                INSERT INTO team_payments (
+                    team_id, season, amount_paid, payment_method, paid_by_player_id, stripe_session_id
+                ) VALUES (
+                    <cfqueryparam value="#teamID#" cfsqltype="cf_sql_integer">,
+                    <cfqueryparam value="#season#" cfsqltype="cf_sql_varchar">,
+                    <cfqueryparam value="#amountPaid#" cfsqltype="cf_sql_decimal">,
+                    <cfqueryparam value="#paymentMethod#" cfsqltype="cf_sql_varchar">,
+                    <cfqueryparam value="#playerID#" cfsqltype="cf_sql_integer">,
+                    <cfqueryparam value="#stripeSessionID#" cfsqltype="cf_sql_varchar">
+                )
+            </cfquery>        <cfelse>
+            <!-- Insert into player_payment_contributions for partial payments -->
+            <cfquery datasource="roundleague">
+                INSERT INTO player_payment_contributions (
+                    player_id, team_id, season, amount, stripe_session_id
+                ) VALUES (
+                    <cfqueryparam value="#playerID#" cfsqltype="cf_sql_integer">,
+                    <cfqueryparam value="#teamID#" cfsqltype="cf_sql_integer">,
+                    <cfqueryparam value="#season#" cfsqltype="cf_sql_varchar">,
+                    <cfqueryparam value="#amountPaid#" cfsqltype="cf_sql_decimal">,
+                    <cfqueryparam value="#stripeSessionID#" cfsqltype="cf_sql_varchar">
+                )
+            </cfquery>
+        </cfif>
     </cfif>
 
     <!-- Respond success -->
