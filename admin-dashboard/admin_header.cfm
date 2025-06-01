@@ -92,11 +92,16 @@ Coded by www.creative-tim.com
                   <i class="nc-icon nc-album-2"></i>
                   <p>Player Photos Tool</p>
                 </a>
-              </li>
-              <li <cfif findNoCase("teamsOverview", CGI.REQUEST_URL)>class="active"</cfif>>
+              </li>              <li <cfif findNoCase("teamsOverview", CGI.REQUEST_URL)>class="active"</cfif>>
                 <a href="/admin-dashboard/pages/teamsOverview/teamsOverview.cfm">
                   <i class="nc-icon nc-bullet-list-67"></i>
                   <p>Teams Overview</p>
+                </a>
+              </li>
+              <li <cfif findNoCase("teamFinances", CGI.REQUEST_URL)>class="active"</cfif>>
+                <a href="/admin-dashboard/pages/teamFinances/teamFinances.cfm">
+                  <i class="nc-icon nc-money-coins"></i>
+                  <p>Team Finances</p>
                 </a>
               </li>
               <li <cfif findNoCase("seasons", CGI.REQUEST_URL)>class="active"</cfif>>

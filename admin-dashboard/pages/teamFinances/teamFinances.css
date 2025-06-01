@@ -1,0 +1,98 @@
+/* Team Finances Custom Styles */
+.progress {
+  height: 20px;
+  border-radius: 10px;
+  background-color: #f2f2f2;
+}
+
+.progress-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+}
+
+.card-stats .card-body {
+  padding: 15px;
+}
+
+.card-stats .card-body .numbers p {
+  margin-bottom: 0;
+}
+
+.card-stats .card-body .numbers .card-title {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.icon-big {
+  font-size: 3em;
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+#financeTable th {
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+#financeTable td {
+  vertical-align: middle;
+}
+
+.badge.badge-primary {
+  background-color: #51cbce;
+  color: white;
+}
+
+/* Make charts responsive */
+canvas {
+  max-width: 100%;
+}
+
+/* Modal styling */
+#teamDetailsContent {
+  min-height: 200px;
+  position: relative;
+}
+
+/* Custom card styling */
+.card-header {
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.card-footer {
+  border-top: 1px solid #f1f1f1;
+}
+
+.stats {
+  color: #777;
+  font-size: 0.8em;
+}
+
+/* Media queries for better responsive behavior */
+@media (max-width: 767px) {
+  .card-stats .card-body .numbers {
+    text-align: center;
+  }
+
+  .card-stats .icon-big {
+    margin-bottom: 10px;
+  }
+
+  .card-stats .col-5,
+  .card-stats .col-7 {
+    max-width: 100%;
+    flex: 0 0 100%;
+  }
+}
