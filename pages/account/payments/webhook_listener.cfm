@@ -5,7 +5,7 @@
     <cfset stripeEvent = deserializeJson(rawJson)>
 
     <!-- DEBUG log -->
-    <cffile action="append" file="#expandPath('./webhook_log.txt')#" output="#now()# - #rawJson#" addnewline="yes">
+    <!--- <cffile action="append" file="#expandPath('./webhook_log.txt')#" output="#now()# - #rawJson#" addnewline="yes"> --->
 
     <!-- Handle the event -->
     <cfif stripeEvent.type EQ "checkout.session.completed">
@@ -18,7 +18,7 @@
         <!-- Safe fallback for test events -->
         <cfset playerID = structKeyExists(metadata, "player_id") ? metadata.player_id : 0>
         <cfset teamID = structKeyExists(metadata, "team_id") ? metadata.team_id : 0>
-        <cfset season = "Spring 2025">
+        <cfset season = structKeyExists(metadata, "season") ? metadata.season : 0>
 
         <!-- Insert into DB -->
         <cfquery datasource="roundleague">

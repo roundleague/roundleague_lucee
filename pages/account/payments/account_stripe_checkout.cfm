@@ -22,6 +22,7 @@
   <cfhttpparam type="formField" name="line_items[0][quantity]" value="1">
   <cfhttpparam type="formField" name="metadata[player_id]" value="#playerID#">
   <cfhttpparam type="formField" name="metadata[team_id]" value="#teamID#">
+  <cfhttpparam type="formField" name="metadata[season]" value="#session.currentSeasonID#">
 </cfhttp>
 
 <cfset stripeData = deserializeJSON(stripeResponse.fileContent)>
