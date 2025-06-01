@@ -196,11 +196,10 @@
                                         <h5 class="card-title">Pay Full Team Fee</h5>
                                     </div>
                                     <div class="card-body">
-                                        <p>Pay the entire team fee or remaining balance.</p>
-                                        <cfif teamPaymentStatus.isFullyPaid>
+                                        <p>Pay the entire team fee or remaining balance.</p>                                        <cfif teamPaymentStatus.isFullyPaid>
                                             <button class="btn btn-success btn-round" disabled>Already Paid</button>
                                         <cfelse>
-                                            <a href="/pages/account/payments/account_stripe_checkout.cfm?playerID=#url.playerID#&teamID=#playerTeamInfo.teamID#&paymentType=captain" 
+                                            <a href="/pages/account/payments/account_stripe_checkout.cfm?playerID=#url.playerID#&teamID=#playerTeamInfo.teamID#&paymentType=captain&amount=#teamPaymentStatus.remainingBalance#" 
                                                class="btn btn-danger btn-round">
                                                Pay $#numberFormat(teamPaymentStatus.remainingBalance, '999,999.99')#
                                             </a>
