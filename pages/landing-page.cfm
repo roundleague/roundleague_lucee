@@ -1,7 +1,6 @@
 <cfinclude template="/header.cfm">
 
 <cfoutput>
-
   <div class="page-header video-container" data-parallax="true">
     <video playsinline autoplay muted loop>
         <source src="/assets/video/roundleague_promo.mp4" type="video/mp4" />

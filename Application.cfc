@@ -1,4 +1,4 @@
-﻿component {
+component {
     this.name = "RoundLeague";
     this.datasource = "roundleague";
     this.sessionManagement = true;
@@ -19,8 +19,12 @@
         return true;
     }
 
-    // Need to come back to this
     function onApplicationStart() {
         session.LoggedIn = false;
+
+        // ✅ Load API keys into application scope
+        include "api-keys.cfm";
+
+        return true;
     }
 }
