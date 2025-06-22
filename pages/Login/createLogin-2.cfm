@@ -1,3 +1,5 @@
+<!--- Also can re-use this logic down the line for email verification --->
+
 <cfinclude template="/header.cfm">
 
 <!--- Page Specific CSS/JS Here --->

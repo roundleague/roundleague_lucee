@@ -43,9 +43,24 @@
   <script src="/assets/js/plugins/nouislider.min.js" type="text/javascript"></script>
   <!--  Plugin for the DatePicker, full documentation here: https://github.com/uxsolutions/bootstrap-datepicker -->
   <script src="/assets/js/plugins/moment.min.js"></script>
-  <script src="/assets/js/plugins/bootstrap-datepicker.js" type="text/javascript"></script>
-  <!-- Control Center for Paper Kit: parallax effects, scripts for the example pages etc -->
+  <script src="/assets/js/plugins/bootstrap-datepicker.js" type="text/javascript"></script>  <!-- Control Center for Paper Kit: parallax effects, scripts for the example pages etc -->
   <script src="/assets/js/paper-kit.js?v=2.2.2" type="text/javascript"></script>
+    <script>
+    // Initialize all tooltips
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip({
+        trigger: 'click hover',  // Show on both click and hover
+        container: 'body',       // Better positioning
+        delay: { "show": 0, "hide": 2000 }  // Hide after 2 seconds
+      }).on('shown.bs.tooltip', function () {
+        // Start a timer to hide the tooltip after 2 seconds
+        var btn = this;
+        setTimeout(function() {
+          $(btn).tooltip('hide');
+        }, 2000);
+      });
+    });
+  </script>
 </body>
 
 </html>

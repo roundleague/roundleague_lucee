@@ -46,7 +46,7 @@
   <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
   <!--     Fonts and icons     -->
   <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
-  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
   <!-- CSS Files -->
   <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
   <link href="/assets/css/paper-kit.css?v=2.2.0" rel="stylesheet" />
@@ -100,6 +100,7 @@
               Teams
             </a>
           </li>
+          <!--- This should be hidden if we are logged in --->
           <div class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" data-toggle="dropdown" id="dropdownMenuButton" href="##pk" role="button" aria-haspopup="true" aria-expanded="false">Register</a>
             <ul class="dropdown-menu dropdown-info" aria-labelledby="dropdownMenuButton">
@@ -138,8 +139,6 @@
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item" href="/assets/espn_scoreboard/scoreboard.html">Scoreboard</a>
                 </cfif>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="/pages/login/captains_login.cfm">Captain Login</a>
                 <!--- <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="/pages/store/store.cfm">Merch Store</a> --->
                 <!--- <div class="dropdown-divider"></div>
@@ -149,7 +148,7 @@
 
               <!--- Account Section --->
               <!--- Toggle on dev using 1 EQ 2 --->
-              <cfif isDefined("session.captainLoggedIn")>
+              <cfif isDefined("session.playerLoggedIn")>
                 <li class="nav-item dropdown">
                     <a href="javascript:;" class="nav-link navbar-brand" data-toggle="dropdown" width="30" height="30" aria-expanded="false">
                       <div class="profile-photo-small">
@@ -157,14 +156,13 @@
                       </div>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-right dropdown-danger">
-                      <div class="dropdown-header">My Account</div>
-
-                        <cfoutput>
-                          <cfset captainLinkURL = "/pages/captain/captain_home.cfm?playerID=#session.captainID#">
+                      <div class="dropdown-header">My Account</div>                        <cfoutput>
+                          <cfset accountHomeLink = "/pages/account/account_home.cfm?playerID=#session.playerID#">
                         </cfoutput>
                         
-
-                        <a class="dropdown-item" <cfoutput> href="#captainLinkURL#" </cfoutput>>My Team</a>
+                        <a class="dropdown-item" <cfoutput> href="#accountHomeLink#" </cfoutput>>My Team</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="/scripts/clearSession.cfm?redirect=/pages/landing-page.cfm">Log Out</a>
 <!---                       <a class="dropdown-item" href="javascript:;">Edit Info</a>
                       <div class="dropdown-divider"></div>
                       <a class="dropdown-item" href="javascript:;">Edit Team</a>
@@ -176,7 +174,7 @@
                       <a class="dropdown-item" href="javascript:;">Payments</a> --->
                     </ul>
                 </li>
-              <cfelseif findNoCase("127.0.0.1", CGI.HTTP_HOST) AND !isDefined("session.captainLoggedIn")>
+              <cfelseif !isDefined("session.captainLoggedIn")>
                 <li class="nav-item">
                   <a class="nav-link" rel="tooltip" data-placement="bottom" href="/pages/Login/captains_login.cfm">
                     Log In

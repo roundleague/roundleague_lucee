@@ -14,7 +14,7 @@
       <cfif isDefined("form.submitLogin")>
         <cfquery name="Authenticate">
           SELECT
-            password, playerID
+            password, playerID, role
           FROM
             Users
           WHERE
@@ -23,9 +23,17 @@
             Status = 'Active'
         </cfquery>
         <cfif Authenticate.password EQ hash(form.password, "SHA")>
-          <cfset session.captainLoggedIn = true>
-          <cfset session.captainID = Authenticate.playerID>
-          <cflocation url="../captain/captain_home.cfm?playerID=#Authenticate.playerID#">
+          <cfif Authenticate.role EQ "Player">
+            <cfset session.playerLoggedIn = true>
+            <cfset session.playerID = Authenticate.playerID>
+            <cflocation url="../account/account_home.cfm?playerID=#Authenticate.playerID#">
+          <cfelseif Authenticate.role EQ "Captain">
+            <cfset session.playerLoggedIn = true>
+            <cfset session.playerID = Authenticate.playerID>
+            <cfset session.captainLoggedIn = true>
+            <cfset session.captainID = Authenticate.playerID>
+            <cflocation url="../account/account_home.cfm?playerID=#Authenticate.playerID#">
+          </cfif>
         <cfelse>
           <cfset invalidLogin = true>
         </cfif>
@@ -46,7 +54,7 @@
                <h3 class="title mx-auto">Welcome</h3>
                <form class="register-form" method="POST">
                   <cfif invalidLogin>
-                      Credentials not found. If you have not signed up for a new captains account, please register.<br>
+                      Credentials not found. If you have not signed up for an account, please register.<br>
                   </cfif>
                   <label>Email</label>
                   <input name="userName" type="text" class="form-control" placeholder="Email">
@@ -54,8 +62,8 @@
                   <input name="password" type="password" class="form-control" placeholder="Password">
                   <button class="btn btn-danger btn-block btn-round" name="submitLogin">Log In</button>
                   <!--- <button class="btn btn-danger btn-block btn-round" name="forgotPassword">Forgot Password</button> --->
-                  <br>OR
-                  <button class="btn btn-danger btn-block btn-round" name="createLogin">Register New Captains Account</button>
+                  <!--- <br>OR
+                  <button class="btn btn-danger btn-block btn-round" name="createLogin">Register New Captains Account</button> --->
                </form>
             </div>
           </div>

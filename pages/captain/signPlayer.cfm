@@ -71,7 +71,7 @@
 </cfquery>
 
 <cfquery name="freeAgentPool" datasource="roundleague">
-	SELECT firstName, lastName, HighestLevel, height, position, weight, instagram, phone, p.playerID, p.PermissionToShare
+	SELECT DISTINCT firstName, lastName, HighestLevel, height, position, weight, instagram, phone, p.playerID, p.PermissionToShare
 	FROM players p 
 	JOIN roster r on r.playerID = p.playerID
 	WHERE r.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
