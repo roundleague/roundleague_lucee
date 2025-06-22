@@ -84,6 +84,13 @@
                 <cfcase value="5,6"><cfreturn 7></cfcase>
                 <cfdefaultcase><cfreturn 0></cfdefaultcase> 
             </cfswitch>
+        <cfelseif numTeams EQ 7>
+            <cfswitch expression="#fromGameId#"> 
+                <cfcase value="2,3"><cfreturn 6></cfcase> <!-- 2/7 and 3/6 advance to 6 -->
+                <cfcase value="4"><cfreturn 5></cfcase>    <!-- 4/5 advances to 5 (vs seed 1) -->
+                <cfcase value="5,6"><cfreturn 7></cfcase>  <!-- Winners of 5 and 6 go to Championship -->
+                <cfdefaultcase><cfreturn 0></cfdefaultcase> 
+            </cfswitch>
         <cfelseif numTeams EQ 6>
             <cfswitch expression="#fromGameId#"> 
                 <cfcase value="1"><cfreturn 3></cfcase>
