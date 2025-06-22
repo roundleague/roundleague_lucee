@@ -174,7 +174,7 @@
                       <a class="dropdown-item" href="javascript:;">Payments</a> --->
                     </ul>
                 </li>
-              <cfelseif !isDefined("session.captainLoggedIn")>
+              <cfelseif !isDefined("session.playerLoggedIn")>
                 <li class="nav-item">
                   <a class="nav-link" rel="tooltip" data-placement="bottom" href="/pages/Login/captains_login.cfm">
                     Log In
