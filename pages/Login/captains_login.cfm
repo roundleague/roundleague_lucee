@@ -40,11 +40,40 @@
       </cfif>
 
       <cfif isDefined("form.forgotPassword")>
-        <cflocation url="forgotPassword.cfm">
-      </cfif>
-
-      <cfif isDefined("form.createLogin")>
-        <cflocation url="createLogin.cfm">
+        <cfquery name="GetUser">
+          SELECT playerID, Username FROM Users WHERE Username = <cfqueryparam cfsqltype="varchar" value="#form.userName#"> AND Status = 'Active'
+        </cfquery>
+        <cfif GetUser.recordCount EQ 1>
+          <cfset confirmationCode = createUUID()>
+          <!--- Insert or update confirmationCode in pending_signups --->
+          <cfquery>
+            DELETE FROM pending_signups WHERE userID = <cfqueryparam cfsqltype="integer" value="#GetUser.playerID#">
+          </cfquery>
+          <cfquery>
+            INSERT INTO pending_signups (userID, confirmationCode) VALUES (
+              <cfqueryparam cfsqltype="integer" value="#GetUser.playerID#">,
+              <cfqueryparam cfsqltype="varchar" value="#confirmationCode#">
+            )
+          </cfquery>
+          <cfset protocol = (structKeyExists(cgi, "https") and cgi.https eq "on") ? "https" : "http">
+          <cfset serverName = cgi.server_name>
+          <cfset port = "">
+          <cfif serverName EQ "127.0.0.1" OR serverName EQ "localhost">
+            <cfset port = ":8888">
+          </cfif>
+          <cfset resetLink = protocol & "://" & serverName & port & "/pages/Login/reset_password.cfm?code=" & confirmationCode>
+          <cfmail to="#GetUser.Username#" from="richard.ung@theroundleague.com" subject="Password Reset Request">
+            You requested a password reset. Please click the link below to set a new password:
+            
+            #resetLink#
+            
+            If you did not request this, please ignore this email.
+          </cfmail>
+          <cfset passwordResetSent = true>
+        <cfelse>
+          <cfset passwordResetSent = false>
+          <cfset passwordResetError = true>
+        </cfif>
       </cfif>
 
         <!--- Content Here --->
@@ -61,10 +90,15 @@
                   <label>Password</label>
                   <input name="password" type="password" class="form-control" placeholder="Password">
                   <button class="btn btn-danger btn-block btn-round" name="submitLogin">Log In</button>
-                  <!--- <button class="btn btn-danger btn-block btn-round" name="forgotPassword">Forgot Password</button> --->
+                  <button class="btn btn-secondary btn-block btn-round" name="forgotPassword">Forgot Password</button>
                   <!--- <br>OR
                   <button class="btn btn-danger btn-block btn-round" name="createLogin">Register New Captains Account</button> --->
                </form>
+               <cfif isDefined("passwordResetSent") and passwordResetSent>
+                  <div class="alert alert-success">A password reset link has been sent to your email address.</div>
+                <cfelseif isDefined("passwordResetError") and passwordResetError>
+                  <div class="alert alert-danger">Email address not found or inactive.</div>
+                </cfif>
             </div>
           </div>
         </div>
