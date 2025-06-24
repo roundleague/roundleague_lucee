@@ -62,12 +62,10 @@
             <cfset port = ":8888">
           </cfif>
           <cfset resetLink = protocol & "://" & serverName & port & "/pages/Login/reset_password.cfm?code=" & confirmationCode>
-          <cfmail to="#GetUser.Username#" from="richard.ung@theroundleague.com" subject="Password Reset Request">
-            You requested a password reset. Please click the link below to set a new password:
-            
-            #resetLink#
-            
-            If you did not request this, please ignore this email.
+          <cfset userEmail = GetUser.Username>
+          <cfinclude template="/pages/Login/reset_password_email.cfm">
+          <cfmail to="#userEmail#" from="richard.ung@theroundleague.com" subject="Password Reset Request" type="html">
+            #htmlEmail#
           </cfmail>
           <cfset passwordResetSent = true>
         <cfelse>
