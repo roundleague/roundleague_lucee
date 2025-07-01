@@ -1,29 +1,29 @@
 .registerRadio {
-	transform: scale(1.5); 
+  transform: scale(1.5);
 }
 
-.firstRadio{
-	margin-left: 20px;
+.firstRadio {
+  margin-left: 20px;
 }
 
-.secondRadio{
-	margin-left: 10px;
+.secondRadio {
+  margin-left: 10px;
 }
 
-.nonTextQuestions{
-	padding: 10px;
+.nonTextQuestions {
+  padding: 10px;
 }
 
-.modalBtn{
-	margin-bottom: 20px;
+.modalBtn {
+  margin-bottom: 20px;
 }
 
-.biggerLabel{
-	font-size: large;
+.biggerLabel {
+  font-size: large;
 }
 
-ul.acknowledge{
-	float: none;
+ul.acknowledge {
+  float: none;
 }
 
 /* Snackbar */
@@ -50,23 +50,47 @@ ul.acknowledge{
 }
 
 @-webkit-keyframes fadein {
-  from {bottom: 0; opacity: 0;} 
-  to {bottom: 30px; opacity: 1;}
+  from {
+    bottom: 0;
+    opacity: 0;
+  }
+  to {
+    bottom: 30px;
+    opacity: 1;
+  }
 }
 
 @keyframes fadein {
-  from {bottom: 0; opacity: 0;}
-  to {bottom: 30px; opacity: 1;}
+  from {
+    bottom: 0;
+    opacity: 0;
+  }
+  to {
+    bottom: 30px;
+    opacity: 1;
+  }
 }
 
 @-webkit-keyframes fadeout {
-  from {bottom: 30px; opacity: 1;} 
-  to {bottom: 0; opacity: 0;}
+  from {
+    bottom: 30px;
+    opacity: 1;
+  }
+  to {
+    bottom: 0;
+    opacity: 0;
+  }
 }
 
 @keyframes fadeout {
-  from {bottom: 30px; opacity: 1;}
-  to {bottom: 0; opacity: 0;}
+  from {
+    bottom: 30px;
+    opacity: 1;
+  }
+  to {
+    bottom: 0;
+    opacity: 0;
+  }
 }
 /* End Snackbar */
 
@@ -76,11 +100,11 @@ ul.acknowledge{
   color: red;
 }
 
-.toastMessage{
+.toastMessage {
   font-weight: bold;
 }
 
-.teamSelect{
+.teamSelect {
   font-size: large;
   color: red;
   font-weight: 800;
@@ -96,5 +120,54 @@ ul.acknowledge{
 }
 
 label {
-    font-weight: 600;
+  font-weight: 600;
+}
+
+/* Banner Alert Styles */
+.upgrade-banner {
+  width: 100%;
+  background: #fffbea;
+  color: #856404;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 16px;
+  font-size: 1rem;
+  position: relative;
+  z-index: 1000;
+  border-bottom: 1px solid #ffe8a1;
+  box-sizing: border-box;
+}
+.banner-icon {
+  font-size: 1.5em;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+.banner-text {
+  flex: 1;
+}
+.banner-close {
+  background: none;
+  border: none;
+  color: #856404;
+  font-size: 1.5em;
+  margin-left: 12px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 4px;
+}
+@media (max-width: 600px) {
+  .upgrade-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    font-size: 0.98rem;
+    padding: 10px 8px;
+  }
+  .banner-close {
+    align-self: flex-end;
+    margin-top: 4px;
+  }
+  .banner-icon {
+    margin-bottom: 4px;
+  }
 }

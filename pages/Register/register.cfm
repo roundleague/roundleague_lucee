@@ -2,7 +2,7 @@
 
 <!--- Page Specific CSS/JS Here --->
 <link href="https://demos.creative-tim.com/paper-kit-2-pro/assets/css/paper-kit.min.css?v=2.3.1" rel="stylesheet">
-<link href="../Register/register.css?v=1.1" rel="stylesheet">
+<link href="../Register/register.css?v=1.2" rel="stylesheet">
 
 <cfoutput>
 
@@ -93,12 +93,22 @@ I, for myself and on behalf of my heirs, assigns, personal representatives and n
 
         <!--- Content Here --->
 		<div class="wrapper">
-		    <div class="profile-content section">
+		    <div class="profile-content section" style="padding-top: 20px">
+		      <div class="container" style="padding-bottom: 20px">
+					<!-- Responsive Banner Alert -->
+					<div id="upgradeBanner" class="upgrade-banner" style="padding-bottom: 10px">
+					<span class="banner-text"><strong>Returning player?</strong> We've upgraded! All players must re-register and create a new account this season.</span>
+					<button class="banner-close" aria-label="Dismiss banner" onclick="document.getElementById('upgradeBanner').style.display='none'">&times;</button>
+					</div>
+		      </div>
+
+
+
 		      <div class="container">
 		        <div class="row">
 		          <div class="col-md-6 ml-auto mr-auto">
 		            <form class="settings-form" method="POST">
-					<!--- <div class="registerNote">Note: We are currently not taking free agent sign ups. Please only register if you have verified with your team captain!</div class="registerNote"> --->
+
 	                  <div class="form-group">
 	                    <label class="teamSelect">Select Season</label><br>
 						<select class="seasonSelect" name="seasonSelect" style="padding: 7px;">
