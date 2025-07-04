@@ -64,17 +64,19 @@
           <span aria-hidden="true">x</span>
         </button>
       </div>
+
       <div class="modal-body"> 
-        <p>Progression will set the newest season as active and do the following</p>
+        <p>Progression will set the selected season as active and do the following:</p>
         <ul>
-          <li>Move all current active teams to new season</li>
-          <li>Move all current roster records to new season</li>
-          <li>Move all leagues to new season</li>
-          <li>Move all current divisions to new season</li>
-          <li>Move all scheduled games to new season (to be edited using scheduler)</li>
+          <li>Deactivate the previous season</li>
+          <li>Move all current active teams to the new season</li>
+          <li>Copy all current roster records to the new season</li>
+          <li>Copy all leagues to the new season</li>
         </ul>
-        <p>Are you sure you wish to proceed and progress to the next season? </p>
+        <p><strong>Note:</strong> Divisions and scheduled games will <em>not</em> be carried over. You will need to manually create or update them for the new season.</p>
+        <p>Are you sure you wish to proceed and progress to the next season?</p>
       </div>
+
       <div class="modal-footer">
         <div class="left-side">
           <form id="progressSeasonForm" class="settings-form" method="POST">
