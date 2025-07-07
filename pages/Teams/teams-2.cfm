@@ -1,7 +1,7 @@
 <cfinclude template="/header.cfm">
 
 <!--- Page Specific CSS/JS Here --->
-<link rel="stylesheet" href="../Teams/teams-2.css">
+<link rel="stylesheet" href="../Teams/teams-2.css?v=1.0">
 
 <cfoutput>
 
@@ -52,13 +52,14 @@
   WHERE DivisionName IN (<cfqueryparam value="#lastFourDivisions#" cfsqltype="CF_SQL_VARCHAR" list="true">)
 </cfquery>
 
+<cfset isSingleDivision = (totalDivisions EQ 1) />
 
 <div class="main" style="background-color: white; margin-top: 50px;">
     <div class="section text-center">
       <div class="container">
 
       <!--- Loop through divisions and output 4 divisions at a time --->
-      <div class="standingsContainer topBlock">
+      <div class="standingsContainer topBlock#isSingleDivision ? ' single-division' : ''#">
         <cfif first4Divisions.recordCount>
           <cfset currentDivision = "">
           <cfoutput query="first4Divisions">
