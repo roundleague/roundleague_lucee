@@ -124,9 +124,9 @@
 
 		<cfquery name="checkForPreviousPlayerNewTeam" datasource="roundleague">
 			SELECT rosterID
-		  	FROM roster
-		  	WHERE playerID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#checkDuplicate.playerID#">
-		  	AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+			FROM roster
+			WHERE playerID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#checkDuplicate.playerID#">
+			AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
 		</cfquery>
 		<cfif checkForPreviousPlayerNewTeam.recordCount>
 			<cfquery name="removePlayer" datasource="roundleague">
@@ -221,14 +221,15 @@
 </cfif>
 
 <div class="main" style="background-color: white; margin-top: 50px;">
-    <div class="section text-center">
-      <div class="container">
+	<div class="section text-center">
+	  <div class="container">
 
-        <!--- Content Here --->
-        <p class="toastMessage">#toastMessage#</p>
+		<!--- Content Here --->
+		<p class="toastMessage">#toastMessage#</p>
+		<a href="/pages/Login/captains_login.cfm" class="btn btn-primary btn-round mt-3">Log In to Your Account</a>
 
-      </div>
-    </div>
+	  </div>
+	</div>
 </div>
 </cfoutput>
 <cfinclude template="/footer.cfm">
