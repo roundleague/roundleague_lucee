@@ -108,6 +108,10 @@ div.standingsDiv {
 }
 .standingsContainer {
   display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+  margin-bottom: 2rem;
 }
 
 .flex-item {
@@ -139,6 +143,93 @@ a {
   justify-content: center;
   align-items: flex-start;
 }
-.standingsContainer.single-division .standingsDiv {
-  margin: 0 auto;
+
+.standingsContainer.single-division {
+  justify-content: center;
+}
+
+.standingsDiv {
+  background: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08), 0 1.5px 4px rgba(0, 0, 0, 0.04);
+  padding: 1.5rem 1.5rem 1rem 1.5rem;
+  min-width: 260px;
+  max-width: 340px;
+  flex: 1 1 260px;
+  margin: 0.5rem 0;
+  transition: box-shadow 0.2s;
+}
+
+.standingsDiv:hover {
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.13), 0 2px 8px rgba(0, 0, 0, 0.07);
+}
+
+.standingsh4 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #2c3e50;
+  letter-spacing: 0.02em;
+}
+
+.standingsUl {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.standingsUl li {
+  margin-bottom: 0.75rem;
+}
+
+.standingsUl li a {
+  display: block;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 500;
+  background: #f7f9fa;
+  transition: background 0.15s, color 0.15s;
+}
+
+.standingsUl li a:hover {
+  background: #e3e9f0;
+  color: #0056b3;
+}
+
+@media (max-width: 900px) {
+  .standingsContainer {
+    gap: 1rem;
+  }
+
+  .standingsDiv {
+    min-width: 90vw;
+    max-width: 98vw;
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .standingsContainer {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .standingsDiv {
+    min-width: 98vw;
+    max-width: 99vw;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+  }
+
+  .standingsh4 {
+    font-size: 1.1rem;
+  }
+
+  .standingsUl li a {
+    font-size: 1rem;
+    padding: 0.5rem 0.5rem;
+  }
 }

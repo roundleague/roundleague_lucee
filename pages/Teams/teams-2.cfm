@@ -1,7 +1,7 @@
 <cfinclude template="/header.cfm">
 
 <!--- Page Specific CSS/JS Here --->
-<link rel="stylesheet" href="../Teams/teams-2.css?v=1.0">
+<link rel="stylesheet" href="../Teams/teams-2.css?v=1.1">
 
 <cfoutput>
 
