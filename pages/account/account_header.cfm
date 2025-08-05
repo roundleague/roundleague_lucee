@@ -56,6 +56,10 @@
                     </cfif>
                 </div>
             </div>
+
+            <!--- Extracted banner logic into a reusable component --->
+            <cfinclude template="/components/merch_banner.cfm">
+
             <div class="navigation">
                 <a href="/pages/account/account_home.cfm?playerID=#url.playerID#" class="nav-button" style="text-decoration: none; color: inherit;">
                     <i class="fa fa-home"></i> Account Home

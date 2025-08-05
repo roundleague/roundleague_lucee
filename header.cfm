@@ -139,8 +139,8 @@
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item" href="/assets/espn_scoreboard/scoreboard.html">Scoreboard</a>
                 </cfif>
-                <!--- <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="/pages/store/store.cfm">Merch Store</a> --->
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="/pages/store/store.cfm">Merch Store</a>
                 <!--- <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="/pages/sponsors/sponsors.cfm">Sponsors</a> --->
               </ul>
