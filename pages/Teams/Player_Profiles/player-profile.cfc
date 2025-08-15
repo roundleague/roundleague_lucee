@@ -23,6 +23,7 @@
 		JOIN roster r ON r.playerID = ps.playerID AND r.seasonID = s.seasonID
 		JOIN teams t on t.teamID = r.teamID
 		WHERE r.playerID = <cfqueryparam cfsqltype="INTEGER" value="#playerID#">
+		ORDER BY s.seasonID DESC
    </cfquery>
    <cfreturn careerStats>
  </cffunction>

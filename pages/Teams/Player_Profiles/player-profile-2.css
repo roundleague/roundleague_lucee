@@ -105,3 +105,48 @@ mark {
 .dark-color {
     color: #20247b;
 }
+
+/* Career Stats Toggle Functionality */
+.season-row-hidden {
+    display: none;
+}
+
+.season-row-visible {
+    display: table-row;
+}
+
+#toggleSeasonsBtn {
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+#toggleSeasonsBtn:hover {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+#toggleIcon {
+    transition: transform 0.3s ease;
+}
+
+#toggleIcon.rotated {
+    transform: rotate(180deg);
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+    #toggleSeasonsBtn {
+        font-size: 11px;
+        padding: 3px 6px;
+        margin-left: 0 !important;
+        margin-top: 5px;
+        display: block;
+    }
+    
+    .bolder caption {
+        text-align: left;
+    }
+}

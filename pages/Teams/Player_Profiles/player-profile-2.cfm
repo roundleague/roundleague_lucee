@@ -225,7 +225,15 @@
         </form>        
 
 	        <table class="bolder">
-	          <caption>Career Stats</caption>
+	          <caption>
+	            Career Stats
+	            <cfif careerStats.recordCount GT 5>
+	              <button type="button" id="toggleSeasonsBtn" class="btn btn-sm btn-outline-primary ml-2">
+	                <span id="toggleText">Show All Seasons</span>
+	                <i id="toggleIcon" class="fa fa-chevron-down ml-1"></i>
+	              </button>
+	            </cfif>
+	          </caption>
 	          <thead>
 	            <tr class="headers">
 	            	<th>Season</th>
@@ -240,7 +248,7 @@
 	          </thead>
 	          <tbody>
                 <cfloop query="careerStats">
-                    <tr>
+                    <tr <cfif careerStats.currentRow GT 5>class="season-row-hidden"</cfif>>
                         <td data-label="Season">#careerStats.seasonName#</td>
                         <td data-label="Team">#careerStats.teamName#</td>
                         <td data-label="Points">#val(careerStats.Points)#</td>
