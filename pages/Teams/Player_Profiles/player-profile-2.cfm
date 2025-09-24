@@ -240,7 +240,7 @@
 	          </thead>
 	          <tbody>
                 <cfloop query="careerStats">
-                    <tr>
+                    <tr <cfif careerStats.currentRow GT 5>class="hidden-season"</cfif>>
                         <td data-label="Season">#careerStats.seasonName#</td>
                         <td data-label="Team">#careerStats.teamName#</td>
                         <td data-label="Points">#val(careerStats.Points)#</td>
@@ -253,6 +253,12 @@
                 </cfloop>
 	          </tbody>
 	        </table>
+	        
+	        <cfif careerStats.recordCount GT 5>
+	            <div style="text-align: center; margin: 10px 0;">
+	                <button id="showMoreSeasonsBtn" onclick="toggleSeasons()" style="background-color: ##007bff; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">Show More Seasons</button>
+	            </div>
+	        </cfif>   
 
 		 <cfif getPlayerAwards.recordCount NEQ 0>
             <table class="bolder">
@@ -278,4 +284,4 @@
 </div>
 </cfoutput>
 <cfinclude template="/footer.cfm">
-<script src="../../Teams/Player_Profiles/player-profile-2.js?v=1.1"></script>
+<script src="../../Teams/Player_Profiles/player-profile-2.js?v=1.2"></script>
