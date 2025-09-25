@@ -274,7 +274,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" crossorigin="anonymous"></script>
     <script src="https://kit.fontawesome.com/356f7c17e2.js" crossorigin="anonymous"></script>
-    <script src="StatsApp.js?v=1.2"></script>
+    <script src="StatsApp.js?v=1.3"></script>
     <script src="StatsApp-Export.js"></script>
     <script src="ConfirmExit.js"></script>
 </body>

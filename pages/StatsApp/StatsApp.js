@@ -373,6 +373,12 @@ document.addEventListener("click", function (e) {
     const isSelected = playerRow.classList.contains("player-selected");
     const isBench = isPlayerInBench(playerRow);
 
+    // Always remove the green highlight when Ctrl+clicking
+    const playerBox = playerRow.querySelector(".playerBox");
+    if (playerBox) {
+      playerBox.classList.remove("playerHighlight");
+    }
+
     if (isSelected) {
       // Deselect player
       playerRow.classList.remove("player-selected");
