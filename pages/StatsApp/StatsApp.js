@@ -1,353 +1,455 @@
 // A $( document ).ready() block.
-$( document ).ready(function() {
+$(document).ready(function () {
+  var globalHistory = [];
+  var playerFlag = false;
+  var playerNode;
+  var playerNodeRow;
+  var playerNodeIndex;
 
-	var globalHistory = [];
-	var playerFlag = false;
-	var playerNode;
-	var playerNodeRow;
-	var playerNodeIndex;
+  var dnpPlayerId;
 
-	var dnpPlayerId;
+  $(".saveBtn").click(function () {
+    $("#saveScoresModal").show();
 
-	$(".saveBtn").click(function(){
-		$("#saveScoresModal").show();
+    // Default the current team final score in the box to prevent confusion
+    var finalScore = $(".teamTotalPts").text();
+    $(".defaultScore").val(finalScore);
 
-		// Default the current team final score in the box to prevent confusion
-		var finalScore = $('.teamTotalPts').text();
-		$('.defaultScore').val(finalScore);
+    // Remove the player highlight to prevent any numbers from updating stats
+    $("td.playerBox").removeClass("playerHighlight");
 
-		// Remove the player highlight to prevent any numbers from updating stats
-		$("td.playerBox").removeClass("playerHighlight");
+    return false;
+  });
 
-		return false;
-	});
+  // Hidden Jersey Column for export
+  $(".jerseyNumber").keyup(function () {
+    var exportJerseyNode = $(this).parent().next();
+    exportJerseyNode.html($(this).val());
+  });
 
-	// Hidden Jersey Column for export
-	$('.jerseyNumber').keyup(function() {
-	    var exportJerseyNode = $(this).parent().next();
-	    exportJerseyNode.html($(this).val());
-	});
+  $(".dnpIcon").click(function () {
+    // Get the Player name to display in confirmation
+    var playerName = $(this).next(".playerName").text();
+    $(".dnpPlayer").text(playerName);
 
-	$('.dnpIcon').click(function(){
-		// Get the Player name to display in confirmation
-		var playerName = $(this).next('.playerName').text();
-		$('.dnpPlayer').text(playerName);
+    $("#dnpModal").show();
 
-		$("#dnpModal").show();
+    // Get/Set the Player's ID to remove later
+    var rowPlayerID = $(this).parent().parent();
+    dnpPlayerId = parseInt($(rowPlayerID).attr("id").replace(/[^\d]/g, ""), 10);
 
-		// Get/Set the Player's ID to remove later
-		var rowPlayerID = $(this).parent().parent();
-		dnpPlayerId = parseInt($(rowPlayerID).attr('id').replace(/[^\d]/g, ''), 10);
+    setTimeout(function () {
+      $("td.playerBox").removeClass("playerHighlight");
+    }, 100);
+  });
 
-		setTimeout(function() {
-			$("td.playerBox").removeClass("playerHighlight");
-		   }, 100);
+  // DNP Remove Player Row
+  $(".dnpConfirm").click(function () {
+    $("#Player_" + dnpPlayerId).remove();
+    $("#dnpModal").hide();
+  });
 
-	});
+  $(document).keydown(function (e) {
+    var currentFocus = $(":focus");
+    if (
+      currentFocus.hasClass("playerName") ||
+      currentFocus.hasClass("jerseyNumber")
+    ) {
+      return;
+    }
+    if (playerNode.hasClass("playerHighlight")) {
+      switch (e.which) {
+        case 97:
+        case 49:
+          hotKeyAdd("FGM");
+          break;
+        case 98:
+        case 50:
+          hotKeyAdd("FGA");
+          break;
+        case 99:
+        case 51:
+          hotKeyAdd("3FGM");
+          break;
+        case 100:
+        case 52:
+          hotKeyAdd("3FGA");
+          break;
+        case 101:
+        case 53:
+          hotKeyAdd("REBS");
+          break;
+        case 102:
+        case 54:
+          hotKeyAdd("ASTS");
+          break;
+        case 103:
+        case 55:
+          hotKeyAdd("STLS");
+          break;
+        case 104:
+        case 56:
+          hotKeyAdd("BLKS");
+          break;
+        case 105:
+        case 57:
+          hotKeyAdd("TO");
+          break;
+        case 83: // s
+          playerNodeIndex = $(playerNode).parent().index() + 1;
+          // console.log("DOWN - playerNodeIndex: " + playerNodeIndex);
+          if (playerNodeIndex < 5) {
+            var newPlayerNode = $("tr").find(".playerBox")[playerNodeIndex];
+            $(newPlayerNode).trigger("click");
+          }
+          break;
+        case 87: // w
+          playerNodeIndex = $(playerNode).parent().index() - 1;
+          // console.log("UP - playerNodeIndex: " + playerNodeIndex);
+          var newPlayerNode = $("tr").find(".playerBox")[playerNodeIndex];
+          $(newPlayerNode).trigger("click");
+          break;
+      }
+    }
+  });
 
-	// DNP Remove Player Row
-	$('.dnpConfirm').click(function(){
-		$('#Player_'+dnpPlayerId).remove();
-		$("#dnpModal").hide();
-	})
+  $(".playerBox").click(function () {
+    // var row = $(this).parent('tr').index(),
+    //         column = $(this).index();
+    // console.log(row, column);
 
-	 $(document).keydown(function(e) {
-	 	var currentFocus = $(':focus');
-	 	if(currentFocus.hasClass('playerName') || currentFocus.hasClass('jerseyNumber')){
-	 		return;
-	 	}
-	 	if(playerNode.hasClass("playerHighlight")){
-			switch (e.which) {
-			 case 97:
-			 case 49:
-			 	hotKeyAdd("FGM");
-			   	break;
-			 case 98:
-			 case 50:
-			   	hotKeyAdd("FGA");
-			   	break;
-			 case 99:
-			 case 51:
-			 	hotKeyAdd("3FGM");
-			   	break;
-			 case 100:  	
-			 case 52:
-			   	hotKeyAdd("3FGA");
-			   	break;
-			 case 101: 
-			 case 53:
-			 	hotKeyAdd("REBS");
-			   	break;
-			 case 102: 
-			 case 54:
-			   	hotKeyAdd("ASTS");
-			   	break;
-			 case 103: 
-			 case 55:
-			 	hotKeyAdd("STLS");
-			   	break;
-			 case 104: 
-			 case 56:
-			   	hotKeyAdd("BLKS");
-			   	break;
-			 case 105: 
-			 case 57:
-			   	hotKeyAdd("TO");
-			   	break;
-			 case 83: // s
-			   	playerNodeIndex = $(playerNode).parent().index() + 1;
-			   	// console.log("DOWN - playerNodeIndex: " + playerNodeIndex);
-			   	if(playerNodeIndex < 5){
-				   	var newPlayerNode = $("tr").find(".playerBox")[playerNodeIndex];
-				   	$(newPlayerNode).trigger('click');
-			   	}
-			   	break;
-			 case 87: // w
-			   	playerNodeIndex = $(playerNode).parent().index() - 1;
-			   	// console.log("UP - playerNodeIndex: " + playerNodeIndex);
-			   	var newPlayerNode = $("tr").find(".playerBox")[playerNodeIndex];
-			   	$(newPlayerNode).trigger('click');
-			   	break;		   	
-			}
-	 	}
-	 });
+    $("td").not(this).removeClass("playerHighlight");
+    $(this).toggleClass("playerHighlight");
+    playerNode = $(this);
+    playerNodeRow = $(this).parent("tr");
+  });
 
-	$(".playerBox").click(function() {
-	     // var row = $(this).parent('tr').index(),
-	     //         column = $(this).index();
-	     // console.log(row, column);
+  // $(document).keydown(function(e){
+  // 	if( e.which === 90 && e.ctrlKey )
+  // 	{
+  // 		e.preventDefault();
+  //         $('.undoBtn').trigger("click");
+  //     }
+  // });
 
-	     $("td").not(this).removeClass("playerHighlight");
-	     $(this).toggleClass("playerHighlight");
-	     playerNode = $(this);
-	     playerNodeRow = $(this).parent('tr');
-	})
+  function hotKeyAdd(category) {
+    var addNode = $(playerNodeRow)
+      .find("." + category)
+      .not(".button-error");
 
-	// $(document).keydown(function(e){
-	// 	if( e.which === 90 && e.ctrlKey )
-	// 	{
-	// 		e.preventDefault();
-	//         $('.undoBtn').trigger("click"); 
-	//     }          
-	// }); 
+    // Push to globalHistory
+    var undoNode = $(addNode).siblings(".button-error");
+    globalHistory.push(undoNode);
 
-	function hotKeyAdd(category){
+    var playerID = $(addNode).closest("tr").attr("id");
+    var fieldValueSpan = $(addNode).siblings(".fieldValue");
+    var fieldValue = parseInt($(addNode).siblings(".fieldValue").val());
+    var newFieldValue = fieldValue + 1;
+    fieldValueSpan.val(newFieldValue);
 
-		var addNode = $(playerNodeRow).find('.'+ category).not('.button-error')
+    /* Visual Display of Add*/
+    var tdFlash = $(addNode).parent();
+    flashBackground(tdFlash);
 
-		// Push to globalHistory
-		var undoNode = $(addNode).siblings('.button-error');
-		globalHistory.push(undoNode);
+    if ($(addNode).hasClass("FGM")) {
+      addToValue("FGA", 1, playerID);
+      addToValue("PTS", 2, playerID);
+    } else if ($(addNode).hasClass("3FGM")) {
+      addToValue("FGM", 1, playerID);
+      addToValue("FGA", 1, playerID);
+      addToValue("3FGA", 1, playerID);
+      addToValue("PTS", 3, playerID);
+    } else if ($(addNode).hasClass("3FGA")) {
+      addToValue("FGA", 1, playerID);
+    } else if ($(addNode).hasClass("FTM")) {
+      addToValue("PTS", 1, playerID);
+      addToValue("FTA", 1, playerID);
+    }
+  }
 
-		var playerID = $(addNode).closest('tr').attr('id');
-		var fieldValueSpan = $(addNode).siblings(".fieldValue");
-		var fieldValue = parseInt($(addNode).siblings(".fieldValue").val());
-		var newFieldValue = fieldValue + 1;
-		fieldValueSpan.val(newFieldValue);
+  $(".button-success").click(function () {
+    // Push to globalHistory
+    var undoNode = $(this).siblings(".button-error");
+    globalHistory.push(undoNode);
 
-		/* Visual Display of Add*/
-		var tdFlash = $(addNode).parent();
-		flashBackground(tdFlash);
+    var playerID = $(this).closest("tr").attr("id");
+    var fieldValueSpan = $(this).siblings(".fieldValue");
+    var fieldValue = parseInt($(this).siblings(".fieldValue").val());
+    var newFieldValue = fieldValue + 1;
+    fieldValueSpan.val(newFieldValue);
 
-		if($(addNode).hasClass("FGM")){
-			addToValue("FGA", 1, playerID);
-			addToValue("PTS", 2, playerID);
-		}
-		else if($(addNode).hasClass("3FGM")){
-			addToValue("FGM", 1, playerID);
-			addToValue("FGA", 1, playerID);
-			addToValue("3FGA", 1, playerID);
-			addToValue("PTS", 3, playerID);
-		}
-		else if($(addNode).hasClass("3FGA")){
-			addToValue("FGA", 1, playerID);
-		}
-		else if($(addNode).hasClass("FTM")){
-			addToValue("PTS", 1, playerID);
-			addToValue("FTA", 1, playerID);
-		}
-	}
+    if ($(this).hasClass("FGM")) {
+      addToValue("FGA", 1, playerID);
+      addToValue("PTS", 2, playerID);
+    } else if ($(this).hasClass("3FGM")) {
+      addToValue("FGM", 1, playerID);
+      addToValue("FGA", 1, playerID);
+      addToValue("3FGA", 1, playerID);
+      addToValue("PTS", 3, playerID);
+    } else if ($(this).hasClass("3FGA")) {
+      addToValue("FGA", 1, playerID);
+    } else if ($(this).hasClass("FTM")) {
+      addToValue("PTS", 1, playerID);
+      addToValue("FTA", 1, playerID);
+    } else if ($(this).hasClass("FOULS")) {
+      var currentHalf = getCurrentHalf();
+      console.log(currentHalf);
+      var currentNum = parseFloat($(".Fouls_Half_" + currentHalf).html());
+      currentNum += 1;
+      $(".Fouls_Half_" + currentHalf).html(currentNum);
+    }
+  });
 
+  $(document).keydown(function (e) {
+    if (e.which === 90 && e.ctrlKey) {
+      e.preventDefault();
+      $(".undoBtn").trigger("click");
+    }
+  });
 
-	$( ".button-success" ).click(function() {
-		// Push to globalHistory
-		var undoNode = $(this).siblings('.button-error');
-		globalHistory.push(undoNode);
+  $(".undoBtn").click(function () {
+    var undoAction = globalHistory.pop();
+    $(undoAction).trigger("click");
+  });
 
-		var playerID = $(this).closest('tr').attr('id');
-		var fieldValueSpan = $(this).siblings(".fieldValue");
-		var fieldValue = parseInt($(this).siblings(".fieldValue").val());
-		var newFieldValue = fieldValue + 1;
-		fieldValueSpan.val(newFieldValue);
+  $(".button-error").click(function () {
+    var fieldValueSpan = $(this).siblings(".fieldValue");
+    var fieldValue = parseInt($(this).siblings(".fieldValue").val());
+    var playerID = $(this).closest("tr").attr("id");
+    var newFieldValue = fieldValue - 1;
+    if (newFieldValue >= 0) {
+      fieldValueSpan.val(newFieldValue);
+      if ($(this).hasClass("FGM")) {
+        addToValue("FGA", -1, playerID);
+        addToValue("PTS", -2, playerID);
+      } else if ($(this).hasClass("3FGM")) {
+        addToValue("FGM", -1, playerID);
+        addToValue("FGA", -1, playerID);
+        addToValue("3FGA", -1, playerID);
+        addToValue("PTS", -3, playerID);
+      } else if ($(this).hasClass("3FGA")) {
+        addToValue("FGA", -1, playerID);
+      } else if ($(this).hasClass("FTM")) {
+        addToValue("PTS", -1, playerID);
+        addToValue("FTA", -1, playerID);
+      }
+    }
+  });
 
-		if($(this).hasClass("FGM")){
-			addToValue("FGA", 1, playerID);
-			addToValue("PTS", 2, playerID);
-		}
-		else if($(this).hasClass("3FGM")){
-			addToValue("FGM", 1, playerID);
-			addToValue("FGA", 1, playerID);
-			addToValue("3FGA", 1, playerID);
-			addToValue("PTS", 3, playerID);
-		}
-		else if($(this).hasClass("3FGA")){
-			addToValue("FGA", 1, playerID);
-		}
-		else if($(this).hasClass("FTM")){
-			addToValue("PTS", 1, playerID);
-			addToValue("FTA", 1, playerID);
-		}
-		else if($(this).hasClass("FOULS")){
-			var currentHalf = getCurrentHalf();
-			console.log(currentHalf);
-			var currentNum = parseFloat($('.Fouls_Half_'+currentHalf).html());
-			currentNum += 1;
-			$('.Fouls_Half_'+currentHalf).html(currentNum);
-		}
-	});
+  function addToValue(id, addValue, playerID) {
+    var fieldValueSpan = $("#" + playerID).find("#" + id);
+    var fieldValue = parseInt(fieldValueSpan.val());
+    var newFieldValue = fieldValue + addValue;
+    fieldValueSpan.val(newFieldValue);
 
-	$(document).keydown(function(e){
-		if( e.which === 90 && e.ctrlKey )
-		{
-			e.preventDefault();
-	        $('.undoBtn').trigger("click"); 
-	    }          
-	}); 
+    /* Visual Display of Add*/
+    // var tdFlash = $(fieldValueSpan).parent();
+    // flashBackground(tdFlash);
 
-	$( ".undoBtn" ).click(function() {
-		var undoAction = globalHistory.pop();
-		$(undoAction).trigger("click");
-	});
+    if (id == "PTS") {
+      var currentNum = parseFloat($(".teamTotalPts").html());
+      currentNum += addValue;
+      $(".teamTotalPts").html(currentNum);
+    }
+  }
 
-	$( ".button-error" ).click(function() {
-		var fieldValueSpan = $(this).siblings(".fieldValue");
-		var fieldValue = parseInt($(this).siblings(".fieldValue").val());
-		var playerID = $(this).closest('tr').attr('id');
-		var newFieldValue = fieldValue - 1;
-		if(newFieldValue >= 0) {
-			fieldValueSpan.val(newFieldValue);
-			if($(this).hasClass("FGM")){
-				addToValue("FGA", -1, playerID);
-				addToValue("PTS", -2, playerID);
-			}
-			else if($(this).hasClass("3FGM")){
-				addToValue("FGM", -1, playerID);
-				addToValue("FGA", -1, playerID);
-				addToValue("3FGA", -1, playerID);
-				addToValue("PTS", -3, playerID);
-			}
-			else if($(this).hasClass("3FGA")){
-				addToValue("FGA", -1, playerID);
-			}
-			else if($(this).hasClass("FTM")){
-				addToValue("PTS", -1, playerID);
-				addToValue("FTA", -1, playerID);
-			}
-		}
-	});
+  /* Drag and drop section */
+  // var fixHelperModified = function(e, tr) {
+  //     var $originals = tr.children();
+  //     var $helper = tr.clone();
+  //     $helper.children().each(function(index) {
+  //         $(this).width($originals.eq(index).width())
+  //     });
+  //     return $helper;
+  // },
+  //     updateIndex = function(e, ui) {
+  //         $('td.index', ui.item.parent()).each(function (i) {
+  //             $(this).html(i + 1);
+  //         });
+  //     };
 
-	function addToValue(id, addValue, playerID){
-		var fieldValueSpan = $("#"+playerID).find("#"+id);
-		var fieldValue = parseInt(fieldValueSpan.val());
-		var newFieldValue = fieldValue + addValue;
-		fieldValueSpan.val(newFieldValue);
+  // $("#sort tbody").sortable({
+  //     helper: fixHelperModified,
+  //     stop: updateIndex,
+  //     cursor: "grabbing",
+  //     cancel: "#bench"
+  // }).disableSelection();
+  /* End Drag and drop section */
 
-		/* Visual Display of Add*/
-		// var tdFlash = $(fieldValueSpan).parent();
-		// flashBackground(tdFlash);
+  /* Test Drag and Replace */
+  jQuery.fn.swap = function (b) {
+    // method from: http://blog.pengoworks.com/index.cfm/2008/9/24/A-quick-and-dirty-swap-method-for-jQuery
+    b = jQuery(b)[0];
+    var a = this[0];
+    var t = a.parentNode.insertBefore(document.createTextNode(""), a);
+    b.parentNode.insertBefore(a, b);
+    t.parentNode.insertBefore(b, t);
+    t.parentNode.removeChild(t);
+    return this;
+  };
 
-		 if(id=="PTS"){
-			var currentNum = parseFloat($('.teamTotalPts').html());
-			currentNum += addValue;
-			$('.teamTotalPts').html(currentNum);
-		 }
-	}
+  $(".dragdrop").draggable({ revert: true, helper: "clone" });
 
-	/* Drag and drop section */
-	// var fixHelperModified = function(e, tr) {
-	//     var $originals = tr.children();
-	//     var $helper = tr.clone();
-	//     $helper.children().each(function(index) {
-	//         $(this).width($originals.eq(index).width())
-	//     });
-	//     return $helper;
-	// },
-	//     updateIndex = function(e, ui) {
-	//         $('td.index', ui.item.parent()).each(function (i) {
-	//             $(this).html(i + 1);
-	//         });
-	//     };
+  $(".dragdrop").droppable({
+    accept: ".dragdrop",
+    activeClass: "ui-state-hover",
+    hoverClass: "ui-state-active",
+    drop: function (event, ui) {
+      var draggable = ui.draggable,
+        droppable = $(this),
+        dragPos = draggable.position(),
+        dropPos = droppable.position();
 
-	// $("#sort tbody").sortable({
-	//     helper: fixHelperModified,
-	//     stop: updateIndex,
-	//     cursor: "grabbing",
-	//     cancel: "#bench"
-	// }).disableSelection();
-	/* End Drag and drop section */
+      draggable.css({
+        left: dropPos.left + "px",
+        top: dropPos.top + "px",
+      });
 
-	/* Test Drag and Replace */
-	jQuery.fn.swap = function(b){ 
-	    // method from: http://blog.pengoworks.com/index.cfm/2008/9/24/A-quick-and-dirty-swap-method-for-jQuery
-	    b = jQuery(b)[0]; 
-	    var a = this[0]; 
-	    var t = a.parentNode.insertBefore(document.createTextNode(''), a); 
-	    b.parentNode.insertBefore(a, b); 
-	    t.parentNode.insertBefore(b, t); 
-	    t.parentNode.removeChild(t); 
-	    return this; 
-	};
+      droppable.css({
+        left: dragPos.left + "px",
+        top: dragPos.top + "px",
+      });
+      draggable.swap(droppable);
+    },
+  });
+  /* End Drag Replace */
 
+  // Collapse Bench Section
+  $("#benchToggle").removeClass("ui-sortable-handle");
+  $("#benchToggle").click(function () {
+    $(this).nextAll().toggle();
+  });
 
-	$( ".dragdrop" ).draggable({ revert: true, helper: "clone" });
+  function flashBackground(node) {
+    // Flash yellow background
+    $(node).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+  }
 
-	$( ".dragdrop" ).droppable({
-	    accept: ".dragdrop",
-	    activeClass: "ui-state-hover",
-	    hoverClass: "ui-state-active",
-	    drop: function( event, ui ) {
+  // 1st Half to 2nd Half Logic
+  $(".switch-label").click(function () {
+    var currentHalf = $(this).data("value");
+    if (currentHalf == "1") {
+      $(this).data("value", "2");
+    } else {
+      $(this).data("value", "1");
+    }
+  });
 
-	        var draggable = ui.draggable, droppable = $(this),
-	            dragPos = draggable.position(), dropPos = droppable.position();
-	        
-	        draggable.css({
-	            left: dropPos.left+'px',
-	            top: dropPos.top+'px'
-	        });
+  function getCurrentHalf() {
+    return $(".switch-label").data("value");
+  }
+});
 
-	        droppable.css({
-	            left: dragPos.left+'px',
-	            top: dragPos.top+'px'
-	        });
-	        draggable.swap(droppable);
-	    }
-	});
-	/* End Drag Replace */
+// Multi-substitution functionality
+let selectedPlayers = {
+  starters: [],
+  bench: [],
+};
 
-	// Collapse Bench Section
-	$('#benchToggle').removeClass("ui-sortable-handle");
-	$("#benchToggle").click(function() {
-	  $(this).nextAll().toggle();
-	});
+function updateSubButton() {
+  const subButton = document.getElementById("subButton");
+  const starterCount = selectedPlayers.starters.length;
+  const benchCount = selectedPlayers.bench.length;
 
-	function flashBackground(node) 
-	{ 
-		// Flash yellow background
-		$(node).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
-	}
+  if (starterCount > 0 && starterCount === benchCount) {
+    subButton.style.display = "inline-block";
+    subButton.textContent = `Sub (${starterCount})`;
+  } else {
+    subButton.style.display = "none";
+  }
+}
 
-	// 1st Half to 2nd Half Logic
-	$(".switch-label").click(function() {
-	   var currentHalf = $(this).data('value');
-	   if (currentHalf == "1") {
-	     $(this).data('value', "2");
-	   } else {
-	     $(this).data('value', "1");
-	   }
-	});
+function isPlayerInBench(playerRow) {
+  const benchToggle = document.getElementById("benchToggle");
+  return benchToggle && playerRow.rowIndex > benchToggle.rowIndex;
+}
 
-	function getCurrentHalf(){
-		return $(".switch-label").data('value');
-	}
+// Handle player selection
+document.addEventListener("click", function (e) {
+  if (e.ctrlKey && e.target.closest(".dragdrop")) {
+    e.preventDefault();
+    const playerRow = e.target.closest(".dragdrop");
+    const playerId = playerRow.id;
+    const isSelected = playerRow.classList.contains("player-selected");
+    const isBench = isPlayerInBench(playerRow);
 
+    if (isSelected) {
+      // Deselect player
+      playerRow.classList.remove("player-selected");
+      if (isBench) {
+        selectedPlayers.bench = selectedPlayers.bench.filter(
+          (id) => id !== playerId
+        );
+      } else {
+        selectedPlayers.starters = selectedPlayers.starters.filter(
+          (id) => id !== playerId
+        );
+      }
+    } else {
+      // Select player
+      playerRow.classList.add("player-selected");
+      if (isBench) {
+        selectedPlayers.bench.push(playerId);
+      } else {
+        selectedPlayers.starters.push(playerId);
+      }
+    }
+
+    updateSubButton();
+  }
+});
+
+// Handle substitution
+document.addEventListener("DOMContentLoaded", function () {
+  const subButton = document.getElementById("subButton");
+  if (subButton) {
+    subButton.addEventListener("click", function () {
+      if (selectedPlayers.starters.length !== selectedPlayers.bench.length) {
+        return;
+      }
+
+      const tbody = document.querySelector(".statsAppTable tbody");
+      const benchToggle = document.getElementById("benchToggle");
+
+      // Get all selected rows
+      const starterRows = selectedPlayers.starters.map((id) =>
+        document.getElementById(id)
+      );
+      const benchRows = selectedPlayers.bench.map((id) =>
+        document.getElementById(id)
+      );
+
+      // Perform the substitution by moving rows
+      starterRows.forEach((starterRow, index) => {
+        const benchRow = benchRows[index];
+
+        // Insert starter after bench toggle
+        tbody.insertBefore(starterRow, benchToggle.nextSibling);
+
+        // Insert bench player at the beginning (before bench toggle)
+        tbody.insertBefore(benchRow, benchToggle);
+      });
+
+      // Clear selections
+      document.querySelectorAll(".player-selected").forEach((row) => {
+        row.classList.remove("player-selected");
+      });
+
+      selectedPlayers.starters = [];
+      selectedPlayers.bench = [];
+      updateSubButton();
+    });
+  }
+});
+
+// Clear selections when clicking elsewhere (not Ctrl+click)
+document.addEventListener("click", function (e) {
+  if (!e.ctrlKey && !e.target.closest("#subButton")) {
+    document.querySelectorAll(".player-selected").forEach((row) => {
+      row.classList.remove("player-selected");
+    });
+    selectedPlayers.starters = [];
+    selectedPlayers.bench = [];
+    updateSubButton();
+  }
 });
