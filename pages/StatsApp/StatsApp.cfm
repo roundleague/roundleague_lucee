@@ -22,7 +22,26 @@
 
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.6/build/pure-min.css" integrity="sha384-Uu6IeWbM+gzNVXJcM9XV3SohHtmWE+3VGi496jvgX1jyvDTXfdK+rfZc8C1Aehk5" crossorigin="anonymous">
-<link rel="stylesheet" href="StatsApp.css">
+<link rel="stylesheet" href="StatsApp.css?v=1.0">
+<style>
+    .player-selected {
+        background-color: ##007acc !important;
+        color: white !important;
+    }
+    .sub-button {
+        margin-left: 10px;
+        background-color: ##28a745;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        display: none;
+    }
+    .sub-button:hover {
+        background-color: ##218838;
+    }
+</style>
 
 </head>
 
@@ -78,6 +97,7 @@
 
     <div style="position:relative;min-width:960px">
         <button type="button" class="pure-button undoBtn">Undo</button>
+        <button type="button" class="pure-button sub-button" id="subButton">Sub</button>
     </div>
 
     <form name="gameLogForm" method="POST">
@@ -254,7 +274,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" crossorigin="anonymous"></script>
     <script src="https://kit.fontawesome.com/356f7c17e2.js" crossorigin="anonymous"></script>
-    <script src="StatsApp.js?v=1.1"></script>
+    <script src="StatsApp.js?v=1.3"></script>
     <script src="StatsApp-Export.js"></script>
     <script src="ConfirmExit.js"></script>
 </body>
