@@ -2,54 +2,56 @@
 .button-error,
 .button-warning,
 .button-secondary,
-.undoBtn {
-    color: white;
-    border-radius: 4px;
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-    margin-top: 10px;
+.undoBtn,
+.sub-button {
+  color: white;
+  border-radius: 4px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  margin-top: 10px;
 }
 
 .button-success {
-    background: rgb(28, 184, 65);
-    /* this is a green */
+  background: rgb(28, 184, 65);
+  /* this is a green */
 }
 
 .button-error {
-    background: rgb(202, 60, 60);
-    display: none;
-    /* this is a maroon */
+  background: rgb(202, 60, 60);
+  display: none;
+  /* this is a maroon */
 }
 
 .button-warning {
-    background: rgb(223, 117, 20);
-    /* this is an orange */
+  background: rgb(223, 117, 20);
+  /* this is an orange */
 }
 
 .button-secondary {
-    background: rgb(66, 184, 221);
-    /* this is a light blue */
+  background: rgb(66, 184, 221);
+  /* this is a light blue */
 }
 
-table td, th {
-    text-align: center;
+table td,
+th {
+  text-align: center;
 }
 
 tr:nth-child(even) {
-    background-color: #f2f2f2;
+  background-color: #f2f2f2;
 }
 
 tr:nth-child(even) td > input {
-    background-color: #f2f2f2;
+  background-color: #f2f2f2;
 }
 
 .fieldValue {
-    font-size: 25px;
+  font-size: 25px;
 }
 
 input.fieldValue {
-    width: 40px;
-    text-align: center;
-    border: 0;
+  width: 40px;
+  text-align: center;
+  border: 0;
 }
 
 /* Remove Numbers */
@@ -61,167 +63,180 @@ input::-webkit-inner-spin-button {
 }
 
 /* Firefox */
-input[type=number] {
+input[type="number"] {
   -moz-appearance: textfield;
 }
 
-.dragdrop{
-    cursor: grab;
+.dragdrop {
+  cursor: grab;
 }
 
 .dragdrop:active {
-    cursor: grabbing;
-    cursor: -moz-grabbing;
-    cursor: -webkit-grabbing;
+  cursor: grabbing;
+  cursor: -moz-grabbing;
+  cursor: -webkit-grabbing;
 }
 
 .ui-state-hover {
-    background: lightyellow !important;   
+  background: lightyellow !important;
 }
 .ui-state-active {
-    background: lightgray !important;
+  background: lightgray !important;
 }
 
 #benchToggle:hover {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .jerseyNumber {
-    width: 30px;
+  width: 30px;
 }
 
 .statsAppTable td {
-    padding: 20px;
+  padding: 20px;
 }
 
 button.undoBtn {
-    background: rgb(202, 60, 60);
-    display: block;
-    position: fixed;
-    right: 41px;
-    top: 0px;
+  background: rgb(202, 60, 60);
+  display: block;
+  position: fixed;
+  right: 41px;
+  top: 0px;
+}
+
+button.sub-button {
+  background: #1b8bff;
+  display: block;
+  position: fixed;
+  right: 100px;
+  top: 0px;
+  display: none;
 }
 
 .pure-table td.playerHighlight {
-    background-color: rgb(28, 184, 65);
+  background-color: rgb(28, 184, 65);
 }
 
 .noDisplay {
-    display: none;
+  display: none;
 }
 
 .legend {
-    margin-left: 40px;
+  margin-left: 40px;
 }
 
-svg.dnpIcon:hover{
-    background-color: coral;
-    cursor: pointer;
+svg.dnpIcon:hover {
+  background-color: coral;
+  cursor: pointer;
 }
 
 /* Toggle Switch */
 .switch {
-    position: relative;
-    display: block;
-    vertical-align: top;
-    width: 100px;
-    height: 30px;
-    padding: 3px;
-    margin: 0 10px 10px 0;
-    background: linear-gradient(to bottom, #eeeeee, #FFFFFF 25px);
-    background-image: -webkit-linear-gradient(top, #eeeeee, #FFFFFF 25px);
-    border-radius: 18px;
-    box-shadow: inset 0 -1px white, inset 0 1px 1px rgba(0, 0, 0, 0.05);
-    cursor: pointer;
-    box-sizing:content-box;
+  position: relative;
+  display: block;
+  vertical-align: top;
+  width: 100px;
+  height: 30px;
+  padding: 3px;
+  margin: 0 10px 10px 0;
+  background: linear-gradient(to bottom, #eeeeee, #ffffff 25px);
+  background-image: -webkit-linear-gradient(top, #eeeeee, #ffffff 25px);
+  border-radius: 18px;
+  box-shadow: inset 0 -1px white, inset 0 1px 1px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  box-sizing: content-box;
 }
 .switch-input {
-    position: absolute;
-    top: 0;
-    left: 0;
-    opacity: 0;
-    box-sizing:content-box;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  box-sizing: content-box;
 }
 .switch-label {
-    position: relative;
-    display: block;
-    height: inherit;
-    font-size: 10px;
-    text-transform: uppercase;
-    background: #ff0000;
-    border-radius: inherit;
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.12), inset 0 0 2px rgba(0, 0, 0, 0.15);
-    box-sizing:content-box;
+  position: relative;
+  display: block;
+  height: inherit;
+  font-size: 10px;
+  text-transform: uppercase;
+  background: #ff0000;
+  border-radius: inherit;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.12),
+    inset 0 0 2px rgba(0, 0, 0, 0.15);
+  box-sizing: content-box;
 }
-.switch-label:before, .switch-label:after {
-    position: absolute;
-    top: 50%;
-    margin-top: -.5em;
-    line-height: 1;
-    -webkit-transition: inherit;
-    -moz-transition: inherit;
-    -o-transition: inherit;
-    transition: inherit;
-    box-sizing:content-box;
+.switch-label:before,
+.switch-label:after {
+  position: absolute;
+  top: 50%;
+  margin-top: -0.5em;
+  line-height: 1;
+  -webkit-transition: inherit;
+  -moz-transition: inherit;
+  -o-transition: inherit;
+  transition: inherit;
+  box-sizing: content-box;
 }
 .switch-label:before {
-    content: attr(data-off);
-    right: 11px;
-    color: #ffffff;
-    text-shadow: 0 1px rgba(255, 255, 255, 0.5);
+  content: attr(data-off);
+  right: 11px;
+  color: #ffffff;
+  text-shadow: 0 1px rgba(255, 255, 255, 0.5);
 }
 .switch-label:after {
-    content: attr(data-on);
-    left: 11px;
-    color: #FFFFFF;
-    text-shadow: 0 1px rgba(0, 0, 0, 0.2);
-    opacity: 0;
+  content: attr(data-on);
+  left: 11px;
+  color: #ffffff;
+  text-shadow: 0 1px rgba(0, 0, 0, 0.2);
+  opacity: 0;
 }
 .switch-input:checked ~ .switch-label {
-    background: #1b8bff;
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15), inset 0 0 3px rgba(0, 0, 0, 0.2);
+  background: #1b8bff;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15),
+    inset 0 0 3px rgba(0, 0, 0, 0.2);
 }
 .switch-input:checked ~ .switch-label:before {
-    opacity: 0;
+  opacity: 0;
 }
 .switch-input:checked ~ .switch-label:after {
-    opacity: 1;
+  opacity: 1;
 }
 .switch-handle {
-    position: absolute;
-    top: 4px;
-    left: 4px;
-    width: 28px;
-    height: 28px;
-    background: linear-gradient(to bottom, #FFFFFF 40%, #f0f0f0);
-    background-image: -webkit-linear-gradient(top, #FFFFFF 40%, #f0f0f0);
-    border-radius: 100%;
-    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(to bottom, #ffffff 40%, #f0f0f0);
+  background-image: -webkit-linear-gradient(top, #ffffff 40%, #f0f0f0);
+  border-radius: 100%;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
 }
 .switch-handle:before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin: -6px 0 0 -6px;
-    width: 12px;
-    height: 12px;
-    background: linear-gradient(to bottom, #eeeeee, #FFFFFF);
-    background-image: -webkit-linear-gradient(top, #eeeeee, #FFFFFF);
-    border-radius: 6px;
-    box-shadow: inset 0 1px rgba(0, 0, 0, 0.02);
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -6px 0 0 -6px;
+  width: 12px;
+  height: 12px;
+  background: linear-gradient(to bottom, #eeeeee, #ffffff);
+  background-image: -webkit-linear-gradient(top, #eeeeee, #ffffff);
+  border-radius: 6px;
+  box-shadow: inset 0 1px rgba(0, 0, 0, 0.02);
 }
 .switch-input:checked ~ .switch-handle {
-    left: 74px;
-    box-shadow: -1px 1px 5px rgba(0, 0, 0, 0.2);
+  left: 74px;
+  box-shadow: -1px 1px 5px rgba(0, 0, 0, 0.2);
 }
- 
+
 /* Transition
 ========================== */
-.switch-label, .switch-handle {
-    transition: All 0.3s ease;
-    -webkit-transition: All 0.3s ease;
-    -moz-transition: All 0.3s ease;
-    -o-transition: All 0.3s ease;
+.switch-label,
+.switch-handle {
+  transition: All 0.3s ease;
+  -webkit-transition: All 0.3s ease;
+  -moz-transition: All 0.3s ease;
+  -o-transition: All 0.3s ease;
 }
 /* End Toggle Switch */
