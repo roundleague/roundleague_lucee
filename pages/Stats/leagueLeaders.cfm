@@ -12,27 +12,28 @@
 <cfparam name="form.leagueSelect" default="#getLeagues.leagueID#">
 
 <cfquery name="getMinGamesLimit" datasource="roundleague">
-    SELECT COUNT(*) AS totalGames
-    FROM playergamelog pgl
-    JOIN teams t ON t.teamID = pgl.teamID
-    JOIN divisions d ON t.divisionID = d.divisionID
-    JOIN leagues l on l.leagueID = d.leagueID
-    WHERE pgl.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
-    AND l.leagueID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.leagueSelect#">
-    GROUP BY playerID
-    ORDER BY totalGames DESC
-    LIMIT 1
+    /* Determine the total number of weeks scheduled for this league/season */
+    SELECT COALESCE(MAX(s.Week), 0) AS maxWeek
+    FROM schedule s
+    JOIN divisions d ON d.divisionID = s.divisionID
+    JOIN leagues l ON l.leagueID = d.leagueID
+    WHERE s.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+      AND l.leagueID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.leagueSelect#">
 </cfquery>
 
 <cfquery name="onlyLimitAfterWeek5" datasource="roundleague">
-  SELECT max(week)+1 as latestWeek
-  FROM schedule
-  WHERE homeScore IS NOT NULL
-  AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+    /* Weeks completed for this league this season (offset by +1 to start limiting after week 5 is completed) */
+    SELECT MAX(s.week) + 1 AS latestWeek
+    FROM schedule s
+    JOIN divisions d ON d.divisionID = s.divisionID
+    JOIN leagues l ON l.leagueID = d.leagueID
+    WHERE s.homeScore IS NOT NULL
+        AND s.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+        AND l.leagueID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.leagueSelect#">
 </cfquery>
 
-<cfif getMinGamesLimit.totalGames NEQ '' AND onlyLimitAfterWeek5.latestWeek GT 5>
-    <cfset gamesLimit = getMinGamesLimit.TotalGames / 2>
+<cfif getMinGamesLimit.maxWeek NEQ '' AND onlyLimitAfterWeek5.latestWeek GT 5>
+    <cfset gamesLimit = Ceiling(getMinGamesLimit.maxWeek / 2)>
 <cfelse>
     <cfset gamesLimit = 1>
 </cfif>
@@ -123,22 +124,23 @@
 </cfquery>
 
 <cfquery name="get3FGMLeaders" datasource="roundleague">
-    SELECT pgl.playerID, SUM(pgl.3FGM) AS 3PTS, p.firstName, p.lastName, r.jersey, t.teamName, ps.gamesplayed, p.permissionToShare
-    FROM playergamelog pgl
-    JOIN playerstats ps ON ps.playerID = pgl.playerID
-    JOIN players p ON p.playerID = ps.playerID
-    JOIN teams t ON t.teamID = ps.teamID
-    JOIN divisions d ON t.divisionID = d.divisionID
-    JOIN roster r on r.playerID = p.playerID
-    JOIN leagues l on l.leagueID = d.leagueID
-    WHERE pgl.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
-    AND r.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
-    AND l.leagueID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.leagueSelect#">
-    AND ps.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
-    AND r.teamID != 0
-    GROUP BY PlayerID
-    ORDER BY 3PTS DESC
-    LIMIT 10
+        SELECT pgl.playerID, SUM(pgl.3FGM) AS 3PTS, p.firstName, p.lastName, r.jersey, t.teamName, ps.gamesplayed, p.permissionToShare
+        FROM playergamelog pgl
+        JOIN playerstats ps ON ps.playerID = pgl.playerID
+        JOIN players p ON p.playerID = ps.playerID
+        JOIN teams t ON t.teamID = ps.teamID
+        JOIN divisions d ON t.divisionID = d.divisionID
+        JOIN roster r on r.playerID = p.playerID
+        JOIN leagues l on l.leagueID = d.leagueID
+        WHERE pgl.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+            AND r.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+            AND l.leagueID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.leagueSelect#">
+            AND ps.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+            AND r.teamID != 0
+        GROUP BY PlayerID
+        HAVING COUNT(*) <= <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getMinGamesLimit.maxWeek#">
+        ORDER BY 3PTS DESC
+        LIMIT 10
 </cfquery>
 
 <cfoutput>
