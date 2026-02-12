@@ -1,7 +1,7 @@
 <cfinclude template="/admin-dashboard/admin_header.cfm">
 
 <!--- Page Specific CSS/JS Here --->
-<link href="scheduleImport.css?v=1.1" rel="stylesheet">
+<link href="scheduleImport.css?v=1.2" rel="stylesheet">
 
 <cfparam name="toastMsg" default="">
 <cfparam name="toastClass" default="">
@@ -101,6 +101,33 @@ Week 2 - Monday, March 2nd
         </div>
       </div>
 
+      <!--- Team Diff/Sync Panel --->
+      <div class="card" id="teamDiffCard" style="display: none;">
+        <div class="card-header">
+          <h5>Team Diff/Sync</h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <!--- New Teams (in schedule but not in DB) --->
+            <div class="col-md-6">
+              <h6 class="text-success"><i class="nc-icon nc-simple-add"></i> New Teams in Schedule</h6>
+              <p class="text-muted small">These teams are in the schedule but not in your database.</p>
+              <div id="newTeamsList" class="team-diff-list">
+                <p class="text-muted">No new teams found.</p>
+              </div>
+            </div>
+            <!--- Missing Teams (in DB but not in schedule) --->
+            <div class="col-md-6">
+              <h6 class="text-warning"><i class="nc-icon nc-simple-remove"></i> Teams Not in Schedule</h6>
+              <p class="text-muted small">These teams are in your database but not in the pasted schedule.</p>
+              <div id="missingTeamsList" class="team-diff-list">
+                <p class="text-muted">All database teams found in schedule.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!--- Step 2: Preview & Validation --->
       <div class="card" id="previewCard" style="display: none;">
         <div class="card-header">
@@ -111,7 +138,7 @@ Week 2 - Monday, March 2nd
           <div id="teamWarnings" class="alert alert-warning" style="display: none;">
             <strong>Unknown Teams Found:</strong>
             <ul id="unknownTeamsList"></ul>
-            <p>These teams don't exist in the database. Please add them in the Divisions page first, or fix the team names in your spreadsheet.</p>
+            <p class="mb-0">Use the "Team Diff/Sync" panel above to quick-add these teams.</p>
           </div>
           
           <!--- Preview Table --->
@@ -171,6 +198,7 @@ Week 2 - Monday, March 2nd
 <!--- Pass team data to JavaScript --->
 <script>
   var teamLookup = #serializeJSON(teamLookup)#;
+  var currentSeasonID = #session.currentSeasonID#;
 </script>
 </cfoutput>
 

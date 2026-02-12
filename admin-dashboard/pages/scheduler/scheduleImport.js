@@ -2,6 +2,9 @@
 
 var parsedGames = [];
 var validGames = [];
+var teamsInSchedule = {}; // Track all teams found in pasted schedule
+var unknownTeamsFromSchedule = {}; // Teams in schedule but not in DB
+var missingTeamsFromDB = {}; // Teams in DB but not in schedule
 
 // Normalize team name for matching - strips parenthetical numbers and extra whitespace
 function normalizeTeamName(name) {
@@ -69,6 +72,9 @@ function parseScheduleData() {
   parsedGames = [];
   validGames = [];
   var unknownTeams = {};
+  teamsInSchedule = {};
+  unknownTeamsFromSchedule = {};
+  missingTeamsFromDB = {};
 
   // Track current week and date from week headers
   var currentWeek = 0;
@@ -97,15 +103,21 @@ function parseScheduleData() {
     var game = parseGameLine(line, rowNum, currentWeek, currentDate);
 
     if (game) {
+      // Track original team names for diff
+      var originalHomeTeam = game.homeTeam;
+      var originalAwayTeam = game.awayTeam;
+
       // Validate home team (try exact match, then fuzzy match)
       var homeMatch = findTeamMatch(game.homeTeam);
       if (homeMatch) {
         game.homeTeamID = homeMatch.teamID;
         game.homeTeam = homeMatch.teamName; // Use canonical name
+        teamsInSchedule[homeMatch.teamName.toLowerCase()] = homeMatch;
       } else if (game.homeTeam) {
         game.status = "error";
         game.errors.push("Unknown home team");
         unknownTeams[game.homeTeam] = true;
+        unknownTeamsFromSchedule[originalHomeTeam] = true;
       }
 
       // Validate away team (try exact match, then fuzzy match)
@@ -113,10 +125,12 @@ function parseScheduleData() {
       if (awayMatch) {
         game.awayTeamID = awayMatch.teamID;
         game.awayTeam = awayMatch.teamName; // Use canonical name
+        teamsInSchedule[awayMatch.teamName.toLowerCase()] = awayMatch;
       } else if (game.awayTeam) {
         game.status = "error";
         game.errors.push("Unknown away team");
         unknownTeams[game.awayTeam] = true;
+        unknownTeamsFromSchedule[originalAwayTeam] = true;
       }
 
       // Validate date
@@ -138,6 +152,21 @@ function parseScheduleData() {
       }
     }
   });
+
+  // Find teams in DB for this division that are NOT in the schedule
+  var selectedDivisionID = parseInt(divisionID);
+  for (var key in teamLookup) {
+    var team = teamLookup[key];
+    // Only check teams in the selected division
+    if (team.divisionID === selectedDivisionID) {
+      if (!teamsInSchedule[key]) {
+        missingTeamsFromDB[team.teamName] = team;
+      }
+    }
+  }
+
+  // Display team diff panel
+  displayTeamDiff(unknownTeamsFromSchedule, missingTeamsFromDB, divisionID);
 
   // Display preview
   displayPreview(parsedGames, unknownTeams, divisionID);
@@ -369,4 +398,188 @@ function escapeHtml(text) {
   var div = document.createElement("div");
   div.textContent = text;
   return div.innerHTML;
+}
+
+// Display Team Diff/Sync Panel
+function displayTeamDiff(newTeams, missingTeams, divisionID) {
+  var teamDiffCard = document.getElementById("teamDiffCard");
+  var newTeamsList = document.getElementById("newTeamsList");
+  var missingTeamsList = document.getElementById("missingTeamsList");
+
+  var newTeamNames = Object.keys(newTeams);
+  var missingTeamNames = Object.keys(missingTeams);
+
+  // Only show the card if there's something to show
+  if (newTeamNames.length === 0 && missingTeamNames.length === 0) {
+    teamDiffCard.style.display = "none";
+    return;
+  }
+
+  teamDiffCard.style.display = "block";
+
+  // Build new teams list with quick-add buttons
+  if (newTeamNames.length > 0) {
+    var html = "";
+    newTeamNames.forEach(function (teamName) {
+      var escapedName = escapeHtml(teamName);
+      var dataName = teamName.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+      html +=
+        '<div class="team-diff-item team-new" id="new-team-' +
+        encodeURIComponent(teamName) +
+        '">' +
+        '<span class="team-name">' +
+        escapedName +
+        "</span>" +
+        '<button type="button" class="btn btn-success btn-sm btn-add-team" ' +
+        "onclick=\"quickAddTeam('" +
+        dataName +
+        "', " +
+        divisionID +
+        ')">' +
+        '<i class="nc-icon nc-simple-add"></i> Add</button>' +
+        "</div>";
+    });
+    newTeamsList.innerHTML = html;
+  } else {
+    newTeamsList.innerHTML =
+      '<p class="text-muted">All teams in schedule found in database.</p>';
+  }
+
+  // Build missing teams list with mark inactive buttons
+  if (missingTeamNames.length > 0) {
+    var html = "";
+    missingTeamNames.forEach(function (teamName) {
+      var team = missingTeams[teamName];
+      var escapedName = escapeHtml(teamName);
+      html +=
+        '<div class="team-diff-item team-missing" id="missing-team-' +
+        team.teamID +
+        '">' +
+        '<span class="team-name">' +
+        escapedName +
+        "</span>" +
+        '<button type="button" class="btn btn-warning btn-sm btn-mark-inactive" ' +
+        'onclick="markTeamInactive(' +
+        team.teamID +
+        ", '" +
+        escapedName.replace(/'/g, "\\'") +
+        "')\">" +
+        '<i class="nc-icon nc-simple-remove"></i> Inactive</button>' +
+        "</div>";
+    });
+    missingTeamsList.innerHTML = html;
+  } else {
+    missingTeamsList.innerHTML =
+      '<p class="text-muted">All database teams found in schedule.</p>';
+  }
+}
+
+// Quick add a new team
+function quickAddTeam(teamName, divisionID) {
+  if (!confirm('Add team "' + teamName + '" to this division?')) {
+    return;
+  }
+
+  var formData = new FormData();
+  formData.append("action", "addTeam");
+  formData.append("teamName", teamName);
+  formData.append("divisionID", divisionID);
+
+  fetch("teamActions.cfm", {
+    method: "POST",
+    body: formData,
+  })
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (data) {
+      if (data.success) {
+        // Add to teamLookup
+        var key = data.teamName.toLowerCase();
+        teamLookup[key] = {
+          teamID: data.teamID,
+          teamName: data.teamName,
+          divisionID: parseInt(divisionID),
+        };
+
+        // Update the UI - mark as added
+        var itemEl = document.getElementById(
+          "new-team-" + encodeURIComponent(teamName),
+        );
+        if (itemEl) {
+          itemEl.classList.remove("team-new");
+          itemEl.classList.add("team-added");
+          itemEl.innerHTML =
+            '<span class="team-name">' +
+            escapeHtml(data.teamName) +
+            "</span>" +
+            '<span class="badge badge-success">Added (ID: ' +
+            data.teamID +
+            ")</span>";
+        }
+
+        // Re-parse to update the preview with the new team
+        alert(
+          "Team added! Click 'Parse & Preview' again to update the preview.",
+        );
+      } else {
+        alert("Error: " + data.message);
+      }
+    })
+    .catch(function (error) {
+      alert("Error adding team: " + error);
+    });
+}
+
+// Mark a team as inactive
+function markTeamInactive(teamID, teamName) {
+  if (
+    !confirm(
+      'Mark team "' +
+        teamName +
+        '" as inactive? This team is not in the current schedule.',
+    )
+  ) {
+    return;
+  }
+
+  var formData = new FormData();
+  formData.append("action", "markInactive");
+  formData.append("teamID", teamID);
+
+  fetch("teamActions.cfm", {
+    method: "POST",
+    body: formData,
+  })
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (data) {
+      if (data.success) {
+        // Remove from teamLookup
+        for (var key in teamLookup) {
+          if (teamLookup[key].teamID === teamID) {
+            delete teamLookup[key];
+            break;
+          }
+        }
+
+        // Update the UI - mark as inactive
+        var itemEl = document.getElementById("missing-team-" + teamID);
+        if (itemEl) {
+          itemEl.classList.remove("team-missing");
+          itemEl.classList.add("team-inactive");
+          itemEl.innerHTML =
+            '<span class="team-name">' +
+            escapeHtml(teamName) +
+            "</span>" +
+            '<span class="badge badge-secondary">Marked Inactive</span>';
+        }
+      } else {
+        alert("Error: " + data.message);
+      }
+    })
+    .catch(function (error) {
+      alert("Error: " + error);
+    });
 }
