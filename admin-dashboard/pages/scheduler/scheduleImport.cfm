@@ -175,4 +175,4 @@ Week 2 - Monday, March 2nd
 </cfoutput>
 
 <cfinclude template="/admin-dashboard/admin_footer.cfm">
-<script src="scheduleImport.js?v=1.2"></script>
+<script src="scheduleImport.js?v=1.3"></script>

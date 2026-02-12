@@ -79,28 +79,22 @@ function parseScheduleData() {
     line = line.trim();
     if (!line) return; // Skip empty lines
 
-    console.log("Processing line:", JSON.stringify(line));
-
     // Check if this is a week header line: "Week X - Day, Month Dayth"
     var weekMatch = line.match(/Week\s+(\d+)\s*[-–]\s*\w+,?\s*(.+)/i);
     if (weekMatch) {
       currentWeek = parseInt(weekMatch[1]);
       currentDate = parseWeekDate(weekMatch[2].trim());
-      console.log("Week header found: Week", currentWeek, "Date:", currentDate);
       return; // This is a header line, don't create a game
     }
 
     // Skip division header lines and other non-game lines
     if (line.match(/Division\s+Schedule/i) || !line.match(/vs/i)) {
-      console.log("Skipping non-game line");
       return;
     }
 
     // This should be a game line: "Time\tTeam1 vs Team2" or "Time Team1 vs Team2"
     rowNum++;
-    console.log("Attempting to parse game line");
     var game = parseGameLine(line, rowNum, currentWeek, currentDate);
-    console.log("Parsed game:", game);
 
     if (game) {
       // Validate home team (try exact match, then fuzzy match)
@@ -189,18 +183,13 @@ function parseGameLine(line, rowNum, currentWeek, currentDate) {
     errors: [],
   };
 
-  console.log("parseGameLine - has tab:", line.indexOf("\t") > -1);
-
   // Split by tab first
   var parts;
   if (line.indexOf("\t") > -1) {
     parts = line.split("\t");
-    console.log("Tab split parts:", parts);
     game.time = parts[0].trim();
     var teamsStr = parts.slice(1).join(" ").trim();
-    console.log("Teams string:", teamsStr);
     var teams = teamsStr.split(/\s+vs\s+/i);
-    console.log("Teams after vs split:", teams);
     if (teams.length === 2) {
       game.homeTeam = teams[0].trim();
       game.awayTeam = teams[1].trim();

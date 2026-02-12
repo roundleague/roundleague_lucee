@@ -22,6 +22,15 @@
 	LIMIT 5
 </cfquery>
 
+<!--- Get divisions from the current active season for mapping UI --->
+<cfquery name="getCurrentDivisions" datasource="roundleague">
+	SELECT d.DivisionID, d.DivisionName
+	FROM Divisions d
+	JOIN Seasons s ON d.SeasonID = s.SeasonID
+	WHERE s.Status = 'Active'
+	ORDER BY d.DivisionName
+</cfquery>
+
 <cfoutput>
 <!--- Add Season Modal --->
 <div class="modal fade" id="addSeasonModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -73,7 +82,70 @@
           <li>Copy all current roster records to the new season</li>
           <li>Copy all leagues to the new season</li>
         </ul>
-        <p><strong>Note:</strong> Divisions and scheduled games will <em>not</em> be carried over. You will need to manually create or update them for the new season.</p>
+        
+        <div class="progression-options" style="background: ##f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0;">
+          <p style="margin-bottom: 10px;"><strong>Division Options:</strong></p>
+          <label style="display: block; cursor: pointer; margin-bottom: 10px;">
+            <input type="checkbox" id="copyDivisions" name="copyDivisions" value="1" checked> 
+            Copy divisions to new season
+          </label>
+          
+          <div id="divisionMappingSection" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid ##ddd;">
+            <p style="margin-bottom: 10px; font-size: 13px; color: ##666;">Configure divisions for the new season:</p>
+            
+            <!--- Existing divisions table --->
+            <table class="division-mapping-table" style="width: 100%; font-size: 14px;">
+              <thead>
+                <tr>
+                  <th style="text-align: center; padding: 5px; width: 60px;">Copy</th>
+                  <th style="text-align: left; padding: 5px;">Current Name</th>
+                  <th style="text-align: left; padding: 5px;">New Name</th>
+                </tr>
+              </thead>
+              <tbody>
+                <cfloop query="getCurrentDivisions">
+                  <tr class="division-row">
+                    <td style="padding: 5px; text-align: center;">
+                      <input type="checkbox" 
+                             class="division-copy-checkbox" 
+                             data-division-id="#getCurrentDivisions.DivisionID#"
+                             checked>
+                    </td>
+                    <td style="padding: 5px;">#getCurrentDivisions.DivisionName#</td>
+                    <td style="padding: 5px;">
+                      <input type="text" 
+                             class="form-control division-new-name" 
+                             data-division-id="#getCurrentDivisions.DivisionID#"
+                             data-original-name="#getCurrentDivisions.DivisionName#"
+                             value="#getCurrentDivisions.DivisionName#"
+                             style="font-size: 14px; padding: 5px;">
+                    </td>
+                  </tr>
+                </cfloop>
+                <cfif getCurrentDivisions.recordCount EQ 0>
+                  <tr>
+                    <td colspan="3" style="padding: 10px; color: ##999; font-style: italic;">No divisions in current season</td>
+                  </tr>
+                </cfif>
+              </tbody>
+            </table>
+            
+            <!--- Add new divisions section --->
+            <div id="newDivisionsSection" style="margin-top: 15px; padding-top: 15px; border-top: 1px dashed ##ccc;">
+              <p style="margin-bottom: 10px; font-size: 13px; color: ##666;">Add new divisions:</p>
+              <div id="newDivisionsList"></div>
+              <button type="button" class="btn btn-sm btn-outline-secondary" id="addNewDivisionBtn" style="margin-top: 5px;">
+                + Add Division
+              </button>
+            </div>
+            
+            <p style="margin-top: 15px; font-size: 12px; color: ##888;">
+              <em>Unchecked divisions will not be copied. Teams in those divisions will need to be reassigned after progression.</em>
+            </p>
+          </div>
+        </div>
+        
+        <p><strong>Note:</strong> Scheduled games will <em>not</em> be carried over. Use the Schedule Import tool after progression.</p>
         <p>Are you sure you wish to proceed and progress to the next season?</p>
       </div>
 
@@ -81,6 +153,8 @@
         <div class="left-side">
           <form id="progressSeasonForm" class="settings-form" method="POST">
             <input type="hidden" name="progressToSeasonId" value="" class="progressToSeasonId" />
+            <input type="hidden" name="copyDivisions" value="0" class="copyDivisionsField" />
+            <input type="hidden" name="divisionMappings" value="" id="divisionMappingsField" />
           </form>
           <button type="button" class="btn btn-default btn-link progressionBtn" data-dismiss="modal">Yes, progress to next season</button>
         </div>
@@ -137,4 +211,4 @@
 </cfoutput>
 
 <cfinclude template="/admin-dashboard/admin_footer.cfm">
-<script src="/admin-dashboard/pages/seasons/seasons.js?v=1.1"></script>
+<script src="/admin-dashboard/pages/seasons/seasons.js?v=1.3"></script>
