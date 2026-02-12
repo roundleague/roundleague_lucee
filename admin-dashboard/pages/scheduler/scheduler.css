@@ -1,32 +1,49 @@
 .boldClass {
-    font-weight: bold;
+  font-weight: bold;
 }
 
-.bottomSpacing {
-    margin-bottom: 10px;
+.scheduler-controls {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
 }
 
-.saveBtn {
-    margin-top: -11px;
+.division-form {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-#container {
-    display: flex;
+.division-form label {
+  margin: 0;
+  font-weight: 600;
 }
 
-#scheduler {
-    width: 28%;
-    padding: 20px;
-    border: 1px solid #ccc;
+.division-form select {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  min-width: 200px;
 }
 
-#autoscheduler {
-    width: 50%;
-    padding: 20px;
-    border: 1px solid #ccc;
-    margin-left: 20px;
+#myTable {
+  width: 100%;
+  max-width: 900px;
 }
 
-.form-group {
-    margin-bottom: 15px;
+.weekRow td {
+  background: #f0f0f0 !important;
+  font-weight: bold;
+  padding: 10px !important;
+}
+
+.no-schedule-msg {
+  padding: 20px;
+  text-align: center;
+  color: #666;
+  font-style: italic;
 }

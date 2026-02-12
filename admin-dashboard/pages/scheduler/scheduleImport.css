@@ -1,0 +1,102 @@
+/* Schedule Import Styles */
+
+#pasteArea {
+  font-family: monospace;
+  font-size: 13px;
+}
+
+.card {
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.card-header {
+  background-color: #f8f9fa;
+  padding: 15px 20px;
+  border-bottom: 1px solid #ddd;
+}
+
+.card-header h5 {
+  margin: 0;
+  font-weight: 600;
+}
+
+.card-body {
+  padding: 20px;
+}
+
+#previewTable {
+  font-size: 14px;
+}
+
+#previewTable th {
+  background-color: #f8f9fa;
+}
+
+.table-success {
+  background-color: #d4edda !important;
+}
+
+.table-danger {
+  background-color: #f8d7da !important;
+}
+
+.alert {
+  padding: 15px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+
+.alert-warning {
+  background-color: #fff3cd;
+  border: 1px solid #ffc107;
+  color: #856404;
+}
+
+.alert-success {
+  background-color: #d4edda;
+  border: 1px solid #28a745;
+  color: #155724;
+}
+
+.alert-danger {
+  background-color: #f8d7da;
+  border: 1px solid #dc3545;
+  color: #721c24;
+}
+
+#unknownTeamsList {
+  margin: 10px 0;
+  padding-left: 20px;
+}
+
+#importSummary {
+  font-size: 16px;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+}
+
+.mt-3 {
+  margin-top: 15px;
+}
+
+.available-teams-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.team-tag {
+  background-color: #e9ecef;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #495057;
+}
+
+.text-muted {
+  color: #6c757d;
+  font-style: italic;
+}
