@@ -54,14 +54,8 @@
 
 <cfset isSingleDivision = (totalDivisions EQ 1) />
 
-<div class="page-header page-header-small" data-parallax="true" style="background-image: url('/assets/img/Backgrounds/bball_court_1.jpg');">
-  <div class="filter"></div>
-  <div class="container">
-    <div class="motto text-center">
-      <h2 class="title">Teams</h2>
-      <h5 class="description">Browse all teams competing this season</h5>
-    </div>
-  </div>
+<div class="teams-header text-center" style="padding: 70px 0 10px 0;">
+  <img src="/assets/img/Logos/4.png" alt="The Round League Logo" style="max-width: 250px; height: auto;">
 </div>
 
 <div class="main">
