@@ -1,7 +1,7 @@
 <cfinclude template="/header.cfm">
 
 <!--- Page Specific CSS/JS Here --->
-<link rel="stylesheet" href="../Teams/teams-2.css?v=2.0">
+<link rel="stylesheet" href="../Teams/teams-2.css?v=2.1">
 
 <cfoutput>
 
@@ -54,11 +54,7 @@
 
 <cfset isSingleDivision = (totalDivisions EQ 1) />
 
-<div class="teams-header text-center" style="padding: 70px 0 10px 0;">
-  <img src="/assets/img/Logos/4.png" alt="The Round League Logo" style="max-width: 250px; height: auto;">
-</div>
-
-<div class="main">
+<div class="main" style="margin-top: 70px;">
     <div class="section text-center">
       <div class="container">
 
