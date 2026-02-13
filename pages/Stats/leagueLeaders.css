@@ -1,8 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro');
-body{
-  background: #5D3F6A;
-  font-family: 'Source Sans Pro', sans-serif;
-}
+@import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro");
 
 .playerPic {
   max-height: 247px;
@@ -18,13 +14,19 @@ body{
 
 h1.catTitle {
   font-size: 2.3em;
+  color: #403d39;
 }
 
-#title{
+#title {
   text-align: center;
-  color:white;
-  font-size:30px;
+  color: #403d39;
+  font-size: 30px;
   text-transform: uppercase;
+  font-weight: 700;
+  border-bottom: 3px solid #f5593d;
+  display: inline-block;
+  padding-bottom: 8px;
+  margin-bottom: 30px;
 }
 .hover-table-layout {
   display: -webkit-box;
@@ -32,44 +34,53 @@ h1.catTitle {
   display: -ms-flexbox;
   display: -webkit-flex;
   display: flex;
-   -webkit-flex-wrap: wrap;
-    -moz-flex-wrap: wrap;
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
-  max-width:800px;
-  margin:0 auto;
+  -webkit-flex-wrap: wrap;
+  -moz-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  max-width: 800px;
+  margin: 0 auto;
 }
 .listing-item {
-   display: block;
-   width:100%;
-  margin-bottom:20px;
-    float: left;
-    background: #fff;
-    border-radius:10px;
-    z-index:0;
-  cursor:pointer;
-    -webkit-transition: all 0.3s ease;
-    -moz-transition: all 0.3s ease;
-    transition: all 0.3s ease;
-      -webkit-box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.10);
-    -moz-box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.10);
-    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.10);
-
+  display: block;
+  width: 100%;
+  margin-bottom: 20px;
+  float: left;
+  background: linear-gradient(180deg, #ffffff 0%, #faf9f7 100%);
+  border-radius: 10px;
+  z-index: 0;
+  cursor: pointer;
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+  -webkit-box-shadow:
+    0 2px 16px rgba(0, 0, 0, 0.06),
+    0 1.5px 4px rgba(0, 0, 0, 0.03);
+  -moz-box-shadow:
+    0 2px 16px rgba(0, 0, 0, 0.06),
+    0 1.5px 4px rgba(0, 0, 0, 0.03);
+  box-shadow:
+    0 2px 16px rgba(0, 0, 0, 0.06),
+    0 1.5px 4px rgba(0, 0, 0, 0.03);
+  border-top: 3px solid #f5593d;
 }
-.listing-item:hover,  .listing-item.active{
+.listing-item:hover,
+.listing-item.active {
   -webkit-transform: scale(1.03);
   -moz-transform: scale(1.03);
-    transform: scale(1.03);
-    -webkit-transition: all 0.3s;
+  transform: scale(1.03);
+  -webkit-transition: all 0.3s;
   -moz-transition: all 0.3s;
-    transition: all 0.3s;
-  z-index:2;
-
+  transition: all 0.3s;
+  z-index: 2;
+  box-shadow:
+    0 8px 32px rgba(245, 89, 61, 0.15),
+    0 4px 12px rgba(0, 0, 0, 0.08);
 }
-.listing-item .listing{
-    padding:20px;
-    position:relative; 
-    padding-top: 0px; 
+.listing-item .listing {
+  padding: 20px;
+  position: relative;
+  padding-top: 0px;
 }
 /*.listing-item .listing:before{
     content:"";
@@ -83,54 +94,63 @@ h1.catTitle {
   border-left:20px solid transparent;
   border-right:20px solid transparent;
 }*/
-  figure.image img {
-    width:100%;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
+figure.image img {
+  width: 100%;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
 }
 figure.image {
-    position: relative;
-    margin: 0;
-    padding: 0;
+  position: relative;
+  margin: 0;
+  padding: 0;
 
-    height: 333px;
+  height: 333px;
 }
 figure.image figcaption {
-    top: 0;
-    width: 100%;
-    text-align: center;
-    bottom: 4px;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-
+  top: 0;
+  width: 100%;
+  text-align: center;
+  bottom: 4px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
 }
-figcaption .caption{
-  position:relative;
-  -moz-transform:translateY(-50%);
-  -webkit-transform:translateY(-50%);
-  transform:translateY(-50%);
+figcaption .caption {
+  position: relative;
+  -moz-transform: translateY(-50%);
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
   z-index: 99;
-  background-color: black;
+  background-color: #f5593d;
 }
-figcaption h1{
-    color:white;
-  font-weight:bold;
-    font-size:16px;
+figcaption h1 {
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
   text-transform: uppercase;
 }
-figcaption p{
-  color:white;
-  font-size:12px;
+figcaption p {
+  color: white;
+  font-size: 12px;
 }
 .listing h4 {
-   
-    font-size: 13px;
-    text-align: center;
-    padding: 5px 10px;
-    font-weight: bold;
+  font-size: 13px;
+  text-align: center;
+  padding: 5px 10px;
+  font-weight: 500;
+  color: #66615b;
 }
-.listing h4:not(:last-child){
-   border-bottom: 1px solid #ccc;
+.listing h4:not(:last-child) {
+  border-bottom: 1px solid #f5f4f2;
+}
+
+.listing h4 a {
+  color: #f5593d;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.listing h4 a:hover {
+  color: #d9442a;
 }
 
 /*.listing-item:hover figure.image figcaption{
@@ -138,26 +158,53 @@ figcaption p{
 }*/
 
 .selectLeagueBox {
-  margin-top: 35px;
+  margin-top: 70px;
+  padding-top: 20px;
 }
 
-@media only screen and (min-width:540px){
+.selectLeagueBox label {
+  font-weight: 600;
+  color: #403d39;
+  margin-right: 10px;
+}
+
+.selectLeagueBox select {
+  padding: 8px 16px;
+  border: 2px solid #f5f4f2;
+  border-radius: 0.5rem;
+  background: #faf9f7;
+  color: #66615b;
+  font-size: 14px;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.selectLeagueBox select:hover,
+.selectLeagueBox select:focus {
+  border-color: #f5593d;
+  outline: none;
+}
+
+/* Main Section Styling */
+.main .section {
+  padding: 20px 0;
+}
+
+@media only screen and (min-width: 540px) {
   .listing-item {
-   display: block;
-   width: -webkit-calc(100%/3);
-   width: -moz-calc(100%/3);
-   width: calc(100%/3);
+    display: block;
+    width: -webkit-calc(100%/3);
+    width: -moz-calc(100%/3);
+    width: calc(100% / 3);
   }
 }
 
-
-@media only screen and (min-width:1024px){
-  .hover-table-layout{
-        padding: 30px;
+@media only screen and (min-width: 1024px) {
+  .hover-table-layout {
+    padding: 30px;
   }
 }
 
 /* Phones */
-@media only screen and (min-width:374px) and (max-width:500px) {
-
+@media only screen and (min-width: 374px) and (max-width: 500px) {
 }

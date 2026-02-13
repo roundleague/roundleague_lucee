@@ -1,7 +1,7 @@
 <cfinclude template="/header.cfm">
 
 <!--- Page Specific CSS/JS Here --->
-<link href="/pages/Stats/leagueLeaders.css?v=1.1" rel="stylesheet" />
+<link href="/pages/Stats/leagueLeaders.css?v=2.0" rel="stylesheet" />
 
 <cfquery name="getLeagues" datasource="roundleague">
     SELECT LeagueID, LeagueName
@@ -145,7 +145,7 @@
 
 <cfoutput>
 <form method="POST">
-<div class="main" style="background-color: white;">
+<div class="main" style="background: linear-gradient(180deg, ##ffffff 0%, ##f8f7f5 50%, ##f5f4f2 100%);">
     <div class="section text-center">
       <div class="container">
 
