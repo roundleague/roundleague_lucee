@@ -1,7 +1,7 @@
 <cfinclude template="/header.cfm">
 
 <!--- Page Specific CSS/JS Here --->
-<link rel="stylesheet" href="../Teams/teams-2.css?v=1.1">
+<link rel="stylesheet" href="../Teams/teams-2.css?v=2.0">
 
 <cfoutput>
 
@@ -54,7 +54,17 @@
 
 <cfset isSingleDivision = (totalDivisions EQ 1) />
 
-<div class="main" style="background-color: white; margin-top: 50px;">
+<div class="page-header page-header-small" data-parallax="true" style="background-image: url('/assets/img/Backgrounds/bball_court_1.jpg');">
+  <div class="filter"></div>
+  <div class="container">
+    <div class="motto text-center">
+      <h2 class="title">Teams</h2>
+      <h5 class="description">Browse all teams competing this season</h5>
+    </div>
+  </div>
+</div>
+
+<div class="main">
     <div class="section text-center">
       <div class="container">
 

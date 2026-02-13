@@ -121,8 +121,6 @@ div.standingsDiv {
 
 h4.standingsh4 {
   margin: 0px;
-  text-decoration: underline;
-  text-underline-offset: 2px;
 }
 
 ul.standingsUl {
@@ -135,7 +133,7 @@ ul.standingsUl {
 }
 
 a {
-  font-weight: 800;
+  font-weight: 500;
 }
 
 .standingsContainer.single-division {
@@ -149,27 +147,36 @@ a {
 }
 
 .standingsDiv {
-  background: #fff;
+  background: linear-gradient(180deg, #ffffff 0%, #faf9f7 100%);
   border-radius: 1rem;
-  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08), 0 1.5px 4px rgba(0, 0, 0, 0.04);
+  box-shadow:
+    0 2px 16px rgba(0, 0, 0, 0.06),
+    0 1.5px 4px rgba(0, 0, 0, 0.03);
   padding: 1.5rem 1.5rem 1rem 1.5rem;
   min-width: 260px;
   max-width: 340px;
   flex: 1 1 260px;
   margin: 0.5rem 0;
-  transition: box-shadow 0.2s;
+  transition: all 0.3s ease;
+  border-top: 3px solid #f5593d;
 }
 
 .standingsDiv:hover {
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.13), 0 2px 8px rgba(0, 0, 0, 0.07);
+  box-shadow:
+    0 8px 32px rgba(245, 89, 61, 0.15),
+    0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateY(-4px);
 }
 
 .standingsh4 {
   font-size: 1.25rem;
   font-weight: 700;
   margin-bottom: 1rem;
-  color: #2c3e50;
+  color: #403d39;
   letter-spacing: 0.02em;
+  text-decoration: none;
+  border-bottom: 2px solid #f5593d;
+  padding-bottom: 0.5rem;
 }
 
 .standingsUl {
@@ -186,16 +193,19 @@ a {
   display: block;
   padding: 0.5rem 0.75rem;
   border-radius: 0.5rem;
-  color: #007bff;
+  color: #66615b;
   text-decoration: none;
   font-weight: 500;
-  background: #f7f9fa;
-  transition: background 0.15s, color 0.15s;
+  background: linear-gradient(135deg, #faf9f7 0%, #f5f4f2 100%);
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent;
 }
 
 .standingsUl li a:hover {
-  background: #e3e9f0;
-  color: #0056b3;
+  background: linear-gradient(135deg, #fff5f3 0%, #ffe8e4 100%);
+  color: #f5593d;
+  border-left: 3px solid #f5593d;
+  transform: translateX(4px);
 }
 
 @media (max-width: 900px) {
@@ -232,4 +242,25 @@ a {
     font-size: 1rem;
     padding: 0.5rem 0.5rem;
   }
+}
+
+/* Page Header Styling */
+.page-header .title {
+  color: #fff;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.page-header .description {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 400;
+}
+
+/* Main Section Background */
+.main {
+  background: linear-gradient(180deg, #ffffff 0%, #f8f7f5 50%, #f5f4f2 100%);
+}
+
+.main .section {
+  padding: 60px 0;
 }
