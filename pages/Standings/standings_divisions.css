@@ -1,3 +1,140 @@
-.boldClass{
-	font-weight: bold;
+/* Select Box Styling */
+.selectBox {
+  margin-bottom: 2rem;
+}
+
+.selectBox label {
+  font-weight: 600;
+  color: #403d39;
+  margin-right: 10px;
+}
+
+.selectBox select {
+  padding: 8px 16px;
+  border: 2px solid #f5f4f2;
+  border-radius: 0.5rem;
+  background: #faf9f7;
+  color: #66615b;
+  font-size: 14px;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.selectBox select:hover,
+.selectBox select:focus {
+  border-color: #f5593d;
+  outline: none;
+}
+
+/* Page Title */
+h1.page-title {
+  color: #403d39;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  border-bottom: 3px solid #f5593d;
+  display: inline-block;
+  padding-bottom: 8px;
+}
+
+/* Table Styling */
+table.bolder {
+  border: none;
+  border-collapse: collapse;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 800px;
+  background: linear-gradient(180deg, #ffffff 0%, #faf9f7 100%);
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow:
+    0 2px 16px rgba(0, 0, 0, 0.06),
+    0 1.5px 4px rgba(0, 0, 0, 0.03);
+}
+
+table.bolder caption {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #403d39;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+table.bolder thead tr {
+  background: linear-gradient(135deg, #f5593d 0%, #e04a30 100%);
+}
+
+table.bolder thead th {
+  color: #fff;
+  font-weight: 600;
+  padding: 1rem 0.75rem;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  text-align: center;
+}
+
+table.bolder tbody tr {
+  border-bottom: 1px solid #f5f4f2;
+  transition: background-color 0.2s ease;
+}
+
+table.bolder tbody tr:hover {
+  background-color: rgba(245, 89, 61, 0.05);
+}
+
+table.bolder tbody td {
+  padding: 0.875rem 0.75rem;
+  color: #66615b;
+  text-align: center;
+}
+
+table.bolder tbody td a {
+  color: #f5593d;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+table.bolder tbody td a:hover {
+  color: #d9442a;
+}
+
+/* Main Section */
+.main .section {
+  padding: 20px 15px;
+}
+
+/* Responsive Table */
+@media screen and (max-width: 768px) {
+  table.bolder thead {
+    display: none;
+  }
+
+  table.bolder tbody tr {
+    display: block;
+    margin-bottom: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+
+  table.bolder tbody td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    text-align: right;
+    border-bottom: 1px solid #f5f4f2;
+  }
+
+  table.bolder tbody td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #403d39;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+  }
+
+  table.bolder tbody td:last-child {
+    border-bottom: none;
+  }
 }

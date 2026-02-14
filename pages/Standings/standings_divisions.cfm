@@ -2,7 +2,7 @@
 
 <!--- Page Specific CSS/JS Here --->
 <link href="/pages/Standings/purekitpro.css" rel="stylesheet" />
-<link href="/pages/Standings/standings_divisions.css?v=1.0" rel="stylesheet" />
+<link href="/pages/Standings/standings_divisions.css?v=2.0" rel="stylesheet" />
 
 <cfquery name="getActive" datasource="roundleague">
 	SELECT SeasonID 
@@ -31,20 +31,22 @@
 </cfquery>
 
 <cfoutput>
-<div class="main" style="background-color: white; margin-top: 50px;">
+<div class="main" style="background: linear-gradient(180deg, ##ffffff 0%, ##f8f7f5 50%, ##f5f4f2 100%); margin-top: 70px;">
 <form method="POST">
     <div class="section text-center">
       <div class="container">
 
         <!--- Content Here --->
+        <div class="selectBox">
 		<label for="DivisionID">Division</label>
 		<select name="DivisionID" id="Divisions" onchange="this.form.submit()">
 			<cfloop query="getDivisions">
 				<option value="#getDivisions.DivisionID#"<cfif getDivisions.DivisionID EQ form.DivisionID> selected</cfif>>#getDivisions.DivisionName#</option>
 			</cfloop>
 		</select>
+        </div>
 
-        <h1>#getStandings.DivisionName#</h1> <!--- Should show latest Season name --->
+        <h1 class="page-title">#getStandings.DivisionName#</h1> <!--- Should show latest Season name --->
 
         <table class="bolder">
           <caption>Standings</caption>
@@ -61,10 +63,10 @@
           	<cfloop query="getStandings">
 	            <tr>
 	            	<td data-label="Rank">#getStandings.currentRow#</td>
-	            	<td data-label="Team"><a class="boldClass" href="/pages/teams/team-profile-page.cfm?teamID=#getStandings.teamID#">#TeamName#</a></td>
+	            	<td data-label="Team"><a href="/pages/teams/team-profile-page.cfm?teamID=#getStandings.teamID#">#TeamName#</a></td>
 	            	<td data-label="Wins">#Wins#</td>
 	            	<td data-label="Losses">#Losses#</td>
-	            	<td data-label="PointDiff">#PointDifferential#</td>
+	            	<td data-label="Pt Diff">#PointDifferential#</td>
 	            </tr>
         	</cfloop>
           </tbody>
