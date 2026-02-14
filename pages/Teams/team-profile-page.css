@@ -1,28 +1,39 @@
 /* Style the tab */
 .tab {
   overflow: hidden;
-  border: 1px solid #ccc;
-  background-color: #f1f1f1;
+  border: none;
+  background: linear-gradient(180deg, #faf9f7 0%, #f5f4f2 100%);
+  border-radius: 0.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  margin-bottom: 2rem;
 }
 
 /* Style the buttons that are used to open the tab content */
 .tab button {
-  background-color: inherit;
+  background-color: transparent;
   border: none;
   outline: none;
   cursor: pointer;
-  padding: 14px 16px;
-  transition: 0.3s;
+  padding: 12px 24px;
+  transition: all 0.3s ease;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  color: #66615b;
 }
 
 /* Change background color of buttons on hover */
 .tab button:hover {
-  background-color: #ddd;
+  background-color: rgba(245, 89, 61, 0.1);
+  color: #f5593d;
 }
 
 /* Create an active/current tablink class */
 .tab button.active {
-  background-color: #ccc;
+  background-color: #f5593d;
+  color: #fff;
 }
 
 /* Style the tab content */
@@ -30,4 +41,126 @@
   display: none;
   padding: 6px 12px;
   border-top: none;
+}
+
+/* Page title */
+.tabcontent h1 {
+  color: #403d39;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  border-bottom: 3px solid #f5593d;
+  display: inline-block;
+  padding-bottom: 8px;
+}
+
+/* Table Styling */
+table.bolder {
+  border: none;
+  border-collapse: collapse;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 900px;
+  background: linear-gradient(180deg, #ffffff 0%, #faf9f7 100%);
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow:
+    0 2px 16px rgba(0, 0, 0, 0.06),
+    0 1.5px 4px rgba(0, 0, 0, 0.03);
+}
+
+table.bolder caption {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #403d39;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+table.bolder thead tr {
+  background: linear-gradient(135deg, #f5593d 0%, #e04a30 100%);
+}
+
+table.bolder thead td {
+  color: #fff;
+  font-weight: 600;
+  padding: 1rem 0.75rem;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+}
+
+table.bolder tbody tr {
+  border-bottom: 1px solid #f5f4f2;
+  transition: background-color 0.2s ease;
+}
+
+table.bolder tbody tr:hover {
+  background-color: rgba(245, 89, 61, 0.05);
+}
+
+table.bolder tbody td {
+  padding: 0.875rem 0.75rem;
+  color: #66615b;
+  text-align: center;
+}
+
+table.bolder tbody td a {
+  color: #f5593d;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+table.bolder tbody td a:hover {
+  color: #d9442a;
+}
+
+/* Main Section */
+.main .section {
+  padding: 20px 15px;
+}
+
+/* Responsive Table */
+@media screen and (max-width: 768px) {
+  .tab {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .tab button {
+    padding: 10px 16px;
+    font-size: 0.9rem;
+  }
+
+  table.bolder thead {
+    display: none;
+  }
+
+  table.bolder tbody tr {
+    display: block;
+    margin-bottom: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+
+  table.bolder tbody td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    text-align: right;
+    border-bottom: 1px solid #f5f4f2;
+  }
+
+  table.bolder tbody td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #403d39;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+  }
+
+  table.bolder tbody td:last-child {
+    border-bottom: none;
+  }
 }

@@ -1,7 +1,7 @@
 <cfinclude template="/header.cfm">
 
 <!--- Page Specific CSS/JS Here --->
-<link rel="stylesheet" href="../Teams/team-profile-page.css">
+<link rel="stylesheet" href="../Teams/team-profile-page.css?v=2.0">
 
 <cfquery name="getTeamData" datasource="roundleague">
 	SELECT 
@@ -94,7 +94,7 @@
 <cfset playoffsObject = createObject("component", "library.playoffs") />
 
 <cfoutput>
-<div class="main" style="background-color: white; margin-top: 50px;">
+<div class="main" style="background: linear-gradient(180deg, ##ffffff 0%, ##f8f7f5 50%, ##f5f4f2 100%); margin-top: 70px;">
     <div class="section text-center">
 
       <!-- Tab links -->
@@ -126,21 +126,21 @@
           <tbody>
           	<cfloop query="getTeamData">
 	            <tr>
-	            	<td>
+	            	<td data-label="Name">
                   <cfif PermissionToShare EQ 'YES'>
-                    <a href="Player_Profiles/player-profile-2.cfm?playerID=#playerID#" style="font-weight: bold;">
+                    <a href="Player_Profiles/player-profile-2.cfm?playerID=#playerID#">
                       #UCase(Left(firstName, 1))##LCase(Mid(firstName, 2))# #UCase(Left(lastName, 1))##LCase(Mid(lastName, 2))# <cfif getTeamData.captainPlayerID EQ getTeamData.playerID>(C)</cfif>
                     </a>
                   <cfelse>
                       #UCase(Left(firstName, 1))##LCase(Mid(firstName, 2))# #UCase(Left(lastName, 1))##LCase(Mid(lastName, 2))# <cfif getTeamData.captainPlayerID EQ getTeamData.playerID>(C)</cfif>
                   </cfif>
                 </td>
-                <td>#Jersey#</td>
-	            	<td>#Position#</td>
-	            	<td><cfif PermissionToShare EQ 'Yes'>#Height#</cfif></td>
-	            	<td><cfif PermissionToShare EQ 'Yes'>#Weight#</cfif></td>
-	            	<td><cfif PermissionToShare EQ 'Yes'>#Hometown#</cfif></td>
-	            	<td><cfif PermissionToShare EQ 'Yes'>#School#</cfif></td>
+                <td data-label="Jersey">#Jersey#</td>
+	            	<td data-label="Position">#Position#</td>
+	            	<td data-label="Height"><cfif PermissionToShare EQ 'Yes'>#Height#</cfif></td>
+	            	<td data-label="Weight"><cfif PermissionToShare EQ 'Yes'>#Weight#</cfif></td>
+	            	<td data-label="Hometown"><cfif PermissionToShare EQ 'Yes'>#Hometown#</cfif></td>
+	            	<td data-label="School"><cfif PermissionToShare EQ 'Yes'>#School#</cfif></td>
 	            </tr>
         	</cfloop>
           </tbody>
@@ -171,7 +171,7 @@
               <tr>
                 <td data-label="Name">
                   <cfif PermissionToShare EQ 'YES'>
-                    <a href="Player_Profiles/player-profile-2.cfm?playerID=#playerID#" style="font-weight: bold;">
+                    <a href="Player_Profiles/player-profile-2.cfm?playerID=#playerID#">
                       #firstName# #lastName# <cfif getTeamDataStats.captainPlayerID EQ getTeamDataStats.playerID>(C)</cfif>
                     </a>
                   <cfelse>
@@ -277,7 +277,7 @@
                   #playoffsFinishedText#
                 </td>
                 <td data-label="Leading Scorer">
-                    <a href="Player_Profiles/player-profile-2.cfm?playerID=#getPlayerIdBySeason.playerID#" style="font-weight: bold;">
+                    <a href="Player_Profiles/player-profile-2.cfm?playerID=#getPlayerIdBySeason.playerID#">
                       #firstInitial#. #getPlayerIdBySeason.LastName#
                     </a>
                     (#formattedPoints#)
