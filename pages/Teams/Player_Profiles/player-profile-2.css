@@ -35,8 +35,8 @@ img {
 }
 
 .player-photo {
-  width: 200px;
-  height: 250px;
+  width: 400px;
+  height: 500px;
   object-fit: cover;
   border-radius: 0.5rem;
   border: 3px solid rgba(255, 255, 255, 0.1);
@@ -180,8 +180,8 @@ img {
   }
 
   .player-photo {
-    width: 160px;
-    height: 200px;
+    width: 320px;
+    height: 400px;
   }
 
   .player-name {
