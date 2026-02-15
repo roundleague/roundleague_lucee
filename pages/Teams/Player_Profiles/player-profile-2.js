@@ -6,7 +6,7 @@ $(document).ready(function () {
       {
         scrollTop: $("#playerGameLogTable").offset().top,
       },
-      "slow"
+      "slow",
     );
   }
 });
@@ -14,24 +14,15 @@ $(document).ready(function () {
 function toggleSeasons() {
   var hiddenSeasons = document.querySelectorAll(".hidden-season");
   var btn = document.getElementById("showMoreSeasonsBtn");
-
-  if (btn.innerText === "Show More Seasons") {
+  if (btn.innerText.trim() === "SHOW MORE SEASONS") {
     hiddenSeasons.forEach(function (row) {
-      row.style.display = "table-row";
+      row.classList.add("shown");
     });
-    btn.innerText = "Show Less Seasons";
+    btn.innerText = "SHOW LESS SEASONS";
   } else {
     hiddenSeasons.forEach(function (row) {
-      row.style.display = "none";
+      row.classList.remove("shown");
     });
-    btn.innerText = "Show More Seasons";
+    btn.innerText = "SHOW MORE SEASONS";
   }
 }
-
-// Initially hide seasons beyond the first 5
-document.addEventListener("DOMContentLoaded", function () {
-  var hiddenSeasons = document.querySelectorAll(".hidden-season");
-  hiddenSeasons.forEach(function (row) {
-    row.style.display = "none";
-  });
-});

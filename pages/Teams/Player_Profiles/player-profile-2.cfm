@@ -266,4 +266,4 @@
 </div>
 </cfoutput>
 <cfinclude template="/footer.cfm">
-<script src="../../Teams/Player_Profiles/player-profile-2.js?v=2.1"></script>
+<script src="../../Teams/Player_Profiles/player-profile-2.js?v=2.2"></script>
