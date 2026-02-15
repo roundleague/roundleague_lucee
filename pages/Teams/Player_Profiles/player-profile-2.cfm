@@ -1,7 +1,7 @@
 <cfinclude template="/header.cfm">
 
 <!--- Page Specific CSS/JS Here --->
-<link href="/pages/Teams/Player_Profiles/player-profile-2.css" rel="stylesheet" />
+<link href="/pages/Teams/Player_Profiles/player-profile-2.css?v=3.0" rel="stylesheet" />
 
 <cfquery name="getPlayerData" datasource="roundleague">
     SELECT p.lastName, p.firstName, p.position, p.height, p.weight, p.hometown, p.school, t.teamName
@@ -67,105 +67,87 @@
 
 
 <cfoutput>
-<div class="main" style="background-color: white; margin-top: 50px;">
-    <div class="section text-center">
+<div class="main" style="background: linear-gradient(180deg, ##ffffff 0%, ##f8f7f5 50%, ##f5f4f2 100%); margin-top: 70px;">
+    <div class="section">
       <div class="container">
 
-        <!--- Content Here --->
-		<section class="section about-section" id="about">
-            <div class="container">
-                <div class="row align-items-center flex-row-reverse">
-                    <div class="col-lg-6">
-                        <div class="about-avatar">
-					      <cfset imgPath = "/assets/img/PlayerProfiles/#url.playerID#.JPG">
-					      <cfif FileExists(imgPath)>
-					      	<img src="/assets/img/PlayerProfiles/#url.playerID#.JPG" alt="Player Photo" style="width:100%">
-					      <cfelse>
-							<img src="/assets/img/PlayerProfiles/default.JPG" alt="Player Photo" style="width:100%">
-					      </cfif>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="about-text go-to">
-                        <h3 class="dark-color">#UCase(Left(getPlayerData.firstName, 1))##LCase(Mid(getPlayerData.firstName, 2))# #UCase(Left(getPlayerData.LastName, 1))##LCase(Mid(getPlayerData.LastName, 2))#</h3>
-                            <h6 class="theme-color lead">#getPlayerData.position#</h6>
-                            <div class="row about-list">
-                                <div class="col-md-6">
-                                    <div class="media">
-                                        <label>Height</label>
-                                        <p>#getPlayerData.height#</p>
-                                    </div>
-                                    <div class="media">
-                                        <label>Weight</label>
-                                        <p>#getPlayerData.weight#</p>
-                                    </div>
-                                    <div class="media">
-                                        <label>Hometown</label>
-                                        <p>#getPlayerData.hometown#</p>
-                                    </div>
-                                    <div class="media">
-                                        <label>School</label>
-                                        <p>#getPlayerData.school#</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        <!--- Player Header Card --->
+        <div class="player-header-card">
+            <div class="player-header-content">
+                <div class="player-photo-wrapper">
+                    <cfset imgPath = "/assets/img/PlayerProfiles/#url.playerID#.JPG">
+                    <cfif FileExists(imgPath)>
+                        <img src="/assets/img/PlayerProfiles/#url.playerID#.JPG" alt="Player Photo" class="player-photo">
+                    <cfelse>
+                        <img src="/assets/img/PlayerProfiles/default.JPG" alt="Player Photo" class="player-photo">
+                    </cfif>
+                    <cfif len(trim(getPlayerData.teamName))>
+                        <span class="team-badge">#getPlayerData.teamName#</span>
+                    </cfif>
                 </div>
-                <div class="counter" style="margin-top: 25px;">
-                    <div class="row">
-                        <div class="col-6 col-lg-3">
-                            <div class="count-data text-center">
-                                <h6 class="count h2" data-to="500" data-speed="500">#NumberFormat(getPlayerStats.Points, "0.0")#</h6>
-                                <p class="m-0px font-w-600">Points</p>
-                            </div>
+                <div class="player-info-section">
+                    <h1 class="player-name">#UCase(Left(getPlayerData.firstName, 1))##LCase(Mid(getPlayerData.firstName, 2))# #UCase(Left(getPlayerData.LastName, 1))##LCase(Mid(getPlayerData.LastName, 2))#</h1>
+                    <p class="player-position">#getPlayerData.position#</p>
+                    <div class="player-details-grid">
+                        <div class="detail-box">
+                            <span class="detail-label">Height</span>
+                            <span class="detail-value">#getPlayerData.height#</span>
                         </div>
-                        <div class="col-6 col-lg-3">
-                            <div class="count-data text-center">
-                                <h6 class="count h2" data-to="150" data-speed="150">#NumberFormat(getPlayerStats.Rebounds, "9.9")#</h6></h6>
-                                <p class="m-0px font-w-600">Rebounds</p>
-                            </div>
+                        <div class="detail-box">
+                            <span class="detail-label">Weight</span>
+                            <span class="detail-value">#getPlayerData.weight#</span>
                         </div>
-                        <div class="col-6 col-lg-3">
-                            <div class="count-data text-center">
-                                <h6 class="count h2" data-to="850" data-speed="850">#NumberFormat(getPlayerStats.Assists, "0.0")#</h6></h6>
-                                <p class="m-0px font-w-600">Assists</p>
-                            </div>
+                        <div class="detail-box">
+                            <span class="detail-label">Hometown</span>
+                            <span class="detail-value">#getPlayerData.hometown#</span>
                         </div>
-                        <div class="col-6 col-lg-3">
-                            <div class="count-data text-center">
-                                <h6 class="count h2" data-to="190" data-speed="190">#NumberFormat(getPlayerStats.Steals, "0.0")#</h6></h6>
-                                <p class="m-0px font-w-600">Steals</p>
-                            </div>
-                        </div>
-                        <div class="col-6 col-lg-3">
-                            <div class="count-data text-center">
-                                <h6 class="count h2" data-to="190" data-speed="190">#NumberFormat(getPlayerStats.Blocks, "0.0")#</h6></h6>
-                                <p class="m-0px font-w-600">Blocks</p>
-                            </div>
-                        </div>
-                        <div class="col-6 col-lg-3">
-                            <div class="count-data text-center">
-                                <h6 class="count h2" data-to="190" data-speed="190">#NumberFormat(getPlayerStats.Turnovers, "0.0")#</h6></h6>
-                                <p class="m-0px font-w-600">Turnovers</p>
-                            </div>
-                        </div>
-                        <div class="col-6 col-lg-3">
-                            <div class="count-data text-center">
-                                <h6 class="count h2" data-to="190" data-speed="190">#NumberFormat(getPlayerStats.FGP, "0.0")#</h6>
-                                <p class="m-0px font-w-600">FG%</p>
-                            </div>
-                        </div>
-                        <div class="col-6 col-lg-3">
-                            <div class="count-data text-center">
-                                <h6 class="count h2" data-to="190" data-speed="190">#NumberFormat(getPlayerStats.3FGP, "0.0")#</h6>
-                                <p class="m-0px font-w-600">3FG%</p>
-                            </div>
+                        <div class="detail-box">
+                            <span class="detail-label">School</span>
+                            <span class="detail-value">#getPlayerData.school#</span>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+
+        <!--- Season Statistics --->
+        <div class="stats-section">
+            <h2 class="stats-title">Season Statistics</h2>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <span class="stat-value">#NumberFormat(getPlayerStats.Points, "0.0")#</span>
+                    <span class="stat-label">Points</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-value">#NumberFormat(getPlayerStats.Rebounds, "0.0")#</span>
+                    <span class="stat-label">Rebounds</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-value">#NumberFormat(getPlayerStats.Assists, "0.0")#</span>
+                    <span class="stat-label">Assists</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-value">#NumberFormat(getPlayerStats.Steals, "0.0")#</span>
+                    <span class="stat-label">Steals</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-value">#NumberFormat(getPlayerStats.Blocks, "0.0")#</span>
+                    <span class="stat-label">Blocks</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-value">#NumberFormat(getPlayerStats.Turnovers, "0.0")#</span>
+                    <span class="stat-label">Turnovers</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-value">#NumberFormat(getPlayerStats.FGP, "0.0")#</span>
+                    <span class="stat-label">FG%</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-value">#NumberFormat(getPlayerStats.3FGP, "0.0")#</span>
+                    <span class="stat-label">3PT%</span>
+                </div>
+            </div>
+        </div>
 
         <!--- Player Game Log --->
         <form id="gameLogForm" method="post">
@@ -284,4 +266,4 @@
 </div>
 </cfoutput>
 <cfinclude template="/footer.cfm">
-<script src="../../Teams/Player_Profiles/player-profile-2.js?v=1.2"></script>
+<script src="../../Teams/Player_Profiles/player-profile-2.js?v=2.1"></script>
