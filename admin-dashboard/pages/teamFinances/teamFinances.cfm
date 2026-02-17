@@ -8,12 +8,13 @@
 
 <cfoutput>
 
-<!--- Get list of only teams that have a record in the team_payments table --->
+<!--- Get all active teams for the current season --->
 <cfquery name="getTeams" datasource="roundleague">
     SELECT 
         t.teamID, 
         t.teamName, 
         d.DivisionName,
+        d.divisionID,
         p.firstName,
         p.lastName,
         p.playerID AS captainID,
@@ -30,16 +31,19 @@
     LEFT JOIN 
         players p ON p.PlayerID = t.captainPlayerID
     WHERE 
-        EXISTS (
-            SELECT 1 
-            FROM team_payments tp 
-            WHERE tp.team_id = t.teamID 
-            AND tp.season = <cfqueryparam cfsqltype="CF_SQL_VARCHAR" value="#session.currentSeasonID#">
-        )
-    AND 
         t.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+    AND 
+        t.status = 'Active'
     ORDER BY 
         d.DivisionName, t.teamName
+</cfquery>
+
+<!--- Get unique divisions for grouping --->
+<cfquery name="getDivisions" dbtype="query">
+    SELECT DISTINCT divisionID, DivisionName
+    FROM getTeams
+    WHERE divisionID IS NOT NULL
+    ORDER BY DivisionName
 </cfquery>
 
 <!--- Get total payments for all teams for stats --->
@@ -97,10 +101,29 @@
 </cfloop>
 
 <!-- End Navbar -->
-<div class="content">    <div class="row">
+<div class="content">
+    <!--- Success/Error Messages --->
+    <cfif isDefined("url.paymentAdded") AND url.paymentAdded EQ 1>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="nc-icon nc-check-2"></i> Payment recorded successfully!
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </cfif>
+    <cfif isDefined("url.error") AND len(url.error)>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="nc-icon nc-simple-remove"></i> Error: #url.error#
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </cfif>
+    
+    <div class="row">
         <div class="col-md-12">
             <h3 class="description">Team Finances - Season <span class="badge badge-primary">#session.currentSeasonID#</span></h3>
-            <p class="text-muted"><i class="fa fa-filter"></i> Showing only teams with payment records</p>
+            <p class="text-muted"><i class="fa fa-users"></i> Showing all #getTeams.recordCount# active teams</p>
         </div>
     </div>
 
@@ -125,7 +148,7 @@
                 </div>                <div class="card-footer ">
                     <hr>
                     <div class="stats">
-                        <i class="fa fa-users"></i> #getTeams.recordCount# Teams with payments (out of #getAllTeamsCount.totalTeams# total teams)
+                        <i class="fa fa-users"></i> #getTeams.recordCount# active teams
                     </div>
                 </div>
             </div>
@@ -251,93 +274,127 @@
         </div>
     </div>
 
-    <!--- Payment Details Table --->
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title">Team Payment Details</h5>
-                    <p class="card-category">Detailed breakdown by team</p>
-                </div>
-                <div class="card-body">                    <div class="table-responsive">
-                        <table id="financeTable" class="table table-striped">
-                            <thead class="text-primary">
-                                <tr>
-                                    <th>Team</th>
-                                    <th>Division</th>
-                                    <th>Captain</th>
-                                    <th>Roster Size</th>
-                                    <th>Team Fee</th>
-                                    <th>Team Payments</th>
-                                    <th>Player Contributions</th>
-                                    <th>Total Paid</th>
-                                    <th>Remaining</th>
-                                    <th>Progress</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <cfif getTeams.recordCount EQ 0>
+    <!--- Payment Details by Division --->
+    <cfloop query="getDivisions">
+        <cfset currentDivision = DivisionName>
+        <cfset currentDivisionID = divisionID>
+        
+        <!--- Calculate division totals --->
+        <cfset divTeamCount = 0>
+        <cfset divTotalPaid = 0>
+        <cfset divTotalFee = 0>
+        <cfset divPaidInFull = 0>
+        
+        <cfloop array="#teamPaymentData#" index="team">
+            <cfif structKeyExists(team, "teamID")>
+                <cfquery name="teamDiv" dbtype="query">
+                    SELECT divisionID FROM getTeams WHERE teamID = <cfqueryparam value="#team.teamID#" cfsqltype="cf_sql_integer">
+                </cfquery>
+                <cfif teamDiv.recordCount GT 0 AND teamDiv.divisionID EQ currentDivisionID>
+                    <cfset divTeamCount++>
+                    <cfset divTotalPaid += team.totalPaid>
+                    <cfset divTotalFee += team.teamFee>
+                    <cfif team.isFullyPaid><cfset divPaidInFull++></cfif>
+                </cfif>
+            </cfif>
+        </cfloop>
+        <cfset divPercent = divTotalFee GT 0 ? (divTotalPaid / divTotalFee) * 100 : 0>
+        
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <h5 class="card-title">
+                                    <i class="nc-icon nc-basketball"></i> #currentDivision#
+                                </h5>
+                                <p class="card-category">#divTeamCount# teams &bull; #divPaidInFull# paid in full &bull; $#numberFormat(divTotalPaid, '999,999')# / $#numberFormat(divTotalFee, '999,999')# collected</p>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="progress" style="height: 20px;">
+                                    <div class="progress-bar <cfif divPercent GTE 100>bg-success<cfelseif divPercent GTE 50>bg-info<cfelseif divPercent GTE 25>bg-warning<cfelse>bg-danger</cfif>" 
+                                        role="progressbar" 
+                                        style="width: #numberFormat(divPercent, '999.9')#%" 
+                                        aria-valuenow="#numberFormat(divPercent, '999.9')#" 
+                                        aria-valuemin="0" 
+                                        aria-valuemax="100">
+                                        #numberFormat(divPercent, '999.9')#%
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead class="text-primary">
                                     <tr>
-                                        <td colspan="11" class="text-center">
-                                            <div class="alert alert-info">
-                                                <i class="fa fa-info-circle"></i> No teams have payment records yet.
-                                            </div>
-                                        </td>
+                                        <th>Team</th>
+                                        <th>Captain</th>
+                                        <th>Roster</th>
+                                        <th>Team Fee</th>
+                                        <th>Team Payments</th>
+                                        <th>Player Contributions</th>
+                                        <th>Total Paid</th>
+                                        <th>Remaining</th>
+                                        <th>Progress</th>
+                                        <th>Actions</th>
                                     </tr>
-                                </cfif>
-                                <cfset rowIndex = 0>
-                                <cfloop query="getTeams">
-                                    <cfset rowIndex++>
-                                    <cfset teamStatus = teamPaymentData[rowIndex]>
-                                    <tr>
-                                        <td>#teamName#</td>
-                                        <td>#DivisionName#</td>
-                                        <td><a href="/pages/account/account_home.cfm?playerID=#captainID#">#firstName# #lastName#</a></td>
-                                        <td>#rosterCount#</td>
-                                        <td>$#numberFormat(teamStatus.teamFee, '999,999')#</td>
-                                        <td>$#numberFormat(teamStatus.teamPayments, '999,999')#</td>
-                                        <td>$#numberFormat(teamStatus.playerContributions, '999,999')#</td>
-                                        <td>$#numberFormat(teamStatus.totalPaid, '999,999')#</td>
-                                        <td>$#numberFormat(teamStatus.remainingBalance, '999,999')#</td>
-                                        <td>
-                                            <div class="progress">
-                                                <div class="progress-bar 
-                                                    <cfif teamStatus.percentPaid GTE 100>
-                                                        bg-success
-                                                    <cfelseif teamStatus.percentPaid GTE 50>
-                                                        bg-info
-                                                    <cfelseif teamStatus.percentPaid GTE 25>
-                                                        bg-warning
-                                                    <cfelse>
-                                                        bg-danger
-                                                    </cfif>" 
-                                                    role="progressbar" 
-                                                    style="width: #numberFormat(teamStatus.percentPaid, '999.9')#%" 
-                                                    aria-valuenow="#numberFormat(teamStatus.percentPaid, '999.9')#" 
-                                                    aria-valuemin="0" 
-                                                    aria-valuemax="100">
-                                                    #numberFormat(teamStatus.percentPaid, '999.9')#%
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <button class="btn btn-sm btn-primary" onclick="showTeamDetails(#teamID#)">
-                                                <i class="nc-icon nc-zoom-split"></i> Details
-                                            </button>
-                                            <a href="/pages/account/payments/payment_status.cfm?playerID=#captainID#" class="btn btn-sm btn-info" target="_blank">
-                                                <i class="nc-icon nc-money-coins"></i> Payment
-                                            </a>
-                                        </td>
-                                    </tr>
-                                </cfloop>
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    <cfloop query="getTeams">
+                                        <cfif getTeams.divisionID EQ currentDivisionID>
+                                            <!--- Find the matching team status --->
+                                            <cfset teamStatus = {teamFee: 1000, teamPayments: 0, playerContributions: 0, totalPaid: 0, remainingBalance: 1000, percentPaid: 0}>
+                                            <cfloop array="#teamPaymentData#" index="ts">
+                                                <cfif ts.teamID EQ getTeams.teamID>
+                                                    <cfset teamStatus = ts>
+                                                    <cfbreak>
+                                                </cfif>
+                                            </cfloop>
+                                            <tr>
+                                                <td><strong>#teamName#</strong></td>
+                                                <td><cfif len(captainID) AND captainID GT 0><a href="/pages/account/account_home.cfm?playerID=#captainID#">#firstName# #lastName#</a><cfelse><span class="text-muted">No captain</span></cfif></td>
+                                                <td>#rosterCount#</td>
+                                                <td>$#numberFormat(teamStatus.teamFee, '999,999')#</td>
+                                                <td><cfif teamStatus.teamPayments GT 0><span class="text-success">$#numberFormat(teamStatus.teamPayments, '999,999')#</span><cfelse><span class="text-muted">$0</span></cfif></td>
+                                                <td><cfif teamStatus.playerContributions GT 0><span class="text-success">$#numberFormat(teamStatus.playerContributions, '999,999')#</span><cfelse><span class="text-muted">$0</span></cfif></td>
+                                                <td><strong>$#numberFormat(teamStatus.totalPaid, '999,999')#</strong></td>
+                                                <td><cfif teamStatus.remainingBalance GT 0><span class="text-danger">$#numberFormat(teamStatus.remainingBalance, '999,999')#</span><cfelse><span class="text-success">$0</span></cfif></td>
+                                                <td style="min-width: 120px;">
+                                                    <div class="progress">
+                                                        <div class="progress-bar <cfif teamStatus.percentPaid GTE 100>bg-success<cfelseif teamStatus.percentPaid GTE 50>bg-info<cfelseif teamStatus.percentPaid GTE 25>bg-warning<cfelse>bg-danger</cfif>" 
+                                                            role="progressbar" 
+                                                            style="width: <cfif teamStatus.percentPaid GT 0>#numberFormat(teamStatus.percentPaid, '999.9')#<cfelse>0</cfif>%" 
+                                                            aria-valuenow="#numberFormat(teamStatus.percentPaid, '999.9')#" 
+                                                            aria-valuemin="0" 
+                                                            aria-valuemax="100">
+                                                            <cfif teamStatus.percentPaid GT 0>#numberFormat(teamStatus.percentPaid, '999.9')#%</cfif>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-primary" onclick="showTeamDetails(#teamID#)" title="View Details">
+                                                        <i class="nc-icon nc-zoom-split"></i>
+                                                    </button>
+                                                    <cfif len(captainID) AND captainID GT 0>
+                                                    <a href="/pages/account/payments/payment_status.cfm?playerID=#captainID#" class="btn btn-sm btn-info" target="_blank" title="Captain Payment Page">
+                                                        <i class="nc-icon nc-money-coins"></i>
+                                                    </a>
+                                                    </cfif>
+                                                </td>
+                                            </tr>
+                                        </cfif>
+                                    </cfloop>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </cfloop>
 
     <!--- Team Payment Details Modal --->
     <div class="modal fade" id="teamDetailsModal" tabindex="-1" role="dialog" aria-labelledby="teamDetailsModalLabel" aria-hidden="true">
@@ -468,12 +525,14 @@ var paymentMethodChart = new Chart(methodCtx, {
     }
 });
 
-// Initialize DataTable
+// Initialize on page load
 $(document).ready(function() {
-    $('##financeTable').DataTable({
-        responsive: true,
-        order: [[9, 'asc']] // Sort by payment progress column initially
-    });
+    // Auto-open modal if teamID is in URL (after adding manual payment)
+    var urlParams = new URLSearchParams(window.location.search);
+    var teamID = urlParams.get('teamID');
+    if (teamID) {
+        showTeamDetails(teamID);
+    }
 });
 
 // Function to show team payment details in modal

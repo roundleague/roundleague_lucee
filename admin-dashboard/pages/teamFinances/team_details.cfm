@@ -159,6 +159,9 @@
                 <li class="nav-item">
                     <a class="nav-link" id="player-contributions-tab" data-toggle="tab" href="##player-contributions" role="tab" aria-controls="player-contributions" aria-selected="false">Player Contributions (#getPlayerContributions.recordCount#)</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="add-payment-tab" data-toggle="tab" href="##add-payment" role="tab" aria-controls="add-payment" aria-selected="false"><i class="nc-icon nc-simple-add"></i> Add Manual Payment</a>
+                </li>
             </ul>
             
             <div class="tab-content" id="paymentTabContent">
@@ -262,6 +265,91 @@
                         </table>
                     </div>
                 </div>
+                
+                <!-- Add Manual Payment Tab -->
+                <div class="tab-pane fade" id="add-payment" role="tabpanel" aria-labelledby="add-payment-tab">
+                    <div class="mt-3">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title">Add Manual/Offline Payment</h5>
+                                <p class="card-category">Record payments made outside of Stripe (cash, Venmo, check, etc.)</p>
+                            </div>
+                            <div class="card-body">
+                                <form action="add_manual_payment.cfm" method="post">
+                                    <input type="hidden" name="teamID" value="#url.teamID#">
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Payment Type</label>
+                                                <select name="paymentType" id="paymentType" class="form-control" required>
+                                                    <option value="team">Team Payment (Full/Partial Fee)</option>
+                                                    <option value="player">Player Contribution</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Payment Method</label>
+                                                <select name="paymentMethod" class="form-control" required>
+                                                    <option value="cash">Cash</option>
+                                                    <option value="venmo">Venmo</option>
+                                                    <option value="zelle">Zelle</option>
+                                                    <option value="check">Check</option>
+                                                    <option value="paypal">PayPal</option>
+                                                    <option value="other">Other</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Amount ($)</label>
+                                                <input type="number" name="amount" class="form-control" step="0.01" min="0.01" required placeholder="Enter amount">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Player <span id="playerRequiredText" style="display:none;">(Required for player contributions)</span></label>
+                                                <select name="playerID" id="playerID" class="form-control">
+                                                    <option value="0">-- Select Player (Optional) --</option>
+                                                    <cfloop query="getTeamRoster">
+                                                        <option value="#playerID#">#firstName# #lastName#</option>
+                                                    </cfloop>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label>Notes (Optional)</label>
+                                        <input type="text" name="notes" class="form-control" placeholder="e.g., Venmo from John on 2/15, Check ##1234">
+                                    </div>
+                                    
+                                    <button type="submit" class="btn btn-success btn-round">
+                                        <i class="nc-icon nc-check-2"></i> Record Payment
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <script>
+                document.getElementById('paymentType').addEventListener('change', function() {
+                    var playerSelect = document.getElementById('playerID');
+                    var requiredText = document.getElementById('playerRequiredText');
+                    if (this.value === 'player') {
+                        playerSelect.required = true;
+                        requiredText.style.display = 'inline';
+                    } else {
+                        playerSelect.required = false;
+                        requiredText.style.display = 'none';
+                    }
+                });
+                </script>
             </div>
         </div>
     </div>
