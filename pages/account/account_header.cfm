@@ -90,5 +90,11 @@
                         <i class="fa-solid fa-user-plus"></i> Sign Player
                     </a>
                 </cfif>
+                <cfif listFind("1001,536", session.playerID)>
+                    <hr style="margin: 10px 0;">
+                    <a href="/admin-dashboard/dashboard.cfm" class="nav-button" style="text-decoration: none; color: inherit;">
+                        <i class="fa-solid fa-screwdriver-wrench"></i> Admin Dashboard
+                    </a>
+                </cfif>
             </div>
 </cfoutput>
