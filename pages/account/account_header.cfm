@@ -67,12 +67,15 @@
                 <a href="/pages/account/account_settings.cfm?playerID=#url.playerID#" class="nav-button" style="text-decoration: none; color: inherit;">
                     <i class="fa fa-cog"></i> Account Settings
                 </a>
-                <a class="nav-button disabled" class="nav-button" style="text-decoration: none; color: inherit;" data-toggle="tooltip" data-trigger="click hover" data-placement="top" title="Coming Soon">
-                    <i class="fa fa-credit-card-alt"></i> Payments
-                </a>
-                <!--- <a class="nav-button" href="/pages/account/payments/payment_status.cfm?playerID=#url.playerID#" class="nav-button" style="text-decoration: none; color: inherit;" data-toggle="tooltip" data-trigger="click hover" data-placement="top" title="Coming Soon">
-                    <i class="fa fa-credit-card-alt"></i> Payments
-                </a> ---->
+                <cfif listFind("536,1001", url.playerID)>
+                    <a href="/pages/account/payments/payment_status.cfm?playerID=#url.playerID#" class="nav-button" style="text-decoration: none; color: inherit;">
+                        <i class="fa fa-credit-card-alt"></i> Payments
+                    </a>
+                <cfelse>
+                    <a class="nav-button disabled" style="text-decoration: none; color: inherit;" data-toggle="tooltip" data-trigger="click hover" data-placement="top" title="Coming Soon">
+                        <i class="fa fa-credit-card-alt"></i> Payments
+                    </a>
+                </cfif>
                 <a class="nav-button disabled" data-toggle="tooltip" data-trigger="click hover" data-placement="top" title="Coming Soon">
                     <i class="fa-solid fa-photo-film"></i> My Media
                 </a>
