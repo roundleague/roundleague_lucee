@@ -288,7 +288,7 @@
         <cfloop array="#teamPaymentData#" index="team">
             <cfif structKeyExists(team, "teamID")>
                 <cfquery name="teamDiv" dbtype="query">
-                    SELECT divisionID FROM getTeams WHERE teamID = <cfqueryparam value="#team.teamID#" cfsqltype="cf_sql_integer">
+                    SELECT divisionID FROM getTeams WHERE teamID = #team.teamID#
                 </cfquery>
                 <cfif teamDiv.recordCount GT 0 AND teamDiv.divisionID EQ currentDivisionID>
                     <cfset divTeamCount++>
@@ -378,11 +378,6 @@
                                                     <button class="btn btn-sm btn-primary" onclick="showTeamDetails(#teamID#)" title="View Details">
                                                         <i class="nc-icon nc-zoom-split"></i>
                                                     </button>
-                                                    <cfif len(captainID) AND captainID GT 0>
-                                                    <a href="/pages/account/payments/payment_status.cfm?playerID=#captainID#" class="btn btn-sm btn-info" target="_blank" title="Captain Payment Page">
-                                                        <i class="nc-icon nc-money-coins"></i>
-                                                    </a>
-                                                    </cfif>
                                                 </td>
                                             </tr>
                                         </cfif>
@@ -417,8 +412,13 @@
         </div>
     </div>
 </div>
+</cfoutput>
+
+<!--- Include footer FIRST to load jQuery and other dependencies --->
+<cfinclude template="/admin-dashboard/admin_footer.cfm">
 
 <!--- JavaScript for charts and team details --->
+<cfoutput>
 <script>
 // Set up division chart
 var divCtx = document.getElementById('divisionChart').getContext('2d');
@@ -548,8 +548,8 @@ function showTeamDetails(teamID) {
         success: function(response) {
             $('##teamDetailsContent').html(response);
         },
-        error: function() {
-            $('##teamDetailsContent').html('Error loading team details. Please try again.');
+        error: function(xhr, status, error) {
+            $('##teamDetailsContent').html('<div class="alert alert-danger">Error loading team details: ' + error + '<br>Status: ' + status + '</div>');
         }
     });
     
@@ -581,5 +581,3 @@ function sendPaymentReminder(teamID) {
 }
 </script>
 </cfoutput>
-
-<cfinclude template="/admin-dashboard/admin_footer.cfm">

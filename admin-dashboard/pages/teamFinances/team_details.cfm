@@ -1,5 +1,7 @@
 <cfparam name="url.teamID" default="0">
+<cfparam name="session.currentSeasonID" default="0">
 
+<cftry>
 <cfinclude template="/pages/account/payments/get_team_payment_status.cfm">
 
 <cfoutput>
@@ -34,7 +36,7 @@
         tp.stripe_session_id,
         p.firstName,
         p.lastName,
-        tp.payment_date
+        tp.created_at
     FROM 
         team_payments tp
     LEFT JOIN
@@ -44,7 +46,7 @@
     AND 
         tp.season = <cfqueryparam cfsqltype="CF_SQL_VARCHAR" value="#session.currentSeasonID#">
     ORDER BY 
-        tp.payment_date DESC
+        tp.created_at DESC
 </cfquery>
 
 <!--- Get player contributions --->
@@ -171,7 +173,7 @@
                         <table class="table table-striped table-sm">
                             <thead>
                                 <tr>
-                                    <th>#</th>
+                                    <th>##</th>
                                     <th>Player Name</th>
                                     <th>Email</th>
                                     <th>Phone</th>
@@ -217,7 +219,7 @@
                                 <cfif getTeamPayments.recordCount GT 0>
                                     <cfloop query="getTeamPayments">
                                         <tr>
-                                            <td>#dateFormat(payment_date, 'mm/dd/yyyy')# #timeFormat(payment_date, 'h:mm tt')#</td>
+                                            <td>#dateFormat(created_at, 'mm/dd/yyyy')# #timeFormat(created_at, 'h:mm tt')#</td>
                                             <td>$#numberFormat(amount_paid, '999,999.00')#</td>
                                             <td>#firstName# #lastName#</td>
                                             <td>#payment_method#</td>
@@ -297,6 +299,7 @@
                                                     <option value="zelle">Zelle</option>
                                                     <option value="check">Check</option>
                                                     <option value="paypal">PayPal</option>
+                                                    <option value="stripe">Stripe</option>
                                                     <option value="other">Other</option>
                                                 </select>
                                             </div>
@@ -359,3 +362,15 @@
     </div>
 </cfif>
 </cfoutput>
+
+<cfcatch>
+    <div class="alert alert-danger">
+        <strong>Error:</strong> <cfoutput>#cfcatch.message#</cfoutput><br>
+        <strong>Detail:</strong> <cfoutput>#cfcatch.detail#</cfoutput><br>
+        <strong>Type:</strong> <cfoutput>#cfcatch.type#</cfoutput><br>
+        <cfif structKeyExists(cfcatch, "tagContext") AND arrayLen(cfcatch.tagContext) GT 0>
+            <strong>Location:</strong> <cfoutput>#cfcatch.tagContext[1].template# (line #cfcatch.tagContext[1].line#)</cfoutput>
+        </cfif>
+    </div>
+</cfcatch>
+</cftry>
