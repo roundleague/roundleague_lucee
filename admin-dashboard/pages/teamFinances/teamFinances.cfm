@@ -6,6 +6,14 @@
 <!--- Include the team payment status function --->
 <cfinclude template="/pages/account/payments/get_team_payment_status.cfm">
 
+<!--- Get the team fee for the current season (with fallback to 1000 if not set) --->
+<cfquery name="getSeasonFee" datasource="roundleague">
+    SELECT COALESCE(team_fee, 1000) as team_fee
+    FROM seasons
+    WHERE seasonID = <cfqueryparam cfsqltype="cf_sql_integer" value="#session.currentSeasonID#">
+</cfquery>
+<cfset seasonTeamFee = getSeasonFee.recordCount GT 0 ? getSeasonFee.team_fee : 1000>
+
 <cfoutput>
 
 <!--- Get all active teams for the current season --->
@@ -66,7 +74,7 @@
 </cfquery>
 
 <!--- Calculate overall stats --->
-<cfset totalTeamFees = getTeams.recordCount * 1000>
+<cfset totalTeamFees = getTeams.recordCount * seasonTeamFee>
 <cfset totalCollected = getTotalPayments.total_team_payments + getTotalContributions.total_player_contributions>
 <cfset totalRemaining = totalTeamFees - totalCollected>
 <cfset overallPercentage = totalTeamFees GT 0 ? (totalCollected / totalTeamFees) * 100 : 0>
@@ -111,6 +119,14 @@
             </button>
         </div>
     </cfif>
+    <cfif isDefined("url.feeUpdated") AND url.feeUpdated EQ 1>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="nc-icon nc-check-2"></i> Team fee updated to $#numberFormat(seasonTeamFee, '999,999')#
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </cfif>
     <cfif isDefined("url.error") AND len(url.error)>
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
             <i class="nc-icon nc-simple-remove"></i> Error: #url.error#
@@ -122,8 +138,41 @@
     
     <div class="row">
         <div class="col-md-12">
-            <h3 class="description">Team Finances - Season <span class="badge badge-primary">#session.currentSeasonID#</span></h3>
-            <p class="text-muted"><i class="fa fa-users"></i> Showing all #getTeams.recordCount# active teams</p>
+            <div class="d-flex justify-content-between align-items-center flex-wrap">
+                <div>
+                    <h3 class="description">Team Finances - Season <span class="badge badge-primary">#session.currentSeasonID#</span></h3>
+                    <p class="text-muted"><i class="fa fa-users"></i> Showing all #getTeams.recordCount# active teams</p>
+                </div>
+                <div class="card card-stats mb-3" style="min-width: 280px;">
+                    <div class="card-body py-2">
+                        <div class="row align-items-center">
+                            <div class="col-12">
+                                <label class="mb-1 text-muted small"><i class="nc-icon nc-settings-gear-65"></i> Team Fee (per team)</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">$</span>
+                                    </div>
+                                    <input type="number" id="teamFeeInput" class="form-control" value="#int(seasonTeamFee)#" min="0" step="50">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary" type="button" onclick="updateTeamFee()" id="updateFeeBtn">
+                                                <i class="nc-icon nc-check-2"></i> Update
+                                            </button>
+                                        </div>
+                                        <script>
+                                        // If input is empty or zero, set default
+                                        document.addEventListener('DOMContentLoaded', function() {
+                                            var feeInput = document.getElementById('teamFeeInput');
+                                            if (!feeInput.value || parseFloat(feeInput.value) === 0) {
+                                                feeInput.value = 1000;
+                                            }
+                                        });
+                                        </script>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -346,7 +395,7 @@
                                     <cfloop query="getTeams">
                                         <cfif getTeams.divisionID EQ currentDivisionID>
                                             <!--- Find the matching team status --->
-                                            <cfset teamStatus = {teamFee: 1000, teamPayments: 0, playerContributions: 0, totalPaid: 0, remainingBalance: 1000, percentPaid: 0}>
+                                            <cfset teamStatus = {teamFee: seasonTeamFee, teamPayments: 0, playerContributions: 0, totalPaid: 0, remainingBalance: seasonTeamFee, percentPaid: 0}>
                                             <cfloop array="#teamPaymentData#" index="ts">
                                                 <cfif ts.teamID EQ getTeams.teamID>
                                                     <cfset teamStatus = ts>
@@ -576,6 +625,35 @@ function sendPaymentReminder(teamID) {
             alert('Error sending payment reminder. Please try again.');
             $('##sendReminderBtn').html('Send Payment Reminder');
             $('##sendReminderBtn').attr('disabled', false);
+        }
+    });
+}
+
+// Function to update team fee for the season
+function updateTeamFee() {
+    var newFee = $('##teamFeeInput').val();
+    if (!newFee || newFee < 0) {
+        alert('Please enter a valid team fee amount.');
+        return;
+    }
+    
+    $('##updateFeeBtn').html('<i class="fa fa-spinner fa-spin"></i>');
+    $('##updateFeeBtn').attr('disabled', true);
+    
+    $.ajax({
+        url: 'update_team_fee.cfm',
+        type: 'POST',
+        data: { teamFee: newFee, seasonID: #session.currentSeasonID# },
+        dataType: 'json',
+        success: function(response) {
+            if (response.SUCCESS || response.success) {
+                window.location.href = 'teamFinances.cfm?feeUpdated=1';
+            } else {
+                window.location.href = 'teamFinances.cfm?error=' + encodeURIComponent(response.MESSAGE || response.message || 'Unknown error');
+            }
+        },
+        error: function() {
+            window.location.href = 'teamFinances.cfm?error=' + encodeURIComponent('Error updating team fee. Please try again.');
         }
     });
 }
