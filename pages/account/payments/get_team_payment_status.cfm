@@ -2,6 +2,14 @@
     <cfargument name="teamID" type="numeric" required="true">
     <cfargument name="seasonID" type="string" required="true">
     
+    <!--- Get the team fee for this season from the database --->
+    <cfquery name="qrySeasonFee" datasource="roundleague">
+        SELECT COALESCE(team_fee, 1000) as team_fee
+        FROM seasons
+        WHERE seasonID = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.seasonID#">
+    </cfquery>
+    <cfset local.teamFee = qrySeasonFee.recordCount GT 0 ? qrySeasonFee.team_fee : 1000>
+    
     <cfquery name="qryTeamPayments" datasource="roundleague">
         SELECT 
             COALESCE(SUM(tp.amount_paid), 0) as team_payment_total
@@ -23,8 +31,7 @@
     </cfquery>
     
     <cfset local.totalPaid = qryTeamPayments.team_payment_total + qryPlayerContributions.player_contribution_total>
-    <cfset local.teamFee = 1000> <!--- You may want to make this configurable per season --->
-    <cfset local.percentPaid = (local.totalPaid / local.teamFee) * 100>
+    <cfset local.percentPaid = local.teamFee GT 0 ? (local.totalPaid / local.teamFee) * 100 : 0>
     <cfset local.isFullyPaid = local.totalPaid GTE local.teamFee>
     
     <cfreturn {
