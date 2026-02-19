@@ -374,12 +374,20 @@ function parseWeekDate(dateStr) {
   var currentYear = new Date().getFullYear();
 
   // Try to parse with current year
-  var date = new Date(dateStr + ", " + currentYear);
+  // Add noon time (12:00:00) to avoid timezone issues where midnight UTC
+  // rolls back to the previous day in US timezones
+  var date = new Date(dateStr + ", " + currentYear + " 12:00:00");
   if (!isNaN(date.getTime())) {
     return formatDateForDB(date);
   }
 
   // Fallback: try parsing directly (might have year included)
+  date = new Date(dateStr + " 12:00:00");
+  if (!isNaN(date.getTime())) {
+    return formatDateForDB(date);
+  }
+
+  // Final fallback without time adjustment
   date = new Date(dateStr);
   if (!isNaN(date.getTime())) {
     return formatDateForDB(date);
