@@ -8,13 +8,13 @@
         <nav class="footer-nav">
           <ul>
             <li>
-              <a href="https://www.instagram.com/theroundleague/" target="_blank"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+              <a href="https://www.instagram.com/theroundleague/" target="_blank"><i class="fab fa-instagram" aria-hidden="true"></i></a>
             </li>
             <li>
-              <a href="https://www.youtube.com/channel/UCOlYUrGXE-S_dxK1mjCW8Gw" target="_blank"><i class="fa fa-youtube" aria-hidden="true"></i></a>
+              <a href="https://www.youtube.com/channel/UCOlYUrGXE-S_dxK1mjCW8Gw" target="_blank"><i class="fab fa-youtube" aria-hidden="true"></i></a>
             </li>
             <li>
-              <a href="https://www.linkedin.com/company/the-round-league/" target="_blank"><i class="fa fa-linkedin" aria-hidden="true"></i></a>
+              <a href="https://www.linkedin.com/company/the-round-league/" target="_blank"><i class="fab fa-linkedin" aria-hidden="true"></i></a>
             </li>
             <li>
               <a href="https://maps.app.goo.gl/1vBkBnVL7wMbAps2A" target="_blank">4150 SW Watson Ave, Beaverton, OR 97005</a>
