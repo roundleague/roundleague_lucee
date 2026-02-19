@@ -167,14 +167,77 @@
 }
 
 .btn-add-team,
-.btn-mark-inactive {
+.btn-mark-inactive,
+.btn-activate-team,
+.btn-use-suggestion {
   padding: 4px 10px;
   font-size: 12px;
+  white-space: nowrap;
 }
 
 .btn-add-team i,
-.btn-mark-inactive i {
+.btn-mark-inactive i,
+.btn-activate-team i,
+.btn-use-suggestion i {
   margin-right: 4px;
+}
+
+.team-diff-item-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.team-suggestion {
+  font-size: 12px;
+  color: #0056b3;
+  margin-top: 4px;
+  padding: 4px 8px;
+  background-color: #e7f1ff;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.team-suggestion i {
+  color: #ffc107;
+  margin-right: 4px;
+}
+
+.team-suggestion strong {
+  color: #004085;
+}
+
+.team-diff-item.team-inactive-reactivate {
+  border-left: 3px solid #17a2b8;
+}
+
+.team-diff-item.team-rename {
+  border-left: 3px solid #007bff;
+  background-color: #f0f7ff;
+}
+
+.team-rename-hint {
+  background-color: #d4e6f9 !important;
+}
+
+.btn-rename-team {
+  padding: 4px 10px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.btn-rename-team i {
+  margin-right: 4px;
+}
+
+.mb-3 {
+  margin-bottom: 15px;
+}
+
+.text-info {
+  color: #17a2b8 !important;
 }
 
 #teamDiffCard h6 {
@@ -196,4 +259,185 @@
 
 .small {
   font-size: 12px;
+}
+
+/* Missing team action buttons */
+.btn-group-vertical-sm {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.btn-move-team {
+  padding: 4px 10px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.btn-move-team i {
+  margin-right: 4px;
+}
+
+.move-division-select {
+  margin-top: 4px;
+}
+
+.team-missing-actions {
+  margin-top: 4px;
+}
+
+.badge-info {
+  background-color: #17a2b8;
+  color: #fff;
+}
+
+.badge-warning {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+/* Sync Summary Modal Styles */
+.sync-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.sync-modal {
+  background: #fff;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+.sync-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #ddd;
+  background-color: #f1f3f5;
+  border-radius: 8px 8px 0 0;
+}
+
+.sync-modal-header h5 {
+  margin: 0;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sync-modal-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #6c757d;
+  padding: 0 4px;
+  line-height: 1;
+}
+
+.sync-modal-close:hover {
+  color: #333;
+}
+
+.sync-modal-body {
+  padding: 20px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.sync-modal-footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 20px;
+  border-top: 1px solid #ddd;
+  background-color: #f8f9fa;
+  border-radius: 0 0 8px 8px;
+}
+
+.sync-summary-table {
+  font-size: 13px;
+  margin-bottom: 0;
+}
+
+.sync-summary-table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #6c757d;
+}
+
+.sync-summary-table td {
+  vertical-align: middle;
+}
+
+.sync-detail {
+  margin-top: 6px;
+  padding: 6px 8px;
+  background-color: #f8f9fa;
+  border-radius: 3px;
+  font-size: 12px;
+}
+
+.sync-action-item {
+  padding: 2px 0;
+}
+
+.sync-action-type {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-right: 4px;
+}
+
+.sync-type-added {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.sync-type-activated {
+  background-color: #d1ecf1;
+  color: #0c5460;
+}
+
+.sync-type-renamed {
+  background-color: #cce5ff;
+  color: #004085;
+}
+
+.sync-type-mapped {
+  background-color: #e2e3e5;
+  color: #383d41;
+}
+
+.sync-type-moved {
+  background-color: #d1ecf1;
+  color: #0c5460;
+}
+
+.sync-type-inactive {
+  background-color: #f5c6cb;
+  color: #721c24;
+}
+
+.sync-detail-toggle {
+  font-size: 11px;
+  margin-left: 4px;
 }
