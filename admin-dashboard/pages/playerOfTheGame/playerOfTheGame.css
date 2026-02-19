@@ -1,0 +1,48 @@
+/* Player of the Game Generator Styles */
+
+#gamesTable {
+  font-size: 14px;
+}
+
+#gamesTable th {
+  background-color: #f5f5f5;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+#gamesTable td {
+  vertical-align: middle;
+}
+
+.generateBtn {
+  white-space: nowrap;
+}
+
+.generateBtn:hover {
+  transform: scale(1.05);
+  transition: transform 0.15s ease;
+}
+
+#canvasContainer {
+  display: inline-block;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+#pogCanvas {
+  display: block;
+}
+
+#previewSection .card {
+  background: #f8f9fa;
+}
+
+#loadingSpinner {
+  padding: 60px 0;
+  color: #666;
+}
+
+#loadingSpinner i {
+  color: #c8102e;
+}

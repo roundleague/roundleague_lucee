@@ -140,6 +140,12 @@ Coded by www.creative-tim.com
                   <p>Add To Roster</p>
                 </a>
               </li>
+              <li <cfif findNoCase("playerOfTheGame", CGI.REQUEST_URL)>class="active"</cfif>>
+                <a href="/admin-dashboard/pages/playerOfTheGame/playerOfTheGame.cfm">
+                  <i class="nc-icon nc-image"></i>
+                  <p>Player of the Game</p>
+                </a>
+              </li>
               <!--- <li <cfif findNoCase("ideas", CGI.REQUEST_URL)>class="active"</cfif>>
                 <a href="/admin-dashboard/scripts/emailCaptains_teamSize.cfm">
                   <i class="nc-icon nc-chat-33"></i>
