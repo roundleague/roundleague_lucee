@@ -183,10 +183,27 @@
                                     </div>
                                     <div class="card-body">
                                         <p>Contribute a portion of the team fee ($#numberFormat(suggestedAmount, '999,999')# suggested based on roster size of #rosterCount.totalPlayers# players).</p>
+                                        <div class="form-group">
+                                            <label for="contributionAmount">Contribution Amount ($)</label>
+                                            <input type="number" id="contributionAmount" class="form-control" 
+                                                   value="#suggestedAmount#" min="1" step="1" 
+                                                   style="max-width: 200px;">
+                                        </div>
                                         <a href="/pages/account/payments/account_stripe_checkout.cfm?playerID=#url.playerID#&teamID=#playerTeamInfo.teamID#&paymentType=player&amount=#suggestedAmount#" 
-                                           class="btn btn-primary btn-round">
-                                           Pay $#numberFormat(suggestedAmount, '999,999')#
+                                           id="playerContributionBtn"
+                                           class="btn btn-primary btn-round"
+                                           target="_blank">
+                                           Pay $<span id="contributionDisplayAmount">#numberFormat(suggestedAmount, '999,999')#</span>
                                         </a>
+                                        <script>
+                                            document.getElementById('contributionAmount').addEventListener('input', function() {
+                                                var amount = parseFloat(this.value) || 0;
+                                                document.getElementById('contributionDisplayAmount').textContent = amount.toLocaleString();
+                                                var btn = document.getElementById('playerContributionBtn');
+                                                var baseUrl = '/pages/account/payments/account_stripe_checkout.cfm?playerID=#url.playerID#&teamID=#playerTeamInfo.teamID#&paymentType=player&amount=';
+                                                btn.href = baseUrl + amount;
+                                            });
+                                        </script>
                                     </div>
                                 </div>
                             </div>
