@@ -28,6 +28,14 @@
   ORDER BY teamName
 </cfquery>
 
+<!--- Get all inactive teams (any season) for reactivation checks --->
+<cfquery name="getInactiveTeams" datasource="roundleague">
+  SELECT teamID, teamName, divisionID, seasonID
+  FROM teams
+  WHERE status = 'Inactive'
+  ORDER BY teamName
+</cfquery>
+
 <!--- Build team lookup JSON for JavaScript --->
 <cfset teamLookup = {}>
 <cfloop query="getAllTeams">
@@ -35,6 +43,17 @@
     "teamID": getAllTeams.teamID,
     "teamName": getAllTeams.teamName,
     "divisionID": getAllTeams.divisionID
+  }>
+</cfloop>
+
+<!--- Build inactive team lookup JSON for JavaScript --->
+<cfset inactiveTeamLookup = {}>
+<cfloop query="getInactiveTeams">
+  <cfset inactiveTeamLookup[lCase(trim(getInactiveTeams.teamName))] = {
+    "teamID": getInactiveTeams.teamID,
+    "teamName": getInactiveTeams.teamName,
+    "divisionID": getInactiveTeams.divisionID,
+    "seasonID": getInactiveTeams.seasonID
   }>
 </cfloop>
 
@@ -179,7 +198,7 @@ Week 2 - Monday, March 2nd
             
             <div class="form-group">
               <label>
-                <input type="checkbox" id="clearExisting" name="clearExisting" value="1"> 
+                <input type="checkbox" id="clearExisting" name="clearExisting" value="1" checked> 
                 Clear existing schedule for this division before importing
               </label>
             </div>
@@ -198,6 +217,7 @@ Week 2 - Monday, March 2nd
 <!--- Pass team data to JavaScript --->
 <script>
   var teamLookup = #serializeJSON(teamLookup)#;
+  var inactiveTeamLookup = #serializeJSON(inactiveTeamLookup)#;
   var currentSeasonID = #session.currentSeasonID#;
 </script>
 </cfoutput>

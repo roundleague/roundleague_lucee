@@ -6,14 +6,144 @@ var teamsInSchedule = {}; // Track all teams found in pasted schedule
 var unknownTeamsFromSchedule = {}; // Teams in schedule but not in DB
 var missingTeamsFromDB = {}; // Teams in DB but not in schedule
 
-// Normalize team name for matching - strips parenthetical numbers and extra whitespace
+// Normalize team name for matching - strips parenthetical codes/numbers and extra whitespace
 function normalizeTeamName(name) {
   if (!name) return "";
   return name
-    .replace(/\s*\(\d+\)\s*/g, "") // Remove (123) patterns
+    .replace(/\s*\([^)]*\)\s*/g, "") // Remove all parenthetical content like (123), (IVP), etc.
     .replace(/\s+/g, " ") // Normalize whitespace
     .trim()
     .toLowerCase();
+}
+
+// Extract alternate/old team name from parentheses if it's text (not a number)
+// e.g. "Rip City Rejects (Consumption)" -> "consumption"
+// e.g. "Taste Ticklers (54)" -> null (number = team ID, not an alternate name)
+function extractAlternateName(name) {
+  if (!name) return null;
+  var match = name.match(/\(([^)]+)\)/);
+  if (match) {
+    var inside = match[1].trim();
+    // If it's purely numeric, it's a team ID - not an alternate name
+    if (/^\d+$/.test(inside)) return null;
+    return inside.toLowerCase();
+  }
+  return null;
+}
+
+// Common abbreviation expansions for fuzzy matching
+var abbreviationMap = {
+  nw: "northwest",
+  ne: "northeast",
+  sw: "southwest",
+  se: "southeast",
+  n: "north",
+  s: "south",
+  e: "east",
+  w: "west",
+  st: "saint",
+  mt: "mount",
+  jr: "junior",
+  sr: "senior",
+};
+
+// Expand abbreviations in a team name for comparison
+function expandAbbreviations(name) {
+  if (!name) return "";
+  var words = name.toLowerCase().trim().split(/\s+/);
+  return words
+    .map(function (w) {
+      return abbreviationMap[w] || w;
+    })
+    .join(" ");
+}
+
+// Calculate similarity score between two strings (0 to 1)
+function similarityScore(a, b) {
+  if (!a || !b) return 0;
+  a = a.toLowerCase();
+  b = b.toLowerCase();
+  if (a === b) return 1;
+
+  // Check abbreviation-expanded match
+  var expandedA = expandAbbreviations(a);
+  var expandedB = expandAbbreviations(b);
+  if (expandedA === expandedB) return 0.95;
+
+  // Word overlap scoring
+  var wordsA = expandedA.split(/\s+/);
+  var wordsB = expandedB.split(/\s+/);
+  var matchCount = 0;
+  wordsA.forEach(function (wa) {
+    wordsB.forEach(function (wb) {
+      if (wa === wb) matchCount++;
+      // Partial word match (one starts with the other, min 3 chars)
+      else if (wa.length >= 3 && wb.length >= 3) {
+        if (wb.indexOf(wa) === 0 || wa.indexOf(wb) === 0) matchCount += 0.7;
+      }
+    });
+  });
+  var maxWords = Math.max(wordsA.length, wordsB.length);
+  var wordScore = matchCount / maxWords;
+
+  // Contains check (one is substring of the other after expansion)
+  // Require a reasonable length ratio to avoid matching tiny substrings (e.g. "IVP" inside "Skin N' Bones")
+  var lenRatio =
+    Math.min(expandedA.length, expandedB.length) /
+    Math.max(expandedA.length, expandedB.length);
+  if (
+    lenRatio >= 0.4 &&
+    (expandedA.indexOf(expandedB) > -1 || expandedB.indexOf(expandedA) > -1)
+  ) {
+    wordScore = Math.max(wordScore, 0.6 + lenRatio * 0.3);
+  }
+
+  return wordScore;
+}
+
+// Find a suggested match from all teams (active + inactive) for an unknown team name.
+// Returns {team: {...}, source: 'active'|'inactive'} or null.
+function findSuggestion(teamName) {
+  if (!teamName) return null;
+  var bestScore = 0;
+  var bestMatch = null;
+  var bestSource = null;
+  var threshold = 0.5; // Minimum score to suggest
+
+  var normalizedInput = normalizeTeamName(teamName);
+  var altName = extractAlternateName(teamName);
+
+  // Helper to check a candidate and update best match
+  function checkCandidate(candidateKey, team, source) {
+    var normalizedKey = normalizeTeamName(candidateKey);
+    // Score against primary name
+    var score = similarityScore(normalizedInput, normalizedKey);
+    // Also score against alternate/old name if present
+    if (altName) {
+      var altScore = similarityScore(altName, normalizedKey);
+      score = Math.max(score, altScore);
+    }
+    if (score > bestScore) {
+      bestScore = score;
+      bestMatch = team;
+      bestSource = source;
+    }
+  }
+
+  // Search active teams
+  for (var key in teamLookup) {
+    checkCandidate(key, teamLookup[key], "active");
+  }
+
+  // Search inactive teams
+  for (var key in inactiveTeamLookup) {
+    checkCandidate(key, inactiveTeamLookup[key], "inactive");
+  }
+
+  if (bestScore >= threshold && bestMatch) {
+    return { team: bestMatch, source: bestSource, score: bestScore };
+  }
+  return null;
 }
 
 // Find a team match using exact match first, then fuzzy match
@@ -27,7 +157,7 @@ function findTeamMatch(teamName) {
     return teamLookup[exactKey];
   }
 
-  // Try normalized match (strips parenthetical numbers)
+  // Try normalized match (strips parenthetical content)
   var normalizedInput = normalizeTeamName(teamName);
 
   for (var key in teamLookup) {
@@ -37,12 +167,32 @@ function findTeamMatch(teamName) {
     }
   }
 
-  // Try contains match as last resort
+  // Try alternate/old name from parentheses e.g. "Rip City Rejects (Consumption)" -> try "consumption"
+  var altName = extractAlternateName(teamName);
+  if (altName) {
+    // Try exact match on alternate name
+    if (teamLookup[altName]) {
+      return teamLookup[altName];
+    }
+    // Try normalized match on alternate name
+    for (var key in teamLookup) {
+      var normalizedKey = normalizeTeamName(key);
+      if (normalizedKey === altName) {
+        return teamLookup[key];
+      }
+    }
+  }
+
+  // Try contains match as last resort - require minimum length ratio to avoid
+  // short names like "IVP" matching inside "Skin N' Bones" just because of a code
   for (var key in teamLookup) {
     var normalizedKey = normalizeTeamName(key);
+    var shorter = Math.min(normalizedKey.length, normalizedInput.length);
+    var longer = Math.max(normalizedKey.length, normalizedInput.length);
     if (
-      normalizedKey.indexOf(normalizedInput) > -1 ||
-      normalizedInput.indexOf(normalizedKey) > -1
+      shorter / longer >= 0.5 &&
+      (normalizedKey.indexOf(normalizedInput) > -1 ||
+        normalizedInput.indexOf(normalizedKey) > -1)
     ) {
       return teamLookup[key];
     }
@@ -417,27 +567,112 @@ function displayTeamDiff(newTeams, missingTeams, divisionID) {
 
   teamDiffCard.style.display = "block";
 
-  // Build new teams list with quick-add buttons
+  // Build new teams list with quick-add or activate buttons
   if (newTeamNames.length > 0) {
     var html = "";
     newTeamNames.forEach(function (teamName) {
       var escapedName = escapeHtml(teamName);
       var dataName = teamName.replace(/'/g, "\\'").replace(/"/g, "&quot;");
-      html +=
-        '<div class="team-diff-item team-new" id="new-team-' +
-        encodeURIComponent(teamName) +
-        '">' +
-        '<span class="team-name">' +
-        escapedName +
-        "</span>" +
-        '<button type="button" class="btn btn-success btn-sm btn-add-team" ' +
-        "onclick=\"quickAddTeam('" +
-        dataName +
-        "', " +
-        divisionID +
-        ')">' +
-        '<i class="nc-icon nc-simple-add"></i> Add</button>' +
-        "</div>";
+      var normalizedName = normalizeTeamName(teamName);
+
+      // Check if this team exists as inactive
+      var inactiveMatch = null;
+      for (var key in inactiveTeamLookup) {
+        if (normalizeTeamName(key) === normalizedName) {
+          inactiveMatch = inactiveTeamLookup[key];
+          break;
+        }
+      }
+
+      if (inactiveMatch) {
+        // Team exists but is inactive - show Activate button
+        html +=
+          '<div class="team-diff-item team-inactive-reactivate" id="new-team-' +
+          encodeURIComponent(teamName) +
+          '">' +
+          '<span class="team-name">' +
+          escapedName +
+          ' <span class="badge badge-secondary">Inactive</span></span>' +
+          '<button type="button" class="btn btn-info btn-sm btn-activate-team" ' +
+          'onclick="quickActivateTeam(' +
+          inactiveMatch.teamID +
+          ", '" +
+          dataName +
+          "', " +
+          divisionID +
+          ')">' +
+          '<i class="nc-icon nc-check-2"></i> Activate</button>' +
+          "</div>";
+      } else {
+        // Check for fuzzy suggestion from active or inactive teams
+        var suggestion = findSuggestion(teamName);
+
+        html +=
+          '<div class="team-diff-item team-new" id="new-team-' +
+          encodeURIComponent(teamName) +
+          '">' +
+          '<div class="team-diff-item-content">' +
+          '<span class="team-name">' +
+          escapedName +
+          "</span>";
+
+        if (suggestion) {
+          var suggestedName = escapeHtml(suggestion.team.teamName);
+          var sugDataName = suggestion.team.teamName
+            .replace(/'/g, "\\'")
+            .replace(/"/g, "&quot;");
+          var isInactive = suggestion.source === "inactive";
+          var statusLabel = isInactive
+            ? ' <span class="badge badge-secondary">Inactive</span>'
+            : "";
+
+          html +=
+            '<div class="team-suggestion">' +
+            '<i class="nc-icon nc-bulb-63"></i> Did you mean <strong>' +
+            suggestedName +
+            "</strong>?" +
+            statusLabel;
+
+          if (isInactive) {
+            // Suggestion is inactive team - Use This will activate it
+            html +=
+              ' <button type="button" class="btn btn-info btn-sm btn-use-suggestion" ' +
+              'onclick="useSuggestedTeamActivate(' +
+              suggestion.team.teamID +
+              ", '" +
+              sugDataName +
+              "', '" +
+              dataName +
+              "', " +
+              divisionID +
+              ')">' +
+              '<i class="nc-icon nc-check-2"></i> Activate &amp; Use</button>';
+          } else {
+            // Suggestion is active team - Use This will map it
+            html +=
+              ' <button type="button" class="btn btn-primary btn-sm btn-use-suggestion" ' +
+              "onclick=\"useSuggestedTeam('" +
+              sugDataName +
+              "', '" +
+              dataName +
+              "')\">" +
+              '<i class="nc-icon nc-check-2"></i> Use This</button>';
+          }
+          html += "</div>";
+        }
+
+        // Always show Add as New button
+        html +=
+          "</div>" +
+          '<button type="button" class="btn btn-success btn-sm btn-add-team" ' +
+          "onclick=\"quickAddTeam('" +
+          dataName +
+          "', " +
+          divisionID +
+          ')">' +
+          '<i class="nc-icon nc-simple-add"></i> Add New</button>' +
+          "</div>";
+      }
     });
     newTeamsList.innerHTML = html;
   } else {
@@ -528,6 +763,163 @@ function quickAddTeam(teamName, divisionID) {
     })
     .catch(function (error) {
       alert("Error adding team: " + error);
+    });
+}
+
+// Use a suggested active team - maps the schedule name to the existing DB team
+function useSuggestedTeam(dbTeamName, scheduleTeamName) {
+  var key = dbTeamName.toLowerCase();
+  var team = teamLookup[key];
+  if (!team) {
+    alert("Could not find team '" + dbTeamName + "' in lookup.");
+    return;
+  }
+
+  // Also add the schedule alias to teamLookup so re-parse will match it
+  var aliasKey = scheduleTeamName.toLowerCase();
+  teamLookup[aliasKey] = {
+    teamID: team.teamID,
+    teamName: team.teamName,
+    divisionID: team.divisionID,
+  };
+
+  // Re-parse automatically to update preview with the mapped team
+  parseScheduleData();
+}
+
+// Use a suggested inactive team - activate it and map the schedule name
+function useSuggestedTeamActivate(
+  teamID,
+  dbTeamName,
+  scheduleTeamName,
+  divisionID,
+) {
+  if (
+    !confirm(
+      'Activate "' +
+        dbTeamName +
+        '" and use it for "' +
+        scheduleTeamName +
+        '"?',
+    )
+  ) {
+    return;
+  }
+
+  var formData = new FormData();
+  formData.append("action", "activateTeam");
+  formData.append("teamID", teamID);
+  formData.append("divisionID", divisionID);
+
+  fetch("teamActions.cfm", {
+    method: "POST",
+    body: formData,
+  })
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (data) {
+      if (data.success) {
+        // Add both the canonical name and the schedule alias to teamLookup
+        var key = data.teamName.toLowerCase();
+        teamLookup[key] = {
+          teamID: data.teamID,
+          teamName: data.teamName,
+          divisionID: parseInt(divisionID),
+        };
+        var aliasKey = scheduleTeamName.toLowerCase();
+        teamLookup[aliasKey] = {
+          teamID: data.teamID,
+          teamName: data.teamName,
+          divisionID: parseInt(divisionID),
+        };
+
+        // Remove from inactiveTeamLookup
+        for (var iKey in inactiveTeamLookup) {
+          if (inactiveTeamLookup[iKey].teamID === data.teamID) {
+            delete inactiveTeamLookup[iKey];
+            break;
+          }
+        }
+
+        // Re-parse automatically to update preview with the activated+mapped team
+        parseScheduleData();
+      } else {
+        alert("Error: " + data.message);
+      }
+    })
+    .catch(function (error) {
+      alert("Error activating team: " + error);
+    });
+}
+
+// Activate an inactive team
+function quickActivateTeam(teamID, teamName, divisionID) {
+  if (
+    !confirm(
+      'Activate team "' +
+        teamName +
+        '"? This will set it to Active and assign it to the selected division and current season.',
+    )
+  ) {
+    return;
+  }
+
+  var formData = new FormData();
+  formData.append("action", "activateTeam");
+  formData.append("teamID", teamID);
+  formData.append("divisionID", divisionID);
+
+  fetch("teamActions.cfm", {
+    method: "POST",
+    body: formData,
+  })
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (data) {
+      if (data.success) {
+        // Add to teamLookup so parsing recognizes it
+        var key = data.teamName.toLowerCase();
+        teamLookup[key] = {
+          teamID: data.teamID,
+          teamName: data.teamName,
+          divisionID: parseInt(divisionID),
+        };
+
+        // Remove from inactiveTeamLookup
+        for (var iKey in inactiveTeamLookup) {
+          if (inactiveTeamLookup[iKey].teamID === data.teamID) {
+            delete inactiveTeamLookup[iKey];
+            break;
+          }
+        }
+
+        // Update the UI - mark as activated
+        var itemEl = document.getElementById(
+          "new-team-" + encodeURIComponent(teamName),
+        );
+        if (itemEl) {
+          itemEl.classList.remove("team-inactive-reactivate");
+          itemEl.classList.add("team-added");
+          itemEl.innerHTML =
+            '<span class="team-name">' +
+            escapeHtml(data.teamName) +
+            "</span>" +
+            '<span class="badge badge-success">Activated (ID: ' +
+            data.teamID +
+            ")</span>";
+        }
+
+        alert(
+          "Team activated! Click 'Parse & Preview' again to update the preview.",
+        );
+      } else {
+        alert("Error: " + data.message);
+      }
+    })
+    .catch(function (error) {
+      alert("Error activating team: " + error);
     });
 }
 

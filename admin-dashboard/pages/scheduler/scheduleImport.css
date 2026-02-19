@@ -167,14 +167,50 @@
 }
 
 .btn-add-team,
-.btn-mark-inactive {
+.btn-mark-inactive,
+.btn-activate-team,
+.btn-use-suggestion {
   padding: 4px 10px;
   font-size: 12px;
+  white-space: nowrap;
 }
 
 .btn-add-team i,
-.btn-mark-inactive i {
+.btn-mark-inactive i,
+.btn-activate-team i,
+.btn-use-suggestion i {
   margin-right: 4px;
+}
+
+.team-diff-item-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.team-suggestion {
+  font-size: 12px;
+  color: #0056b3;
+  margin-top: 4px;
+  padding: 4px 8px;
+  background-color: #e7f1ff;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.team-suggestion i {
+  color: #ffc107;
+  margin-right: 4px;
+}
+
+.team-suggestion strong {
+  color: #004085;
+}
+
+.team-diff-item.team-inactive-reactivate {
+  border-left: 3px solid #17a2b8;
 }
 
 #teamDiffCard h6 {

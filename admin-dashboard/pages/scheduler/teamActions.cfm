@@ -56,6 +56,40 @@
             <cfset response.teamName = trim(form.teamName)>
         </cfcase>
         
+        <!--- Activate an inactive team --->
+        <cfcase value="activateTeam">
+            <cfif NOT isNumeric(form.teamID) OR form.teamID EQ 0>
+                <cfthrow message="Team ID is required.">
+            </cfif>
+            <cfif NOT isNumeric(form.divisionID) OR form.divisionID EQ 0>
+                <cfthrow message="Division ID is required.">
+            </cfif>
+            
+            <!--- Get team name before updating --->
+            <cfquery name="getTeam" datasource="roundleague">
+                SELECT teamName FROM teams
+                WHERE teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.teamID#">
+            </cfquery>
+            
+            <cfif getTeam.recordCount EQ 0>
+                <cfthrow message="Team not found.">
+            </cfif>
+            
+            <!--- Update team: set Active, assign division and current season --->
+            <cfquery name="activateTeam" datasource="roundleague">
+                UPDATE teams
+                SET Status = 'Active',
+                    DivisionID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.divisionID#">,
+                    SeasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+                WHERE teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.teamID#">
+            </cfquery>
+            
+            <cfset response.success = true>
+            <cfset response.message = "Team activated successfully.">
+            <cfset response.teamID = form.teamID>
+            <cfset response.teamName = getTeam.teamName>
+        </cfcase>
+        
         <!--- Mark team as inactive --->
         <cfcase value="markInactive">
             <cfif NOT isNumeric(form.teamID) OR form.teamID EQ 0>
