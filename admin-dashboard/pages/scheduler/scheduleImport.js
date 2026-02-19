@@ -847,6 +847,7 @@ function quickAddTeam(teamName, divisionID) {
         }
 
         // Re-parse to update the preview with the new team
+        logSyncAction("added", data.teamName);
         alert(
           "Team added! Click 'Parse & Preview' again to update the preview.",
         );
@@ -935,6 +936,7 @@ function renameTeam(teamID, oldName, newName) {
         }
 
         // Re-parse to update everything
+        logSyncAction("renamed", oldName + " → " + data.teamName);
         parseScheduleData();
       } else {
         alert("Error: " + data.message);
@@ -968,6 +970,7 @@ function useSuggestedTeam(dbTeamName, scheduleTeamName) {
   };
 
   // Re-parse automatically to update preview with the mapped team
+  logSyncAction("mapped", scheduleTeamName + " → " + team.teamName);
   parseScheduleData();
 }
 
@@ -1027,6 +1030,10 @@ function useSuggestedTeamActivate(
         }
 
         // Re-parse automatically to update preview with the activated+mapped team
+        logSyncAction(
+          "activated",
+          data.teamName + " (mapped from " + scheduleTeamName + ")",
+        );
         parseScheduleData();
       } else {
         alert("Error: " + data.message);
@@ -1098,6 +1105,7 @@ function quickActivateTeam(teamID, teamName, divisionID) {
         alert(
           "Team activated! Click 'Parse & Preview' again to update the preview.",
         );
+        logSyncAction("activated", data.teamName);
       } else {
         alert("Error: " + data.message);
       }
@@ -1151,6 +1159,9 @@ function markTeamInactive(teamID, teamName) {
             "</span>" +
             '<span class="badge badge-secondary">Marked Inactive</span>';
         }
+
+        // Log to sync summary
+        logSyncAction("inactive", teamName);
       } else {
         alert("Error: " + data.message);
       }
@@ -1159,3 +1170,311 @@ function markTeamInactive(teamID, teamName) {
       alert("Error: " + error);
     });
 }
+
+// Show move-to-division dropdown for a missing team
+function showMoveDivision(teamID) {
+  var selectEl = document.getElementById("move-div-" + teamID);
+  var btnEl = document.getElementById("move-btn-" + teamID);
+  if (!selectEl) return;
+
+  if (selectEl.style.display === "none") {
+    selectEl.style.display = "inline-block";
+    btnEl.textContent = "Go";
+    btnEl.classList.remove("btn-outline-info");
+    btnEl.classList.add("btn-info");
+
+    // Attach change handler
+    selectEl.onchange = function () {
+      if (selectEl.value) {
+        moveTeamDivision(teamID, parseInt(selectEl.value));
+      }
+    };
+  } else if (selectEl.value) {
+    moveTeamDivision(teamID, parseInt(selectEl.value));
+  }
+}
+
+// Move a team to a different division
+function moveTeamDivision(teamID, newDivisionID) {
+  // Find the team name and target division name
+  var teamName = "";
+  for (var key in teamLookup) {
+    if (teamLookup[key].teamID === teamID) {
+      teamName = teamLookup[key].teamName;
+      break;
+    }
+  }
+  var divName = "";
+  divisionsData.forEach(function (d) {
+    if (d.id === newDivisionID) divName = d.name;
+  });
+
+  if (!confirm('Move "' + teamName + '" to ' + divName + "?")) {
+    return;
+  }
+
+  var formData = new FormData();
+  formData.append("action", "moveDivision");
+  formData.append("teamID", teamID);
+  formData.append("divisionID", newDivisionID);
+
+  fetch("teamActions.cfm", {
+    method: "POST",
+    body: formData,
+  })
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (data) {
+      if (data.success) {
+        // Update teamLookup with new divisionID
+        for (var key in teamLookup) {
+          if (teamLookup[key].teamID === teamID) {
+            teamLookup[key].divisionID = newDivisionID;
+            break;
+          }
+        }
+
+        // Update the UI
+        var itemEl = document.getElementById("missing-team-" + teamID);
+        if (itemEl) {
+          itemEl.classList.remove("team-missing");
+          itemEl.classList.add("team-added");
+          itemEl.innerHTML =
+            '<span class="team-name">' +
+            escapeHtml(teamName) +
+            "</span>" +
+            '<span class="badge badge-info">Moved to ' +
+            escapeHtml(divName) +
+            "</span>";
+        }
+
+        logSyncAction("moved", teamName + " → " + divName);
+      } else {
+        alert("Error: " + data.message);
+      }
+    })
+    .catch(function (error) {
+      alert("Error moving team: " + error);
+    });
+}
+
+// ============ Sync Summary Tracking ============
+
+function getSyncStorageKey() {
+  return "scheduleSync_season_" + currentSeasonID;
+}
+
+function getSyncData() {
+  try {
+    var data = localStorage.getItem(getSyncStorageKey());
+    return data ? JSON.parse(data) : { divisions: {} };
+  } catch (e) {
+    return { divisions: {} };
+  }
+}
+
+function saveSyncData(data) {
+  localStorage.setItem(getSyncStorageKey(), JSON.stringify(data));
+}
+
+function logSyncAction(actionType, detail) {
+  var divisionID = document.getElementById("divisionSelect").value;
+  if (!divisionID) return;
+
+  var divName = "";
+  divisionsData.forEach(function (d) {
+    if (d.id === parseInt(divisionID)) divName = d.name;
+  });
+  if (!divName) return;
+
+  var syncData = getSyncData();
+  if (!syncData.divisions[divisionID]) {
+    syncData.divisions[divisionID] = {
+      name: divName,
+      actions: [],
+      imported: false,
+      lastUpdated: new Date().toISOString(),
+    };
+  }
+
+  syncData.divisions[divisionID].actions.push({
+    type: actionType,
+    detail: detail,
+    time: new Date().toLocaleTimeString(),
+  });
+  syncData.divisions[divisionID].lastUpdated = new Date().toISOString();
+
+  saveSyncData(syncData);
+  renderSyncSummary();
+}
+
+function logDivisionImported() {
+  var divisionID = document.getElementById("divisionSelect").value;
+  if (!divisionID) return;
+
+  var divName = "";
+  divisionsData.forEach(function (d) {
+    if (d.id === parseInt(divisionID)) divName = d.name;
+  });
+
+  var syncData = getSyncData();
+  if (!syncData.divisions[divisionID]) {
+    syncData.divisions[divisionID] = {
+      name: divName,
+      actions: [],
+      imported: false,
+      lastUpdated: new Date().toISOString(),
+    };
+  }
+  syncData.divisions[divisionID].imported = true;
+  syncData.divisions[divisionID].lastUpdated = new Date().toISOString();
+
+  saveSyncData(syncData);
+  renderSyncSummary();
+}
+
+function renderSyncSummary() {
+  var container = document.getElementById("syncSummaryContent");
+  var badge = document.getElementById("syncBadge");
+  if (!container) return;
+
+  var syncData = getSyncData();
+  var totalDivisions = divisionsData.length;
+  var syncedCount = 0;
+  var html = '<table class="table table-sm sync-summary-table">';
+  html +=
+    "<thead><tr>" +
+    "<th>Division</th>" +
+    "<th>Status</th>" +
+    "<th>Actions</th>" +
+    "<th>Last Updated</th>" +
+    "</tr></thead><tbody>";
+
+  divisionsData.forEach(function (div) {
+    var divData = syncData.divisions[div.id];
+    var isSynced = divData && divData.imported;
+    var hasActions = divData && divData.actions && divData.actions.length > 0;
+    if (isSynced) syncedCount++;
+
+    var statusBadge = isSynced
+      ? '<span class="badge badge-success">Imported</span>'
+      : hasActions
+        ? '<span class="badge badge-warning">In Progress</span>'
+        : '<span class="badge badge-secondary">Not Started</span>';
+
+    var actionsSummary = "";
+    if (divData && divData.actions && divData.actions.length > 0) {
+      var counts = {};
+      divData.actions.forEach(function (a) {
+        counts[a.type] = (counts[a.type] || 0) + 1;
+      });
+      var parts = [];
+      if (counts.added) parts.push(counts.added + " added");
+      if (counts.activated) parts.push(counts.activated + " activated");
+      if (counts.renamed) parts.push(counts.renamed + " renamed");
+      if (counts.mapped) parts.push(counts.mapped + " mapped");
+      if (counts.moved) parts.push(counts.moved + " moved");
+      if (counts.inactive) parts.push(counts.inactive + " inactive");
+      actionsSummary = parts.join(", ");
+
+      // Add expandable detail
+      actionsSummary +=
+        ' <a href="#" class="sync-detail-toggle" onclick="toggleSyncDetail(event, ' +
+        div.id +
+        ')">[details]</a>';
+      actionsSummary +=
+        '<div class="sync-detail" id="sync-detail-' +
+        div.id +
+        '" style="display:none;">';
+      divData.actions.forEach(function (a) {
+        actionsSummary +=
+          '<div class="sync-action-item"><span class="sync-action-type sync-type-' +
+          a.type +
+          '">' +
+          a.type +
+          "</span> " +
+          escapeHtml(a.detail) +
+          "</div>";
+      });
+      actionsSummary += "</div>";
+    } else {
+      actionsSummary = '<span class="text-muted">—</span>';
+    }
+
+    var lastUpdated =
+      divData && divData.lastUpdated
+        ? new Date(divData.lastUpdated).toLocaleString()
+        : "—";
+
+    html +=
+      "<tr>" +
+      "<td><strong>" +
+      escapeHtml(div.name) +
+      "</strong></td>" +
+      "<td>" +
+      statusBadge +
+      "</td>" +
+      "<td>" +
+      actionsSummary +
+      "</td>" +
+      "<td class='text-muted small'>" +
+      lastUpdated +
+      "</td>" +
+      "</tr>";
+  });
+
+  html += "</tbody></table>";
+  container.innerHTML = html;
+
+  if (badge) {
+    badge.textContent = syncedCount + " / " + totalDivisions;
+    badge.className =
+      "badge " +
+      (syncedCount === totalDivisions
+        ? "badge-success"
+        : syncedCount > 0
+          ? "badge-warning"
+          : "badge-secondary");
+  }
+}
+
+function toggleSyncDetail(event, divisionID) {
+  event.preventDefault();
+  var el = document.getElementById("sync-detail-" + divisionID);
+  if (el) {
+    el.style.display = el.style.display === "none" ? "block" : "none";
+  }
+}
+
+function openSyncModal() {
+  document.getElementById("syncModalOverlay").style.display = "flex";
+}
+
+function closeSyncModal() {
+  document.getElementById("syncModalOverlay").style.display = "none";
+}
+
+function closeSyncModalOverlay(event) {
+  if (event.target === document.getElementById("syncModalOverlay")) {
+    closeSyncModal();
+  }
+}
+
+function clearSyncSummary() {
+  if (!confirm("Clear all sync tracking data for this season?")) return;
+  localStorage.removeItem(getSyncStorageKey());
+  renderSyncSummary();
+}
+
+// Hook into form submission to log import
+document.addEventListener("DOMContentLoaded", function () {
+  renderSyncSummary();
+
+  var form = document.getElementById("importForm");
+  if (form) {
+    form.addEventListener("submit", function () {
+      logDivisionImported();
+    });
+  }
+});

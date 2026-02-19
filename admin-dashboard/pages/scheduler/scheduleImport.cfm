@@ -68,6 +68,29 @@
         <div class="alert #toastClass#">#toastMsg#</div>
       </cfif>
 
+      <!--- Sync Summary Modal Trigger --->
+      <button type="button" class="btn btn-outline-secondary btn-sm" onclick="openSyncModal()" style="margin-bottom: 15px;">
+        <i class="nc-icon nc-bullet-list-67"></i> Division Sync Summary <span id="syncBadge" class="badge badge-secondary" style="font-size: 11px; margin-left: 6px;">0 / 0</span>
+      </button>
+
+      <!--- Sync Summary Modal --->
+      <div class="sync-modal-overlay" id="syncModalOverlay" style="display: none;" onclick="closeSyncModalOverlay(event)">
+        <div class="sync-modal">
+          <div class="sync-modal-header">
+            <h5><i class="nc-icon nc-bullet-list-67"></i> Division Sync Summary</h5>
+            <button type="button" class="sync-modal-close" onclick="closeSyncModal()">&times;</button>
+          </div>
+          <div class="sync-modal-body">
+            <p class="text-muted small">Tracks your progress as you sync each division's schedule. Data is saved in your browser for this season.</p>
+            <div id="syncSummaryContent"></div>
+          </div>
+          <div class="sync-modal-footer">
+            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="clearSyncSummary()">Clear Summary</button>
+            <button type="button" class="btn btn-outline-default btn-sm" onclick="closeSyncModal()">Close</button>
+          </div>
+        </div>
+      </div>
+
       <!--- Step 1: Paste Data --->
       <div class="card">
         <div class="card-header">
@@ -225,6 +248,11 @@ Week 2 - Monday, March 2nd
   var teamLookup = #serializeJSON(teamLookup)#;
   var inactiveTeamLookup = #serializeJSON(inactiveTeamLookup)#;
   var currentSeasonID = #session.currentSeasonID#;
+  var divisionsData = [
+    <cfloop query="getDivisions">
+      { id: #getDivisions.divisionID#, name: "#jsStringFormat(getDivisions.divisionName)#" }<cfif getDivisions.currentRow LT getDivisions.recordCount>,</cfif>
+    </cfloop>
+  ];
 </script>
 </cfoutput>
 

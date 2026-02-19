@@ -123,6 +123,27 @@
             <cfset response.teamName = getTeam.teamName>
         </cfcase>
         
+        <!--- Move team to different division --->
+        <cfcase value="moveDivision">
+            <cfif NOT isNumeric(form.teamID) OR form.teamID EQ 0>
+                <cfthrow message="Team ID is required.">
+            </cfif>
+            <cfif NOT isNumeric(form.divisionID) OR form.divisionID EQ 0>
+                <cfthrow message="Division ID is required.">
+            </cfif>
+            
+            <cfquery name="moveTeam" datasource="roundleague">
+                UPDATE teams
+                SET DivisionID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.divisionID#">
+                WHERE teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.teamID#">
+                AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+            </cfquery>
+            
+            <cfset response.success = true>
+            <cfset response.message = "Team moved to new division.">
+            <cfset response.teamID = form.teamID>
+        </cfcase>
+        
         <!--- Mark team as inactive --->
         <cfcase value="markInactive">
             <cfif NOT isNumeric(form.teamID) OR form.teamID EQ 0>
