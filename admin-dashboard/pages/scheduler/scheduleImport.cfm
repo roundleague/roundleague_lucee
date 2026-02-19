@@ -126,6 +126,12 @@ Week 2 - Monday, March 2nd
           <h5>Team Diff/Sync</h5>
         </div>
         <div class="card-body">
+          <!--- Rename Suggestions --->
+          <div id="renamesSection" style="display: none;" class="mb-3">
+            <h6 class="text-info"><i class="nc-icon nc-tag-content"></i> Team Renames Detected</h6>
+            <p class="text-muted small">These teams appear to have new names (format: "New Name (Old Name)").</p>
+            <div id="renamesList" class="team-diff-list"></div>
+          </div>
           <div class="row">
             <!--- New Teams (in schedule but not in DB) --->
             <div class="col-md-6">

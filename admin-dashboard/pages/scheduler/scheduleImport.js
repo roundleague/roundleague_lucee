@@ -5,6 +5,7 @@ var validGames = [];
 var teamsInSchedule = {}; // Track all teams found in pasted schedule
 var unknownTeamsFromSchedule = {}; // Teams in schedule but not in DB
 var missingTeamsFromDB = {}; // Teams in DB but not in schedule
+var renameSuggestions = {}; // "New Name (Old Name)" patterns detected
 
 // Normalize team name for matching - strips parenthetical codes/numbers and extra whitespace
 function normalizeTeamName(name) {
@@ -225,6 +226,7 @@ function parseScheduleData() {
   teamsInSchedule = {};
   unknownTeamsFromSchedule = {};
   missingTeamsFromDB = {};
+  renameSuggestions = {};
 
   // Track current week and date from week headers
   var currentWeek = 0;
@@ -263,6 +265,24 @@ function parseScheduleData() {
         game.homeTeamID = homeMatch.teamID;
         game.homeTeam = homeMatch.teamName; // Use canonical name
         teamsInSchedule[homeMatch.teamName.toLowerCase()] = homeMatch;
+        // Detect "New Name (Old Name)" rename pattern
+        var homeAlt = extractAlternateName(originalHomeTeam);
+        var homeNorm = normalizeTeamName(originalHomeTeam);
+        if (
+          homeAlt &&
+          homeAlt === homeMatch.teamName.toLowerCase() &&
+          homeNorm !== homeAlt
+        ) {
+          renameSuggestions[homeNorm] = {
+            newName: homeNorm.replace(/\b\w/g, function (c) {
+              return c.toUpperCase();
+            }),
+            newNameRaw: originalHomeTeam.replace(/\s*\([^)]*\)\s*/, "").trim(),
+            oldName: homeMatch.teamName,
+            teamID: homeMatch.teamID,
+            originalText: originalHomeTeam,
+          };
+        }
       } else if (game.homeTeam) {
         game.status = "error";
         game.errors.push("Unknown home team");
@@ -276,6 +296,24 @@ function parseScheduleData() {
         game.awayTeamID = awayMatch.teamID;
         game.awayTeam = awayMatch.teamName; // Use canonical name
         teamsInSchedule[awayMatch.teamName.toLowerCase()] = awayMatch;
+        // Detect "New Name (Old Name)" rename pattern
+        var awayAlt = extractAlternateName(originalAwayTeam);
+        var awayNorm = normalizeTeamName(originalAwayTeam);
+        if (
+          awayAlt &&
+          awayAlt === awayMatch.teamName.toLowerCase() &&
+          awayNorm !== awayAlt
+        ) {
+          renameSuggestions[awayNorm] = {
+            newName: awayNorm.replace(/\b\w/g, function (c) {
+              return c.toUpperCase();
+            }),
+            newNameRaw: originalAwayTeam.replace(/\s*\([^)]*\)\s*/, "").trim(),
+            oldName: awayMatch.teamName,
+            teamID: awayMatch.teamID,
+            originalText: originalAwayTeam,
+          };
+        }
       } else if (game.awayTeam) {
         game.status = "error";
         game.errors.push("Unknown away team");
@@ -316,7 +354,12 @@ function parseScheduleData() {
   }
 
   // Display team diff panel
-  displayTeamDiff(unknownTeamsFromSchedule, missingTeamsFromDB, divisionID);
+  displayTeamDiff(
+    unknownTeamsFromSchedule,
+    missingTeamsFromDB,
+    renameSuggestions,
+    divisionID,
+  );
 
   // Display preview
   displayPreview(parsedGames, unknownTeams, divisionID);
@@ -551,21 +594,71 @@ function escapeHtml(text) {
 }
 
 // Display Team Diff/Sync Panel
-function displayTeamDiff(newTeams, missingTeams, divisionID) {
+function displayTeamDiff(newTeams, missingTeams, renames, divisionID) {
   var teamDiffCard = document.getElementById("teamDiffCard");
   var newTeamsList = document.getElementById("newTeamsList");
   var missingTeamsList = document.getElementById("missingTeamsList");
+  var renamesList = document.getElementById("renamesList");
+  var renamesSection = document.getElementById("renamesSection");
 
   var newTeamNames = Object.keys(newTeams);
   var missingTeamNames = Object.keys(missingTeams);
+  var renameKeys = Object.keys(renames);
 
   // Only show the card if there's something to show
-  if (newTeamNames.length === 0 && missingTeamNames.length === 0) {
+  if (
+    newTeamNames.length === 0 &&
+    missingTeamNames.length === 0 &&
+    renameKeys.length === 0
+  ) {
     teamDiffCard.style.display = "none";
     return;
   }
 
   teamDiffCard.style.display = "block";
+
+  // Build rename suggestions section
+  if (renameKeys.length > 0 && renamesSection && renamesList) {
+    renamesSection.style.display = "block";
+    var html = "";
+    renameKeys.forEach(function (key) {
+      var r = renames[key];
+      var escapedOld = escapeHtml(r.oldName);
+      var escapedNew = escapeHtml(r.newNameRaw);
+      var safeOld = r.oldName.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+      var safeNew = r.newNameRaw.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+      html +=
+        '<div class="team-diff-item team-rename" id="rename-team-' +
+        r.teamID +
+        '">' +
+        '<div class="team-diff-item-content">' +
+        '<span class="team-name">' +
+        escapedOld +
+        ' <i class="nc-icon nc-minimal-right"></i> ' +
+        escapedNew +
+        "</span>" +
+        '<div class="team-suggestion team-rename-hint">' +
+        '<i class="nc-icon nc-tag-content"></i> Rich\'s sheet says <strong>' +
+        escapedNew +
+        " (" +
+        escapedOld +
+        ")</strong> &mdash; rename in database?" +
+        "</div></div>" +
+        '<button type="button" class="btn btn-primary btn-sm btn-rename-team" ' +
+        'onclick="renameTeam(' +
+        r.teamID +
+        ", '" +
+        safeOld +
+        "', '" +
+        safeNew +
+        "')\">" +
+        '<i class="nc-icon nc-tag-content"></i> Rename</button>' +
+        "</div>";
+    });
+    renamesList.innerHTML = html;
+  } else if (renamesSection) {
+    renamesSection.style.display = "none";
+  }
 
   // Build new teams list with quick-add or activate buttons
   if (newTeamNames.length > 0) {
@@ -764,6 +857,97 @@ function quickAddTeam(teamName, divisionID) {
     .catch(function (error) {
       alert("Error adding team: " + error);
     });
+}
+
+// Rename a team in the DB and update pasted text
+function renameTeam(teamID, oldName, newName) {
+  if (
+    !confirm(
+      'Rename "' +
+        oldName +
+        '" to "' +
+        newName +
+        '" in the database?\n\n' +
+        "This will also replace all instances in the pasted schedule text.",
+    )
+  ) {
+    return;
+  }
+
+  var formData = new FormData();
+  formData.append("action", "renameTeam");
+  formData.append("teamID", teamID);
+  formData.append("newTeamName", newName);
+
+  fetch("teamActions.cfm", {
+    method: "POST",
+    body: formData,
+  })
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (data) {
+      if (data.success) {
+        // Update teamLookup: remove old key, add new
+        var oldKey = oldName.toLowerCase();
+        var newKey = data.teamName.toLowerCase();
+        var teamData = teamLookup[oldKey];
+        if (teamData) {
+          delete teamLookup[oldKey];
+          teamData.teamName = data.teamName;
+          teamLookup[newKey] = teamData;
+        }
+
+        // Replace all instances in the pasted text:
+        // Replace "New Name (Old Name)" with "New Name"
+        // and standalone "Old Name" with "New Name"
+        var pasteArea = document.getElementById("pasteArea");
+        var text = pasteArea.value;
+
+        // First replace the full "New Name (Old Name)" pattern
+        var fullPattern = new RegExp(
+          escapeRegex(newName) + "\\s*\\(" + escapeRegex(oldName) + "\\)",
+          "gi",
+        );
+        text = text.replace(fullPattern, data.teamName);
+
+        // Then replace any remaining standalone old name references
+        var oldPattern = new RegExp(
+          "(?<![\\w(])" + escapeRegex(oldName) + "(?![\\w)])",
+          "gi",
+        );
+        text = text.replace(oldPattern, data.teamName);
+
+        pasteArea.value = text;
+
+        // Update UI for this rename item
+        var itemEl = document.getElementById("rename-team-" + teamID);
+        if (itemEl) {
+          itemEl.classList.remove("team-rename");
+          itemEl.classList.add("team-added");
+          itemEl.innerHTML =
+            '<span class="team-name">' +
+            escapeHtml(oldName) +
+            ' <i class="nc-icon nc-minimal-right"></i> ' +
+            escapeHtml(data.teamName) +
+            "</span>" +
+            '<span class="badge badge-success">Renamed</span>';
+        }
+
+        // Re-parse to update everything
+        parseScheduleData();
+      } else {
+        alert("Error: " + data.message);
+      }
+    })
+    .catch(function (error) {
+      alert("Error renaming team: " + error);
+    });
+}
+
+// Escape special regex characters in a string
+function escapeRegex(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 // Use a suggested active team - maps the schedule name to the existing DB team
