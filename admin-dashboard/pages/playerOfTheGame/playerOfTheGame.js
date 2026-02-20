@@ -106,120 +106,166 @@ function renderCard(data) {
   };
 
   playerImg.src = d.photourl;
-  logoImg.src = "/assets/img/Logos/BW Logo.png";
+  logoImg.src =
+    "https://static.wixstatic.com/media/b16829_f3a215a62a9f485990b0e43a0a993d3d~mv2.png/v1/fill/w_909,h_335,al_c,q_85,usm_0.66_1.00_0.01/4_edited.webp";
 }
 
 function drawCard(ctx, W, H, data, playerImg, logoImg) {
+  // === Font families ===
+  var fontName = '"Bebas Neue", "Oswald", sans-serif'; // Player name — tall, clean display
+  var fontStat = '"Barlow Condensed", "Oswald", sans-serif'; // Stat line — condensed athletic
+  var fontScore = '"Bebas Neue", "Oswald", sans-serif'; // Scores — big impact
+  var fontLabel = '"Oswald", sans-serif'; // Labels (FINAL, team names)
+
   // === BACKGROUND ===
-  // Dark gradient background
   var bgGrad = ctx.createLinearGradient(0, 0, 0, H);
   bgGrad.addColorStop(0, "#1a1a1a");
-  bgGrad.addColorStop(1, "#0d0d0d");
+  bgGrad.addColorStop(0.6, "#111111");
+  bgGrad.addColorStop(1, "#0a0a0a");
   ctx.fillStyle = bgGrad;
   ctx.fillRect(0, 0, W, H);
 
   // === RED ACCENT BORDER (top) ===
   ctx.fillStyle = "#c8102e";
-  ctx.fillRect(0, 0, W, 6);
+  ctx.fillRect(0, 0, W, 5);
 
   // === HEADER SECTION ===
   // League logo (top left) — preserve aspect ratio
   if (logoImg) {
     try {
-      var logoMaxH = 50;
+      var logoMaxH = 45;
       var logoRatio = logoImg.naturalWidth / logoImg.naturalHeight;
       var logoDrawW = logoMaxH * logoRatio;
-      ctx.drawImage(logoImg, 15, 12, logoDrawW, logoMaxH);
+      ctx.drawImage(logoImg, 18, 14, logoDrawW, logoMaxH);
     } catch (e) {}
   }
 
   // Player name (top right)
   var playerName = data.firstname + " " + data.lastname;
   ctx.fillStyle = "#ffffff";
-  ctx.font = 'bold 26px "Arial Black", Arial, sans-serif';
+  ctx.font = "32px " + fontName;
   ctx.textAlign = "right";
-  ctx.fillText(playerName, W - 20, 35);
+  ctx.letterSpacing = "2px";
+  ctx.fillText(playerName.toUpperCase(), W - 22, 38);
 
-  // Stat line below name
+  // Stat line below name — spaced out, red
   var statLine =
-    data.points + " PTS  " + data.rebounds + " REB  " + data.assists + " AST";
+    data.points + " PTS   " + data.rebounds + " REB   " + data.assists + " AST";
   ctx.fillStyle = "#c8102e";
-  ctx.font = "bold 16px Arial, sans-serif";
+  ctx.font = "700 17px " + fontStat;
   ctx.textAlign = "right";
-  ctx.fillText(statLine, W - 20, 58);
+  ctx.fillText(statLine, W - 22, 60);
+
+  // Thin separator line below header
+  ctx.strokeStyle = "rgba(200,16,46,0.4)";
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(20, 72);
+  ctx.lineTo(W - 20, 72);
+  ctx.stroke();
 
   // === PLAYER PHOTO (center/main area) ===
-  var photoY = 75;
-  var photoH = H - 200;
+  var photoY = 76;
+  var photoH = H - 205;
   var photoW = W;
 
   // Draw the player photo with cover-fit behavior
   drawImageCover(ctx, playerImg, 0, photoY, photoW, photoH);
 
-  // Subtle gradient overlay at bottom of photo for text readability
+  // Gradient overlay at bottom of photo for smooth transition into score bar
   var fadeGrad = ctx.createLinearGradient(
     0,
-    photoY + photoH - 150,
+    photoY + photoH - 180,
     0,
     photoY + photoH,
   );
   fadeGrad.addColorStop(0, "rgba(0,0,0,0)");
-  fadeGrad.addColorStop(1, "rgba(0,0,0,0.85)");
+  fadeGrad.addColorStop(0.5, "rgba(0,0,0,0.4)");
+  fadeGrad.addColorStop(1, "rgba(17,17,17,1)");
   ctx.fillStyle = fadeGrad;
-  ctx.fillRect(0, photoY + photoH - 150, W, 150);
+  ctx.fillRect(0, photoY + photoH - 180, W, 180);
 
   // === SCORE SECTION (bottom) ===
-  var scoreAreaY = H - 125;
-  var scoreAreaH = 125;
+  var scoreAreaY = H - 130;
+  var scoreAreaH = 130;
 
   // Dark background for score area
   ctx.fillStyle = "#111111";
   ctx.fillRect(0, scoreAreaY, W, scoreAreaH);
 
-  // Red accent line
+  // Red accent line at top of score area
   ctx.fillStyle = "#c8102e";
-  ctx.fillRect(0, scoreAreaY, W, 4);
+  ctx.fillRect(0, scoreAreaY, W, 3);
 
-  // Determine winner/loser sides
+  // Determine winner/loser
   var homeIsWinner = parseInt(data.homescore) > parseInt(data.awayscore);
   var winScore = homeIsWinner ? data.homescore : data.awayscore;
   var loseScore = homeIsWinner ? data.awayscore : data.homescore;
   var winTeamName = homeIsWinner ? data.hometeamname : data.awayteamname;
   var loseTeamName = homeIsWinner ? data.awayteamname : data.hometeamname;
 
-  // Winner score (left side, large white)
+  // Winner score (left side)
   ctx.fillStyle = "#ffffff";
-  ctx.font = 'bold 72px "Arial Black", Arial, sans-serif';
+  ctx.font = "82px " + fontScore;
   ctx.textAlign = "left";
-  ctx.fillText(winScore, 30, scoreAreaY + 78);
+  ctx.fillText(winScore, 30, scoreAreaY + 80);
 
-  // Loser score (right side, large gray)
-  ctx.fillStyle = "#888888";
-  ctx.font = 'bold 72px "Arial Black", Arial, sans-serif';
+  // Loser score (right side)
+  ctx.fillStyle = "#555555";
+  ctx.font = "82px " + fontScore;
   ctx.textAlign = "right";
-  ctx.fillText(loseScore, W - 30, scoreAreaY + 78);
+  ctx.fillText(loseScore, W - 30, scoreAreaY + 80);
 
-  // "FINAL" text (center bottom)
+  // "FINAL" pill (center)
+  ctx.font = "500 16px " + fontLabel;
+  var finalText = "FINAL";
+  var finalW = ctx.measureText(finalText).width;
+  var pillW = finalW + 24;
+  var pillH = 24;
+  var pillX = (W - pillW) / 2;
+  var pillY = scoreAreaY + 82;
+  // Pill background
+  ctx.fillStyle = "rgba(200,16,46,0.9)";
+  roundRect(ctx, pillX, pillY, pillW, pillH, 3);
+  ctx.fill();
+  // Pill text
   ctx.fillStyle = "#ffffff";
-  ctx.font = "bold 18px Arial, sans-serif";
+  ctx.font = "500 14px " + fontLabel;
   ctx.textAlign = "center";
-  ctx.fillText("FINAL", W / 2, scoreAreaY + 100);
+  ctx.fillText(finalText, W / 2, pillY + 17);
 
-  // Winner team name (bottom LEFT, aligned with winner score)
+  // Winner team name (bottom left)
   ctx.fillStyle = "#c8102e";
-  ctx.font = "bold 14px Arial, sans-serif";
+  ctx.font = "600 15px " + fontLabel;
   ctx.textAlign = "left";
   ctx.fillText(winTeamName.toUpperCase(), 30, scoreAreaY + 118);
 
-  // Loser team name (bottom RIGHT, aligned with loser score)
-  ctx.fillStyle = "#888888";
-  ctx.font = "bold 14px Arial, sans-serif";
+  // Loser team name (bottom right)
+  ctx.fillStyle = "#666666";
+  ctx.font = "600 15px " + fontLabel;
   ctx.textAlign = "right";
   ctx.fillText(loseTeamName.toUpperCase(), W - 30, scoreAreaY + 118);
 
   // === RED ACCENT BORDER (bottom) ===
   ctx.fillStyle = "#c8102e";
   ctx.fillRect(0, H - 4, W, 4);
+}
+
+/**
+ * Draw a rounded rectangle path
+ */
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
 }
 
 /**

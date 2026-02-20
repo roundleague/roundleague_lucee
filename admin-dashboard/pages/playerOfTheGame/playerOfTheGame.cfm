@@ -3,6 +3,10 @@
 
 <!--- Page Specific CSS/JS Here --->
 <link href="/admin-dashboard/pages/playerOfTheGame/playerOfTheGame.css?v=1.0" rel="stylesheet">
+<!--- Modern sports fonts for canvas rendering --->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Bebas+Neue&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
 
 <!--- TODO: Change back to session.currentSeasonID before push --->
 <cfset seasonID = 20>
