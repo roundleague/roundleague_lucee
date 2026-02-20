@@ -3,18 +3,16 @@
  * Generates a basketball card-style image using HTML5 Canvas
  */
 
-// Filter games table by division
-function filterByDivision(divisionID) {
+// Filter games table by division and week
+function filterGames() {
+  var divisionID = document.getElementById("divisionFilter").value;
+  var week = document.getElementById("weekFilter").value;
   var rows = document.querySelectorAll("#gamesTable tbody tr");
   rows.forEach(function (row) {
-    if (
-      divisionID === "all" ||
-      row.getAttribute("data-division") === divisionID
-    ) {
-      row.style.display = "";
-    } else {
-      row.style.display = "none";
-    }
+    var divMatch =
+      divisionID === "all" || row.getAttribute("data-division") === divisionID;
+    var weekMatch = week === "all" || row.getAttribute("data-week") === week;
+    row.style.display = divMatch && weekMatch ? "" : "none";
   });
 }
 
@@ -67,8 +65,8 @@ function renderCard(data) {
 
   var canvas = document.getElementById("pogCanvas");
   var ctx = canvas.getContext("2d");
-  var W = canvas.width; // 540
-  var H = canvas.height; // 680
+  var W = canvas.width; // 1080
+  var H = canvas.height; // 1350
 
   // Load images first, then draw
   var playerImg = new Image();
@@ -111,91 +109,214 @@ function renderCard(data) {
 }
 
 function drawCard(ctx, W, H, data, playerImg, logoImg) {
-  // === Font families ===
-  var fontName = '"Bebas Neue", "Oswald", sans-serif'; // Player name — tall, clean display
-  var fontStat = '"Barlow Condensed", "Oswald", sans-serif'; // Stat line — condensed athletic
-  var fontScore = '"Bebas Neue", "Oswald", sans-serif'; // Scores — big impact
-  var fontLabel = '"Oswald", sans-serif'; // Labels (FINAL, team names)
+  // ============================================================
+  //  FONT FAMILIES — modern, premium sports typography
+  // ============================================================
+  var fontDisplay = '"Bebas Neue", "Oswald", sans-serif'; // Hero display (name, score)
+  var fontBody = '"Montserrat", "Inter", sans-serif'; // Labels, badges
+  var fontStat = '"Barlow Condensed", "Oswald", sans-serif'; // Stat numbers
+  var fontAccent = '"Oswald", sans-serif'; // Team names
 
-  // === BACKGROUND ===
-  var bgGrad = ctx.createLinearGradient(0, 0, 0, H);
-  bgGrad.addColorStop(0, "#1a1a1a");
-  bgGrad.addColorStop(0.6, "#111111");
-  bgGrad.addColorStop(1, "#0a0a0a");
-  ctx.fillStyle = bgGrad;
+  // ============================================================
+  //  COLORS
+  // ============================================================
+  var red = "#c8102e";
+  var darkBg = "#0d0d0d";
+  var midBg = "#141414";
+
+  // ============================================================
+  //  1. SOLID DARK BASE
+  // ============================================================
+  ctx.fillStyle = darkBg;
   ctx.fillRect(0, 0, W, H);
 
-  // === RED ACCENT BORDER (top) ===
-  ctx.fillStyle = "#c8102e";
-  ctx.fillRect(0, 0, W, 5);
+  // ============================================================
+  //  2. FULL-BLEED PLAYER PHOTO (cinematic, anchored top)
+  // ============================================================
+  var photoH = Math.round(H * 0.72); // ~972px — photo dominates
+  drawImageCover(ctx, playerImg, 0, 0, W, photoH);
 
-  // === HEADER SECTION ===
-  // League logo (top left) — preserve aspect ratio
+  // --- Shallow depth-of-field vignette (darken edges) ---
+  var vigGrad = ctx.createRadialGradient(
+    W / 2,
+    photoH * 0.38,
+    W * 0.22,
+    W / 2,
+    photoH * 0.38,
+    W * 0.85,
+  );
+  vigGrad.addColorStop(0, "rgba(0,0,0,0)");
+  vigGrad.addColorStop(0.6, "rgba(0,0,0,0.15)");
+  vigGrad.addColorStop(1, "rgba(0,0,0,0.65)");
+  ctx.fillStyle = vigGrad;
+  ctx.fillRect(0, 0, W, photoH);
+
+  // --- Top gradient (readability for header text) ---
+  var topGrad = ctx.createLinearGradient(0, 0, 0, 260);
+  topGrad.addColorStop(0, "rgba(0,0,0,0.72)");
+  topGrad.addColorStop(0.5, "rgba(0,0,0,0.30)");
+  topGrad.addColorStop(1, "rgba(0,0,0,0)");
+  ctx.fillStyle = topGrad;
+  ctx.fillRect(0, 0, W, 260);
+
+  // --- Bottom gradient (smooth transition into score panel) ---
+  var btmGrad = ctx.createLinearGradient(0, photoH - 360, 0, photoH);
+  btmGrad.addColorStop(0, "rgba(13,13,13,0)");
+  btmGrad.addColorStop(0.35, "rgba(13,13,13,0.40)");
+  btmGrad.addColorStop(0.7, "rgba(13,13,13,0.85)");
+  btmGrad.addColorStop(1, "rgba(13,13,13,1)");
+  ctx.fillStyle = btmGrad;
+  ctx.fillRect(0, photoH - 360, W, 360);
+
+  // --- Subtle left-edge gradient for dramatic side lighting ---
+  var sideGrad = ctx.createLinearGradient(0, 0, 220, 0);
+  sideGrad.addColorStop(0, "rgba(0,0,0,0.45)");
+  sideGrad.addColorStop(1, "rgba(0,0,0,0)");
+  ctx.fillStyle = sideGrad;
+  ctx.fillRect(0, 0, 220, photoH);
+
+  // ============================================================
+  //  3. GRAIN / NOISE TEXTURE (cinematic film look)
+  // ============================================================
+  applyGrain(ctx, W, H, 0.035);
+
+  // ============================================================
+  //  4. RED ACCENT — TOP BAR
+  // ============================================================
+  ctx.fillStyle = red;
+  ctx.fillRect(0, 0, W, 8);
+
+  // ============================================================
+  //  5. HEADER — Logo + "PLAYER OF THE GAME" badge
+  // ============================================================
+  var headerY = 40;
+  var pad = 48;
+
+  // League logo (top-left, semi-transparent)
   if (logoImg) {
     try {
-      var logoMaxH = 45;
+      var logoMaxH = 52;
       var logoRatio = logoImg.naturalWidth / logoImg.naturalHeight;
       var logoDrawW = logoMaxH * logoRatio;
-      ctx.drawImage(logoImg, 18, 14, logoDrawW, logoMaxH);
+      ctx.globalAlpha = 0.85;
+      ctx.drawImage(logoImg, pad, headerY, logoDrawW, logoMaxH);
+      ctx.globalAlpha = 1.0;
     } catch (e) {}
   }
 
-  // Player name (top right)
-  var playerName = data.firstname + " " + data.lastname;
+  // "PLAYER OF THE GAME" badge (top-right)
+  ctx.font = "800 18px " + fontBody;
+  ctx.letterSpacing = "4px";
+  ctx.textAlign = "right";
+  ctx.fillStyle = "rgba(255,255,255,0.9)";
+  var pogText = "PLAYER OF THE GAME";
+  ctx.fillText(pogText, W - pad, headerY + 22);
+  ctx.letterSpacing = "0px";
+
+  // Thin accent underline beneath badge
+  var pogW = ctx.measureText(pogText).width;
+  ctx.fillStyle = red;
+  ctx.fillRect(W - pad - pogW, headerY + 30, pogW, 3);
+
+  // ============================================================
+  //  6. PLAYER NAME — large hero typography
+  // ============================================================
+  var nameBaseY = photoH - 220;
+
+  // First name — medium weight, tracked out
+  ctx.textAlign = "left";
+  ctx.fillStyle = "rgba(255,255,255,0.85)";
+  ctx.font = "400 52px " + fontDisplay;
+  ctx.letterSpacing = "6px";
+  // Drop shadow for depth
+  ctx.shadowColor = "rgba(0,0,0,0.6)";
+  ctx.shadowBlur = 12;
+  ctx.shadowOffsetX = 2;
+  ctx.shadowOffsetY = 3;
+  ctx.fillText(data.firstname.toUpperCase(), pad, nameBaseY);
+
+  // Last name — very large, bold, dominant
   ctx.fillStyle = "#ffffff";
-  ctx.font = "32px " + fontName;
-  ctx.textAlign = "right";
-  ctx.letterSpacing = "2px";
-  ctx.fillText(playerName.toUpperCase(), W - 22, 38);
+  ctx.font = "700 108px " + fontDisplay;
+  ctx.letterSpacing = "4px";
+  ctx.shadowBlur = 20;
+  ctx.fillText(data.lastname.toUpperCase(), pad - 3, nameBaseY + 94);
 
-  // Stat line below name — spaced out, red
-  var statLine =
-    data.points + " PTS   " + data.rebounds + " REB   " + data.assists + " AST";
-  ctx.fillStyle = "#c8102e";
-  ctx.font = "700 17px " + fontStat;
-  ctx.textAlign = "right";
-  ctx.fillText(statLine, W - 22, 60);
+  // Reset shadow
+  ctx.shadowColor = "transparent";
+  ctx.shadowBlur = 0;
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = 0;
+  ctx.letterSpacing = "0px";
 
-  // Thin separator line below header
-  ctx.strokeStyle = "rgba(200,16,46,0.4)";
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(20, 72);
-  ctx.lineTo(W - 20, 72);
-  ctx.stroke();
+  // Team name below — red accent
+  ctx.fillStyle = red;
+  ctx.font = "700 28px " + fontAccent;
+  ctx.letterSpacing = "8px";
+  ctx.fillText(data.teamname.toUpperCase(), pad, nameBaseY + 132);
+  ctx.letterSpacing = "0px";
 
-  // === PLAYER PHOTO (center/main area) ===
-  var photoY = 76;
-  var photoH = H - 205;
-  var photoW = W;
+  // ============================================================
+  //  7. STATS BAR — clean, evenly spaced with separators
+  // ============================================================
+  var statsY = photoH - 30;
+  var statsH = 90;
+  var statsCenterY = statsY + statsH / 2;
 
-  // Draw the player photo with cover-fit behavior
-  drawImageCover(ctx, playerImg, 0, photoY, photoW, photoH);
+  // Semi-transparent bar background
+  ctx.fillStyle = "rgba(13,13,13,0.85)";
+  ctx.fillRect(0, statsY, W, statsH);
 
-  // Gradient overlay at bottom of photo for smooth transition into score bar
-  var fadeGrad = ctx.createLinearGradient(
-    0,
-    photoY + photoH - 180,
-    0,
-    photoY + photoH,
-  );
-  fadeGrad.addColorStop(0, "rgba(0,0,0,0)");
-  fadeGrad.addColorStop(0.5, "rgba(0,0,0,0.4)");
-  fadeGrad.addColorStop(1, "rgba(17,17,17,1)");
-  ctx.fillStyle = fadeGrad;
-  ctx.fillRect(0, photoY + photoH - 180, W, 180);
+  // Top accent line
+  ctx.fillStyle = "rgba(200,16,46,0.5)";
+  ctx.fillRect(pad, statsY, W - pad * 2, 2);
 
-  // === SCORE SECTION (bottom) ===
-  var scoreAreaY = H - 130;
-  var scoreAreaH = 130;
+  var stats = [
+    { label: "PTS", value: data.points },
+    { label: "REB", value: data.rebounds },
+    { label: "AST", value: data.assists },
+  ];
 
-  // Dark background for score area
-  ctx.fillStyle = "#111111";
+  var statZoneW = (W - pad * 2) / stats.length;
+
+  for (var i = 0; i < stats.length; i++) {
+    var cx = pad + statZoneW * i + statZoneW / 2;
+
+    // Stat number — large
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "700 54px " + fontDisplay;
+    ctx.textAlign = "center";
+    ctx.letterSpacing = "2px";
+    ctx.fillText(stats[i].value, cx, statsCenterY + 8);
+
+    // Stat label — smaller, dimmed
+    ctx.fillStyle = "rgba(255,255,255,0.45)";
+    ctx.font = "700 16px " + fontBody;
+    ctx.letterSpacing = "4px";
+    ctx.fillText(stats[i].label, cx, statsCenterY + 32);
+    ctx.letterSpacing = "0px";
+
+    // Vertical separator (except after last)
+    if (i < stats.length - 1) {
+      var sepX = pad + statZoneW * (i + 1);
+      ctx.strokeStyle = "rgba(255,255,255,0.12)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(sepX, statsY + 16);
+      ctx.lineTo(sepX, statsY + statsH - 16);
+      ctx.stroke();
+    }
+  }
+
+  // ============================================================
+  //  8. SCORE SECTION — dominant, clean grid
+  // ============================================================
+  var scoreAreaY = statsY + statsH + 12;
+  var scoreAreaH = H - scoreAreaY - 8;
+
+  // Score panel background
+  ctx.fillStyle = midBg;
   ctx.fillRect(0, scoreAreaY, W, scoreAreaH);
-
-  // Red accent line at top of score area
-  ctx.fillStyle = "#c8102e";
-  ctx.fillRect(0, scoreAreaY, W, 3);
 
   // Determine winner/loser
   var homeIsWinner = parseInt(data.homescore) > parseInt(data.awayscore);
@@ -204,51 +325,121 @@ function drawCard(ctx, W, H, data, playerImg, logoImg) {
   var winTeamName = homeIsWinner ? data.hometeamname : data.awayteamname;
   var loseTeamName = homeIsWinner ? data.awayteamname : data.hometeamname;
 
-  // Winner score (left side)
-  ctx.fillStyle = "#ffffff";
-  ctx.font = "82px " + fontScore;
+  // --- Team names row ---
+  var teamNameY = scoreAreaY + 48;
+  ctx.font = "700 26px " + fontAccent;
+  ctx.letterSpacing = "5px";
+
+  // Winner team name (left)
   ctx.textAlign = "left";
-  ctx.fillText(winScore, 30, scoreAreaY + 80);
+  ctx.fillStyle = "#ffffff";
+  ctx.fillText(winTeamName.toUpperCase(), pad, teamNameY);
 
-  // Loser score (right side)
-  ctx.fillStyle = "#555555";
-  ctx.font = "82px " + fontScore;
+  // Loser team name (right)
   ctx.textAlign = "right";
-  ctx.fillText(loseScore, W - 30, scoreAreaY + 80);
+  ctx.fillStyle = "rgba(255,255,255,0.35)";
+  ctx.fillText(loseTeamName.toUpperCase(), W - pad, teamNameY);
+  ctx.letterSpacing = "0px";
 
-  // "FINAL" pill (center)
-  ctx.font = "500 16px " + fontLabel;
-  var finalText = "FINAL";
-  var finalW = ctx.measureText(finalText).width;
-  var pillW = finalW + 24;
-  var pillH = 24;
+  // --- Score numbers row ---
+  var scoreNumY = teamNameY + 120;
+
+  // Winner score — huge, white, bold
+  ctx.textAlign = "left";
+  ctx.fillStyle = "#ffffff";
+  ctx.font = "700 144px " + fontDisplay;
+  ctx.letterSpacing = "4px";
+  // Subtle glow behind winner score
+  ctx.shadowColor = "rgba(200,16,46,0.25)";
+  ctx.shadowBlur = 30;
+  ctx.fillText(winScore, pad, scoreNumY);
+  ctx.shadowColor = "transparent";
+  ctx.shadowBlur = 0;
+
+  // Loser score — dimmed, smaller weight feel
+  ctx.textAlign = "right";
+  ctx.fillStyle = "rgba(255,255,255,0.22)"; // heavily dimmed
+  ctx.font = "700 144px " + fontDisplay;
+  ctx.fillText(loseScore, W - pad, scoreNumY);
+  ctx.letterSpacing = "0px";
+
+  // --- Dash separator between scores ---
+  ctx.textAlign = "center";
+  ctx.fillStyle = "rgba(255,255,255,0.15)";
+  ctx.font = "400 80px " + fontDisplay;
+  ctx.fillText("—", W / 2, scoreNumY - 18);
+
+  // --- "FINAL" badge (centered pill with glow) ---
+  var pillText = "FINAL";
+  ctx.font = "800 20px " + fontBody;
+  ctx.letterSpacing = "6px";
+  var pillTextW = ctx.measureText(pillText).width;
+  var pillPadX = 28;
+  var pillPadY = 10;
+  var pillW = pillTextW + pillPadX * 2;
+  var pillH = 36;
   var pillX = (W - pillW) / 2;
-  var pillY = scoreAreaY + 82;
-  // Pill background
-  ctx.fillStyle = "rgba(200,16,46,0.9)";
-  roundRect(ctx, pillX, pillY, pillW, pillH, 3);
+  var pillY = scoreNumY + 24;
+
+  // Glow behind pill
+  ctx.shadowColor = "rgba(200,16,46,0.5)";
+  ctx.shadowBlur = 20;
+  ctx.fillStyle = red;
+  roundRect(ctx, pillX, pillY, pillW, pillH, 6);
   ctx.fill();
+  ctx.shadowColor = "transparent";
+  ctx.shadowBlur = 0;
+
   // Pill text
   ctx.fillStyle = "#ffffff";
-  ctx.font = "500 14px " + fontLabel;
+  ctx.font = "800 20px " + fontBody;
+  ctx.letterSpacing = "6px";
   ctx.textAlign = "center";
-  ctx.fillText(finalText, W / 2, pillY + 17);
+  ctx.fillText(pillText, W / 2, pillY + 26);
+  ctx.letterSpacing = "0px";
 
-  // Winner team name (bottom left)
-  ctx.fillStyle = "#c8102e";
-  ctx.font = "600 15px " + fontLabel;
-  ctx.textAlign = "left";
-  ctx.fillText(winTeamName.toUpperCase(), 30, scoreAreaY + 118);
+  // ============================================================
+  //  9. BOTTOM ACCENT BAR
+  // ============================================================
+  ctx.fillStyle = red;
+  ctx.fillRect(0, H - 8, W, 8);
 
-  // Loser team name (bottom right)
-  ctx.fillStyle = "#666666";
-  ctx.font = "600 15px " + fontLabel;
-  ctx.textAlign = "right";
-  ctx.fillText(loseTeamName.toUpperCase(), W - 30, scoreAreaY + 118);
+  // ============================================================
+  //  10. EDGE VIGNETTE (entire canvas, subtle)
+  // ============================================================
+  var edgeVig = ctx.createRadialGradient(
+    W / 2,
+    H / 2,
+    W * 0.35,
+    W / 2,
+    H / 2,
+    W * 0.95,
+  );
+  edgeVig.addColorStop(0, "rgba(0,0,0,0)");
+  edgeVig.addColorStop(1, "rgba(0,0,0,0.30)");
+  ctx.fillStyle = edgeVig;
+  ctx.fillRect(0, 0, W, H);
+}
 
-  // === RED ACCENT BORDER (bottom) ===
-  ctx.fillStyle = "#c8102e";
-  ctx.fillRect(0, H - 4, W, 4);
+/**
+ * Apply subtle film grain / noise texture
+ */
+function applyGrain(ctx, W, H, opacity) {
+  var grainCanvas = document.createElement("canvas");
+  grainCanvas.width = W;
+  grainCanvas.height = H;
+  var gCtx = grainCanvas.getContext("2d");
+  var imageData = gCtx.createImageData(W, H);
+  var pixels = imageData.data;
+  for (var i = 0; i < pixels.length; i += 4) {
+    var v = Math.random() * 255;
+    pixels[i] = v;
+    pixels[i + 1] = v;
+    pixels[i + 2] = v;
+    pixels[i + 3] = Math.random() * 255 * opacity;
+  }
+  gCtx.putImageData(imageData, 0, 0);
+  ctx.drawImage(grainCanvas, 0, 0);
 }
 
 /**
