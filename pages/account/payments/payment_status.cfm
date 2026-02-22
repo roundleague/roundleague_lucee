@@ -83,17 +83,21 @@
                         <!--- Progress Bar --->
                         <div class="progress-container">
                             <span class="progress-badge">Payment Progress</span>
-                            <div class="progress">
+                            <div class="progress" style="height: 24px;">
                                 <div class="progress-bar" role="progressbar" 
                                     aria-valuenow="#numberFormat(teamPaymentStatus.percentPaid, '999.99')#" 
                                     aria-valuemin="0" aria-valuemax="100" 
-                                    style="width: #numberFormat(teamPaymentStatus.percentPaid, '999.99')#%;">
+                                    style="width: #numberFormat(teamPaymentStatus.percentPaid, '999.99')#%; line-height: 24px; font-size: 0.85rem;">
                                     <span class="progress-value">#numberFormat(teamPaymentStatus.percentPaid, '999.99')#%</span>
                                 </div>
                             </div>
                         </div>
                         
                         <!--- Payment Summary --->
+                        <div class="alert alert-info mt-4" style="font-size: 0.9rem;">
+                            <i class="fa fa-info-circle"></i> 
+                            The posted team fee is $795. The online payment amount is $820 to cover Stripe credit card processing fees.
+                        </div>
                         <div class="row mt-4">
                             <div class="col-md-4">
                                 <div class="card bg-light">
