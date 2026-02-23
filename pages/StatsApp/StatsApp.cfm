@@ -22,7 +22,7 @@
 
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.6/build/pure-min.css" integrity="sha384-Uu6IeWbM+gzNVXJcM9XV3SohHtmWE+3VGi496jvgX1jyvDTXfdK+rfZc8C1Aehk5" crossorigin="anonymous">
-<link rel="stylesheet" href="StatsApp.css?v=1.0">
+<link rel="stylesheet" href="StatsApp.css?v=1.1">
 <style>
     .player-selected {
         background-color: ##007acc !important;
@@ -167,10 +167,10 @@
                 <cfloop query="getPlayers">
                     <cfif getPlayers.currentRow EQ 6>
                         <tr id="benchToggle">
-                            <td colspan="5">
+                            <td colspan="2">
                                 Bench (Click To Show/Hide)
                             </td>
-                            <td colspan="3">
+                            <td colspan="2">
                                 <label class="switch switch-left-right">
                                     <input class="switch-input" type="checkbox" checked />
                                     <span class="switch-label" data-on="1st Half" data-off="2nd Half" data-value="1"></span> 
@@ -184,6 +184,15 @@
                                 2nd Half Fouls: <span class="Fouls_Half_2">0</span>
                             </td>
                             <td colspan="2">
+                                1st Half TOs: <span class="Timeouts_Half_1">2</span>
+                            </td>
+                            <td colspan="2">
+                                2nd Half TOs: <span class="Timeouts_Half_2">2</span>
+                            </td>
+                            <td colspan="1">
+                                <button type="button" class="pure-button button-timeout" id="useTimeout">Use TO</button>
+                            </td>
+                            <td colspan="1">
                                 Total: <span class="teamTotalPts">0</span>
                             </td>
                         </tr>
@@ -274,7 +283,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" crossorigin="anonymous"></script>
     <script src="https://kit.fontawesome.com/356f7c17e2.js" crossorigin="anonymous"></script>
-    <script src="StatsApp.js?v=1.3"></script>
+    <script src="StatsApp.js?v=1.4"></script>
     <script src="StatsApp-Export.js"></script>
     <script src="ConfirmExit.js"></script>
 </body>

@@ -316,7 +316,14 @@ $(document).ready(function () {
 
   // Collapse Bench Section
   $("#benchToggle").removeClass("ui-sortable-handle");
-  $("#benchToggle").click(function () {
+  $("#benchToggle").click(function (e) {
+    if (
+      $(e.target).closest(
+        "#useTimeout, .switch, .switch-label, .switch-input, .switch-handle",
+      ).length
+    ) {
+      return;
+    }
     $(this).nextAll().toggle();
   });
 
@@ -330,8 +337,21 @@ $(document).ready(function () {
     var currentHalf = $(this).data("value");
     if (currentHalf == "1") {
       $(this).data("value", "2");
+      // 1st half is over - timeouts do not carry over
+      $(".Timeouts_Half_1").html("0");
     } else {
       $(this).data("value", "1");
+    }
+  });
+
+  // Use Timeout button - decrements current half's timeouts
+  $("#useTimeout").click(function (e) {
+    e.stopPropagation();
+    var currentHalf = getCurrentHalf();
+    var remaining = parseInt($(".Timeouts_Half_" + currentHalf).html());
+    if (remaining > 0) {
+      remaining -= 1;
+      $(".Timeouts_Half_" + currentHalf).html(remaining);
     }
   });
 
@@ -384,11 +404,11 @@ document.addEventListener("click", function (e) {
       playerRow.classList.remove("player-selected");
       if (isBench) {
         selectedPlayers.bench = selectedPlayers.bench.filter(
-          (id) => id !== playerId
+          (id) => id !== playerId,
         );
       } else {
         selectedPlayers.starters = selectedPlayers.starters.filter(
-          (id) => id !== playerId
+          (id) => id !== playerId,
         );
       }
     } else {
@@ -419,10 +439,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Get all selected rows
       const starterRows = selectedPlayers.starters.map((id) =>
-        document.getElementById(id)
+        document.getElementById(id),
       );
       const benchRows = selectedPlayers.bench.map((id) =>
-        document.getElementById(id)
+        document.getElementById(id),
       );
 
       // Perform the substitution by moving rows
