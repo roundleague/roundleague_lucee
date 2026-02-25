@@ -15,7 +15,28 @@
 		WHERE seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.progressToSeasonId#">
 	</cfquery>
 
-	<!-- 2. Copy divisions FIRST if requested (before moving teams) so we can map old -> new IDs -->
+	<!-- 2. Copy leagues FIRST so we can map old league IDs to new ones for divisions -->
+	<cfset leagueMapping = {}>
+	<cfquery name="getOldLeagues" datasource="roundleague">
+		SELECT leagueID, LeagueName
+		FROM leagues
+		WHERE seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getPreviousSeasonID.PreviousSeasonID#">
+	</cfquery>
+	<cfloop query="getOldLeagues">
+		<cfquery name="insertNewLeague" datasource="roundleague">
+			INSERT INTO leagues (seasonID, LeagueName)
+			VALUES (
+				<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.progressToSeasonId#">,
+				<cfqueryparam cfsqltype="CF_SQL_VARCHAR" value="#getOldLeagues.LeagueName#">
+			)
+		</cfquery>
+		<cfquery name="getNewLeagueID" datasource="roundleague">
+			SELECT LAST_INSERT_ID() AS newLeagueID
+		</cfquery>
+		<cfset leagueMapping[getOldLeagues.leagueID] = getNewLeagueID.newLeagueID>
+	</cfloop>
+
+	<!-- 3. Copy divisions (before moving teams) so we can map old -> new IDs -->
 	<cfset divisionMapping = {}>
 	<cfset skippedDivisions = []>
 	<cfif form.copyDivisions EQ "1">
@@ -71,13 +92,15 @@
 			</cfif>
 			
 			<cfif shouldCopy>
+				<!--- Map old leagueID to new leagueID, fallback to 0 if not found --->
+				<cfset newLeagueID = structKeyExists(leagueMapping, getOldDivisions.leagueID) ? leagueMapping[getOldDivisions.leagueID] : 0>
 				<cfquery name="insertNewDivision" datasource="roundleague">
 					INSERT INTO divisions (seasonID, divisionName, isWomens, leagueID)
 					VALUES (
 						<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.progressToSeasonId#">,
 						<cfqueryparam cfsqltype="CF_SQL_VARCHAR" value="#newDivisionName#">,
 						<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getOldDivisions.isWomens#">,
-						<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getOldDivisions.leagueID#">
+						<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#newLeagueID#">
 					)
 				</cfquery>
 				
@@ -112,7 +135,7 @@
 		<cfset divisionMsg = "">
 	</cfif>
 
-	<!-- 3. Activate the new season, deactivate the old one -->
+	<!-- 4. Activate the new season, deactivate the old one -->
 	<cfquery name="updateSeasonStatuses" datasource="roundleague">
 		UPDATE seasons
 		SET status = 'Active'
@@ -123,7 +146,7 @@
 		WHERE seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getPreviousSeasonID.PreviousSeasonID#">
 	</cfquery>
 
-	<!-- 4. Move teams to new season and update their divisionIDs to new divisions -->
+	<!-- 5. Move teams to new season and update their divisionIDs to new divisions -->
 	<cfif form.copyDivisions EQ "1" AND NOT structIsEmpty(divisionMapping)>
 		<!--- Update each team's divisionID to the new mapped division --->
 		<cfloop collection="#divisionMapping#" item="oldDivID">
@@ -164,7 +187,7 @@
 		</cfquery>
 	</cfif>
 
-	<!-- 5. Copy roster records (also update divisionID if divisions were copied) -->
+	<!-- 6. Copy roster records (also update divisionID if divisions were copied) -->
 	<cfif form.copyDivisions EQ "1" AND NOT structIsEmpty(divisionMapping)>
 		<cfloop collection="#divisionMapping#" item="oldDivID">
 			<cfquery name="transferRosterWithDivision" datasource="roundleague">
@@ -214,14 +237,6 @@
 			WHERE seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getPreviousSeasonID.PreviousSeasonID#">
 		</cfquery>
 	</cfif>
-
-	<!-- 6. Copy leagues -->
-	<cfquery name="transferLeaguesToNextSeason" datasource="roundleague">
-		INSERT INTO leagues (seasonID, LeagueName)
-		SELECT <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.progressToSeasonId#">, LeagueName
-		FROM leagues
-		WHERE seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getPreviousSeasonID.PreviousSeasonID#">
-	</cfquery>
 
 	<!-- 7. Final toast -->
 	<cfset toastMsg = 'Successfully progressed to #getNewSeason.SeasonName# Season!#divisionMsg#'>
