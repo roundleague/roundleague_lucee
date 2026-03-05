@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.6/build/pure-min.css" integrity="sha384-Uu6IeWbM+gzNVXJcM9XV3SohHtmWE+3VGi496jvgX1jyvDTXfdK+rfZc8C1Aehk5" crossorigin="anonymous">
 <!--- Scripts --->
 <script src="/pages/Schedule/schedule-2.js"></script>
-<link href="../Schedule/schedule-2.css?v=1.1" rel="stylesheet">
+<link href="../Schedule/schedule-2.css?v=1.2" rel="stylesheet">
 
 <cfquery name="getDivisions" datasource="roundleague">
   SELECT DivisionID, DivisionName
@@ -116,12 +116,12 @@
                   </tr>
                 </cfif>
 
-                <tr class="gameRow">
+                <tr class="gameRow<cfif gameHasScore> hasScore</cfif>">
                   <!--- Home --->
                   <td data-label="Home" class="teamCell">
                     <cfif gameHasScore>
                       <a href="/pages/boxscore/boxscore.cfm?scheduleID=#getSchedule.scheduleID#">
-                        <span class="teamName">#getSchedule.Home#</span>
+                        <span class="teamName #homeBoldClass#">#getSchedule.Home#</span>
                         <span class="teamScore #homeBoldClass#">#getSchedule.HomeScore#</span>
                       </a>
                     <cfelse>
@@ -135,7 +135,7 @@
                   <td data-label="Away" class="teamCell">
                     <cfif gameHasScore>
                       <a href="/pages/boxscore/boxscore.cfm?scheduleID=#getSchedule.scheduleID#">
-                        <span class="teamName">#getSchedule.Away#</span>
+                        <span class="teamName #awayBoldClass#">#getSchedule.Away#</span>
                         <span class="teamScore #awayBoldClass#">#getSchedule.AwayScore#</span>
                       </a>
                     <cfelse>
@@ -201,7 +201,7 @@
             </cfif>
 
             <!--- NBA-style game block --->
-            <div class="gameBlock gameCardItem" data-home="#getSchedule.Home#" data-away="#getSchedule.Away#">
+            <div class="gameBlock gameCardItem<cfif mGameHasScore> hasScore</cfif>" data-home="#getSchedule.Home#" data-away="#getSchedule.Away#">
 
               <cfif mGameHasScore>
                 <!--- === COMPLETED GAME === --->
