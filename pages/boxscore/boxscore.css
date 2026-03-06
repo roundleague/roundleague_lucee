@@ -130,3 +130,232 @@ a.playerLink {
 	}
 
 }
+
+/* ============================================
+   Mobile Stats Icon (visible mobile only)
+   ============================================ */
+.mobileStatsIcon {
+	display: none;
+}
+
+@media only screen and (max-width: 480px) {
+	.mobileStatsIcon {
+		display: inline-block;
+		margin-left: 6px;
+		color: #c8102e;
+		font-size: 14px;
+		cursor: pointer;
+		vertical-align: middle;
+	}
+}
+
+/* ============================================
+   Player Stats Modal — POG Card Style
+   ============================================ */
+.pogModal-topBar {
+	height: 6px;
+	background: #c8102e;
+}
+
+.pogModal-topBarInner {
+	height: 6px;
+	background: #c8102e;
+}
+
+.pogModal-bottomBar {
+	height: 6px;
+	background: #c8102e;
+}
+
+.pogModal-closeBtn {
+	position: absolute;
+	top: 12px;
+	right: 16px;
+	z-index: 10;
+	color: rgba(255,255,255,0.6);
+	font-size: 28px;
+	text-shadow: none;
+	opacity: 1;
+}
+
+.pogModal-photoSection {
+	position: relative;
+	width: 100%;
+	height: 200px;
+	overflow: hidden;
+	background: #141414;
+}
+
+.pogModal-playerPhoto {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: top center;
+	display: block;
+}
+
+.pogModal-photoOverlay {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 100%;
+	background: linear-gradient(
+		to bottom,
+		rgba(13,13,13,0) 30%,
+		rgba(13,13,13,0.5) 60%,
+		rgba(13,13,13,0.95) 90%,
+		rgba(13,13,13,1) 100%
+	);
+	pointer-events: none;
+}
+
+.pogModal-header {
+	padding: 12px 24px 0;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-top: -60px;
+	position: relative;
+	z-index: 2;
+}
+
+.pogModal-badge {
+	font-family: 'Montserrat', 'Inter', sans-serif;
+	font-weight: 800;
+	font-size: 13px;
+	letter-spacing: 4px;
+	color: rgba(255,255,255,0.85);
+	border-bottom: 3px solid #c8102e;
+	padding-bottom: 4px;
+}
+
+.pogModal-logo {
+	height: 65px;
+	width: auto;
+	opacity: 0.85;
+}
+
+.pogModal-nameSection {
+	padding: 10px 24px 12px;
+	position: relative;
+	z-index: 2;
+}
+
+.pogModal-firstName {
+	font-family: 'Bebas Neue', 'Oswald', sans-serif;
+	font-size: 22px;
+	font-weight: 400;
+	letter-spacing: 4px;
+	color: rgba(255,255,255,0.8);
+}
+
+.pogModal-lastName {
+	font-family: 'Bebas Neue', 'Oswald', sans-serif;
+	font-size: 48px;
+	font-weight: 700;
+	letter-spacing: 3px;
+	color: #ffffff;
+	line-height: 1;
+	margin-top: -2px;
+}
+
+.pogModal-teamName {
+	font-family: 'Oswald', sans-serif;
+	font-weight: 700;
+	font-size: 16px;
+	letter-spacing: 6px;
+	color: #c8102e;
+	margin-top: 6px;
+}
+
+.pogModal-primaryStats {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background: rgba(20,20,20,0.9);
+	padding: 18px 16px;
+	margin: 8px 0 0;
+	border-top: 2px solid rgba(200,16,46,0.4);
+}
+
+.pogModal-statItem {
+	flex: 1;
+	text-align: center;
+}
+
+.pogModal-statValue {
+	font-family: 'Bebas Neue', 'Oswald', sans-serif;
+	font-size: 42px;
+	font-weight: 700;
+	color: #ffffff;
+	letter-spacing: 2px;
+	line-height: 1;
+}
+
+.pogModal-statLabel {
+	font-family: 'Montserrat', 'Inter', sans-serif;
+	font-weight: 700;
+	font-size: 12px;
+	letter-spacing: 4px;
+	color: rgba(255,255,255,0.4);
+	margin-top: 4px;
+}
+
+.pogModal-statDivider {
+	width: 1px;
+	height: 40px;
+	background: rgba(255,255,255,0.12);
+}
+
+.pogModal-secondaryStats {
+	padding: 16px 24px 20px;
+}
+
+.pogModal-secStatRow {
+	display: flex;
+	justify-content: space-around;
+	margin-bottom: 10px;
+}
+
+.pogModal-secStat {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	min-width: 60px;
+}
+
+.pogModal-secLabel {
+	font-family: 'Montserrat', 'Inter', sans-serif;
+	font-weight: 700;
+	font-size: 11px;
+	letter-spacing: 3px;
+	color: rgba(255,255,255,0.35);
+}
+
+.pogModal-secValue {
+	font-family: 'Barlow Condensed', 'Oswald', sans-serif;
+	font-weight: 600;
+	font-size: 20px;
+	color: rgba(255,255,255,0.9);
+	margin-top: 2px;
+}
+
+.pogModal-downloadHint {
+	text-align: center;
+	padding: 10px 0 14px;
+	font-family: 'Montserrat', 'Inter', sans-serif;
+	font-size: 12px;
+	font-weight: 600;
+	color: rgba(255,255,255,0.35);
+	letter-spacing: 1px;
+}
+
+.pogModal-downloadHint i {
+	margin-right: 4px;
+}
+
+#pogModalCapture {
+	background: #0d0d0d;
+	overflow: hidden;
+}
