@@ -164,18 +164,18 @@
             <!--- Top Performers --->
             <div class="top-performers">
               <div class="performer-card">
-                <span class="performer-icon">🔥</span>
-                <span class="performer-stat">#topPts.val# PTS</span>
+                <span class="performer-label">TOP PTS</span>
+                <span class="performer-stat">#topPts.val#</span>
                 <span class="performer-name">#topPts.name#</span>
               </div>
               <div class="performer-card">
-                <span class="performer-icon">💪</span>
-                <span class="performer-stat">#topReb.val# REB</span>
+                <span class="performer-label">TOP REB</span>
+                <span class="performer-stat">#topReb.val#</span>
                 <span class="performer-name">#topReb.name#</span>
               </div>
               <div class="performer-card">
-                <span class="performer-icon">🎯</span>
-                <span class="performer-stat">#topAst.val# AST</span>
+                <span class="performer-label">TOP AST</span>
+                <span class="performer-stat">#topAst.val#</span>
                 <span class="performer-name">#topAst.name#</span>
               </div>
             </div>
