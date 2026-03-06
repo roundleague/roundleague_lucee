@@ -130,3 +130,152 @@ a.playerLink {
 	}
 
 }
+
+/* ============================================
+   Mobile Stats Icon (visible mobile only)
+   ============================================ */
+.mobileStatsIcon {
+	display: none;
+}
+
+@media only screen and (max-width: 480px) {
+	.mobileStatsIcon {
+		display: inline-block;
+		margin-left: 6px;
+		color: #c8102e;
+		font-size: 14px;
+		cursor: pointer;
+		vertical-align: middle;
+	}
+}
+
+/* ============================================
+   Player Stats Modal — POG Card Style
+   ============================================ */
+.pogModal-topBar {
+	height: 6px;
+	background: #c8102e;
+}
+
+.pogModal-bottomBar {
+	height: 6px;
+	background: #c8102e;
+}
+
+.pogModal-header {
+	padding: 20px 24px 0;
+	text-align: right;
+}
+
+.pogModal-badge {
+	font-family: 'Montserrat', 'Inter', sans-serif;
+	font-weight: 800;
+	font-size: 13px;
+	letter-spacing: 4px;
+	color: rgba(255,255,255,0.85);
+	border-bottom: 3px solid #c8102e;
+	padding-bottom: 4px;
+}
+
+.pogModal-nameSection {
+	padding: 16px 24px 12px;
+}
+
+.pogModal-firstName {
+	font-family: 'Bebas Neue', 'Oswald', sans-serif;
+	font-size: 22px;
+	font-weight: 400;
+	letter-spacing: 4px;
+	color: rgba(255,255,255,0.8);
+}
+
+.pogModal-lastName {
+	font-family: 'Bebas Neue', 'Oswald', sans-serif;
+	font-size: 48px;
+	font-weight: 700;
+	letter-spacing: 3px;
+	color: #ffffff;
+	line-height: 1;
+	margin-top: -2px;
+}
+
+.pogModal-teamName {
+	font-family: 'Oswald', sans-serif;
+	font-weight: 700;
+	font-size: 16px;
+	letter-spacing: 6px;
+	color: #c8102e;
+	margin-top: 6px;
+}
+
+.pogModal-primaryStats {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background: rgba(20,20,20,0.9);
+	padding: 18px 16px;
+	margin: 8px 0 0;
+	border-top: 2px solid rgba(200,16,46,0.4);
+}
+
+.pogModal-statItem {
+	flex: 1;
+	text-align: center;
+}
+
+.pogModal-statValue {
+	font-family: 'Bebas Neue', 'Oswald', sans-serif;
+	font-size: 42px;
+	font-weight: 700;
+	color: #ffffff;
+	letter-spacing: 2px;
+	line-height: 1;
+}
+
+.pogModal-statLabel {
+	font-family: 'Montserrat', 'Inter', sans-serif;
+	font-weight: 700;
+	font-size: 12px;
+	letter-spacing: 4px;
+	color: rgba(255,255,255,0.4);
+	margin-top: 4px;
+}
+
+.pogModal-statDivider {
+	width: 1px;
+	height: 40px;
+	background: rgba(255,255,255,0.12);
+}
+
+.pogModal-secondaryStats {
+	padding: 16px 24px 20px;
+}
+
+.pogModal-secStatRow {
+	display: flex;
+	justify-content: space-around;
+	margin-bottom: 10px;
+}
+
+.pogModal-secStat {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	min-width: 60px;
+}
+
+.pogModal-secLabel {
+	font-family: 'Montserrat', 'Inter', sans-serif;
+	font-weight: 700;
+	font-size: 11px;
+	letter-spacing: 3px;
+	color: rgba(255,255,255,0.35);
+}
+
+.pogModal-secValue {
+	font-family: 'Barlow Condensed', 'Oswald', sans-serif;
+	font-weight: 600;
+	font-size: 20px;
+	color: rgba(255,255,255,0.9);
+	margin-top: 2px;
+}

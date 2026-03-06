@@ -1,7 +1,11 @@
 <cfinclude template="/header.cfm">
 
 <!--- Page Specific CSS/JS Here --->
-<link href="../boxscore/boxscore.css?v=1.4" rel="stylesheet">
+<link href="../boxscore/boxscore.css?v=1.5" rel="stylesheet">
+<!--- POG-style fonts for player stats modal --->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
 
 <cfquery name="getPlayerLogs" datasource="roundleague">
 	SELECT DISTINCT pgl.PlayerID, p.firstName, p.lastName, FGM, FGA, 3FGM, 3FGA, FTM, FTA, Points, Rebounds, Assists, Steals, Blocks, Turnovers, pgl.teamID, t.teamName, pgl.Fouls, r.jersey, p.PermissionToShare
@@ -184,6 +188,8 @@
                         <cfelse>
                             #getPlayerLogs.firstName# #getPlayerLogs.LastName# ###getPlayerlogs.jersey#
                         </cfif>
+                        <i class="fa-solid fa-chart-bar mobileStatsIcon"
+                           onclick="openPlayerStatsModal('#JSStringFormat(getPlayerLogs.firstName)#', '#JSStringFormat(getPlayerLogs.lastName)#', '###getPlayerlogs.jersey#', '#JSStringFormat(GetPlayerLogs.teamName)#', '#getPlayerLogs.FGM#', '#getPlayerLogs.FGA#', '#getPlayerLogs.3FGM#', '#getPlayerLogs.3FGA#', '#getPlayerLogs.FTM#', '#getPlayerLogs.FTA#', '#getPlayerLogs.Points#', '#getPlayerLogs.Rebounds#', '#getPlayerLogs.Assists#', '#getPlayerLogs.Steals#', '#getPlayerLogs.Blocks#', '#getPlayerLogs.Turnovers#', '#val(getPlayerLogs.Fouls)#')"></i>
                     </td>
     				<td data-label="FG">#getPlayerLogs.FGM# - #getPlayerLogs.FGA#</td>
     				<td data-label="3FG">#getPlayerLogs.3FGM# - #getPlayerLogs.3FGA#</td>
@@ -264,5 +270,79 @@
 </div>
 
 </cfoutput>
+
+<!--- Player Stats Modal (Mobile) --->
+<div class="modal fade" id="playerStatsModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content" style="background: #0d0d0d; border: none; border-radius: 12px; overflow: hidden;">
+      <div class="pogModal-topBar"></div>
+      <div class="modal-body" style="padding: 0;">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="position: absolute; top: 12px; right: 16px; z-index: 10; color: rgba(255,255,255,0.6); font-size: 28px; text-shadow: none; opacity: 1;">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <div class="pogModal-header">
+          <span class="pogModal-badge">PLAYER STATS</span>
+        </div>
+        <div class="pogModal-nameSection">
+          <div class="pogModal-firstName" id="modalFirstName"></div>
+          <div class="pogModal-lastName" id="modalLastName"></div>
+          <div class="pogModal-teamName" id="modalTeamName"></div>
+        </div>
+        <div class="pogModal-primaryStats">
+          <div class="pogModal-statItem">
+            <div class="pogModal-statValue" id="modalPTS"></div>
+            <div class="pogModal-statLabel">PTS</div>
+          </div>
+          <div class="pogModal-statDivider"></div>
+          <div class="pogModal-statItem">
+            <div class="pogModal-statValue" id="modalREB"></div>
+            <div class="pogModal-statLabel">REB</div>
+          </div>
+          <div class="pogModal-statDivider"></div>
+          <div class="pogModal-statItem">
+            <div class="pogModal-statValue" id="modalAST"></div>
+            <div class="pogModal-statLabel">AST</div>
+          </div>
+        </div>
+        <div class="pogModal-secondaryStats">
+          <div class="pogModal-secStatRow">
+            <div class="pogModal-secStat"><span class="pogModal-secLabel">FG</span><span class="pogModal-secValue" id="modalFG"></span></div>
+            <div class="pogModal-secStat"><span class="pogModal-secLabel">3PT</span><span class="pogModal-secValue" id="modal3PT"></span></div>
+            <div class="pogModal-secStat"><span class="pogModal-secLabel">FT</span><span class="pogModal-secValue" id="modalFT"></span></div>
+          </div>
+          <div class="pogModal-secStatRow">
+            <div class="pogModal-secStat"><span class="pogModal-secLabel">STL</span><span class="pogModal-secValue" id="modalSTL"></span></div>
+            <div class="pogModal-secStat"><span class="pogModal-secLabel">BLK</span><span class="pogModal-secValue" id="modalBLK"></span></div>
+            <div class="pogModal-secStat"><span class="pogModal-secLabel">TO</span><span class="pogModal-secValue" id="modalTO"></span></div>
+          </div>
+          <div class="pogModal-secStatRow">
+            <div class="pogModal-secStat"><span class="pogModal-secLabel">FLS</span><span class="pogModal-secValue" id="modalFLS"></span></div>
+          </div>
+        </div>
+        <div class="pogModal-bottomBar"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function openPlayerStatsModal(firstName, lastName, jersey, teamName, fgm, fga, fgm3, fga3, ftm, fta, pts, reb, ast, stl, blk, to, fls) {
+  document.getElementById('modalFirstName').textContent = firstName.toUpperCase() + ' ' + jersey;
+  document.getElementById('modalLastName').textContent = lastName.toUpperCase();
+  document.getElementById('modalTeamName').textContent = teamName.toUpperCase();
+  document.getElementById('modalPTS').textContent = pts;
+  document.getElementById('modalREB').textContent = reb;
+  document.getElementById('modalAST').textContent = ast;
+  document.getElementById('modalFG').textContent = fgm + '-' + fga;
+  document.getElementById('modal3PT').textContent = fgm3 + '-' + fga3;
+  document.getElementById('modalFT').textContent = ftm + '-' + fta;
+  document.getElementById('modalSTL').textContent = stl;
+  document.getElementById('modalBLK').textContent = blk;
+  document.getElementById('modalTO').textContent = to;
+  document.getElementById('modalFLS').textContent = fls;
+  $('#playerStatsModal').modal('show');
+}
+</script>
+
 <cfinclude template="/footer.cfm">
 <script src="../boxscore/recap.js?v=1.1"></script>
