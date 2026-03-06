@@ -188,8 +188,10 @@
                         <cfelse>
                             #getPlayerLogs.firstName# #getPlayerLogs.LastName# ###getPlayerlogs.jersey#
                         </cfif>
+                        <cfif listFind("536,1001", getPlayerLogs.playerID)>
                         <i class="fa-solid fa-chart-bar mobileStatsIcon"
-                           onclick="openPlayerStatsModal('#JSStringFormat(getPlayerLogs.firstName)#', '#JSStringFormat(getPlayerLogs.lastName)#', '###getPlayerlogs.jersey#', '#JSStringFormat(GetPlayerLogs.teamName)#', '#getPlayerLogs.FGM#', '#getPlayerLogs.FGA#', '#getPlayerLogs.3FGM#', '#getPlayerLogs.3FGA#', '#getPlayerLogs.FTM#', '#getPlayerLogs.FTA#', '#getPlayerLogs.Points#', '#getPlayerLogs.Rebounds#', '#getPlayerLogs.Assists#', '#getPlayerLogs.Steals#', '#getPlayerLogs.Blocks#', '#getPlayerLogs.Turnovers#', '#val(getPlayerLogs.Fouls)#')"></i>
+                           onclick="openPlayerStatsModal('#JSStringFormat(getPlayerLogs.firstName)#', '#JSStringFormat(getPlayerLogs.lastName)#', '###getPlayerlogs.jersey#', '#JSStringFormat(GetPlayerLogs.teamName)#', '#getPlayerLogs.FGM#', '#getPlayerLogs.FGA#', '#getPlayerLogs.3FGM#', '#getPlayerLogs.3FGA#', '#getPlayerLogs.FTM#', '#getPlayerLogs.FTA#', '#getPlayerLogs.Points#', '#getPlayerLogs.Rebounds#', '#getPlayerLogs.Assists#', '#getPlayerLogs.Steals#', '#getPlayerLogs.Blocks#', '#getPlayerLogs.Turnovers#', '#val(getPlayerLogs.Fouls)#', '#getPlayerLogs.playerID#')"></i>
+                        </cfif>
                     </td>
     				<td data-label="FG">#getPlayerLogs.FGM# - #getPlayerLogs.FGA#</td>
     				<td data-label="3FG">#getPlayerLogs.3FGM# - #getPlayerLogs.3FGA#</td>
@@ -277,10 +279,17 @@
     <div class="modal-content" style="background: #0d0d0d; border: none; border-radius: 12px; overflow: hidden;">
       <div class="pogModal-topBar"></div>
       <div class="modal-body" style="padding: 0;">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="position: absolute; top: 12px; right: 16px; z-index: 10; color: rgba(255,255,255,0.6); font-size: 28px; text-shadow: none; opacity: 1;">
+        <button type="button" class="close pogModal-closeBtn" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
+        <div id="pogModalCapture">
+        <div class="pogModal-topBarInner"></div>
+        <div class="pogModal-photoSection">
+          <img id="modalPlayerPhoto" class="pogModal-playerPhoto" src="/assets/img/PlayerProfiles/default.JPG" alt="Player Photo">
+          <div class="pogModal-photoOverlay"></div>
+        </div>
         <div class="pogModal-header">
+          <img class="pogModal-logo" src="/assets/img/Logos/4_trimmed.png" alt="Round League">
           <span class="pogModal-badge">PLAYER STATS</span>
         </div>
         <div class="pogModal-nameSection">
@@ -320,13 +329,16 @@
           </div>
         </div>
         <div class="pogModal-bottomBar"></div>
+        </div><!--- end pogModalCapture --->
+        <div class="pogModal-downloadHint"><i class="fa-solid fa-hand-pointer"></i> Hold to save image</div>
       </div>
     </div>
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
-function openPlayerStatsModal(firstName, lastName, jersey, teamName, fgm, fga, fgm3, fga3, ftm, fta, pts, reb, ast, stl, blk, to, fls) {
+function openPlayerStatsModal(firstName, lastName, jersey, teamName, fgm, fga, fgm3, fga3, ftm, fta, pts, reb, ast, stl, blk, to, fls, playerID) {
   document.getElementById('modalFirstName').textContent = firstName.toUpperCase() + ' ' + jersey;
   document.getElementById('modalLastName').textContent = lastName.toUpperCase();
   document.getElementById('modalTeamName').textContent = teamName.toUpperCase();
@@ -340,8 +352,68 @@ function openPlayerStatsModal(firstName, lastName, jersey, teamName, fgm, fga, f
   document.getElementById('modalBLK').textContent = blk;
   document.getElementById('modalTO').textContent = to;
   document.getElementById('modalFLS').textContent = fls;
+
+  // Set player photo with fallback
+  var photoImg = document.getElementById('modalPlayerPhoto');
+  photoImg.onerror = function() { this.src = '/assets/img/PlayerProfiles/default.JPG'; };
+  photoImg.src = '/assets/img/PlayerProfiles/' + playerID + '.JPG';
+
+  // Hide the download preview if it was showing from a previous use
+  var previewContainer = document.getElementById('pogModalDownloadPreview');
+  if (previewContainer) { previewContainer.style.display = 'none'; }
+  document.getElementById('pogModalCapture').style.display = 'block';
+  document.querySelector('.pogModal-downloadHint').style.display = 'block';
+
   $('#playerStatsModal').modal('show');
 }
+
+// Long-press to download
+(function() {
+  var timer = null;
+  var HOLD_DURATION = 600; // ms
+
+  function startHold(e) {
+    e.preventDefault();
+    timer = setTimeout(function() {
+      captureAndDownload();
+    }, HOLD_DURATION);
+  }
+
+  function cancelHold() {
+    if (timer) { clearTimeout(timer); timer = null; }
+  }
+
+  function captureAndDownload() {
+    var captureEl = document.getElementById('pogModalCapture');
+    if (!captureEl) return;
+
+    html2canvas(captureEl, {
+      backgroundColor: '#0d0d0d',
+      scale: 2,
+      useCORS: true
+    }).then(function(canvas) {
+      // Replace modal content with the rendered image for native long-press save
+      var imgDataUrl = canvas.toDataURL('image/png');
+      var previewContainer = document.getElementById('pogModalDownloadPreview');
+      if (!previewContainer) {
+        previewContainer = document.createElement('div');
+        previewContainer.id = 'pogModalDownloadPreview';
+        previewContainer.style.textAlign = 'center';
+        captureEl.parentNode.insertBefore(previewContainer, captureEl);
+      }
+      previewContainer.innerHTML = '<img src="' + imgDataUrl + '" style="width:100%;border-radius:8px;" alt="Player Stats">';
+      previewContainer.style.display = 'block';
+      captureEl.style.display = 'none';
+      document.querySelector('.pogModal-downloadHint').style.display = 'none';
+    });
+  }
+
+  // Bind after modal is in DOM
+  $(document).on('touchstart', '#pogModalCapture', startHold);
+  $(document).on('touchend touchcancel touchmove', '#pogModalCapture', cancelHold);
+  $(document).on('mousedown', '#pogModalCapture', startHold);
+  $(document).on('mouseup mouseleave', '#pogModalCapture', cancelHold);
+})();
 </script>
 
 <cfinclude template="/footer.cfm">
