@@ -1,7 +1,7 @@
 <cfinclude template="/header.cfm">
 
 <!--- Page Specific CSS/JS Here --->
-<link href="../boxscore/boxscore.css?v=1.5" rel="stylesheet">
+<link href="../boxscore/boxscore.css?v=1.6" rel="stylesheet">
 <!--- POG-style fonts for player stats modal --->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -337,84 +337,7 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script>
-function openPlayerStatsModal(firstName, lastName, jersey, teamName, fgm, fga, fgm3, fga3, ftm, fta, pts, reb, ast, stl, blk, to, fls, playerID) {
-  document.getElementById('modalFirstName').textContent = firstName.toUpperCase() + ' ' + jersey;
-  document.getElementById('modalLastName').textContent = lastName.toUpperCase();
-  document.getElementById('modalTeamName').textContent = teamName.toUpperCase();
-  document.getElementById('modalPTS').textContent = pts;
-  document.getElementById('modalREB').textContent = reb;
-  document.getElementById('modalAST').textContent = ast;
-  document.getElementById('modalFG').textContent = fgm + '-' + fga;
-  document.getElementById('modal3PT').textContent = fgm3 + '-' + fga3;
-  document.getElementById('modalFT').textContent = ftm + '-' + fta;
-  document.getElementById('modalSTL').textContent = stl;
-  document.getElementById('modalBLK').textContent = blk;
-  document.getElementById('modalTO').textContent = to;
-  document.getElementById('modalFLS').textContent = fls;
-
-  // Set player photo with fallback
-  var photoImg = document.getElementById('modalPlayerPhoto');
-  photoImg.onerror = function() { this.src = '/assets/img/PlayerProfiles/default.JPG'; };
-  photoImg.src = '/assets/img/PlayerProfiles/' + playerID + '.JPG';
-
-  // Hide the download preview if it was showing from a previous use
-  var previewContainer = document.getElementById('pogModalDownloadPreview');
-  if (previewContainer) { previewContainer.style.display = 'none'; }
-  document.getElementById('pogModalCapture').style.display = 'block';
-  document.querySelector('.pogModal-downloadHint').style.display = 'block';
-
-  $('#playerStatsModal').modal('show');
-}
-
-// Long-press to download
-(function() {
-  var timer = null;
-  var HOLD_DURATION = 600; // ms
-
-  function startHold(e) {
-    e.preventDefault();
-    timer = setTimeout(function() {
-      captureAndDownload();
-    }, HOLD_DURATION);
-  }
-
-  function cancelHold() {
-    if (timer) { clearTimeout(timer); timer = null; }
-  }
-
-  function captureAndDownload() {
-    var captureEl = document.getElementById('pogModalCapture');
-    if (!captureEl) return;
-
-    html2canvas(captureEl, {
-      backgroundColor: '#0d0d0d',
-      scale: 2,
-      useCORS: true
-    }).then(function(canvas) {
-      // Replace modal content with the rendered image for native long-press save
-      var imgDataUrl = canvas.toDataURL('image/png');
-      var previewContainer = document.getElementById('pogModalDownloadPreview');
-      if (!previewContainer) {
-        previewContainer = document.createElement('div');
-        previewContainer.id = 'pogModalDownloadPreview';
-        previewContainer.style.textAlign = 'center';
-        captureEl.parentNode.insertBefore(previewContainer, captureEl);
-      }
-      previewContainer.innerHTML = '<img src="' + imgDataUrl + '" style="width:100%;border-radius:8px;" alt="Player Stats">';
-      previewContainer.style.display = 'block';
-      captureEl.style.display = 'none';
-      document.querySelector('.pogModal-downloadHint').style.display = 'none';
-    });
-  }
-
-  // Bind after modal is in DOM
-  $(document).on('touchstart', '#pogModalCapture', startHold);
-  $(document).on('touchend touchcancel touchmove', '#pogModalCapture', cancelHold);
-  $(document).on('mousedown', '#pogModalCapture', startHold);
-  $(document).on('mouseup mouseleave', '#pogModalCapture', cancelHold);
-})();
-</script>
+<script src="../boxscore/playerStatsModal.js?v=1.0"></script>
 
 <cfinclude template="/footer.cfm">
 <script src="../boxscore/recap.js?v=1.1"></script>
