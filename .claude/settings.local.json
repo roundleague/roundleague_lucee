@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//x/Web Projects/**)"
+    ],
+    "additionalDirectories": [
+      "X:\\Web Projects\\round-league-api\\src",
+      "X:\\Web Projects\\round-league-api"
+    ]
+  }
+}

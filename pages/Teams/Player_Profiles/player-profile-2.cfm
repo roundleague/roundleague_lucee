@@ -110,10 +110,39 @@
             </div>
         </div>
 
-        <!--- Season Statistics --->
+        <!--- Compute Career Averages --->
+        <cfif careerStats.recordCount GT 0>
+            <cfset careerSeasons = careerStats.recordCount>
+            <cfset avgPoints = 0><cfset avgRebounds = 0><cfset avgAssists = 0>
+            <cfset avgSteals = 0><cfset avgBlocks = 0><cfset avgTurnovers = 0>
+            <cfloop query="careerStats">
+                <cfset avgPoints += val(careerStats.Points)>
+                <cfset avgRebounds += val(careerStats.Rebounds)>
+                <cfset avgAssists += val(careerStats.Assists)>
+                <cfset avgSteals += val(careerStats.Steals)>
+                <cfset avgBlocks += val(careerStats.Blocks)>
+                <cfset avgTurnovers += val(careerStats.Turnovers)>
+            </cfloop>
+            <cfset avgPoints = avgPoints / careerSeasons>
+            <cfset avgRebounds = avgRebounds / careerSeasons>
+            <cfset avgAssists = avgAssists / careerSeasons>
+            <cfset avgSteals = avgSteals / careerSeasons>
+            <cfset avgBlocks = avgBlocks / careerSeasons>
+            <cfset avgTurnovers = avgTurnovers / careerSeasons>
+        </cfif>
+
+        <!--- Season / Career Stats Toggle --->
         <div class="stats-section">
-            <h2 class="stats-title">Season Statistics</h2>
-            <div class="stats-grid">
+            <div class="stats-toggle-header">
+                <h2 class="stats-title" id="statsTitle">Season Statistics</h2>
+                <div class="stats-toggle">
+                    <button class="stats-toggle-btn active" id="btnSeason" onclick="showSeasonStats()">Season</button>
+                    <button class="stats-toggle-btn" id="btnCareer" onclick="showCareerStats()">Career</button>
+                </div>
+            </div>
+
+            <!--- Season Stats --->
+            <div id="seasonStats" class="stats-grid">
                 <div class="stat-box">
                     <span class="stat-value">#NumberFormat(getPlayerStats.Points, "0.0")#</span>
                     <span class="stat-label">Points</span>
@@ -147,6 +176,36 @@
                     <span class="stat-label">3PT%</span>
                 </div>
             </div>
+
+            <!--- Career Averages --->
+            <cfif careerStats.recordCount GT 0>
+            <div id="careerStats" class="stats-grid" style="display: none;">
+                <div class="stat-box">
+                    <span class="stat-value">#NumberFormat(avgPoints, "0.0")#</span>
+                    <span class="stat-label">Points</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-value">#NumberFormat(avgRebounds, "0.0")#</span>
+                    <span class="stat-label">Rebounds</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-value">#NumberFormat(avgAssists, "0.0")#</span>
+                    <span class="stat-label">Assists</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-value">#NumberFormat(avgSteals, "0.0")#</span>
+                    <span class="stat-label">Steals</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-value">#NumberFormat(avgBlocks, "0.0")#</span>
+                    <span class="stat-label">Blocks</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-value">#NumberFormat(avgTurnovers, "0.0")#</span>
+                    <span class="stat-label">Turnovers</span>
+                </div>
+            </div>
+            </cfif>
         </div>
 
         <!--- Player Game Log --->
