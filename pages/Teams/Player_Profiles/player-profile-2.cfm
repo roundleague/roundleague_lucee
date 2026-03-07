@@ -1,7 +1,7 @@
 <cfinclude template="/header.cfm">
 
 <!--- Page Specific CSS/JS Here --->
-<link href="/pages/Teams/Player_Profiles/player-profile-2.css?v=3.0" rel="stylesheet" />
+<link href="/pages/Teams/Player_Profiles/player-profile-2.css?v=3.1" rel="stylesheet" />
 
 <cfquery name="getPlayerData" datasource="roundleague">
     SELECT p.lastName, p.firstName, p.position, p.height, p.weight, p.hometown, p.school, t.teamName
@@ -325,4 +325,4 @@
 </div>
 </cfoutput>
 <cfinclude template="/footer.cfm">
-<script src="../../Teams/Player_Profiles/player-profile-2.js?v=2.2"></script>
+<script src="../../Teams/Player_Profiles/player-profile-2.js?v=2.3"></script>
