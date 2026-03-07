@@ -1,7 +1,11 @@
 <cfinclude template="/header.cfm">
 
 <!--- Page Specific CSS/JS Here --->
-<link href="../boxscore/boxscore.css?v=1.4" rel="stylesheet">
+<link href="../boxscore/boxscore.css?v=1.6" rel="stylesheet">
+<!--- POG-style fonts for player stats modal --->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
 
 <cfquery name="getPlayerLogs" datasource="roundleague">
 	SELECT DISTINCT pgl.PlayerID, p.firstName, p.lastName, FGM, FGA, 3FGM, 3FGA, FTM, FTA, Points, Rebounds, Assists, Steals, Blocks, Turnovers, pgl.teamID, t.teamName, pgl.Fouls, r.jersey, p.PermissionToShare
@@ -184,6 +188,10 @@
                         <cfelse>
                             #getPlayerLogs.firstName# #getPlayerLogs.LastName# ###getPlayerlogs.jersey#
                         </cfif>
+                        <cfif listFind("536,1001", getPlayerLogs.playerID)>
+                        <i class="fa-solid fa-chart-bar mobileStatsIcon"
+                           onclick="openPlayerStatsModal('#JSStringFormat(getPlayerLogs.firstName)#', '#JSStringFormat(getPlayerLogs.lastName)#', '###getPlayerlogs.jersey#', '#JSStringFormat(GetPlayerLogs.teamName)#', '#getPlayerLogs.FGM#', '#getPlayerLogs.FGA#', '#getPlayerLogs.3FGM#', '#getPlayerLogs.3FGA#', '#getPlayerLogs.FTM#', '#getPlayerLogs.FTA#', '#getPlayerLogs.Points#', '#getPlayerLogs.Rebounds#', '#getPlayerLogs.Assists#', '#getPlayerLogs.Steals#', '#getPlayerLogs.Blocks#', '#getPlayerLogs.Turnovers#', '#val(getPlayerLogs.Fouls)#', '#getPlayerLogs.playerID#')"></i>
+                        </cfif>
                     </td>
     				<td data-label="FG">#getPlayerLogs.FGM# - #getPlayerLogs.FGA#</td>
     				<td data-label="3FG">#getPlayerLogs.3FGM# - #getPlayerLogs.3FGA#</td>
@@ -264,5 +272,72 @@
 </div>
 
 </cfoutput>
+
+<!--- Player Stats Modal (Mobile) --->
+<div class="modal fade" id="playerStatsModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content" style="background: #0d0d0d; border: none; border-radius: 12px; overflow: hidden;">
+      <div class="pogModal-topBar"></div>
+      <div class="modal-body" style="padding: 0;">
+        <button type="button" class="close pogModal-closeBtn" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <div id="pogModalCapture">
+        <div class="pogModal-topBarInner"></div>
+        <div class="pogModal-photoSection">
+          <img id="modalPlayerPhoto" class="pogModal-playerPhoto" src="/assets/img/PlayerProfiles/default.JPG" alt="Player Photo">
+          <div class="pogModal-photoOverlay"></div>
+        </div>
+        <div class="pogModal-header">
+          <img class="pogModal-logo" src="/assets/img/Logos/4_trimmed.png" alt="Round League">
+          <span class="pogModal-badge">PLAYER STATS</span>
+        </div>
+        <div class="pogModal-nameSection">
+          <div class="pogModal-firstName" id="modalFirstName"></div>
+          <div class="pogModal-lastName" id="modalLastName"></div>
+          <div class="pogModal-teamName" id="modalTeamName"></div>
+        </div>
+        <div class="pogModal-primaryStats">
+          <div class="pogModal-statItem">
+            <div class="pogModal-statValue" id="modalPTS"></div>
+            <div class="pogModal-statLabel">PTS</div>
+          </div>
+          <div class="pogModal-statDivider"></div>
+          <div class="pogModal-statItem">
+            <div class="pogModal-statValue" id="modalREB"></div>
+            <div class="pogModal-statLabel">REB</div>
+          </div>
+          <div class="pogModal-statDivider"></div>
+          <div class="pogModal-statItem">
+            <div class="pogModal-statValue" id="modalAST"></div>
+            <div class="pogModal-statLabel">AST</div>
+          </div>
+        </div>
+        <div class="pogModal-secondaryStats">
+          <div class="pogModal-secStatRow">
+            <div class="pogModal-secStat"><span class="pogModal-secLabel">FG</span><span class="pogModal-secValue" id="modalFG"></span></div>
+            <div class="pogModal-secStat"><span class="pogModal-secLabel">3PT</span><span class="pogModal-secValue" id="modal3PT"></span></div>
+            <div class="pogModal-secStat"><span class="pogModal-secLabel">FT</span><span class="pogModal-secValue" id="modalFT"></span></div>
+          </div>
+          <div class="pogModal-secStatRow">
+            <div class="pogModal-secStat"><span class="pogModal-secLabel">STL</span><span class="pogModal-secValue" id="modalSTL"></span></div>
+            <div class="pogModal-secStat"><span class="pogModal-secLabel">BLK</span><span class="pogModal-secValue" id="modalBLK"></span></div>
+            <div class="pogModal-secStat"><span class="pogModal-secLabel">TO</span><span class="pogModal-secValue" id="modalTO"></span></div>
+          </div>
+          <div class="pogModal-secStatRow">
+            <div class="pogModal-secStat"><span class="pogModal-secLabel">FLS</span><span class="pogModal-secValue" id="modalFLS"></span></div>
+          </div>
+        </div>
+        <div class="pogModal-bottomBar"></div>
+        </div><!--- end pogModalCapture --->
+        <div class="pogModal-downloadHint"><i class="fa-solid fa-hand-pointer"></i> Hold to save image</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="../boxscore/playerStatsModal.js?v=1.0"></script>
+
 <cfinclude template="/footer.cfm">
 <script src="../boxscore/recap.js?v=1.1"></script>
