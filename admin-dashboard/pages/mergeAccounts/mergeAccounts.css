@@ -1,0 +1,156 @@
+.autocomplete-result {
+  padding: 8px 12px;
+  cursor: pointer;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-top: none;
+}
+
+.autocomplete-result:first-child {
+  border-top: 1px solid #ddd;
+}
+
+.autocomplete-result:hover {
+  background-color: #f0f0f0;
+}
+
+.autocomplete-wrapper {
+  position: relative;
+}
+
+.autocomplete-dropdown {
+  position: absolute;
+  z-index: 1000;
+  width: 100%;
+  max-height: 250px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 0 0 4px 4px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.player-search-box {
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 10px;
+  background: #fafafa;
+}
+
+.player-search-box label {
+  font-weight: bold;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.selected-player-badge {
+  display: none;
+  margin-top: 8px;
+  padding: 6px 10px;
+  background: #e8f5e9;
+  border: 1px solid #a5d6a7;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.selected-player-badge.show {
+  display: block;
+}
+
+.selected-player-badge .clear-player {
+  float: right;
+  cursor: pointer;
+  color: #c62828;
+  font-weight: bold;
+}
+
+#previewBtn {
+  display: none;
+  margin-top: 15px;
+}
+
+/* Preview modal styles */
+.preview-card {
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  overflow: hidden;
+  height: 100%;
+}
+
+.preview-card-header {
+  padding: 10px 14px;
+  font-size: 15px;
+}
+
+.keep-card {
+  border-color: #4caf50;
+}
+
+.keep-card .preview-card-header {
+  background: #e8f5e9;
+}
+
+.merge-card {
+  border-color: #ff9800;
+}
+
+.merge-card .preview-card-header {
+  background: #fff3e0;
+}
+
+.preview-table {
+  width: 100%;
+  font-size: 13px;
+  border-collapse: collapse;
+}
+
+.preview-table td {
+  padding: 6px 10px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.preview-table td:first-child {
+  font-weight: bold;
+  color: #666;
+  width: 40%;
+}
+
+.merge-summary {
+  margin-top: 14px;
+  padding: 10px 14px;
+  background: #e3f2fd;
+  border: 1px solid #90caf9;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.mt-3 {
+  margin-top: 14px;
+}
+
+.mb-0 {
+  margin-bottom: 0;
+}
+
+.mt-1 {
+  margin-top: 6px;
+}
+
+#mergeModal .modal-footer {
+  justify-content: space-between;
+}
+
+.swap-section {
+  margin-top: 12px;
+  padding: 10px;
+  background: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.swap-section label {
+  cursor: pointer;
+  margin-right: 15px;
+}

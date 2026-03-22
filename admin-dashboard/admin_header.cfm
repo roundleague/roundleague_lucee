@@ -134,6 +134,12 @@ Coded by www.creative-tim.com
                   <p>Stat Swapper</p>
                 </a>
               </li>
+              <li <cfif findNoCase("mergeAccounts", CGI.REQUEST_URL)>class="active"</cfif>>
+                <a href="/admin-dashboard/pages/mergeAccounts/mergeAccounts.cfm">
+                  <i class="nc-icon nc-single-02"></i>
+                  <p>Merge Accounts</p>
+                </a>
+              </li>
               <li <cfif findNoCase("addToRoster", CGI.REQUEST_URL)>class="active"</cfif>>
                 <a href="/admin-dashboard/pages/addToRoster/addToRoster.cfm">
                   <i class="nc-icon nc-single-02"></i>
