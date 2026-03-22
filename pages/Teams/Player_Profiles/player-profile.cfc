@@ -9,13 +9,17 @@
 	required="yes" 
 	type="string">
    <cfquery name="careerStats" datasource="roundleague">
-		SELECT r.playerID, 
-		points, 
+		SELECT r.playerID,
+		points,
 		rebounds,
 		assists,
 		steals,
 		blocks,
 		turnovers,
+		FGM,
+		FGA,
+		`3FGM`,
+		`3FGA`,
 		s.seasonName,
 		t.teamName
 		FROM playerstats ps

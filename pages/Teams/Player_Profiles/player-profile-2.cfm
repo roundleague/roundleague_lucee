@@ -115,6 +115,7 @@
             <cfset careerSeasons = careerStats.recordCount>
             <cfset avgPoints = 0><cfset avgRebounds = 0><cfset avgAssists = 0>
             <cfset avgSteals = 0><cfset avgBlocks = 0><cfset avgTurnovers = 0>
+            <cfset totalFGM = 0><cfset totalFGA = 0><cfset total3FGM = 0><cfset total3FGA = 0>
             <cfloop query="careerStats">
                 <cfset avgPoints += val(careerStats.Points)>
                 <cfset avgRebounds += val(careerStats.Rebounds)>
@@ -122,6 +123,10 @@
                 <cfset avgSteals += val(careerStats.Steals)>
                 <cfset avgBlocks += val(careerStats.Blocks)>
                 <cfset avgTurnovers += val(careerStats.Turnovers)>
+                <cfset totalFGM += val(careerStats.FGM)>
+                <cfset totalFGA += val(careerStats.FGA)>
+                <cfset total3FGM += val(careerStats["3FGM"])>
+                <cfset total3FGA += val(careerStats["3FGA"])>
             </cfloop>
             <cfset avgPoints = avgPoints / careerSeasons>
             <cfset avgRebounds = avgRebounds / careerSeasons>
@@ -129,6 +134,8 @@
             <cfset avgSteals = avgSteals / careerSeasons>
             <cfset avgBlocks = avgBlocks / careerSeasons>
             <cfset avgTurnovers = avgTurnovers / careerSeasons>
+            <cfset careerFGP = totalFGA GT 0 ? NumberFormat(totalFGM / totalFGA * 100, "0.0") : "0.0">
+            <cfset career3FGP = total3FGA GT 0 ? NumberFormat(total3FGM / total3FGA * 100, "0.0") : "0.0">
         </cfif>
 
         <!--- Season / Career Stats Toggle --->
@@ -203,6 +210,14 @@
                 <div class="stat-box">
                     <span class="stat-value">#NumberFormat(avgTurnovers, "0.0")#</span>
                     <span class="stat-label">Turnovers</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-value">#careerFGP#</span>
+                    <span class="stat-label">FG%</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-value">#career3FGP#</span>
+                    <span class="stat-label">3PT%</span>
                 </div>
             </div>
             </cfif>
