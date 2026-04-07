@@ -4,6 +4,25 @@
 
 <cfoutput>
 
+<!--- Server-side input validation --->
+<cfset local.cleanEmail = lCase(trim(form.email)) />
+<cfif NOT reFind("^[^\s@]{1,64}@[^\s@]{1,255}\.[^\s@]{2,}$", local.cleanEmail) OR len(local.cleanEmail) GT 254>
+  <cflog file="register_security" type="warning"
+         text="Invalid email rejected: #htmlEditFormat(form.email)# from #cgi.remote_addr#" />
+  <cfthrow message="Invalid email address." />
+</cfif>
+<cfif len(trim(form.firstName)) GT 50 OR len(trim(form.lastName)) GT 50>
+  <cfthrow message="Name fields exceed maximum length." />
+</cfif>
+<cfset local.suspiciousPattern = "(?i)(pg_sleep|waitfor\s+delay|dbms_pipe|union\s+select|sleep\s*\()" />
+<cfif reFind(local.suspiciousPattern, form.email)
+      OR reFind(local.suspiciousPattern, form.firstName)
+      OR reFind(local.suspiciousPattern, form.lastName)>
+  <cflog file="register_security" type="warning"
+         text="Suspicious payload rejected from #cgi.remote_addr# email=#htmlEditFormat(form.email)#" />
+  <cfthrow message="Invalid characters in submitted fields." />
+</cfif>
+
 <cfset teamObject = createObject("component", "library.teams") />
 <cfset teamName = teamObject.getTeamNameByTeamID(form.teamID)>
 
@@ -77,21 +96,36 @@
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="Player">
 		)
 	</cfquery>
-	<cfquery name="addToRoster" datasource="roundleague">
-		INSERT INTO Roster (PlayerID, TeamID, SeasonID, DivisionID, Jersey)
-		VALUES
-		(
-			<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#newPlayerId#">,
-			<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.teamID#">,
-			<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.seasonSelect#">,
-			(
-				SELECT DivisionID 
-				From Teams 
-				Where TeamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.teamID#">
-			),
-			<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.currentJersey#">
-		)
+	<!--- Duplicate roster guard --->
+	<cfquery name="local.checkRosterDup" datasource="roundleague">
+		SELECT 1 FROM roster
+		WHERE playerID = <cfqueryparam value="#newPlayerId#" cfsqltype="cf_sql_integer">
+		  AND teamID   = <cfqueryparam value="#form.teamID#" cfsqltype="cf_sql_integer">
+		  AND seasonID = <cfqueryparam value="#form.seasonSelect#" cfsqltype="cf_sql_integer">
+		LIMIT 1
 	</cfquery>
+	<cfif local.checkRosterDup.recordCount EQ 0>
+		<cfquery name="addToRoster" datasource="roundleague">
+			INSERT INTO Roster (PlayerID, TeamID, SeasonID, DivisionID, Jersey)
+			VALUES
+			(
+				<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#newPlayerId#">,
+				<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.teamID#">,
+				<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.seasonSelect#">,
+				(
+					SELECT DivisionID
+					From Teams
+					Where TeamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.teamID#">
+				),
+				<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.currentJersey#">
+			)
+		</cfquery>
+		<cflog file="register_security" type="information"
+		       text="New player registered: playerID=#newPlayerId# email=#htmlEditFormat(local.cleanEmail)# IP=#cgi.remote_addr#" />
+	<cfelse>
+		<cflog file="register_security" type="warning"
+		       text="Duplicate roster insert skipped: playerID=#newPlayerId# teamID=#form.teamID# seasonID=#form.seasonSelect# IP=#cgi.remote_addr#" />
+	</cfif>
 
 	<!--- If captain checkbox selected, set them as team captain --->
 	<cfif isDefined("form.captainCheck")>
