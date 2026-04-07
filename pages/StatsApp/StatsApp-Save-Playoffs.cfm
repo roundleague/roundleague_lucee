@@ -232,7 +232,22 @@
                 </cfquery>
             </cfif>
         <cfelse>
-            <!--- Championship Game --->
+            <!--- Championship Game - insert winner into champions table --->
+            <cfset winnerTeamID = (form.homeScore GT form.awayScore) ? getTeamsPlaying.homeTeamID : getTeamsPlaying.awayTeamID>
+            <cfquery name="dupChampionCheck" datasource="roundleague">
+                SELECT championsID FROM champions
+                WHERE teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#winnerTeamID#">
+                AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getActiveSeasonID.seasonID#">
+            </cfquery>
+            <cfif dupChampionCheck.recordCount EQ 0>
+                <cfquery name="insertChampion" datasource="roundleague">
+                    INSERT INTO champions (teamID, seasonID)
+                    VALUES (
+                        <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#winnerTeamID#">,
+                        <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getActiveSeasonID.seasonID#">
+                    )
+                </cfquery>
+            </cfif>
         </cfif>
     </cfif>
 
