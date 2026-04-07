@@ -116,16 +116,22 @@ Coded by www.creative-tim.com
                   <p>Seasons Manager</p>
                 </a>
               </li>
+              <li <cfif findNoCase("playoffImport", CGI.REQUEST_URL)>class="active"</cfif>>
+                <a href="/admin-dashboard/pages/playoffs/playoffImport.cfm">
+                  <i class="nc-icon nc-cloud-upload-94"></i>
+                  <p>Playoff Import</p>
+                </a>
+              </li>
               <li <cfif findNoCase("bracket", CGI.REQUEST_URL)>class="active"</cfif>>
                 <a href="/admin-dashboard/pages/playoffBrackets/playoffBrackets.cfm">
                   <i class="nc-icon nc-vector"></i>
                   <p>Playoff Bracket Maker</p>
                 </a>
               </li>
-              <li <cfif findNoCase("playoffs", CGI.REQUEST_URL)>class="active"</cfif>>
+              <li <cfif findNoCase("playoffs/playoffs", CGI.REQUEST_URL)>class="active"</cfif>>
                 <a href="/admin-dashboard/pages/playoffs/playoffs.cfm">
                   <i class="nc-icon nc-trophy"></i>
-                  <p>Playoffs</p>
+                  <p>Playoffs (Legacy)</p>
                 </a>
               </li>
               <li <cfif findNoCase("statswapper", CGI.REQUEST_URL)>class="active"</cfif>>
