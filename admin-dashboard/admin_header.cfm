@@ -122,18 +122,7 @@ Coded by www.creative-tim.com
                   <p>Playoff Import</p>
                 </a>
               </li>
-              <li <cfif findNoCase("bracket", CGI.REQUEST_URL)>class="active"</cfif>>
-                <a href="/admin-dashboard/pages/playoffBrackets/playoffBrackets.cfm">
-                  <i class="nc-icon nc-vector"></i>
-                  <p>Playoff Bracket Maker</p>
-                </a>
-              </li>
-              <li <cfif findNoCase("playoffs/playoffs", CGI.REQUEST_URL)>class="active"</cfif>>
-                <a href="/admin-dashboard/pages/playoffs/playoffs.cfm">
-                  <i class="nc-icon nc-trophy"></i>
-                  <p>Playoffs (Legacy)</p>
-                </a>
-              </li>
+
               <li <cfif findNoCase("statswapper", CGI.REQUEST_URL)>class="active"</cfif>>
                 <a href="/admin-dashboard/pages/statswapper/statswapper.cfm">
                   <i class="nc-icon nc-refresh-69"></i>
