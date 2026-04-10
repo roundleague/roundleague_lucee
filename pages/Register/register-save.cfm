@@ -23,6 +23,11 @@
   <cfthrow message="Invalid characters in submitted fields." />
 </cfif>
 
+<!--- Guardian acknowledgment required for under-18 registrations --->
+<cfif NOT isDefined("form.over18") AND NOT isDefined("form.guardianAck")>
+  <cfthrow message="Guardian acknowledgment is required for players under 18." />
+</cfif>
+
 <cfset teamObject = createObject("component", "library.teams") />
 <cfset teamName = teamObject.getTeamNameByTeamID(form.teamID)>
 
@@ -53,7 +58,8 @@
 			Instagram,
 			Gender,
 			MastersLeague,
-			ZipCode
+			ZipCode,
+			is_youth
 		)
 		VALUES
 		(
@@ -74,7 +80,8 @@
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.Instagram#">,
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.Gender#">,
 			<cfif isDefined("form.MastersLeague")>'Yes'<cfelse>'No'</cfif>,
-			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.zipCode#">
+			<cfqueryparam cfsqltype="cf_sql_varchar" value="#form.zipCode#">,
+			<cfif isDefined("form.over18")>0<cfelse>1</cfif>
 		)
 	</cfquery>
 	<cfset newPlayerId = playerAdd.GENERATEDKEY>

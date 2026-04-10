@@ -56,6 +56,8 @@ I willingly agree to comply with the stated and customary terms and conditions f
 I, for myself and on behalf of my heirs, assigns, personal representatives and next of kin, HEREBY RELEASE AND HOLD HARMLESS The Round League  their officers, officials, agents, and/or employees, other participants, sponsoring agencies, sponsors, advertisers, and if applicable, owners and lessors of premises used to conduct the event ("RELEASEES"), WITH RESPECT TO ANY AND ALL INJURY, ILLNESS, DISABILITY, DEATH, or loss or damage to person or property, WHETHER ARISING FROM THE NEGLIGENCE OF THE RELEASEES OR OTHERWISE, to the fullest extent permitted by law.</p>
 
 <p>I HAVE READ THIS RELEASE OF LIABILITY AND ASSUMPTION OF RISK AGREEMENT, FULLY UNDERSTAND ITS TERMS, UNDERSTAND THAT I HAVE GIVEN UP SUBSTANTIAL RIGHTS BY SIGNING IT, AND SIGN IT FREELY AND VOLUNTARILY WITHOUT ANY INDUCEMENT. AND HEREBY PRINT MY NAME AS MY SIGNATURE BELOW IN AGREEMENT TO THIS WAIVER.</p>
+
+<p><em>If you are registering on behalf of a minor, you represent that you are their parent or legal guardian. By agreeing to this waiver, you accept these terms on behalf of your child and consent to their participation in The Round League.</em></p>
                   </div>
                   <div class="modal-footer">
                     <div class="left-side">
@@ -324,6 +326,15 @@ I, for myself and on behalf of my heirs, assigns, personal representatives and n
 				            <div class="form-check">
 				              <label class="form-check-label">
 				                <input class="form-check-input waiverCheck" type="checkbox" value="1" name="photoWaiver">
+				                <span class="form-check-sign"></span>
+				              </label>
+				            </div>
+		                </li>
+		                <li class="notification-item" id="guardianAckItem" style="display:none;">
+		                  I confirm that I am the parent or legal guardian of this player and am registering on their behalf.
+				            <div class="form-check">
+				              <label class="form-check-label">
+				                <input class="form-check-input" type="checkbox" value="1" name="guardianAck" id="guardianAck">
 				                <span class="form-check-sign"></span>
 				              </label>
 				            </div>

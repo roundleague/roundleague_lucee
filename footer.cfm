@@ -22,6 +22,7 @@
           </ul>
         </nav>
         <div class="credits ml-auto">
+          <a href="/privacy-policy.cfm" style="font-size: 0.85em; margin-right: 12px; color: inherit;">Privacy Policy</a>
           <span class="copyright">
             &copy;
             <script>

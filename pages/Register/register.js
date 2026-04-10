@@ -2,14 +2,23 @@ $( document ).ready(function() {
 	$('.bootstrap-switch-handle-on').text('Yes');
 	$('.bootstrap-switch-handle-off').text('No');
 
-	$('.waiverCheck').click(function(){
-		var checkBoth = $('.waiverCheck:checkbox:checked').length;
-		if(checkBoth == 2){
-			$('.saveBtn').prop('disabled', false);
+	function updateSubmitState() {
+		var waiverCount = $('.waiverCheck:checked').length;
+		var isUnder18 = !$('[name="over18"]').is(':checked');
+		var guardianOk = !isUnder18 || $('#guardianAck').is(':checked');
+		$('.saveBtn').prop('disabled', !(waiverCount === 2 && guardianOk));
+	}
+
+	$('.waiverCheck, #guardianAck').on('click', updateSubmitState);
+
+	$('[name="over18"]').on('switchChange.bootstrapSwitch', function(event, state) {
+		if (!state) {
+			$('#guardianAckItem').show();
+		} else {
+			$('#guardianAckItem').hide();
+			$('#guardianAck').prop('checked', false);
 		}
-		else{
-			$('.saveBtn').prop('disabled', true);
-		}
+		updateSubmitState();
 	});
 
 	$('#phoneField').keyup(function(){
