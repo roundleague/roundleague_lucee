@@ -8,6 +8,9 @@
         <nav class="footer-nav">
           <ul>
             <li>
+              <a href="https://apps.apple.com/us/app/the-round-league/id6760102073" target="_blank" aria-label="Download on the App Store"><i class="fab fa-app-store-ios" aria-hidden="true"></i></a>
+            </li>
+            <li>
               <a href="https://www.instagram.com/theroundleague/" target="_blank"><i class="fab fa-instagram" aria-hidden="true"></i></a>
             </li>
             <li>
