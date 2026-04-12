@@ -74,10 +74,11 @@
     <cfif scoresExist.homeScore EQ ''>
 
         <cfquery name="updateScheduleScore" datasource="roundleague">
-            UPDATE schedule 
-            SET 
-                    homeScore = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.homeScore#">, 
-                    awayScore = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.awayScore#">
+            UPDATE schedule
+            SET
+                    homeScore = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.homeScore#">,
+                    awayScore = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.awayScore#">,
+                    status = 'final'
             WHERE scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">
         </cfquery>
 
