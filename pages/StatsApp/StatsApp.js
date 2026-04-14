@@ -506,7 +506,7 @@ document.addEventListener("click", function (e) {
   if (typeof LIVE_SCORE_CONFIG === "undefined") return;
 
   var cfg = LIVE_SCORE_CONFIG;
-  var API_BASE = "http://localhost:3001/api";
+  var API_BASE = "https://round-league-api.onrender.com/api";
 
   function patchScore(body) {
     fetch(API_BASE + "/schedule/" + cfg.scheduleID + "/score", {
