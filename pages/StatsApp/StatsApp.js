@@ -479,3 +479,66 @@ document.addEventListener("click", function (e) {
     updateSubButton();
   }
 });
+
+/* ============================================================
+ * Live Score Updates
+ *
+ * Fires a PATCH to the Node.js API to keep the mobile app
+ * in sync during a game. Two things happen:
+ *
+ *   1. On page load — marks the game status as 'live' so the
+ *      app shows a LIVE badge within its next 60s poll.
+ *
+ *   2. On every point change — a MutationObserver watches the
+ *      teamTotalPts span (updated by addToValue in real time).
+ *      Whenever it changes, the current team's score is sent.
+ *      isHome determines whether to send homeScore or awayScore.
+ *
+ * Config is injected by StatsApp.cfm as LIVE_SCORE_CONFIG.
+ * The block is skipped entirely for playoff games (config absent).
+ * Status is set to 'final' by StatsApp-Save.cfm on form submit.
+ * ============================================================ */
+(function () {
+  console.log(
+    "LIVE_SCORE_CONFIG: ",
+    typeof LIVE_SCORE_CONFIG === "undefined" ? "undefined" : LIVE_SCORE_CONFIG,
+  );
+  if (typeof LIVE_SCORE_CONFIG === "undefined") return;
+
+  var cfg = LIVE_SCORE_CONFIG;
+  var API_BASE = "http://localhost:3001/api";
+
+  function patchScore(body) {
+    fetch(API_BASE + "/schedule/" + cfg.scheduleID + "/score", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "x-admin-key": cfg.adminKey,
+      },
+      body: JSON.stringify(body),
+    });
+  }
+
+  // Mark game as live on page load
+  patchScore({ status: "live" });
+
+  // Watch teamTotalPts for any point change and send the updated score
+  // Wrapped in ready() because the table is rendered by CFML after this script loads
+  $(document).ready(function () {
+    var totalPtsEl = document.querySelector(".teamTotalPts");
+    if (totalPtsEl) {
+      console.log("Setting up MutationObserver for live score updates...");
+      var observer = new MutationObserver(function () {
+        var score = parseInt(totalPtsEl.textContent) || 0;
+        var body = cfg.isHome ? { homeScore: score } : { awayScore: score };
+        patchScore(body);
+      });
+
+      observer.observe(totalPtsEl, {
+        childList: true,
+        characterData: true,
+        subtree: true,
+      });
+    }
+  });
+})();
