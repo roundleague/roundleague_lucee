@@ -81,12 +81,16 @@
                 <cfset gameIsBye = (len(DateTimeFormat(getSchedule.startTime, "h:nn tt")) EQ 0)>
                 <cfset gameHasScore = (getSchedule.homeScore NEQ '' AND getSchedule.awayScore NEQ '')>
                 <cfset gameIsToday = (isDate(getSchedule.date) AND DateFormat(getSchedule.date, 'yyyy-mm-dd') EQ DateFormat(now(), 'yyyy-mm-dd'))>
+                <cfset gameIsChampionship = (getSchedule.homeTeamID EQ '' AND getSchedule.awayTeamID EQ '' AND NOT gameIsBye)>
                 <cfif gameHasScore>
                   <cfset gameStatus = 'FINAL'>
                   <cfset statusClass = 'statusFinal'>
                 <cfelseif gameIsBye>
                   <cfset gameStatus = 'BYE'>
                   <cfset statusClass = 'statusBye'>
+                <cfelseif gameIsChampionship>
+                  <cfset gameStatus = 'CHAMPIONSHIP'>
+                  <cfset statusClass = 'statusChampionship'>
                 <cfelseif gameIsToday>
                   <cfset gameStatus = 'TODAY'>
                   <cfset statusClass = 'statusToday'>
@@ -125,7 +129,7 @@
                         <span class="teamScore #homeBoldClass#">#getSchedule.HomeScore#</span>
                       </a>
                     <cfelse>
-                      <span class="teamName">#getSchedule.Home#</span>
+                      <span class="teamName">#(getSchedule.Home EQ '' ? 'TBD' : getSchedule.Home)#</span>
                     </cfif>
                   </td>
 
@@ -139,7 +143,7 @@
                         <span class="teamScore #awayBoldClass#">#getSchedule.AwayScore#</span>
                       </a>
                     <cfelse>
-                      <span class="teamName">#(gameIsBye ? 'BYE' : getSchedule.Away)#</span>
+                      <span class="teamName">#(gameIsBye ? 'BYE' : (getSchedule.Away EQ '' ? 'TBD' : getSchedule.Away))#</span>
                     </cfif>
                   </td>
 
@@ -167,12 +171,16 @@
             <cfset mGameIsBye = (len(DateTimeFormat(getSchedule.startTime, "h:nn tt")) EQ 0)>
             <cfset mGameHasScore = (getSchedule.homeScore NEQ '' AND getSchedule.awayScore NEQ '')>
             <cfset mGameIsToday = (isDate(getSchedule.date) AND DateFormat(getSchedule.date, 'yyyy-mm-dd') EQ DateFormat(now(), 'yyyy-mm-dd'))>
+            <cfset mGameIsChampionship = (getSchedule.homeTeamID EQ '' AND getSchedule.awayTeamID EQ '' AND NOT mGameIsBye)>
             <cfif mGameHasScore>
               <cfset mGameStatus = 'FINAL'>
               <cfset mStatusClass = 'statusFinal'>
             <cfelseif mGameIsBye>
               <cfset mGameStatus = 'BYE'>
               <cfset mStatusClass = 'statusBye'>
+            <cfelseif mGameIsChampionship>
+              <cfset mGameStatus = 'CHAMPIONSHIP'>
+              <cfset mStatusClass = 'statusChampionship'>
             <cfelseif mGameIsToday>
               <cfset mGameStatus = 'TODAY'>
               <cfset mStatusClass = 'statusToday'>
@@ -231,11 +239,11 @@
               <cfelse>
                 <!--- === UPCOMING GAME === --->
                 <div class="gameBlockLine">
-                  <span class="gbTeam">#uCase(getSchedule.Home)#</span>
+                  <span class="gbTeam">#uCase(getSchedule.Home EQ '' ? 'TBD' : getSchedule.Home)#</span>
                 </div>
                 <div class="gameBlockVs">VS</div>
                 <div class="gameBlockLine">
-                  <span class="gbTeam">#uCase(getSchedule.Away)#</span>
+                  <span class="gbTeam">#uCase(getSchedule.Away EQ '' ? 'TBD' : getSchedule.Away)#</span>
                 </div>
                 <div class="gameBlockFooter">
                   <span class="statusBadge #mStatusClass#">#mGameStatus#</span>

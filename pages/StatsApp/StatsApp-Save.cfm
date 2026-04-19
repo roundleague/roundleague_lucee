@@ -65,7 +65,7 @@
     </cfloop>
 
     <cfquery name="scoresExist" datasource="roundleague">
-        SELECT homeScore, awayScore
+        SELECT homeScore, awayScore, divisionID
         From Schedule
         WHERE scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">
     </cfquery>
@@ -151,6 +151,43 @@
 
         </cfif><!--- end standings-only block --->
 
+    </cfif>
+
+    <!--- Auto-seed HS Division championship — SeasonID 21 / DivisionID 110 only --->
+    <cfif scoresExist.divisionID EQ 110 AND getActiveSeasonID.seasonID EQ 21>
+        <cfquery name="getChampionshipSlot" datasource="roundleague">
+            SELECT scheduleID FROM schedule
+            WHERE divisionID = 110 AND seasonID = 21
+            AND homeTeamID IS NULL AND awayTeamID IS NULL
+            LIMIT 1
+        </cfquery>
+
+        <cfif getChampionshipSlot.recordCount GT 0>
+            <cfquery name="getPendingGames" datasource="roundleague">
+                SELECT COUNT(*) AS pendingCount FROM schedule
+                WHERE divisionID = 110 AND seasonID = 21
+                AND homeTeamID IS NOT NULL AND awayTeamID IS NOT NULL
+                AND (homeScore IS NULL OR awayScore IS NULL OR status != 'final')
+            </cfquery>
+
+            <cfif getPendingGames.pendingCount EQ 0>
+                <cfquery name="getTop2Seeds" datasource="roundleague">
+                    SELECT teamID FROM standings
+                    WHERE divisionID = 110 AND seasonID = 21
+                    ORDER BY wins DESC, PointDifferential DESC
+                    LIMIT 2
+                </cfquery>
+
+                <cfif getTop2Seeds.recordCount EQ 2>
+                    <cfquery name="seedChampionship" datasource="roundleague">
+                        UPDATE schedule
+                        SET homeTeamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTop2Seeds.teamID[1]#">,
+                            awayTeamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTop2Seeds.teamID[2]#">
+                        WHERE scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getChampionshipSlot.scheduleID#">
+                    </cfquery>
+                </cfif>
+            </cfif>
+        </cfif>
     </cfif>
 
         <cfloop list="#playerIDList#" index="i">

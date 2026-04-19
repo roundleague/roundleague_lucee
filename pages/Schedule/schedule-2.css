@@ -117,6 +117,12 @@
   background: #f5f5f5;
   color: #999;
 }
+.statusChampionship {
+  background: #fff3cd;
+  color: #7d5a00;
+  border: 1px solid #ffc107;
+  font-weight: 600;
+}
 
 /* ========================================
    DESKTOP TABLE
