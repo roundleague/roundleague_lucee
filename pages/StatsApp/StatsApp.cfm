@@ -100,6 +100,18 @@
         <button type="button" class="pure-button sub-button" id="subButton">Sub</button>
     </div>
 
+    <cfif url.isPlayoffs NEQ 1>
+    <div id="clockPanel" style="display:flex;align-items:center;gap:14px;padding:10px 0 6px 6px;flex-wrap:wrap;">
+        <span id="clockDisplay" style="font-size:2rem;font-weight:bold;font-variant-numeric:tabular-nums;min-width:90px;">25:00</span>
+        <span id="clockPeriodLabel" style="font-size:1rem;color:##555;">H1</span>
+        <button type="button" class="pure-button button-success" id="clockStart">Start</button>
+        <button type="button" class="pure-button" id="clockPause" disabled>Pause</button>
+        <button type="button" class="pure-button button-error" id="clockReset">Reset</button>
+<a href="/pages/scoreboard/scoreboard.cfm?game=#url.scheduleID#" target="_blank"
+           style="margin-left:12px;font-size:0.9rem;color:##007acc;text-decoration:underline;">Open Scoreboard &nearr;</a>
+    </div>
+    </cfif>
+
     <form name="gameLogForm" method="POST">
 
         <!-- Final Scores Modal -->
@@ -294,7 +306,7 @@
     </script>
     </cfif>
 
-    <script src="StatsApp.js?v=1.6"></script>
+    <script src="StatsApp.js?v=1.7"></script>
     <script src="StatsApp-Export.js"></script>
     <script src="ConfirmExit.js"></script>
 </body>

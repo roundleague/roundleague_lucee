@@ -57,18 +57,12 @@ Coded by www.creative-tim.com
       <div class="sidebar-wrapper">
         <cfif !findNoCase("statswapper", CGI.REQUEST_URL)>
           <ul class="nav">
-    <!---           <li>
-                <a href="javascript:;">
-                  <i class="nc-icon nc-ruler-pencil"></i>
-                  <p>StatsApp</p>
-                </a>
-              </li>
-              <li>
-                <a href="javascript:;">
-                  <i class="nc-icon nc-laptop"></i>
+              <li <cfif findNoCase("scoreboard", CGI.REQUEST_URL)>class="active"</cfif>>
+                <a href="/pages/scoreboard/scoreboard.cfm" target="_blank">
+                  <i class="nc-icon nc-tv-2"></i>
                   <p>Scoreboard</p>
                 </a>
-              </li> --->
+              </li>
               <li <cfif findNoCase("scheduler", CGI.REQUEST_URL) AND NOT findNoCase("scheduleImport", CGI.REQUEST_URL)>class="active"</cfif>>
                 <a href="/admin-dashboard/pages/scheduler/scheduler.cfm">
                   <i class="nc-icon nc-laptop"></i>
