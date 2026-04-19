@@ -1,5 +1,6 @@
 .button-success,
 .button-error,
+.button-danger,
 .button-warning,
 .button-secondary,
 .undoBtn,
@@ -19,6 +20,10 @@
   background: rgb(202, 60, 60);
   display: none;
   /* this is a maroon */
+}
+
+.button-danger {
+  background: rgb(202, 60, 60);
 }
 
 .button-warning {

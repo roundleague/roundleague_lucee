@@ -55,7 +55,7 @@
         <span id="clockPeriodLabel" style="font-size:1rem;color:##555;">H1</span>
         <button type="button" class="pure-button button-success" id="clockStart">Start</button>
         <button type="button" class="pure-button" id="clockPause" disabled>Pause</button>
-        <button type="button" class="pure-button button-error" id="clockReset">Reset Game</button>
+        <button type="button" class="pure-button button-danger" id="clockReset">Reset Game</button>
         <a href="/pages/scoreboard/scoreboard.cfm?game=9999&home=TEAM+A&away=TEAM+B" target="_blank"
            style="margin-left:12px;font-size:0.9rem;color:##007acc;text-decoration:underline;">Open Scoreboard &nearr;</a>
     </div>
