@@ -74,11 +74,23 @@
     patchClock('paused');
   });
 
+  function resetScores() {
+    fetch(API_BASE + '/schedule/' + cfg.scheduleID + '/score', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', 'x-admin-key': cfg.adminKey },
+      body: JSON.stringify({ homeScore: 0, awayScore: 0, status: 'scheduled' })
+    });
+  }
+
   btnReset.addEventListener('click', function () {
+    if (!confirm('Reset game? This will clear scores and reset the clock to 25:00 H1.')) return;
     stopClock();
     remainingSeconds = HALF_SECONDS;
+    period = 1;
+    if (periodEl) periodEl.textContent = 'H1';
     renderDisplay();
     patchClock('stopped');
+    resetScores();
   });
 
   // Sync period from bench-bar half toggle
