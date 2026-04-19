@@ -65,13 +65,13 @@
     </cfloop>
 
     <cfquery name="scoresExist" datasource="roundleague">
-        SELECT homeScore
+        SELECT homeScore, awayScore
         From Schedule
-        WHERE scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#"> 
+        WHERE scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">
     </cfquery>
 
-    <!--- Scores / Standings have already been updated --->
-    <cfif scoresExist.homeScore EQ ''>
+    <!--- Update scores/status if either score is missing --->
+    <cfif scoresExist.homeScore EQ '' OR scoresExist.awayScore EQ ''>
 
         <cfquery name="updateScheduleScore" datasource="roundleague">
             UPDATE schedule
@@ -81,6 +81,9 @@
                     status = 'final'
             WHERE scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">
         </cfquery>
+
+        <!--- Only update standings on first submission (both scores were missing) --->
+        <cfif scoresExist.homeScore EQ '' AND scoresExist.awayScore EQ ''>
 
         <!--- Point Differential --->
         <cfset HomeDifference = homeScore - awayScore>
@@ -145,6 +148,8 @@
                 )
             </cfquery>
         </cfif>
+
+        </cfif><!--- end standings-only block --->
 
     </cfif>
 
