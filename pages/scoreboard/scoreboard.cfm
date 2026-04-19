@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Round League Scoreboard</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── STYLE 1: Dark ESPN ── */
+    body.s1 {
+      background: #0a0a0a; color: #fff;
+      font-family: 'Arial Black', Arial, sans-serif;
+    }
+    body.s1 .team-name  { color: #f0f0f0; }
+    body.s1 .team-score { color: #fff; text-shadow: 0 0 40px rgba(255,255,255,.15); }
+    body.s1 .team-label { color: #555; }
+    body.s1 #clock      { color: #ffd700; text-shadow: 0 0 30px rgba(255,215,0,.3); }
+    body.s1 #period     { color: #aaa; }
+    body.s1 #status-badge        { color: #333; }
+    body.s1 #status-badge.live   { color: #ff4444; }
+
+    /* ── STYLE 2: Retro Gym (LED orange on black) ── */
+    body.s2 {
+      background: #0d0d0d; color: #ff8c00;
+      font-family: 'Courier New', 'Lucida Console', monospace;
+    }
+    body.s2 .team-name  { color: #ffaa44; letter-spacing: 0.12em; }
+    body.s2 .team-score { color: #ff8c00; text-shadow: 0 0 20px #ff6600, 0 0 60px rgba(255,100,0,.4); }
+    body.s2 .team-label { color: #663300; letter-spacing: 0.25em; }
+    body.s2 #clock      { color: #ff8c00; text-shadow: 0 0 20px #ff6600, 0 0 60px rgba(255,100,0,.4); }
+    body.s2 #period     { color: #cc5500; }
+    body.s2 #status-badge        { color: #442200; }
+    body.s2 #status-badge.live   { color: #ff4400; }
+    body.s2 #board { border: 2px solid #331100; border-radius: 4px; padding: 40px; background: #0a0800; }
+
+    /* ── STYLE 3: Clean Light (modern arena) ── */
+    body.s3 {
+      background: #f0f2f5; color: #0d1b2a;
+      font-family: 'Arial Black', 'Helvetica Neue', Arial, sans-serif;
+    }
+    body.s3 #board { background: #fff; border-radius: 16px; box-shadow: 0 8px 40px rgba(0,0,0,.12); padding: 60px 80px; }
+    body.s3 .team-name  { color: #0d1b2a; }
+    body.s3 .team-score { color: #0d1b2a; }
+    body.s3 .team-label { color: #aaa; font-size: clamp(.65rem, 1.2vw, .95rem); }
+    body.s3 #clock      { color: #c8102e; }
+    body.s3 #period     { color: #888; }
+    body.s3 #status-badge        { color: #ccc; }
+    body.s3 #status-badge.live   { color: #c8102e; }
+
+    /* ── Shared layout ── */
+    body {
+      height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      overflow: hidden; user-select: none;
+    }
+
+    #board {
+      width: 100%; max-width: 1500px; padding: 0 60px;
+      display: flex; align-items: center; justify-content: space-between; gap: 20px;
+    }
+
+    .team-block {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; gap: 12px;
+    }
+
+    .team-name  { font-size: clamp(1.6rem, 4vw, 3.4rem); text-transform: uppercase; letter-spacing: .06em; text-align: center; }
+    .team-score { font-size: clamp(6rem, 20vw, 16rem); line-height: 1; font-variant-numeric: tabular-nums; }
+    .team-label { font-size: clamp(.7rem, 1.4vw, 1rem); letter-spacing: .2em; text-transform: uppercase; }
+
+    #center-block { display: flex; flex-direction: column; align-items: center; gap: 8px; min-width: 240px; }
+
+    #clock   { font-size: clamp(3.5rem, 10vw, 8rem); font-variant-numeric: tabular-nums; letter-spacing: .04em; }
+    #period  { font-size: clamp(1rem, 2.5vw, 1.8rem); letter-spacing: .15em; }
+
+    #status-badge { margin-top: 6px; font-size: clamp(.7rem, 1.4vw, 1rem); letter-spacing: .25em; }
+    #status-badge.live { animation: pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
+
+    #no-game { font-size: 1.4rem; color: #555; text-align: center; letter-spacing: .1em; }
+
+    /* Style picker (visible locally for review, hidden when ?preview=0) */
+    #style-picker {
+      position: fixed; top: 16px; right: 16px; display: flex; gap: 8px; z-index: 100;
+    }
+    #style-picker button {
+      padding: 6px 14px; border: none; border-radius: 4px; cursor: pointer;
+      font-size: .85rem; font-weight: bold; background: rgba(128,128,128,.3); color: inherit;
+    }
+    #style-picker button.active { background: rgba(255,255,255,.7); color: #000; }
+    body.s3 #style-picker button.active { background: rgba(0,0,0,.15); color: #000; }
+  </style>
+</head>
+<body class="s1">
+
+<div id="style-picker">
+  <button onclick="setStyle(1)" class="active">Style 1</button>
+  <button onclick="setStyle(2)">Style 2</button>
+  <button onclick="setStyle(3)">Style 3</button>
+</div>
+
+<div id="board" style="display:none">
+  <div class="team-block">
+    <div class="team-label">HOME</div>
+    <div class="team-name" id="homeName">—</div>
+    <div class="team-score" id="homeScore">0</div>
+  </div>
+
+  <div id="center-block">
+    <div id="clock">25:00</div>
+    <div id="period">H1</div>
+    <div id="status-badge">SCHEDULED</div>
+  </div>
+
+  <div class="team-block">
+    <div class="team-label">AWAY</div>
+    <div class="team-name" id="awayName">—</div>
+    <div class="team-score" id="awayScore">0</div>
+  </div>
+</div>
+
+<div id="no-game">Loading game&hellip;</div>
+
+<script>
+  var API_BASE   = 'https://round-league-api.onrender.com/api';
+  var params     = new URLSearchParams(location.search);
+  var scheduleID = params.get('game');
+  var overrideHome = params.get('home');
+  var overrideAway = params.get('away');
+  var styleParam = parseInt(params.get('style') || '1', 10);
+
+  // Apply URL style param on load
+  setStyle(styleParam);
+
+  function setStyle(n) {
+    document.body.className = 's' + n;
+    document.querySelectorAll('#style-picker button').forEach(function(b, i) {
+      b.classList.toggle('active', i + 1 === n);
+    });
+  }
+
+  // Clock state
+  var clockRemaining = 25 * 60;
+  var clockRunning   = false;
+  var clockPeriod    = 1;
+  var clockTicker    = null;
+
+  function pad(n) { return n < 10 ? '0' + n : '' + n; }
+
+  function renderClock() {
+    var s = Math.max(0, clockRemaining);
+    document.getElementById('clock').textContent = pad(Math.floor(s / 60)) + ':' + pad(s % 60);
+    document.getElementById('period').textContent = 'H' + clockPeriod;
+  }
+
+  function startLocalTicker() {
+    if (clockTicker) return;
+    clockTicker = setInterval(function () {
+      if (clockRunning && clockRemaining > 0) { clockRemaining--; renderClock(); }
+    }, 1000);
+  }
+
+  function applyClockState(data) {
+    clockPeriod    = data.clock_period || 1;
+    clockRunning   = data.clock_status === 'running';
+    clockRemaining = Math.max(0, parseInt(data.clock_display_seconds, 10) || 0);
+    if (clockRunning) startLocalTicker();
+    renderClock();
+  }
+
+  function fetchClock() {
+    if (!scheduleID) return;
+    fetch(API_BASE + '/schedule/' + scheduleID + '/clock')
+      .then(function(r) { return r.ok ? r.json() : null; })
+      .then(function(d) { if (d) applyClockState(d); })
+      .catch(function() {});
+  }
+
+  function fetchGame() {
+    if (!scheduleID) {
+      document.getElementById('no-game').textContent = 'No game ID in URL. Add ?game=SCHEDULEID';
+      return;
+    }
+    fetch(API_BASE + '/schedule/' + scheduleID)
+      .then(function(r) { return r.ok ? r.json() : null; })
+      .then(function(data) {
+        if (!data || !data.game) { document.getElementById('no-game').textContent = 'Game not found.'; return; }
+        var g = data.game;
+        document.getElementById('homeName').textContent  = overrideHome || g.homeTeam || '—';
+        document.getElementById('awayName').textContent  = overrideAway || g.awayTeam || '—';
+        document.getElementById('homeScore').textContent = g.homeScore !== null ? g.homeScore : 0;
+        document.getElementById('awayScore').textContent = g.awayScore !== null ? g.awayScore : 0;
+
+        var badge = document.getElementById('status-badge');
+        badge.textContent = (g.status || 'scheduled').toUpperCase();
+        badge.className   = g.status === 'live' ? 'live' : '';
+
+        document.getElementById('board').style.display = 'flex';
+        document.getElementById('no-game').style.display = 'none';
+      })
+      .catch(function() {});
+  }
+
+  if (!scheduleID) {
+    document.getElementById('no-game').textContent = 'No game ID in URL. Add ?game=9999';
+  } else {
+    fetchGame();
+    fetchClock();
+    setInterval(fetchGame, 5000);
+    setInterval(fetchClock, 3000);
+    startLocalTicker();
+  }
+</script>
+
+</body>
+</html>

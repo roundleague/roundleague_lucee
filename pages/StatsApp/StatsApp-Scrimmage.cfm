@@ -50,6 +50,16 @@
         <button type="button" class="pure-button undoBtn">Undo</button>
     </div>
 
+    <div id="clockPanel" style="display:flex;align-items:center;gap:14px;padding:10px 0 6px 6px;flex-wrap:wrap;">
+        <span id="clockDisplay" style="font-size:2rem;font-weight:bold;font-variant-numeric:tabular-nums;min-width:90px;">25:00</span>
+        <span id="clockPeriodLabel" style="font-size:1rem;color:##555;">H1</span>
+        <button type="button" class="pure-button button-success" id="clockStart">Start</button>
+        <button type="button" class="pure-button" id="clockPause" disabled>Pause</button>
+        <button type="button" class="pure-button button-error" id="clockReset">Reset</button>
+        <a href="/pages/scoreboard/scoreboard.cfm?game=9999&home=TEAM+A&away=TEAM+B" target="_blank"
+           style="margin-left:12px;font-size:0.9rem;color:##007acc;text-decoration:underline;">Open Scoreboard &nearr;</a>
+    </div>
+
     <form name="gameLogForm" method="POST">
 
         <!-- The Modal -->
@@ -190,6 +200,13 @@
     <script src="https://kit.fontawesome.com/356f7c17e2.js" crossorigin="anonymous"></script>
     <script src="StatsApp.js"></script>
     <script src="StatsApp-Export.js"></script>
+    <script>
+    var SCRIMMAGE_CONFIG = {
+      scheduleID: '9999',
+      adminKey: '#application.adminApiKey#'
+    };
+    </script>
+    <script src="StatsApp-Clock.js?v=1.0"></script>
 </body>
 </html>
 </cfoutput>
