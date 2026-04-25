@@ -15,7 +15,7 @@
 <cfparam name="form.divisionID" default="#getDivisions.divisionID#">
 
 <cfquery name="getSchedule" datasource="roundleague">
-  SELECT scheduleID, WEEK, a.teamName AS Home, b.teamName AS Away, s.startTime, s.date, s.homeTeamID, s.awayTeamID, s.seasonID, s.homeScore, s.awayScore, d.divisionID, d.divisionName
+  SELECT scheduleID, WEEK, a.teamName AS Home, b.teamName AS Away, s.startTime, s.date, s.homeTeamID, s.awayTeamID, s.seasonID, s.homeScore, s.awayScore, s.status, d.divisionID, d.divisionName
   FROM schedule s
   LEFT JOIN teams as a ON s.hometeamID = a.teamID
   LEFT JOIN teams as b ON s.awayTeamID = b.teamID
@@ -82,20 +82,24 @@
                 <cfset gameHasScore = (getSchedule.homeScore NEQ '' AND getSchedule.awayScore NEQ '')>
                 <cfset gameIsToday = (isDate(getSchedule.date) AND DateFormat(getSchedule.date, 'yyyy-mm-dd') EQ DateFormat(now(), 'yyyy-mm-dd'))>
                 <cfset gameIsChampionship = (getSchedule.homeTeamID EQ '' AND getSchedule.awayTeamID EQ '' AND NOT gameIsBye)>
-                <cfif gameHasScore>
-                  <cfset gameStatus = 'FINAL'>
-                  <cfset statusClass = 'statusFinal'>
-                <cfelseif gameIsBye>
+                <cfset dbStatus = lCase(getSchedule.status)>
+                <cfif gameIsBye>
                   <cfset gameStatus = 'BYE'>
                   <cfset statusClass = 'statusBye'>
                 <cfelseif gameIsChampionship>
                   <cfset gameStatus = 'CHAMPIONSHIP'>
                   <cfset statusClass = 'statusChampionship'>
+                <cfelseif dbStatus EQ 'final'>
+                  <cfset gameStatus = 'FINAL'>
+                  <cfset statusClass = 'statusFinal'>
+                <cfelseif dbStatus EQ 'live'>
+                  <cfset gameStatus = 'LIVE'>
+                  <cfset statusClass = 'statusLive'>
                 <cfelseif gameIsToday>
                   <cfset gameStatus = 'TODAY'>
                   <cfset statusClass = 'statusToday'>
                 <cfelse>
-                  <cfset gameStatus = 'UPCOMING'>
+                  <cfset gameStatus = 'SCHEDULED'>
                   <cfset statusClass = 'statusUpcoming'>
                 </cfif>
 
@@ -172,20 +176,24 @@
             <cfset mGameHasScore = (getSchedule.homeScore NEQ '' AND getSchedule.awayScore NEQ '')>
             <cfset mGameIsToday = (isDate(getSchedule.date) AND DateFormat(getSchedule.date, 'yyyy-mm-dd') EQ DateFormat(now(), 'yyyy-mm-dd'))>
             <cfset mGameIsChampionship = (getSchedule.homeTeamID EQ '' AND getSchedule.awayTeamID EQ '' AND NOT mGameIsBye)>
-            <cfif mGameHasScore>
-              <cfset mGameStatus = 'FINAL'>
-              <cfset mStatusClass = 'statusFinal'>
-            <cfelseif mGameIsBye>
+            <cfset mDbStatus = lCase(getSchedule.status)>
+            <cfif mGameIsBye>
               <cfset mGameStatus = 'BYE'>
               <cfset mStatusClass = 'statusBye'>
             <cfelseif mGameIsChampionship>
               <cfset mGameStatus = 'CHAMPIONSHIP'>
               <cfset mStatusClass = 'statusChampionship'>
+            <cfelseif mDbStatus EQ 'final'>
+              <cfset mGameStatus = 'FINAL'>
+              <cfset mStatusClass = 'statusFinal'>
+            <cfelseif mDbStatus EQ 'live'>
+              <cfset mGameStatus = 'LIVE'>
+              <cfset mStatusClass = 'statusLive'>
             <cfelseif mGameIsToday>
               <cfset mGameStatus = 'TODAY'>
               <cfset mStatusClass = 'statusToday'>
             <cfelse>
-              <cfset mGameStatus = 'UPCOMING'>
+              <cfset mGameStatus = 'SCHEDULED'>
               <cfset mStatusClass = 'statusUpcoming'>
             </cfif>
 
