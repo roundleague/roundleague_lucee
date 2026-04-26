@@ -231,7 +231,7 @@
         </div>
       </div>
 
-      <a href="https://apps.apple.com/app/the-round-league/id6743745800" class="rl-appstore-btn" target="_blank" rel="noopener">
+      <a href="https://apps.apple.com/us/app/the-round-league/id6760102073" class="rl-appstore-btn" target="_blank" rel="noopener">
         <i class="fa-brands fa-apple" style="font-size:22px;"></i>
         <span class="rl-appstore-btn-text">
           <small>Download on the</small>
