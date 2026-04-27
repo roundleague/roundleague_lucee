@@ -36,14 +36,6 @@
     });
   }
 
-  function patchScore(homeScore) {
-    fetch(API_BASE + '/schedule/' + cfg.scheduleID + '/score', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json', 'x-admin-key': cfg.adminKey },
-      body: JSON.stringify({ homeScore: homeScore, status: 'live' })
-    });
-  }
-
   function startClock() {
     if (ticker) return;
     ticker = setInterval(function () {
@@ -78,7 +70,7 @@
     fetch(API_BASE + '/schedule/' + cfg.scheduleID + '/score', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json', 'x-admin-key': cfg.adminKey },
-      body: JSON.stringify({ homeScore: 0, awayScore: 0, status: 'scheduled' })
+      body: JSON.stringify({ homeScore: null, awayScore: null, status: 'scheduled' })
     });
   }
 
@@ -104,21 +96,6 @@
       }, 50);
     }
   });
-
-  // Sync live score from teamTotalPts to homeScore on scrimmage slot
-  $(document).ready(function () {
-    var totalPtsEl = document.querySelector('.teamTotalPts');
-    if (totalPtsEl) {
-      var observer = new MutationObserver(function () {
-        var score = parseInt(totalPtsEl.textContent) || 0;
-        patchScore(score);
-      });
-      observer.observe(totalPtsEl, { childList: true, characterData: true, subtree: true });
-    }
-  });
-
-  // Mark as live on page load
-  patchScore(0);
 
   renderDisplay();
 })();

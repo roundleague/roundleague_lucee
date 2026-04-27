@@ -90,9 +90,18 @@
     }
     #style-picker button.active { background: rgba(255,255,255,.7); color: #000; }
     body.s3 #style-picker button.active { background: rgba(0,0,0,.15); color: #000; }
+
+    #reset-btn {
+      position: fixed; top: 16px; left: 16px; z-index: 100;
+      padding: 6px 14px; border: none; border-radius: 4px; cursor: pointer;
+      font-size: .85rem; font-weight: bold; background: rgba(200,0,0,.55); color: #fff;
+    }
+    #reset-btn:hover { background: rgba(200,0,0,.85); }
   </style>
 </head>
 <body class="s1">
+
+<button id="reset-btn" onclick="resetGame()">Reset Game</button>
 
 <div id="style-picker">
   <button onclick="setStyle(1)" class="active">Style 1</button>
@@ -124,6 +133,7 @@
 
 <script>
   var API_BASE   = 'https://round-league-api.onrender.com/api';
+  var ADMIN_KEY  = '<cfoutput>#application.adminApiKey#</cfoutput>';
   var params     = new URLSearchParams(location.search);
   var scheduleID = params.get('game');
   var overrideHome = params.get('home');
@@ -200,6 +210,32 @@
         document.getElementById('no-game').style.display = 'none';
       })
       .catch(function() {});
+  }
+
+  function resetGame() {
+    if (!scheduleID) return;
+    if (!confirm('Reset game? This will clear both scores and reset the clock to 25:00 H1.')) return;
+    var headers = { 'Content-Type': 'application/json', 'x-admin-key': ADMIN_KEY };
+    fetch(API_BASE + '/schedule/' + scheduleID + '/score', {
+      method: 'PATCH', headers: headers,
+      body: JSON.stringify({ homeScore: null, awayScore: null, status: 'scheduled' })
+    });
+    fetch(API_BASE + '/schedule/' + scheduleID + '/clock', {
+      method: 'PATCH', headers: headers,
+      body: JSON.stringify({ clock_status: 'stopped', clock_remaining_seconds: 1500, clock_period: 1 })
+    });
+    // Update display immediately without waiting for next poll
+    document.getElementById('homeScore').textContent = '—';
+    document.getElementById('awayScore').textContent = '—';
+    clockRemaining = 1500;
+    clockRunning   = false;
+    clockPeriod    = 1;
+    clearInterval(clockTicker);
+    clockTicker = null;
+    renderClock();
+    var badge = document.getElementById('status-badge');
+    badge.textContent = 'SCHEDULED';
+    badge.className   = '';
   }
 
   if (!scheduleID) {

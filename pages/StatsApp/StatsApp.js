@@ -250,6 +250,9 @@ $(document).ready(function () {
       var currentNum = parseFloat($(".teamTotalPts").html());
       currentNum += addValue;
       $(".teamTotalPts").html(currentNum);
+      if (typeof window._rlUpdateScore === "function") {
+        window._rlUpdateScore(currentNum);
+      }
     }
   }
 
@@ -522,23 +525,11 @@ document.addEventListener("click", function (e) {
   // Mark game as live on page load
   patchScore({ status: "live" });
 
-  // Watch teamTotalPts for any point change and send the updated score
-  // Wrapped in ready() because the table is rendered by CFML after this script loads
-  $(document).ready(function () {
-    var totalPtsEl = document.querySelector(".teamTotalPts");
-    if (totalPtsEl) {
-      console.log("Setting up MutationObserver for live score updates...");
-      var observer = new MutationObserver(function () {
-        var score = parseInt(totalPtsEl.textContent) || 0;
-        var body = cfg.isHome ? { homeScore: score } : { awayScore: score };
-        patchScore(body);
-      });
-
-      observer.observe(totalPtsEl, {
-        childList: true,
-        characterData: true,
-        subtree: true,
-      });
-    }
-  });
+  // Called directly by addToValue whenever PTS changes — avoids double-firing
+  // that a MutationObserver caused because .html() generates two DOM mutations
+  // (remove old text node, insert new one) per score update.
+  window._rlUpdateScore = function (newScore) {
+    var body = cfg.isHome ? { homeScore: newScore } : { awayScore: newScore };
+    patchScore(body);
+  };
 })();

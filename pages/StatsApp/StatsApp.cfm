@@ -307,10 +307,10 @@
     </script>
     </cfif>
 
-    <script src="StatsApp-Clock.js?v=1.0"></script>
-    <script src="StatsApp.js?v=1.6"></script>
-    <script src="StatsApp-Export.js"></script>
-    <script src="ConfirmExit.js"></script>
+    <script src="StatsApp-Clock.js?v=#GetFileInfo(ExpandPath('StatsApp-Clock.js')).lastModified.getTime()#"></script>
+    <script src="StatsApp.js?v=#GetFileInfo(ExpandPath('StatsApp.js')).lastModified.getTime()#"></script>
+    <script src="StatsApp-Export.js?v=#GetFileInfo(ExpandPath('StatsApp-Export.js')).lastModified.getTime()#"></script>
+    <script src="ConfirmExit.js?v=#GetFileInfo(ExpandPath('ConfirmExit.js')).lastModified.getTime()#"></script>
 </body>
 </html>
 </cfoutput>
