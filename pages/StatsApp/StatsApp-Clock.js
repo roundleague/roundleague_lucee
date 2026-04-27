@@ -97,5 +97,46 @@
     }
   });
 
+  // Poll server clock so both stat keepers stay in sync.
+  // clock_display_seconds is computed server-side (accounts for elapsed time
+  // since last save), so both pages converge on the same value each poll.
+  function applyClockState(data) {
+    var serverRunning = data.clock_status === 'running';
+    var serverSeconds = Math.max(0, parseInt(data.clock_display_seconds, 10) || 0);
+    var serverPeriod  = data.clock_period || 1;
+
+    remainingSeconds = serverSeconds;
+    if (serverPeriod !== period) {
+      period = serverPeriod;
+      if (periodEl) periodEl.textContent = 'H' + period;
+    }
+
+    if (serverRunning && !ticker) {
+      // Other stat keeper started — begin ticking locally
+      ticker = setInterval(function () {
+        if (remainingSeconds > 0) { remainingSeconds--; renderDisplay(); }
+        else { stopClock(); }
+      }, 1000);
+      btnStart.disabled = true;
+      btnPause.disabled = false;
+    } else if (!serverRunning && ticker) {
+      // Other stat keeper paused/stopped — halt local ticker
+      stopClock();
+    }
+
+    renderDisplay();
+  }
+
+  function fetchClock() {
+    fetch(API_BASE + '/schedule/' + cfg.scheduleID + '/clock')
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) { if (d) applyClockState(d); })
+      .catch(function () {});
+  }
+
+  // Initial sync then poll every 4 s
+  fetchClock();
+  setInterval(fetchClock, 4000);
+
   renderDisplay();
 })();
