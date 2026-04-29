@@ -1,4 +1,6 @@
 <cfinclude template="/header.cfm">
+<cfparam name="url.switched" default="0">
+<cfparam name="url.teamName" default="">
 
 <!--- Page Specific CSS/JS Here --->
 <link href="/pages/captain/captain_home.css" rel="stylesheet" />
@@ -134,5 +136,18 @@
 </div>
 </div>
 </cfoutput>
+<cfif url.switched EQ 1>
+<cfoutput>
+<div id="switch-toast" style="position:fixed; bottom:30px; left:50%; transform:translateX(-50%); background:##1abc9c; color:##fff; padding:16px 28px; border-radius:8px; font-size:15px; font-weight:600; box-shadow:0 4px 16px rgba(0,0,0,0.18); z-index:9999; text-align:center; max-width:90%;">
+    Congratulations, you have successfully signed with #htmlEditFormat(url.teamName)#!
+</div>
+<script>
+  setTimeout(function() {
+    $('##switch-toast').fadeOut(600);
+  }, 4000);
+</script>
+</cfoutput>
+</cfif>
+
 <cfinclude template="/footer.cfm">
 
