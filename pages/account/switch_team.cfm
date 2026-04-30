@@ -4,6 +4,7 @@
 <cfparam name="url.playerID" default="0">
 
 <cfoutput>
+<cfset local.hideAccountNav = true>
 <cfinclude template="account_header.cfm">
 
 <cfquery name="getActiveTeams" datasource="roundleague">
