@@ -460,6 +460,8 @@ function formatDateForDB(dateInput) {
   var date;
   if (dateInput instanceof Date) {
     date = dateInput;
+  } else if (/^\d{4}-\d{2}-\d{2}$/.test(dateInput)) {
+    return dateInput; // Already formatted — avoid re-parsing as UTC midnight
   } else {
     date = new Date(dateInput);
   }
@@ -1109,10 +1111,6 @@ function quickActivateTeam(teamID, teamName, divisionID) {
             data.teamID +
             ")</span>";
         }
-
-        alert(
-          "Team activated! Click 'Parse & Preview' again to update the preview.",
-        );
         logSyncAction("activated", data.teamName);
       } else {
         alert("Error: " + data.message);

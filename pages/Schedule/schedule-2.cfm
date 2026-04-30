@@ -75,6 +75,7 @@
             <tbody>
               <cfset currentWeek = 1>
               <cfset weekFirstDate = "">
+              <cfset currentDay = "">
               <cfloop query="getSchedule">
 
                 <!--- Determine game status --->
@@ -117,10 +118,18 @@
                 <cfif currentWeek NEQ getSchedule.week OR getSchedule.currentRow EQ 1>
                   <cfset currentWeek = getSchedule.week>
                   <cfset weekFirstDate = getSchedule.date>
+                  <cfset currentDay = "">
                   <tr class="weekRow" id="week_#currentWeek#">
                     <td colspan="6" class="weekHeaderCell">
-                      WEEK #currentWeek#<cfif isDate(weekFirstDate)> &mdash; #uCase(DateFormat(weekFirstDate, "ddd, mmm d, yyyy"))#</cfif>
+                      WEEK #currentWeek#
                     </td>
+                  </tr>
+                </cfif>
+
+                <cfif isDate(getSchedule.date) AND DateFormat(getSchedule.date, 'yyyy-mm-dd') NEQ currentDay>
+                  <cfset currentDay = DateFormat(getSchedule.date, 'yyyy-mm-dd')>
+                  <tr class="dayRow">
+                    <td colspan="6" class="dayHeaderCell">#uCase(DateFormat(getSchedule.date, "dddd, mmmm d, yyyy"))#</td>
                   </tr>
                 </cfif>
 
@@ -169,6 +178,7 @@
         <!--- ============ MOBILE CARDS (NBA STYLE) ============ --->
         <div class="scheduleMobileWrap">
           <cfset mobileWeek = 0>
+          <cfset mobileDay = "">
           <cfloop query="getSchedule">
 
             <!--- Determine game status --->
@@ -210,10 +220,15 @@
 
             <cfif mobileWeek NEQ getSchedule.week OR getSchedule.currentRow EQ 1>
               <cfset mobileWeek = getSchedule.week>
-              <cfset mWeekDate = getSchedule.date>
+              <cfset mobileDay = "">
               <div class="mobileWeekHeader weekRowMobile" id="mweek_#mobileWeek#">
-                WEEK #mobileWeek#<cfif isDate(mWeekDate)> &mdash; #uCase(DateFormat(mWeekDate, "ddd, mmm d, yyyy"))#</cfif>
+                WEEK #mobileWeek#
               </div>
+            </cfif>
+
+            <cfif isDate(getSchedule.date) AND DateFormat(getSchedule.date, 'yyyy-mm-dd') NEQ mobileDay>
+              <cfset mobileDay = DateFormat(getSchedule.date, 'yyyy-mm-dd')>
+              <div class="mobileDayHeader">#uCase(DateFormat(getSchedule.date, "dddd, mmmm d, yyyy"))#</div>
             </cfif>
 
             <!--- NBA-style game block --->

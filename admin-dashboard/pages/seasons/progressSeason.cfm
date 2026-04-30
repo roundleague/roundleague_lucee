@@ -124,7 +124,7 @@
 						<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.progressToSeasonId#">,
 						<cfqueryparam cfsqltype="CF_SQL_VARCHAR" value="#newDiv.newName#">,
 						0,
-						0
+						(SELECT leagueID FROM leagues WHERE leagueName = 'Round League' LIMIT 1)
 					)
 				</cfquery>
 			</cfif>

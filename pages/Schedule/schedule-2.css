@@ -257,6 +257,20 @@
   padding-top: 8px;
 }
 
+/* Day sub-header rows (desktop) */
+.dayHeaderCell {
+  background: #fafafa;
+  font-weight: 600;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: #888;
+  padding: 6px 16px;
+  border-bottom: 1px solid #eee;
+}
+.scheduleTable .dayRow td {
+  padding-top: 16px;
+}
+
 /* ========================================
    MOBILE — NBA-STYLE GAME BLOCKS
    ======================================== */
@@ -279,6 +293,18 @@
 }
 .mobileWeekHeader:first-child {
   margin-top: 0;
+}
+
+/* Day sub-header (mobile) */
+.mobileDayHeader {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: #888;
+  text-transform: uppercase;
+  padding: 8px 4px 4px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid #eee;
 }
 
 /* Game block shell */

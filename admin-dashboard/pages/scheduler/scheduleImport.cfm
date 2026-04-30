@@ -108,7 +108,14 @@
           </div>
           
           <div class="form-group">
-            <label>Paste schedule from Rich's Google Sheet</label>
+            <label>Paste schedule from Rich's Google Sheet, or upload the schedule image:</label>
+            <div style="margin-bottom: 10px;">
+              <input type="file" id="scheduleImageInput" accept="image/*" style="display:none;">
+              <button type="button" class="btn btn-outline-secondary btn-sm" id="uploadImageBtn">
+                <i class="fa fa-image"></i> Upload Schedule Image
+              </button>
+              <span id="imageParseStatus" style="margin-left:10px; font-size:13px; color:##666;"></span>
+            </div>
             <textarea id="pasteArea" class="form-control" rows="12" placeholder="Paste your schedule data here...
 
 Example format:
@@ -258,3 +265,93 @@ Week 2 - Monday, March 2nd
 
 <cfinclude template="/admin-dashboard/admin_footer.cfm">
 <script src="scheduleImport.js?v=1.3"></script>
+<script>
+var extractedSchedule = null;
+
+document.getElementById('uploadImageBtn').addEventListener('click', function() {
+  document.getElementById('scheduleImageInput').click();
+});
+
+document.getElementById('scheduleImageInput').addEventListener('change', function() {
+  var file = this.files[0];
+  if (!file) return;
+
+  var status = document.getElementById('imageParseStatus');
+  status.textContent = 'Extracting schedule...';
+  extractedSchedule = null;
+
+  var divisionNames = divisionsData.map(function(d) { return d.name; });
+
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var base64 = e.target.result.split(',')[1];
+
+    fetch('/admin-dashboard/pages/scheduler/parseScheduleImage.cfm', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image: base64, divisions: divisionNames })
+    })
+    .then(function(res) {
+      return res.text().then(function(text) {
+        console.log('parseScheduleImage raw response:', text);
+        var start = text.indexOf('{');
+        var end = text.lastIndexOf('}');
+        if (start === -1 || end === -1) throw new Error('No JSON found in response: ' + text.substring(0, 300));
+        try {
+          return JSON.parse(text.substring(start, end + 1));
+        } catch(e) {
+          throw new Error('JSON parse failed: ' + e.message);
+        }
+      });
+    })
+    .then(function(data) {
+      if (data.schedule) {
+        extractedSchedule = data.schedule;
+        var count = Object.keys(extractedSchedule).length;
+        status.textContent = count + ' division(s) extracted - select a division to load its schedule.';
+        console.log('Extracted division keys:', Object.keys(extractedSchedule));
+        console.log('Available DB divisions:', divisionsData.map(function(d) { return d.name; }));
+        populateFromExtracted();
+      } else {
+        status.textContent = 'Error: ' + (data.error || 'Unknown error');
+        console.error('parseScheduleImage API error:', data);
+      }
+    })
+    .catch(function(err) {
+      status.textContent = 'Request failed: ' + err;
+      console.error('parseScheduleImage error:', err);
+    });
+  };
+  reader.readAsDataURL(file);
+});
+
+document.getElementById('divisionSelect').addEventListener('change', function() {
+  populateFromExtracted();
+});
+
+function populateFromExtracted() {
+  if (!extractedSchedule) return;
+  var divisionSelect = document.getElementById('divisionSelect');
+  if (!divisionSelect.value) return;
+  var divisionName = divisionSelect.options[divisionSelect.selectedIndex].text;
+
+  // Exact match first, then case-insensitive fallback
+  var matchedKey = null;
+  if (extractedSchedule[divisionName]) {
+    matchedKey = divisionName;
+  } else {
+    var lower = divisionName.toLowerCase();
+    Object.keys(extractedSchedule).forEach(function(key) {
+      if (key.toLowerCase() === lower) matchedKey = key;
+    });
+  }
+
+  if (matchedKey) {
+    document.getElementById('pasteArea').value = extractedSchedule[matchedKey];
+    document.getElementById('imageParseStatus').textContent = 'Loaded ' + divisionName + '.';
+    parseScheduleData();
+  } else {
+    console.warn('No match for division "' + divisionName + '" in extracted keys:', Object.keys(extractedSchedule));
+  }
+}
+</script>

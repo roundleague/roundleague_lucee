@@ -10,10 +10,10 @@
     <cfquery name="insertNewDivision" datasource="roundleague">
         INSERT INTO divisions (seasonID, divisionName, isWomens, leagueID)
         VALUES (
-            <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#currentSeasonID#">, 
-            <cfqueryparam value="#divisionName#" cfsqltype="cf_sql_varchar">, 
-            0, 
-            0 <!--- Add leagueID prompt later --->
+            <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#currentSeasonID#">,
+            <cfqueryparam value="#divisionName#" cfsqltype="cf_sql_varchar">,
+            0,
+            (SELECT leagueID FROM leagues WHERE leagueName = 'Round League' LIMIT 1)
         )
     </cfquery>
     
