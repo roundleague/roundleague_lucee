@@ -251,10 +251,22 @@
 
     // Shot clock
     if (data.shot_clock_display_seconds !== undefined) {
-      shotRunning   = data.shot_clock_status === 'running';
-      shotRemaining = Math.max(0, parseInt(data.shot_clock_display_seconds, 10) || 0);
-      if (shotRemaining > prevShotRemaining + 5) shotBuzzed = false;
-      if (shotRunning) startShotTicker();
+      shotRunning = data.shot_clock_status === 'running';
+      var serverShotSeconds = Math.max(0, parseInt(data.shot_clock_display_seconds, 10) || 0);
+
+      if (serverShotSeconds > prevShotRemaining + 5) shotBuzzed = false;
+      // Keep local shot ticker authoritative while running unless a meaningful
+      // drift/reset happens, otherwise echoed socket updates can double-step.
+      if (!shotTicker || !shotRunning || Math.abs(serverShotSeconds - shotRemaining) > 1) {
+        shotRemaining = serverShotSeconds;
+      }
+
+      if (shotRunning) {
+        startShotTicker();
+      } else if (shotTicker) {
+        clearInterval(shotTicker);
+        shotTicker = null;
+      }
       renderShotClock();
     }
   }

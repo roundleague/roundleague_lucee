@@ -279,7 +279,15 @@
       );
 
       if (serverShotSeconds > shotClockRemaining + 5) shotClockBuzzed = false;
-      shotClockRemaining = serverShotSeconds;
+      // Keep local shot ticker authoritative while running unless a meaningful
+      // drift/reset happens, otherwise echoed socket updates can double-step.
+      if (
+        !shotClockTicker ||
+        !serverShotRunning ||
+        Math.abs(serverShotSeconds - shotClockRemaining) > 1
+      ) {
+        shotClockRemaining = serverShotSeconds;
+      }
       renderShotClock();
 
       if (serverShotRunning && !shotClockTicker) {
