@@ -107,6 +107,12 @@
         <button type="button" class="pure-button button-success" id="clockStart">Start</button>
         <button type="button" class="pure-button" id="clockPause" disabled>Pause</button>
         <button type="button" class="pure-button button-danger" id="clockReset">Reset Game</button>
+        <span style="margin-left:16px;border-left:2px solid ##ddd;padding-left:16px;display:flex;align-items:center;gap:10px;">
+            <span style="font-size:0.85rem;color:##555;font-weight:bold;letter-spacing:.05em;">SHOT</span>
+            <span id="shotClockDisplay" style="font-size:2rem;font-weight:bold;font-variant-numeric:tabular-nums;min-width:36px;text-align:center;">30</span>
+            <button type="button" class="pure-button button-warning" id="clockResetShot">Reset Shot Clock</button>
+        </span>
+        <button type="button" class="pure-button button-secondary" id="clockSubHorn" style="margin-left:8px;">Sub Horn</button>
         <a href="/pages/scoreboard/scoreboard.cfm?game=#url.scheduleID#&home=#URLEncodedFormat(getTeamsPlaying.Home)#&away=#URLEncodedFormat(getTeamsPlaying.Away)#"
            target="_blank"
            style="margin-left:12px;font-size:0.9rem;color:##007acc;text-decoration:underline;">Open Scoreboard &nearr;</a>
@@ -293,6 +299,7 @@
         <span class="legend">#dnpIcon# - At the end of the game, click to toggle player as Did Not Play. Use W (Up) and S (Down) to navigate through the active 5 players.</span>
     </form>
     <!--- Scripts --->
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" crossorigin="anonymous"></script>
     <script src="https://kit.fontawesome.com/356f7c17e2.js" crossorigin="anonymous"></script>
@@ -304,6 +311,8 @@
       adminKey: '#application.adminApiKey#',
       isHome: #(url.teamID EQ getTeamsPlaying.homeTeamID ? 'true' : 'false')#
     };
+    window.gameSocket = io('https://round-league-api.onrender.com');
+    window.gameSocket.emit('join', LIVE_SCORE_CONFIG.scheduleID);
     </script>
     </cfif>
 

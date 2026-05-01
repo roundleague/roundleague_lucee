@@ -9,15 +9,27 @@
 
   var API_BASE = 'https://round-league-api.onrender.com/api';
   var HALF_SECONDS = 25 * 60;
+  var SHOT_CLOCK_SECONDS = 30;
+
+  // Game clock state
   var remainingSeconds = HALF_SECONDS;
   var period = 1;
   var ticker = null;
+  var gameBuzzed = false;
 
-  var displayEl = document.getElementById('clockDisplay');
-  var periodEl  = document.getElementById('clockPeriodLabel');
-  var btnStart  = document.getElementById('clockStart');
-  var btnPause  = document.getElementById('clockPause');
-  var btnReset  = document.getElementById('clockReset');
+  // Shot clock state
+  var shotClockRemaining = SHOT_CLOCK_SECONDS;
+  var shotClockTicker = null;
+  var shotClockBuzzed = false;
+
+  var displayEl    = document.getElementById('clockDisplay');
+  var periodEl     = document.getElementById('clockPeriodLabel');
+  var btnStart     = document.getElementById('clockStart');
+  var btnPause     = document.getElementById('clockPause');
+  var btnReset     = document.getElementById('clockReset');
+  var shotClockEl  = document.getElementById('shotClockDisplay');
+  var btnResetShot = document.getElementById('clockResetShot');
+  var btnSubHorn   = document.getElementById('clockSubHorn');
   if (!displayEl) return;
 
   function pad(n) { return n < 10 ? '0' + n : '' + n; }
@@ -28,6 +40,25 @@
     displayEl.textContent = pad(m) + ':' + pad(s);
   }
 
+  function renderShotClock() {
+    if (shotClockEl) shotClockEl.textContent = Math.max(0, shotClockRemaining);
+  }
+
+  // ── Audio buzzer ──────────────────────────────────────────
+  var sounds = {
+    sub:  new Audio('/assets/sounds/subhorn.MP3'),
+    long: new Audio('/assets/sounds/gamebuzzer.MP3')
+  };
+
+  function playBuzzer(type) {
+    try {
+      var audio = type === 'sub' ? sounds.sub : sounds.long;
+      audio.currentTime = 0;
+      audio.play();
+    } catch (e) {}
+  }
+
+  // ── API patches ───────────────────────────────────────────
   function patchClock(status) {
     fetch(API_BASE + '/schedule/' + cfg.scheduleID + '/clock', {
       method: 'PATCH',
@@ -36,12 +67,32 @@
     });
   }
 
+  function patchShotClock(scRemaining, scStatus) {
+    fetch(API_BASE + '/schedule/' + cfg.scheduleID + '/clock', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', 'x-admin-key': cfg.adminKey },
+      body: JSON.stringify({
+        clock_status: ticker ? 'running' : 'stopped',
+        clock_remaining_seconds: remainingSeconds,
+        clock_period: period,
+        shot_clock_remaining: scRemaining,
+        shot_clock_status: scStatus
+      })
+    });
+  }
+
+  // ── Game clock ────────────────────────────────────────────
   function startClock() {
     if (ticker) return;
+    gameBuzzed = false;
     ticker = setInterval(function () {
       if (remainingSeconds > 0) {
         remainingSeconds--;
         renderDisplay();
+        if (remainingSeconds === 0 && !gameBuzzed) {
+          gameBuzzed = true;
+          playBuzzer('long');
+        }
       } else {
         stopClock();
         patchClock('stopped');
@@ -66,6 +117,48 @@
     patchClock('paused');
   });
 
+  // ── Shot clock ────────────────────────────────────────────
+  function startShotClockTicker() {
+    if (shotClockTicker) return;
+    shotClockTicker = setInterval(function () {
+      if (shotClockRemaining > 0) {
+        shotClockRemaining--;
+        renderShotClock();
+        if (shotClockRemaining === 0 && !shotClockBuzzed) {
+          shotClockBuzzed = true;
+          playBuzzer('long');
+        }
+      } else {
+        clearInterval(shotClockTicker);
+        shotClockTicker = null;
+      }
+    }, 1000);
+  }
+
+  function stopShotClockTicker() {
+    clearInterval(shotClockTicker);
+    shotClockTicker = null;
+  }
+
+  if (btnResetShot) {
+    btnResetShot.addEventListener('click', function () {
+      stopShotClockTicker();
+      shotClockRemaining = SHOT_CLOCK_SECONDS;
+      shotClockBuzzed = false;
+      renderShotClock();
+      patchShotClock(SHOT_CLOCK_SECONDS, 'running');
+      startShotClockTicker();
+    });
+  }
+
+  if (btnSubHorn) {
+    btnSubHorn.addEventListener('click', function () {
+      playBuzzer('sub');
+      if (window.gameSocket) window.gameSocket.emit('subhorn', cfg.scheduleID);
+    });
+  }
+
+  // ── Reset game ────────────────────────────────────────────
   function resetScores() {
     fetch(API_BASE + '/schedule/' + cfg.scheduleID + '/score', {
       method: 'PATCH',
@@ -79,13 +172,20 @@
     stopClock();
     remainingSeconds = HALF_SECONDS;
     period = 1;
+    gameBuzzed = false;
     if (periodEl) periodEl.textContent = 'H1';
     renderDisplay();
     patchClock('stopped');
     resetScores();
+    // Reset shot clock too
+    stopShotClockTicker();
+    shotClockRemaining = SHOT_CLOCK_SECONDS;
+    shotClockBuzzed = false;
+    renderShotClock();
+    patchShotClock(SHOT_CLOCK_SECONDS, 'stopped');
   });
 
-  // Sync period from bench-bar half toggle
+  // ── Period toggle ─────────────────────────────────────────
   document.addEventListener('click', function (e) {
     if (e.target.closest('.switch-label')) {
       setTimeout(function () {
@@ -97,34 +197,57 @@
     }
   });
 
-  // Poll server clock so both stat keepers stay in sync.
-  // clock_display_seconds is computed server-side (accounts for elapsed time
-  // since last save), so both pages converge on the same value each poll.
+  // ── Server sync ───────────────────────────────────────────
   function applyClockState(data) {
     var serverRunning = data.clock_status === 'running';
     var serverSeconds = Math.max(0, parseInt(data.clock_display_seconds, 10) || 0);
     var serverPeriod  = data.clock_period || 1;
 
+    // Reset buzz flag if clock was reset (time jumped up)
+    if (serverSeconds > remainingSeconds + 5) gameBuzzed = false;
     remainingSeconds = serverSeconds;
+
     if (serverPeriod !== period) {
       period = serverPeriod;
       if (periodEl) periodEl.textContent = 'H' + period;
     }
 
     if (serverRunning && !ticker) {
-      // Other stat keeper started — begin ticking locally
       ticker = setInterval(function () {
-        if (remainingSeconds > 0) { remainingSeconds--; renderDisplay(); }
-        else { stopClock(); }
+        if (remainingSeconds > 0) {
+          remainingSeconds--;
+          renderDisplay();
+          if (remainingSeconds === 0 && !gameBuzzed) {
+            gameBuzzed = true;
+            playBuzzer('long');
+          }
+        } else {
+          stopClock();
+        }
       }, 1000);
       btnStart.disabled = true;
       btnPause.disabled = false;
     } else if (!serverRunning && ticker) {
-      // Other stat keeper paused/stopped — halt local ticker
       stopClock();
     }
 
     renderDisplay();
+
+    // Sync shot clock
+    if (data.shot_clock_display_seconds !== undefined) {
+      var serverShotRunning = data.shot_clock_status === 'running';
+      var serverShotSeconds = Math.max(0, parseInt(data.shot_clock_display_seconds, 10) || 0);
+
+      if (serverShotSeconds > shotClockRemaining + 5) shotClockBuzzed = false;
+      shotClockRemaining = serverShotSeconds;
+      renderShotClock();
+
+      if (serverShotRunning && !shotClockTicker) {
+        startShotClockTicker();
+      } else if (!serverShotRunning && shotClockTicker) {
+        stopShotClockTicker();
+      }
+    }
   }
 
   function fetchClock() {
@@ -134,9 +257,12 @@
       .catch(function () {});
   }
 
-  // Initial sync then poll every 4 s
+  // Initial sync — socket handles subsequent updates
   fetchClock();
-  setInterval(fetchClock, 4000);
+  if (window.gameSocket) {
+    window.gameSocket.on('clock:update', function (data) { applyClockState(data); });
+  }
 
   renderDisplay();
+  renderShotClock();
 })();

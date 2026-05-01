@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Round League Scoreboard</title>
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -74,6 +75,13 @@
     #clock   { font-size: clamp(3.5rem, 10vw, 8rem); font-variant-numeric: tabular-nums; letter-spacing: .04em; }
     #period  { font-size: clamp(1rem, 2.5vw, 1.8rem); letter-spacing: .15em; }
 
+    #shot-clock-block { display: flex; flex-direction: column; align-items: center; gap: 2px; margin-top: 4px; }
+    #shot-clock-label { font-size: clamp(.55rem, 1vw, .8rem); letter-spacing: .25em; text-transform: uppercase; opacity: .6; }
+    #shot-clock { font-size: clamp(2.5rem, 7vw, 5.5rem); font-variant-numeric: tabular-nums; font-weight: bold; line-height: 1; }
+    body.s1 #shot-clock { color: #ff8c00; text-shadow: 0 0 20px rgba(255,140,0,.35); }
+    body.s2 #shot-clock { color: #ff8c00; text-shadow: 0 0 16px #ff6600; }
+    body.s3 #shot-clock { color: #c8102e; }
+
     #status-badge { margin-top: 6px; font-size: clamp(.7rem, 1.4vw, 1rem); letter-spacing: .25em; }
     #status-badge.live { animation: pulse 2s ease-in-out infinite; }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
@@ -119,6 +127,10 @@
   <div id="center-block">
     <div id="clock">25:00</div>
     <div id="period">H1</div>
+    <div id="shot-clock-block">
+      <div id="shot-clock-label">Shot Clock</div>
+      <div id="shot-clock">30</div>
+    </div>
     <div id="status-badge">SCHEDULED</div>
   </div>
 
@@ -155,6 +167,27 @@
   var clockRunning   = false;
   var clockPeriod    = 1;
   var clockTicker    = null;
+  var gameBuzzed     = false;
+
+  // Shot clock state
+  var shotRemaining = 30;
+  var shotRunning   = false;
+  var shotTicker    = null;
+  var shotBuzzed    = false;
+
+  // Audio buzzer
+  var sounds = {
+    sub:  new Audio('/assets/sounds/subhorn.MP3'),
+    long: new Audio('/assets/sounds/gamebuzzer.MP3')
+  };
+
+  function playBuzzer(type) {
+    try {
+      var audio = type === 'sub' ? sounds.sub : sounds.long;
+      audio.currentTime = 0;
+      audio.play();
+    } catch (e) {}
+  }
 
   function pad(n) { return n < 10 ? '0' + n : '' + n; }
 
@@ -164,19 +197,59 @@
     document.getElementById('period').textContent = 'H' + clockPeriod;
   }
 
+  function renderShotClock() {
+    document.getElementById('shot-clock').textContent = Math.max(0, shotRemaining);
+  }
+
   function startLocalTicker() {
     if (clockTicker) return;
     clockTicker = setInterval(function () {
-      if (clockRunning && clockRemaining > 0) { clockRemaining--; renderClock(); }
+      if (clockRunning && clockRemaining > 0) {
+        clockRemaining--;
+        renderClock();
+        if (clockRemaining === 0 && !gameBuzzed) {
+          gameBuzzed = true;
+          playBuzzer('long');
+        }
+      }
+    }, 1000);
+  }
+
+  function startShotTicker() {
+    if (shotTicker) return;
+    shotTicker = setInterval(function () {
+      if (shotRunning && shotRemaining > 0) {
+        shotRemaining--;
+        renderShotClock();
+        if (shotRemaining === 0 && !shotBuzzed) {
+          shotBuzzed = true;
+          playBuzzer('long');
+        }
+      }
     }, 1000);
   }
 
   function applyClockState(data) {
+    var prevClockRemaining = clockRemaining;
+    var prevShotRemaining  = shotRemaining;
+
     clockPeriod    = data.clock_period || 1;
     clockRunning   = data.clock_status === 'running';
     clockRemaining = Math.max(0, parseInt(data.clock_display_seconds, 10) || 0);
+
+    // Reset buzz flag if clock was reset (time jumped up)
+    if (clockRemaining > prevClockRemaining + 5) gameBuzzed = false;
     if (clockRunning) startLocalTicker();
     renderClock();
+
+    // Shot clock
+    if (data.shot_clock_display_seconds !== undefined) {
+      shotRunning   = data.shot_clock_status === 'running';
+      shotRemaining = Math.max(0, parseInt(data.shot_clock_display_seconds, 10) || 0);
+      if (shotRemaining > prevShotRemaining + 5) shotBuzzed = false;
+      if (shotRunning) startShotTicker();
+      renderShotClock();
+    }
   }
 
   function fetchClock() {
@@ -222,7 +295,7 @@
     });
     fetch(API_BASE + '/schedule/' + scheduleID + '/clock', {
       method: 'PATCH', headers: headers,
-      body: JSON.stringify({ clock_status: 'stopped', clock_remaining_seconds: 1500, clock_period: 1 })
+      body: JSON.stringify({ clock_status: 'stopped', clock_remaining_seconds: 1500, clock_period: 1, shot_clock_remaining: 30, shot_clock_status: 'stopped' })
     });
     // Update display immediately without waiting for next poll
     document.getElementById('homeScore').textContent = '—';
@@ -230,9 +303,16 @@
     clockRemaining = 1500;
     clockRunning   = false;
     clockPeriod    = 1;
+    gameBuzzed     = false;
     clearInterval(clockTicker);
     clockTicker = null;
     renderClock();
+    shotRemaining = 30;
+    shotRunning   = false;
+    shotBuzzed    = false;
+    clearInterval(shotTicker);
+    shotTicker = null;
+    renderShotClock();
     var badge = document.getElementById('status-badge');
     badge.textContent = 'SCHEDULED';
     badge.className   = '';
@@ -243,9 +323,21 @@
   } else {
     fetchGame();
     fetchClock();
-    setInterval(fetchGame, 5000);
-    setInterval(fetchClock, 3000);
     startLocalTicker();
+
+    var socket = io('https://round-league-api.onrender.com');
+    socket.emit('join', scheduleID);
+    socket.on('clock:update', function (data) { applyClockState(data); });
+    socket.on('score:update', function (data) {
+      if (data.homeScore !== undefined) document.getElementById('homeScore').textContent = data.homeScore !== null ? data.homeScore : 0;
+      if (data.awayScore !== undefined) document.getElementById('awayScore').textContent = data.awayScore !== null ? data.awayScore : 0;
+      if (data.status) {
+        var badge = document.getElementById('status-badge');
+        badge.textContent = data.status.toUpperCase();
+        badge.className = data.status === 'live' ? 'live' : '';
+      }
+    });
+    socket.on('subhorn', function () { playBuzzer('sub'); });
   }
 </script>
 
