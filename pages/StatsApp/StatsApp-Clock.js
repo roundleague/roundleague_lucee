@@ -32,6 +32,19 @@
   var btnSubHorn = document.getElementById("clockSubHorn");
   if (!displayEl) return;
 
+  var CLOCK_DEBUG =
+    /(?:^|[?&])clockDebug=1(?:&|$)/.test(window.location.search) ||
+    (window.localStorage && window.localStorage.getItem("rlClockDebug") === "1");
+
+  function debugClock(label, payload) {
+    if (!CLOCK_DEBUG) return;
+    if (payload !== undefined) {
+      console.log("[StatsApp-Clock] " + label, payload);
+    } else {
+      console.log("[StatsApp-Clock] " + label);
+    }
+  }
+
   function pad(n) {
     return n < 10 ? "0" + n : "" + n;
   }
@@ -62,35 +75,51 @@
 
   // ── API patches ───────────────────────────────────────────
   function patchClock(status) {
+    var body = {
+      clock_status: status,
+      clock_remaining_seconds: remainingSeconds,
+      clock_period: period,
+    };
+    debugClock("PATCH clock -> request", body);
     fetch(API_BASE + "/schedule/" + cfg.scheduleID + "/clock", {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
         "x-admin-key": cfg.adminKey,
       },
-      body: JSON.stringify({
-        clock_status: status,
-        clock_remaining_seconds: remainingSeconds,
-        clock_period: period,
-      }),
-    });
+      body: JSON.stringify(body),
+    })
+      .then(function (res) {
+        debugClock("PATCH clock <- response", { status: res.status, ok: res.ok });
+      })
+      .catch(function (err) {
+        debugClock("PATCH clock <- error", err && err.message ? err.message : err);
+      });
   }
 
   function patchShotClock(scRemaining, scStatus) {
+    var body = {
+      clock_status: ticker ? "running" : "stopped",
+      clock_remaining_seconds: remainingSeconds,
+      clock_period: period,
+      shot_clock_remaining: scRemaining,
+      shot_clock_status: scStatus,
+    };
+    debugClock("PATCH shot -> request", body);
     fetch(API_BASE + "/schedule/" + cfg.scheduleID + "/clock", {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
         "x-admin-key": cfg.adminKey,
       },
-      body: JSON.stringify({
-        clock_status: ticker ? "running" : "stopped",
-        clock_remaining_seconds: remainingSeconds,
-        clock_period: period,
-        shot_clock_remaining: scRemaining,
-        shot_clock_status: scStatus,
-      }),
-    });
+      body: JSON.stringify(body),
+    })
+      .then(function (res) {
+        debugClock("PATCH shot <- response", { status: res.status, ok: res.ok });
+      })
+      .catch(function (err) {
+        debugClock("PATCH shot <- error", err && err.message ? err.message : err);
+      });
   }
 
   // ── Game clock ────────────────────────────────────────────
@@ -228,6 +257,7 @@
 
   // ── Server sync ───────────────────────────────────────────
   function applyClockState(data) {
+    debugClock("socket clock:update -> payload", data);
     var serverRunning = data.clock_status === "running";
     var serverSeconds = Math.max(
       0,
@@ -272,6 +302,11 @@
         0,
         parseInt(data.shot_clock_display_seconds, 10) || 0,
       );
+
+      debugClock("apply shot from server", {
+        running: serverShotRunning,
+        seconds: serverShotSeconds,
+      });
 
       if (serverShotSeconds > shotClockRemaining + 5) shotClockBuzzed = false;
       shotClockRemaining = serverShotSeconds;
@@ -328,6 +363,7 @@
   // Initial sync — socket handles subsequent updates
   fetchClock();
   if (window.gameSocket) {
+    debugClock("socket join", { scheduleID: cfg.scheduleID });
     window.gameSocket.on("clock:update", function (data) {
       applyClockState(data);
     });

@@ -151,6 +151,16 @@
   var overrideHome = params.get('home');
   var overrideAway = params.get('away');
   var styleParam = parseInt(params.get('style') || '1', 10);
+  var CLOCK_DEBUG = params.get('clockDebug') === '1' || (window.localStorage && window.localStorage.getItem('rlClockDebug') === '1');
+
+  function debugClock(label, payload) {
+    if (!CLOCK_DEBUG) return;
+    if (payload !== undefined) {
+      console.log('[Scoreboard Clock] ' + label, payload);
+    } else {
+      console.log('[Scoreboard Clock] ' + label);
+    }
+  }
 
   // Apply URL style param on load
   setStyle(styleParam);
@@ -230,6 +240,7 @@
   }
 
   function applyClockState(data) {
+    debugClock('socket clock:update -> payload', data);
     var prevClockRemaining = clockRemaining;
     var prevShotRemaining  = shotRemaining;
 
@@ -246,6 +257,10 @@
     if (data.shot_clock_display_seconds !== undefined) {
       shotRunning   = data.shot_clock_status === 'running';
       shotRemaining = Math.max(0, parseInt(data.shot_clock_display_seconds, 10) || 0);
+      debugClock('apply shot from server', {
+        running: shotRunning,
+        seconds: shotRemaining
+      });
       if (shotRemaining > prevShotRemaining + 5) shotBuzzed = false;
       if (shotRunning) startShotTicker();
       renderShotClock();
@@ -326,7 +341,11 @@
     startLocalTicker();
 
     var socket = io('https://round-league-api.onrender.com');
+    debugClock('socket join', { scheduleID: scheduleID });
     socket.emit('join', scheduleID);
+    socket.on('connect', function () {
+      debugClock('socket connected', { id: socket.id });
+    });
     socket.on('clock:update', function (data) { applyClockState(data); });
     socket.on('score:update', function (data) {
       if (data.homeScore !== undefined) document.getElementById('homeScore').textContent = data.homeScore !== null ? data.homeScore : 0;
