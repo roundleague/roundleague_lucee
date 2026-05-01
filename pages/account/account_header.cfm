@@ -83,7 +83,7 @@
                 <a class="nav-button disabled" data-toggle="tooltip" data-trigger="click hover" data-placement="top" title="Coming Soon">
                     <i class="fa-solid fa-people-group"></i> Find Players / Team
                 </a>
-                <cfif isDefined("session.captainLoggedIn")>
+                <cfif isDefined("session.captainLoggedIn") OR session.playerID EQ 1001>
                     <hr style="margin: 10px 0;">
                     <a href="/pages/captain/captain.cfm?playerID=#url.playerID#" class="nav-button" style="text-decoration: none; color: inherit;">
                         <i class="fa fa-list"></i> Edit Team
