@@ -265,6 +265,14 @@
       if (ticker) { stopClock(); patchClock('paused'); } else { startClock(); }
     } else if (e.key === 'r' || e.key === 'R') {
       if (btnResetShot) btnResetShot.click();
+    } else if (e.key === 't' || e.key === 'T') {
+      if (shotClockTicker) {
+        stopShotClockTicker();
+        patchShotClock(shotClockRemaining, 'stopped');
+      } else {
+        startShotClockTicker();
+        patchShotClock(shotClockRemaining, 'running');
+      }
     }
   });
 

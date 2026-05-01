@@ -116,7 +116,7 @@
         <a href="/pages/scoreboard/scoreboard.cfm?game=#url.scheduleID#&home=#URLEncodedFormat(getTeamsPlaying.Home)#&away=#URLEncodedFormat(getTeamsPlaying.Away)#"
            target="_blank"
            style="margin-left:12px;font-size:0.9rem;color:##007acc;text-decoration:underline;">Open Scoreboard &nearr;</a>
-        <span style="font-size:0.75rem;color:##999;margin-left:12px;">Space = Start/Pause &middot; R = Reset Shot Clock</span>
+        <span style="font-size:0.75rem;color:##999;margin-left:12px;">Space = Start/Pause &middot; R = Reset Shot Clock &middot; T = Start/Stop Shot Clock</span>
     </div>
     </cfif>
 
