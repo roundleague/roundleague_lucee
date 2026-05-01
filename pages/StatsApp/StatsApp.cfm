@@ -184,36 +184,41 @@
                 </tr>
             </thead>
             <tbody>
+                <tr id="gameMetaRow">
+                    <td colspan="2">
+                        Game Controls
+                    </td>
+                    <td colspan="2">
+                        <label class="switch switch-left-right">
+                            <input class="switch-input" type="checkbox" checked />
+                            <span class="switch-label" data-on="1st Half" data-off="2nd Half" data-value="1"></span>
+                            <span class="switch-handle"></span>
+                        </label>
+                    </td>
+                    <td colspan="2">
+                        1st Half Fouls: <span class="Fouls_Half_1">0</span>
+                    </td>
+                    <td colspan="2">
+                        2nd Half Fouls: <span class="Fouls_Half_2">0</span>
+                    </td>
+                    <td colspan="2">
+                        1st Half TOs: <span class="Timeouts_Half_1">2</span>
+                    </td>
+                    <td colspan="2">
+                        2nd Half TOs: <span class="Timeouts_Half_2">2</span>
+                    </td>
+                    <td colspan="1">
+                        <button type="button" class="pure-button button-timeout" id="useTimeout">Use TO</button>
+                    </td>
+                    <td colspan="1">
+                        Total: <span class="teamTotalPts">0</span>
+                    </td>
+                </tr>
                 <cfloop query="getPlayers">
                     <cfif getPlayers.currentRow EQ 6>
                         <tr id="benchToggle">
-                            <td colspan="2">
+                            <td colspan="15">
                                 Bench (Click To Show/Hide)
-                            </td>
-                            <td colspan="2">
-                                <label class="switch switch-left-right">
-                                    <input class="switch-input" type="checkbox" checked />
-                                    <span class="switch-label" data-on="1st Half" data-off="2nd Half" data-value="1"></span> 
-                                    <span class="switch-handle"></span> 
-                                </label>
-                            </td>
-                            <td colspan="2">
-                                1st Half Fouls: <span class="Fouls_Half_1">0</span>
-                            </td>
-                            <td colspan="2">
-                                2nd Half Fouls: <span class="Fouls_Half_2">0</span>
-                            </td>
-                            <td colspan="2">
-                                1st Half TOs: <span class="Timeouts_Half_1">2</span>
-                            </td>
-                            <td colspan="2">
-                                2nd Half TOs: <span class="Timeouts_Half_2">2</span>
-                            </td>
-                            <td colspan="1">
-                                <button type="button" class="pure-button button-timeout" id="useTimeout">Use TO</button>
-                            </td>
-                            <td colspan="1">
-                                Total: <span class="teamTotalPts">0</span>
                             </td>
                         </tr>
                     </cfif>
