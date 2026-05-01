@@ -114,42 +114,6 @@
 	ORDER BY Starter desc, lastName
 </cfquery>
 
-<cfif getTeamData.recordCount EQ 0 AND isDefined("session.playerID") AND session.playerID EQ 1001>
-	<cfquery name="getAllTeams" datasource="roundleague">
-		SELECT t.teamID, t.teamName, t.captainPlayerID, p.firstName, p.lastName, d.divisionName
-		FROM teams t
-		JOIN divisions d ON d.divisionID = t.divisionID
-		JOIN seasons s ON s.seasonID = t.seasonID
-		LEFT JOIN players p ON p.playerID = t.captainPlayerID
-		WHERE s.status = 'Active'
-		ORDER BY d.divisionName, t.teamName
-	</cfquery>
-	<cfoutput>
-	<div class="main" style="background-color:white;">
-		<div class="section text-center">
-			<div class="container">
-				<h2>Select a Team to Edit</h2>
-				<table class="pure-table pure-table-horizontal" style="margin:20px auto;">
-					<thead><tr><th>Team</th><th>Division</th><th>Captain</th><th></th></tr></thead>
-					<tbody>
-					<cfloop query="getAllTeams">
-						<tr>
-							<td>#teamName#</td>
-							<td>#divisionName#</td>
-							<td>#firstName# #lastName#</td>
-							<td><a href="/pages/captain/captain.cfm?playerID=#captainPlayerID#" class="btn btn-sm btn-info">Edit</a></td>
-						</tr>
-					</cfloop>
-					</tbody>
-				</table>
-			</div>
-		</div>
-	</div>
-	</cfoutput>
-	<cfinclude template="/footer.cfm">
-	<cfabort>
-</cfif>
-
 <cfset bballPosition = 'Point Guard,Shooting Guard,Small Forward,Power Forward,Center'>
 <cfset heightOptions = "4'11,5'1,5'2,5'3,5'4',5'5,5'6,5'7,5'8,5'9,5'10,5'11,6'0,6'1,6'2,6'3,6'4,6'5,6'6,6'7,6'8,6'9,6'10,6'11,7'0,7'1,7'2,7'3,7'4,7'5">
 
