@@ -412,16 +412,20 @@
                                                 <td><strong>$#numberFormat(teamStatus.totalPaid, '999,999')#</strong></td>
                                                 <td><cfif teamStatus.remainingBalance GT 0><span class="text-danger">$#numberFormat(teamStatus.remainingBalance, '999,999')#</span><cfelse><span class="text-success">$0</span></cfif></td>
                                                 <td style="min-width: 120px;">
+                                                    <cfset teamPercent = val(teamStatus.percentPaid)>
+                                                    <cfset teamPercentWidth = teamPercent>
+                                                    <cfif teamPercentWidth LT 0><cfset teamPercentWidth = 0></cfif>
+                                                    <cfif teamPercentWidth GT 100><cfset teamPercentWidth = 100></cfif>
                                                     <div class="progress">
                                                         <div class="progress-bar <cfif teamStatus.percentPaid GTE 100>bg-success<cfelseif teamStatus.percentPaid GTE 50>bg-info<cfelseif teamStatus.percentPaid GTE 25>bg-warning<cfelse>bg-danger</cfif>" 
                                                             role="progressbar" 
-                                                            style="width: <cfif teamStatus.percentPaid GT 0>#numberFormat(teamStatus.percentPaid, '999.9')#<cfelse>0</cfif>%" 
-                                                            aria-valuenow="#numberFormat(teamStatus.percentPaid, '999.9')#" 
+                                                            style="width: #numberFormat(teamPercentWidth, '999.9')#%" 
+                                                            aria-valuenow="#numberFormat(teamPercent, '999.9')#" 
                                                             aria-valuemin="0" 
                                                             aria-valuemax="100">
-                                                            <cfif teamStatus.percentPaid GT 0>#numberFormat(teamStatus.percentPaid, '999.9')#%</cfif>
                                                         </div>
                                                     </div>
+                                                    <div class="text-center small font-weight-bold mt-1">#numberFormat(teamPercent, '999.9')#%</div>
                                                 </td>
                                                 <td>
                                                     <button class="btn btn-sm btn-primary" onclick="showTeamDetails(#teamID#)" title="View Details">
