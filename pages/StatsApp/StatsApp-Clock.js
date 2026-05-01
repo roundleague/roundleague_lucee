@@ -265,8 +265,9 @@
 
     renderDisplay();
 
-    // Sync shot clock
-    if (data.shot_clock_display_seconds !== undefined) {
+    // Sync shot clock — skip if local ticker is running (we are the controller;
+    // applying the echo would cause double-ticks when round-trip > 1 s)
+    if (data.shot_clock_display_seconds !== undefined && !shotClockTicker) {
       var serverShotRunning = data.shot_clock_status === "running";
       var serverShotSeconds = Math.max(
         0,
@@ -277,10 +278,15 @@
       shotClockRemaining = serverShotSeconds;
       renderShotClock();
 
-      if (serverShotRunning && !shotClockTicker) {
+      if (serverShotRunning) {
         startShotClockTicker();
-      } else if (!serverShotRunning && shotClockTicker) {
+      }
+    } else if (data.shot_clock_display_seconds !== undefined && shotClockTicker) {
+      // Ticker is running locally — only stop it if server says stopped
+      if (data.shot_clock_status !== "running") {
         stopShotClockTicker();
+        shotClockRemaining = Math.max(0, parseInt(data.shot_clock_display_seconds, 10) || 0);
+        renderShotClock();
       }
     }
   }

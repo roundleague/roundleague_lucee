@@ -242,11 +242,13 @@
     if (clockRunning) startLocalTicker();
     renderClock();
 
-    // Shot clock
+    // Shot clock — clear and restart local ticker on every update to stay phase-locked
     if (data.shot_clock_display_seconds !== undefined) {
       shotRunning   = data.shot_clock_status === 'running';
       shotRemaining = Math.max(0, parseInt(data.shot_clock_display_seconds, 10) || 0);
       if (shotRemaining > prevShotRemaining + 5) shotBuzzed = false;
+      clearInterval(shotTicker);
+      shotTicker = null;
       if (shotRunning) startShotTicker();
       renderShotClock();
     }
