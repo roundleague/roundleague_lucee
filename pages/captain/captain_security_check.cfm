@@ -1,9 +1,10 @@
-<!--- Also add check for current session captain ID later --->
-<!--- If captain is not logged in AND we are not on local env --->
-<cfif !isDefined("session.captainLoggedIn")>
+<!--- playerID 1001 admin bypass — passes regardless of captain login state --->
+<cfif isDefined("session.playerID") AND session.playerID EQ 1001>
+	<!--- allowed --->
+<cfelseif !isDefined("session.captainLoggedIn")>
 	Access Denied.<cfabort />
 <cfelse>
-	<cfif session.captainID NEQ url.playerID AND session.captainID NEQ 1001>
+	<cfif session.captainID NEQ url.playerID>
 		Access Denied.<cfabort />
 	</cfif>
 </cfif>
