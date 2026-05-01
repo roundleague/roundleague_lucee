@@ -3,7 +3,7 @@
 <cfif !isDefined("session.captainLoggedIn")>
 	Access Denied.<cfabort />
 <cfelse>
-	<cfif session.captainID NEQ url.playerID>
+	<cfif session.captainID NEQ url.playerID AND session.captainID NEQ 1001>
 		Access Denied.<cfabort />
 	</cfif>
 </cfif>

@@ -86,17 +86,18 @@
 </cfif>
 
 <cfquery name="getTeamData" datasource="roundleague">
-	SELECT 
-    p.playerID, 
-    lastName, 
-    firstName, 
-    teamName, 
-    position, 
-    height, 
-    weight, 
-    hometown, 
-    school, 
-    s.seasonName, 
+	SELECT
+    p.playerID,
+    lastName,
+    firstName,
+    t.teamID,
+    teamName,
+    position,
+    height,
+    weight,
+    hometown,
+    school,
+    s.seasonName,
     d.divisionName,
     t.captainPlayerID,
     r.jersey,
@@ -145,8 +146,12 @@
       <div class="container">
 
         <!--- Content Here --->
-        <h1>#getTeamData.teamName#</h1>
         <form name="editRosterForm" class="editRosterForm" method="POST">
+        <div style="margin-bottom:16px;">
+            <label><strong>Team Name</strong></label>
+            <input type="text" class="form-control border-input" name="teamName" value="#getTeamData.teamName#" style="display:inline-block;width:300px;margin-left:8px;">
+            <input type="hidden" name="teamID" value="#getTeamData.teamID#">
+        </div>
 	        <table>
 	          <caption>#getTeamData.seasonName# Roster</caption>
 	          <thead>
@@ -218,6 +223,7 @@
 	        </table>
 	        <button type="submit" class="btn btn-wd btn-info btn-round updateBtn" name="updateBtn">Update</button>
     	</form>
+
       </div>
     </div>
 </div>

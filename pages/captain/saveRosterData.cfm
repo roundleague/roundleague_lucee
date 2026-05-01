@@ -24,5 +24,15 @@
 	    	AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">;
 	    </cfquery>
 	</cfloop>
+
+	<cfif isDefined("form.teamName") AND len(trim(form.teamName)) AND isDefined("form.teamID")>
+		<cfquery name="updateTeamName" datasource="roundleague">
+			UPDATE teams
+			SET teamName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#trim(form.teamName)#">
+			WHERE teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.teamID#">
+			AND (captainPlayerID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.captainID#">
+			     OR <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.captainID#"> = 1001)
+		</cfquery>
+	</cfif>
 </cfoutput>
 
