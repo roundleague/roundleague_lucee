@@ -257,6 +257,17 @@
       .catch(function () {});
   }
 
+  // ── Keyboard shortcuts ────────────────────────────────────
+  document.addEventListener('keydown', function (e) {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+    if (e.code === 'Space') {
+      e.preventDefault();
+      if (ticker) { stopClock(); patchClock('paused'); } else { startClock(); }
+    } else if (e.key === 'r' || e.key === 'R') {
+      if (btnResetShot) btnResetShot.click();
+    }
+  });
+
   // Initial sync — socket handles subsequent updates
   fetchClock();
   if (window.gameSocket) {
