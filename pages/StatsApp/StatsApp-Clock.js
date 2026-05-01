@@ -237,7 +237,12 @@
 
     // Reset buzz flag if clock was reset (time jumped up)
     if (serverSeconds > remainingSeconds + 5) gameBuzzed = false;
-    remainingSeconds = serverSeconds;
+    // Only overwrite local game clock from server echo when ticker is not
+    // running, or when value differs by more than 2s (real reset/pause).
+    // Prevents shot-clock patches from bouncing remainingSeconds back.
+    if (!ticker || Math.abs(serverSeconds - remainingSeconds) > 2) {
+      remainingSeconds = serverSeconds;
+    }
 
     if (serverPeriod !== period) {
       period = serverPeriod;

@@ -233,12 +233,19 @@
     var prevClockRemaining = clockRemaining;
     var prevShotRemaining  = shotRemaining;
 
-    clockPeriod    = data.clock_period || 1;
-    clockRunning   = data.clock_status === 'running';
-    clockRemaining = Math.max(0, parseInt(data.clock_display_seconds, 10) || 0);
+    clockPeriod  = data.clock_period || 1;
+    clockRunning = data.clock_status === 'running';
+    var serverClockSeconds = Math.max(0, parseInt(data.clock_display_seconds, 10) || 0);
+
+    // Only overwrite local countdown from server when ticker is not running,
+    // or when the value differs by more than 2s (real reset/pause), to prevent
+    // shot-clock echo patches from causing the game clock display to stutter.
+    if (!clockTicker || Math.abs(serverClockSeconds - clockRemaining) > 2) {
+      clockRemaining = serverClockSeconds;
+    }
 
     // Reset buzz flag if clock was reset (time jumped up)
-    if (clockRemaining > prevClockRemaining + 5) gameBuzzed = false;
+    if (serverClockSeconds > prevClockRemaining + 5) gameBuzzed = false;
     if (clockRunning) startLocalTicker();
     renderClock();
 
