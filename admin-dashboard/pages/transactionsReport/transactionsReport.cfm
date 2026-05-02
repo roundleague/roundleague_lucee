@@ -1,5 +1,5 @@
 <cfinclude template="/admin-dashboard/admin_header.cfm">
-<link href="/admin-dashboard/pages/transactionsReport/transactionsReport.css?v=1.0" rel="stylesheet">
+<link href="/admin-dashboard/pages/transactionsReport/transactionsReport.css?v=1.1" rel="stylesheet">
 
 <cfoutput>
 
@@ -154,6 +154,7 @@
                     </div>
                 </div>
                 <div class="card-body">
+                    <div class="table-scroll">
                     <table class="table table-sm" id="txTable">
                         <thead>
                             <tr>
@@ -162,7 +163,7 @@
                                 <th>Type</th>
                                 <th>From</th>
                                 <th>To</th>
-                                <th>By</th>
+                                <th class="tx-hide-mobile">By</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -201,7 +202,7 @@
                                             <span class="text-muted">&mdash;</span>
                                         </cfif>
                                     </td>
-                                    <td>
+                                    <td class="tx-hide-mobile">
                                         <small>
                                         <cfif CaptainModifiedBy GT 0 AND len(trim(captainFirst)) GT 0>
                                             #captainFirst# #captainLast#
@@ -217,6 +218,7 @@
                             </cfif>
                         </tbody>
                     </table>
+                    </div>
                 </div>
             </div>
         </div>

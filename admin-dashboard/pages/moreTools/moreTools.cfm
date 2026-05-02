@@ -1,6 +1,6 @@
 <cfinclude template="/admin-dashboard/admin_header.cfm">
 
-<link href="/admin-dashboard/pages/moreTools/moreTools.css?v=1.0" rel="stylesheet">
+<link href="/admin-dashboard/pages/moreTools/moreTools.css?v=1.1" rel="stylesheet">
 
 <!-- End Navbar -->
 <div class="content">
