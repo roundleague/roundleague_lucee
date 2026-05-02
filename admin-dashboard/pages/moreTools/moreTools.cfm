@@ -23,6 +23,11 @@
                             <p>App Analytics</p>
                         </a>
 
+                        <a href="/admin-dashboard/pages/transactionsReport/transactionsReport.cfm" class="tool-card">
+                            <i class="nc-icon nc-refresh-69"></i>
+                            <p>Transactions Report</p>
+                        </a>
+
                         <div class="tool-card empty"></div>
                         <div class="tool-card empty"></div>
                         <div class="tool-card empty"></div>

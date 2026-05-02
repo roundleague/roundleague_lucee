@@ -141,7 +141,7 @@ Coded by www.creative-tim.com
                   <p>Add To Roster</p>
                 </a>
               </li>
-              <li <cfif findNoCase("moreTools", CGI.REQUEST_URL) OR findNoCase("playerOfTheGame", CGI.REQUEST_URL) OR findNoCase("appAnalytics", CGI.REQUEST_URL)>class="active"</cfif>>
+              <li <cfif findNoCase("moreTools", CGI.REQUEST_URL) OR findNoCase("playerOfTheGame", CGI.REQUEST_URL) OR findNoCase("appAnalytics", CGI.REQUEST_URL) OR findNoCase("transactionsReport", CGI.REQUEST_URL)>class="active"</cfif>>
                 <a href="/admin-dashboard/pages/moreTools/moreTools.cfm">
                   <i class="nc-icon nc-grid-45"></i>
                   <p>More Tools</p>
