@@ -62,4 +62,4 @@
 
 <cfinclude template="/admin-dashboard/admin_footer.cfm">
 <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js" type="text/javascript"></script>
-<script src="/admin-dashboard/pages/teamsOverview/teamsOverview.js"></script>
+<script src="/admin-dashboard/pages/teamsOverview/teamsOverview.js?v=#DateDiff('s', CreateDate(1970,1,1), Now())#"></script>
