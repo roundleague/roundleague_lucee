@@ -69,12 +69,12 @@ Coded by www.creative-tim.com
                   <p>Scoreboard</p>
                 </a>
               </li> --->
-              <li <cfif findNoCase("scheduler", CGI.REQUEST_URL) AND NOT findNoCase("scheduleImport", CGI.REQUEST_URL)>class="active"</cfif>>
+              <!--- <li <cfif findNoCase("scheduler", CGI.REQUEST_URL) AND NOT findNoCase("scheduleImport", CGI.REQUEST_URL)>class="active"</cfif>>
                 <a href="/admin-dashboard/pages/scheduler/scheduler.cfm">
                   <i class="nc-icon nc-laptop"></i>
                   <p>Scheduler</p>
                 </a>
-              </li>
+              </li> --->
               <li <cfif findNoCase("scheduleImport", CGI.REQUEST_URL)>class="active"</cfif>>
                 <a href="/admin-dashboard/pages/scheduler/scheduleImport.cfm">
                   <i class="nc-icon nc-cloud-upload-94"></i>
@@ -141,10 +141,10 @@ Coded by www.creative-tim.com
                   <p>Add To Roster</p>
                 </a>
               </li>
-              <li <cfif findNoCase("playerOfTheGame", CGI.REQUEST_URL)>class="active"</cfif>>
-                <a href="/admin-dashboard/pages/playerOfTheGame/playerOfTheGame.cfm">
-                  <i class="nc-icon nc-image"></i>
-                  <p>Player of the Game</p>
+              <li <cfif findNoCase("moreTools", CGI.REQUEST_URL) OR findNoCase("playerOfTheGame", CGI.REQUEST_URL) OR findNoCase("appAnalytics", CGI.REQUEST_URL)>class="active"</cfif>>
+                <a href="/admin-dashboard/pages/moreTools/moreTools.cfm">
+                  <i class="nc-icon nc-grid-45"></i>
+                  <p>More Tools</p>
                 </a>
               </li>
               <!--- <li <cfif findNoCase("ideas", CGI.REQUEST_URL)>class="active"</cfif>>

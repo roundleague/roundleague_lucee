@@ -1,0 +1,29 @@
+.event-badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-family: monospace;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: #e8f4fd;
+    color: #1a6fa8;
+    white-space: nowrap;
+}
+
+.mini-bar {
+    display: inline-block;
+    height: 6px;
+    background: #51cbce;
+    border-radius: 3px;
+    min-width: 2px;
+    vertical-align: middle;
+}
+
+.metadata-cell {
+    max-width: 280px;
+    word-break: break-all;
+    color: #999;
+}
+
+#recentEventsTable td {
+    vertical-align: middle;
+}
