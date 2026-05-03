@@ -63,6 +63,14 @@
   }
 
   // ── API patches ───────────────────────────────────────────
+  function patchGameStatus(status) {
+    fetch(API_BASE + "/schedule/" + cfg.scheduleID + "/score", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json", "x-admin-key": cfg.adminKey },
+      body: JSON.stringify({ status: status }),
+    });
+  }
+
   function patchClock(status) {
     fetch(API_BASE + "/schedule/" + cfg.scheduleID + "/clock", {
       method: "PATCH",
@@ -115,6 +123,7 @@
     btnStart.disabled = true;
     btnPause.disabled = false;
     patchClock("running");
+    patchGameStatus("live");
   }
 
   function stopClock() {
