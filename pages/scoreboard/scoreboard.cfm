@@ -413,7 +413,6 @@
       boardEl.style.display         = 'flex';
       fetchGame(homeTeam, awayTeam);
       fetchClock();
-      startLocalTicker();
     }
 
     function enterGameOver() {
