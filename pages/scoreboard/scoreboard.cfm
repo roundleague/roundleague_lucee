@@ -429,7 +429,7 @@
     }
 
     function pollActiveGame() {
-      fetch(API_BASE + '/active-game')
+      fetch(API_BASE + '/schedule/active-game')
         .then(function(r) { return r.ok ? r.json() : null; })
         .then(function(d) {
           if (d && d.game && autoState === 'waiting')
