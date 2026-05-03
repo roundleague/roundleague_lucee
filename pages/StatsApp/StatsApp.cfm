@@ -102,7 +102,9 @@
 
     <cfif url.isPlayoffs NEQ 1>
     <div id="clockPanel" style="display:flex;align-items:center;gap:14px;padding:10px 0 6px 6px;flex-wrap:wrap;">
-        <span id="clockDisplay" style="font-size:2rem;font-weight:bold;font-variant-numeric:tabular-nums;min-width:90px;">25:00</span>
+        <span id="clockDisplay" style="font-size:2rem;font-weight:bold;font-variant-numeric:tabular-nums;min-width:90px;cursor:pointer;" title="Click to edit time">25:00</span>
+        <input id="clockEditInput" type="text" maxlength="5" placeholder="MM:SS"
+               style="display:none;font-size:2rem;font-weight:bold;font-variant-numeric:tabular-nums;width:90px;border:none;border-bottom:2px solid ##007acc;background:transparent;outline:none;text-align:center;padding:0;">
         <span id="clockPeriodLabel" style="font-size:1rem;color:##555;">H1</span>
         <button type="button" class="pure-button button-success" id="clockStart">Start</button>
         <button type="button" class="pure-button" id="clockPause" disabled>Pause</button>

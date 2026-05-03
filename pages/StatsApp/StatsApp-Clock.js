@@ -16,6 +16,7 @@
   var period = 1;
   var ticker = null;
   var gameBuzzed = false;
+  var editWasRunning = false;
 
   // Shot clock state
   var shotClockRemaining = SHOT_CLOCK_SECONDS;
@@ -23,6 +24,7 @@
   var shotClockBuzzed = false;
 
   var displayEl = document.getElementById("clockDisplay");
+  var clockEditInput = document.getElementById("clockEditInput");
   var periodEl = document.getElementById("clockPeriodLabel");
   var btnStart = document.getElementById("clockStart");
   var btnPause = document.getElementById("clockPause");
@@ -307,6 +309,51 @@
         if (d) applyClockState(d);
       })
       .catch(function () {});
+  }
+
+  // ── Inline clock edit ─────────────────────────────────────
+  function enterEditMode() {
+    editWasRunning = !!ticker;
+    if (editWasRunning) stopClock();
+    if (clockEditInput) {
+      clockEditInput.value = displayEl.textContent;
+      displayEl.style.display = "none";
+      clockEditInput.style.display = "";
+      clockEditInput.focus();
+      clockEditInput.select();
+    }
+  }
+
+  function exitEditMode(commit) {
+    if (!clockEditInput || clockEditInput.style.display === "none") return;
+    if (commit) {
+      var raw = clockEditInput.value.trim();
+      if (raw) {
+        var parts = raw.split(":");
+        var mins = Math.max(0, Math.min(99, parseInt(parts[0], 10) || 0));
+        var secs = parts.length > 1 ? Math.max(0, Math.min(59, parseInt(parts[1], 10) || 0)) : 0;
+        remainingSeconds = mins * 60 + secs;
+        gameBuzzed = false;
+      }
+      renderDisplay();
+      patchClock(editWasRunning ? "running" : "stopped");
+      if (editWasRunning) startClock();
+    } else {
+      renderDisplay();
+      if (!ticker) { btnStart.disabled = false; btnPause.disabled = true; }
+    }
+    clockEditInput.style.display = "none";
+    displayEl.style.display = "";
+  }
+
+  displayEl.addEventListener("click", function () { enterEditMode(); });
+
+  if (clockEditInput) {
+    clockEditInput.addEventListener("keydown", function (e) {
+      if (e.key === "Enter")  { e.preventDefault(); exitEditMode(true); }
+      if (e.key === "Escape") { e.preventDefault(); exitEditMode(false); }
+    });
+    clockEditInput.addEventListener("blur", function () { exitEditMode(true); });
   }
 
   // ── Keyboard shortcuts ────────────────────────────────────
