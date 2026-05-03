@@ -28,6 +28,11 @@
                             <p>Transactions Report</p>
                         </a>
 
+                        <a href="/pages/scoreboard/scoreboard.cfm" target="_blank" class="tool-card">
+                            <i class="nc-icon nc-tv-2"></i>
+                            <p>Live Scoreboard</p>
+                        </a>
+
                         <div class="tool-card empty"></div>
                         <div class="tool-card empty"></div>
                         <div class="tool-card empty"></div>
