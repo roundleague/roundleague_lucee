@@ -82,6 +82,15 @@
             WHERE scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">
         </cfquery>
 
+        <!--- Notify live scoreboard that game is final --->
+        <cfhttp method="PATCH"
+                url="https://round-league-api.onrender.com/api/schedule/#url.scheduleID#/score"
+                result="patchFinalResult">
+            <cfhttpparam type="header" name="Content-Type" value="application/json">
+            <cfhttpparam type="header" name="x-admin-key" value="#application.adminApiKey#">
+            <cfhttpparam type="body" value='{"status":"final"}'>
+        </cfhttp>
+
         <!--- Point Differential --->
         <cfset HomeDifference = homeScore - awayScore>
         <cfset AwayDifference = awayScore - homeScore>

@@ -117,6 +117,15 @@
   <button onclick="setStyle(3)">Style 3</button>
 </div>
 
+<div id="waiting-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,.85);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:200;">
+  <div style="font-size:clamp(2rem,6vw,4rem);letter-spacing:.1em;margin-bottom:1rem;">WAITING FOR GAME</div>
+  <div style="font-size:clamp(.9rem,2vw,1.4rem);opacity:.5;letter-spacing:.15em;">AUTO MODE</div>
+</div>
+
+<div id="gameover-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);align-items:center;justify-content:center;z-index:200;">
+  <div style="font-size:clamp(3rem,10vw,7rem);letter-spacing:.1em;">FINAL</div>
+</div>
+
 <div id="board" style="display:none">
   <div class="team-block">
     <div class="team-label">HOME</div>
@@ -279,18 +288,15 @@
       .catch(function() {});
   }
 
-  function fetchGame() {
-    if (!scheduleID) {
-      document.getElementById('no-game').textContent = 'No game ID in URL. Add ?game=SCHEDULEID';
-      return;
-    }
+  function fetchGame(nameHome, nameAway) {
+    if (!scheduleID) return;
     fetch(API_BASE + '/schedule/' + scheduleID)
       .then(function(r) { return r.ok ? r.json() : null; })
       .then(function(data) {
         if (!data || !data.game) { document.getElementById('no-game').textContent = 'Game not found.'; return; }
         var g = data.game;
-        document.getElementById('homeName').textContent  = overrideHome || g.homeTeam || '—';
-        document.getElementById('awayName').textContent  = overrideAway || g.awayTeam || '—';
+        document.getElementById('homeName').textContent  = nameHome || overrideHome || g.homeTeam || '—';
+        document.getElementById('awayName').textContent  = nameAway || overrideAway || g.awayTeam || '—';
         document.getElementById('homeScore').textContent = g.homeScore !== null ? g.homeScore : 0;
         document.getElementById('awayScore').textContent = g.awayScore !== null ? g.awayScore : 0;
 
@@ -337,17 +343,19 @@
     badge.className   = '';
   }
 
-  if (!scheduleID) {
-    document.getElementById('no-game').textContent = 'No game ID in URL. Add ?game=9999';
-  } else {
+  var isAutoMode = !scheduleID;
+
+  if (!isAutoMode) {
+    // ── MANUAL MODE: existing behavior ───────────────────────────
+    document.getElementById('waiting-overlay').style.display = 'none';
     fetchGame();
     fetchClock();
     startLocalTicker();
 
     var socket = io('https://round-league-api.onrender.com');
     socket.emit('join', scheduleID);
-    socket.on('clock:update', function (data) { applyClockState(data); });
-    socket.on('score:update', function (data) {
+    socket.on('clock:update', function(data) { applyClockState(data); });
+    socket.on('score:update', function(data) {
       if (data.homeScore !== undefined) document.getElementById('homeScore').textContent = data.homeScore !== null ? data.homeScore : 0;
       if (data.awayScore !== undefined) document.getElementById('awayScore').textContent = data.awayScore !== null ? data.awayScore : 0;
       if (data.status) {
@@ -356,7 +364,103 @@
         badge.className = data.status === 'live' ? 'live' : '';
       }
     });
-    socket.on('subhorn', function () { playBuzzer('sub'); });
+    socket.on('subhorn', function() { playBuzzer('sub'); });
+
+  } else {
+    // ── AUTO MODE: state machine ──────────────────────────────────
+    var GAME_OVER_DELAY = 8000;
+    var autoState    = 'waiting';
+    var activeGameID = null;
+
+    var waitingOverlay  = document.getElementById('waiting-overlay');
+    var gameoverOverlay = document.getElementById('gameover-overlay');
+    var boardEl         = document.getElementById('board');
+    document.getElementById('no-game').style.display = 'none';
+
+    var socket = io('https://round-league-api.onrender.com');
+
+    socket.on('connect', function() {
+      socket.emit('join-lobby');
+      if (autoState === 'live' && activeGameID) socket.emit('join', activeGameID);
+    });
+
+    function enterWaiting() {
+      autoState    = 'waiting';
+      activeGameID = null;
+      scheduleID   = null;
+      clearInterval(clockTicker); clockTicker = null;
+      clearInterval(shotTicker);  shotTicker  = null;
+      waitingOverlay.style.display  = 'flex';
+      gameoverOverlay.style.display = 'none';
+      boardEl.style.display         = 'none';
+      socket.emit('join-lobby');
+      pollActiveGame();
+    }
+
+    function enterLive(id, homeTeam, awayTeam) {
+      if (autoState === 'live' && activeGameID === String(id)) return;
+      autoState    = 'live';
+      activeGameID = String(id);
+      scheduleID   = String(id);
+      clockRemaining = 25 * 60; clockRunning = false; clockPeriod = 1; gameBuzzed = false;
+      shotRemaining  = 30;      shotRunning  = false; shotBuzzed  = false;
+      clearInterval(clockTicker); clockTicker = null;
+      clearInterval(shotTicker);  shotTicker  = null;
+      renderClock(); renderShotClock();
+      socket.emit('join', activeGameID);
+      waitingOverlay.style.display  = 'none';
+      gameoverOverlay.style.display = 'none';
+      boardEl.style.display         = 'flex';
+      fetchGame(homeTeam, awayTeam);
+      fetchClock();
+      startLocalTicker();
+    }
+
+    function enterGameOver() {
+      if (autoState !== 'live') return;
+      autoState = 'game_over';
+      clearInterval(clockTicker); clockTicker = null;
+      clearInterval(shotTicker);  shotTicker  = null;
+      gameoverOverlay.style.display = 'flex';
+      setTimeout(function() {
+        gameoverOverlay.style.display = 'none';
+        enterWaiting();
+      }, GAME_OVER_DELAY);
+    }
+
+    function pollActiveGame() {
+      fetch(API_BASE + '/active-game')
+        .then(function(r) { return r.ok ? r.json() : null; })
+        .then(function(d) {
+          if (d && d.game && autoState === 'waiting')
+            enterLive(d.game.scheduleID, d.game.homeTeam, d.game.awayTeam);
+        })
+        .catch(function() {});
+    }
+
+    socket.on('game:active', function(data) {
+      if (autoState === 'waiting') enterLive(data.scheduleID, data.homeTeam, data.awayTeam);
+    });
+    socket.on('game:ended', function(data) {
+      if (autoState === 'live' && String(data.scheduleID) === activeGameID) enterGameOver();
+    });
+    socket.on('clock:update', function(data) {
+      if (autoState === 'live') applyClockState(data);
+    });
+    socket.on('score:update', function(data) {
+      if (autoState !== 'live') return;
+      if (data.homeScore !== undefined) document.getElementById('homeScore').textContent = data.homeScore !== null ? data.homeScore : 0;
+      if (data.awayScore !== undefined) document.getElementById('awayScore').textContent = data.awayScore !== null ? data.awayScore : 0;
+      if (data.status) {
+        var badge = document.getElementById('status-badge');
+        badge.textContent = data.status.toUpperCase();
+        badge.className   = data.status === 'live' ? 'live' : '';
+        if (data.status === 'final') enterGameOver();
+      }
+    });
+    socket.on('subhorn', function() { if (autoState === 'live') playBuzzer('sub'); });
+
+    enterWaiting();
   }
 </script>
 
