@@ -155,7 +155,98 @@
             </cfquery>
         </cfif>
 
+    </cfif>
 
+    <!--- Generate recap once both teams have submitted stats (runs regardless of prior finalization) --->
+    <cfquery name="checkExistingRecap" datasource="roundleague">
+        SELECT recapText FROM recaps
+        WHERE scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">
+    </cfquery>
+
+    <cfif NOT checkExistingRecap.recordCount>
+        <cfquery name="teamsWithStats" datasource="roundleague">
+            SELECT COUNT(DISTINCT teamID) AS teamCount
+            FROM PlayerGameLog
+            WHERE scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">
+            AND teamID IN (
+                <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.homeTeamID#">,
+                <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.awayTeamID#">
+            )
+        </cfquery>
+
+        <cfif teamsWithStats.teamCount EQ 2>
+            <cfquery name="allPlayerLogs" datasource="roundleague">
+                SELECT pgl.playerID, p.firstName, p.lastName, FGM, FGA, 3FGM, 3FGA,
+                       FTM, FTA, Points, Rebounds, Assists, Steals, Blocks, Turnovers,
+                       pgl.teamID, t.teamName, pgl.Fouls
+                FROM PlayerGameLog pgl
+                JOIN Players p ON p.playerID = pgl.playerID
+                JOIN Teams t ON t.teamID = pgl.teamID
+                WHERE pgl.scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">
+                ORDER BY pgl.teamID
+            </cfquery>
+
+            <cfset boxscoreCfc = createObject("component", "pages.boxscore.boxscore")>
+            <cfset recapPlayerPrompts = "">
+            <cfset recapFirstTeamTotals = "">
+            <cfset recapCurrentTeamID = "">
+            <cfset recapCurrentTeamName = "">
+            <cfset rFGM=0><cfset rFGA=0><cfset r3FGM=0><cfset r3FGA=0>
+            <cfset rFTM=0><cfset rFTA=0><cfset rREB=0><cfset rAST=0>
+            <cfset rSTL=0><cfset rBLK=0><cfset rTO=0><cfset rFLS=0><cfset rPTS=0>
+
+            <cfloop query="allPlayerLogs">
+                <cfif allPlayerLogs.teamID NEQ recapCurrentTeamID AND recapCurrentTeamID NEQ "">
+                    <cfset firstTeamStruct = {TotalFGM:rFGM,TotalFGA:rFGA,Total3FGM:r3FGM,Total3FGA:r3FGA,TotalFTM:rFTM,TotalFTA:rFTA,TotalREB:rREB,TotalAST:rAST,TotalSTL:rSTL,TotalBLK:rBLK,TotalTO:rTO,TotalFLS:rFLS,TotalPTS:rPTS}>
+                    <cfset recapFirstTeamTotals = boxscoreCfc.generateTeamStatsPrompt(recapCurrentTeamName, firstTeamStruct)>
+                    <cfset rFGM=0><cfset rFGA=0><cfset r3FGM=0><cfset r3FGA=0>
+                    <cfset rFTM=0><cfset rFTA=0><cfset rREB=0><cfset rAST=0>
+                    <cfset rSTL=0><cfset rBLK=0><cfset rTO=0><cfset rFLS=0><cfset rPTS=0>
+                </cfif>
+                <cfset recapCurrentTeamID = allPlayerLogs.teamID>
+                <cfset recapCurrentTeamName = allPlayerLogs.teamName>
+                <cfset rFGM += allPlayerLogs.FGM><cfset rFGA += allPlayerLogs.FGA>
+                <cfset r3FGM += allPlayerLogs.3FGM><cfset r3FGA += allPlayerLogs.3FGA>
+                <cfset rFTM += allPlayerLogs.FTM><cfset rFTA += allPlayerLogs.FTA>
+                <cfset rREB += allPlayerLogs.Rebounds><cfset rAST += allPlayerLogs.Assists>
+                <cfset rSTL += allPlayerLogs.Steals><cfset rBLK += allPlayerLogs.Blocks>
+                <cfset rTO += allPlayerLogs.Turnovers><cfset rFLS += val(allPlayerLogs.Fouls)>
+                <cfset rPTS += allPlayerLogs.Points>
+                <cfset recapPlayerPrompts &= boxscoreCfc.generatePlayerStatsPrompt(allPlayerLogs, allPlayerLogs.teamID)>
+            </cfloop>
+
+            <cfset secondTeamStruct = {TotalFGM:rFGM,TotalFGA:rFGA,Total3FGM:r3FGM,Total3FGA:r3FGA,TotalFTM:rFTM,TotalFTA:rFTA,TotalREB:rREB,TotalAST:rAST,TotalSTL:rSTL,TotalBLK:rBLK,TotalTO:rTO,TotalFLS:rFLS,TotalPTS:rPTS}>
+            <cfset recapSecondTeamTotals = boxscoreCfc.generateTeamStatsPrompt(recapCurrentTeamName, secondTeamStruct)>
+
+            <cfset recapTeamScores = "#getTeamsPlaying.Home# #form.homeScore# | #getTeamsPlaying.Away# #form.awayScore#">
+            <cfset recapTotalMessage = recapFirstTeamTotals & recapSecondTeamTotals & recapTeamScores & recapPlayerPrompts>
+
+            <cfinclude template="/pages/boxscore/config.cfm">
+            <cfhttp url="https://api.openai.com/v1/chat/completions" method="POST" result="recapHttpResult">
+                <cfhttpparam type="header" name="Content-Type" value="application/json">
+                <cfhttpparam type="header" name="Authorization" value="Bearer #apiKey#">
+                <cfhttpparam type="body" value='{
+                  "model": "gpt-3.5-turbo",
+                  "messages": [
+                    {"role":"system","content":"Recap this basketball game like ESPN would based on the following stats in less than 1000 characters. Majority sentences should highlight individual performances but make sure one sentence compares team totals."},
+                    {"role":"user","content":"#JSStringFormat(recapTotalMessage)#"}
+                  ],
+                  "temperature": 1.0,
+                  "top_p": 1
+                }'>
+            </cfhttp>
+
+            <cfset recapApiResponse = DeserializeJSON(recapHttpResult.fileContent)>
+            <cfif structKeyExists(recapApiResponse, "choices") AND arrayLen(recapApiResponse.choices)>
+                <cfquery name="insertGameRecap" datasource="roundleague">
+                    INSERT INTO recaps (scheduleID, recapText)
+                    VALUES (
+                        <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">,
+                        <cfqueryparam cfsqltype="cf_sql_longvarchar" value="#recapApiResponse.choices[1].message.content#">
+                    )
+                </cfquery>
+            </cfif>
+        </cfif>
     </cfif>
 
     <!--- Auto-seed HS Division championship — SeasonID 21 / DivisionID 110 only --->
