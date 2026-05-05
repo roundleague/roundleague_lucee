@@ -7,7 +7,7 @@
   var cfg = window.SCRIMMAGE_CONFIG || window.LIVE_SCORE_CONFIG;
   if (!cfg) return;
 
-  var API_BASE = "https://round-league-api.onrender.com/api";
+  var API_BASE = (cfg.apiBase || "https://round-league-api.onrender.com") + "/api";
   var HALF_SECONDS = 25 * 60;
   var SHOT_CLOCK_SECONDS = 24;
 

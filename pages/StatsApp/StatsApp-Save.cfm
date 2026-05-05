@@ -84,7 +84,7 @@
 
         <!--- Notify live scoreboard that game is final --->
         <cfhttp method="PATCH"
-                url="https://round-league-api.onrender.com/api/schedule/#url.scheduleID#/score"
+                url="#isDefined("application.apiBase") ? application.apiBase : "https://round-league-api.onrender.com"#/api/schedule/#url.scheduleID#/score"
                 result="patchFinalResult">
             <cfhttpparam type="header" name="Content-Type" value="application/json">
             <cfhttpparam type="header" name="x-admin-key" value="#application.adminApiKey#">

@@ -168,4 +168,4 @@ Monday, April 13th (Championships)
 </cfoutput>
 
 <cfinclude template="/admin-dashboard/admin_footer.cfm">
-<script src="playoffImport.js?v=1.1"></script>
+<script src="playoffImport.js?v=<cfoutput>#GetFileInfo(ExpandPath('playoffImport.js')).lastModified.getTime()#</cfoutput>"></script>

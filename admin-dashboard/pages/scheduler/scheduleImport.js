@@ -12,6 +12,7 @@ function normalizeTeamName(name) {
   if (!name) return "";
   return name
     .replace(/\s*\([^)]*\)\s*/g, "") // Remove all parenthetical content like (123), (IVP), etc.
+    .replace(/[''`']/g, "") // Strip apostrophes so "N'" matches "N"
     .replace(/\s+/g, " ") // Normalize whitespace
     .trim()
     .toLowerCase();
@@ -81,6 +82,11 @@ function similarityScore(a, b) {
       // Partial word match (one starts with the other, min 3 chars)
       else if (wa.length >= 3 && wb.length >= 3) {
         if (wb.indexOf(wa) === 0 || wa.indexOf(wb) === 0) matchCount += 0.7;
+        // Near-miss: words share all but last char (e.g. "bones"/"bonez")
+        else if (wa.length >= 4 && wb.length >= 4) {
+          var shorter = Math.min(wa.length, wb.length);
+          if (wa.substring(0, shorter - 1) === wb.substring(0, shorter - 1)) matchCount += 0.85;
+        }
       }
     });
   });
@@ -1479,7 +1485,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
   var form = document.getElementById("importForm");
   if (form) {
-    form.addEventListener("submit", function () {
+    form.addEventListener("submit", function (e) {
+      var clearChecked = document.getElementById("clearExisting") && document.getElementById("clearExisting").checked;
+      if (clearChecked) {
+        var confirmed = confirm("Are you sure you want to delete the schedule and overwrite it with these changes? This data cannot be recovered.");
+        if (!confirmed) {
+          e.preventDefault();
+          return;
+        }
+      }
       logDivisionImported();
     });
   }

@@ -153,7 +153,7 @@
 <div id="no-game">Loading game&hellip;</div>
 
 <script>
-  var API_BASE   = 'https://round-league-api.onrender.com/api';
+  var API_BASE   = '<cfoutput>#isDefined("application.apiBase") ? application.apiBase : "https://round-league-api.onrender.com"#</cfoutput>/api';
   var ADMIN_KEY  = '<cfoutput>#application.adminApiKey#</cfoutput>';
   var params     = new URLSearchParams(location.search);
   var scheduleID = params.get('game');
@@ -352,7 +352,7 @@
     fetchClock();
     startLocalTicker();
 
-    var socket = io('https://round-league-api.onrender.com');
+    var socket = io('<cfoutput>#isDefined("application.apiBase") ? application.apiBase : "https://round-league-api.onrender.com"#</cfoutput>');
     socket.emit('join', scheduleID);
     socket.on('clock:update', function(data) { applyClockState(data); });
     socket.on('score:update', function(data) {
@@ -377,7 +377,7 @@
     var boardEl         = document.getElementById('board');
     document.getElementById('no-game').style.display = 'none';
 
-    var socket = io('https://round-league-api.onrender.com');
+    var socket = io('<cfoutput>#isDefined("application.apiBase") ? application.apiBase : "https://round-league-api.onrender.com"#</cfoutput>');
 
     socket.on('connect', function() {
       socket.emit('join-lobby');

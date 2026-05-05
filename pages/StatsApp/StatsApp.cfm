@@ -317,9 +317,10 @@
     var LIVE_SCORE_CONFIG = {
       scheduleID: '#url.scheduleID#',
       adminKey: '#application.adminApiKey#',
-      isHome: #(url.teamID EQ getTeamsPlaying.homeTeamID ? 'true' : 'false')#
+      isHome: #(url.teamID EQ getTeamsPlaying.homeTeamID ? 'true' : 'false')#,
+      apiBase: '#isDefined("application.apiBase") ? application.apiBase : "https://round-league-api.onrender.com"#'
     };
-    window.gameSocket = io('https://round-league-api.onrender.com');
+    window.gameSocket = io('#isDefined("application.apiBase") ? application.apiBase : "https://round-league-api.onrender.com"#');
     window.gameSocket.emit('join', LIVE_SCORE_CONFIG.scheduleID);
     </script>
     </cfif>

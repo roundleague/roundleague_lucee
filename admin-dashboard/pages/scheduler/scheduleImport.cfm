@@ -234,8 +234,8 @@ Week 2 - Monday, March 2nd
             
             <div class="form-group">
               <label>
-                <input type="checkbox" id="clearExisting" name="clearExisting" value="1" checked> 
-                Clear existing schedule for this division before importing
+                <input type="checkbox" id="clearExisting" name="clearExisting" value="1" checked>
+                <strong style="color:##c0392b;">DELETE EXISTING SCHEDULE FOR THIS DIVISION?</strong>
               </label>
             </div>
             
@@ -264,7 +264,7 @@ Week 2 - Monday, March 2nd
 </cfoutput>
 
 <cfinclude template="/admin-dashboard/admin_footer.cfm">
-<script src="scheduleImport.js?v=1.3"></script>
+<script src="scheduleImport.js?v=<cfoutput>#GetFileInfo(ExpandPath('scheduleImport.js')).lastModified.getTime()#</cfoutput>"></script>
 <script>
 var extractedSchedule = null;
 

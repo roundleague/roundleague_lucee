@@ -17,6 +17,7 @@ function normalizeTeamName(name) {
   if (!name) return '';
   return name
     .replace(/\s*\([^)]*\)\s*/g, '')
+    .replace(/[''`']/g, '') // Strip apostrophes so "N'" matches "N"
     .replace(/\s+/g, ' ')
     .trim()
     .toLowerCase();
@@ -51,6 +52,11 @@ function similarityScore(a, b) {
       if (wa === wb) matchCount++;
       else if (wa.length >= 3 && wb.length >= 3) {
         if (wb.indexOf(wa) === 0 || wa.indexOf(wb) === 0) matchCount += 0.7;
+        // Near-miss: words share all but last char (e.g. "bones"/"bonez")
+        else if (wa.length >= 4 && wb.length >= 4) {
+          var shorter = Math.min(wa.length, wb.length);
+          if (wa.substring(0, shorter - 1) === wb.substring(0, shorter - 1)) matchCount += 0.85;
+        }
       }
     });
   });
