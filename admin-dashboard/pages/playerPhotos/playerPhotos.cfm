@@ -23,7 +23,7 @@
   FROM players p
   JOIN roster r ON r.PlayerID = p.playerID
   JOIN teams t ON t.teamId = r.teamID
-  JOIN divisions d ON d.divisionID = r.DivisionID
+  LEFT JOIN divisions d ON d.divisionID = r.DivisionID
   WHERE r.seasonID = (SELECT s.seasonID From Seasons s Where s.Status = 'Active')
   AND t.Status = 'Active'
   ORDER BY teamName
