@@ -30,7 +30,8 @@
 
 <!--- Get team payments --->
 <cfquery name="getTeamPayments" datasource="roundleague">
-    SELECT 
+    SELECT
+        tp.id AS paymentID,
         tp.amount_paid,
         tp.payment_method,
         tp.stripe_session_id,
@@ -51,7 +52,8 @@
 
 <!--- Get player contributions --->
 <cfquery name="getPlayerContributions" datasource="roundleague">
-    SELECT 
+    SELECT
+        pc.id AS contributionID,
         pc.amount,
         pc.created_at,
         pc.stripe_session_id,
@@ -213,22 +215,57 @@
                                     <th>Paid By</th>
                                     <th>Method</th>
                                     <th>Transaction ID</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <cfif getTeamPayments.recordCount GT 0>
                                     <cfloop query="getTeamPayments">
-                                        <tr>
+                                        <tr id="tp-row-#paymentID#">
                                             <td>#dateFormat(created_at, 'mm/dd/yyyy')# #timeFormat(created_at, 'h:mm tt')#</td>
                                             <td>$#numberFormat(amount_paid, '999,999.00')#</td>
                                             <td>#firstName# #lastName#</td>
                                             <td>#payment_method#</td>
-                                            <td>#stripe_session_id#</td>
+                                            <td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="#encodeForHTMLAttribute(stripe_session_id)#">#stripe_session_id#</td>
+                                            <td style="white-space:nowrap;">
+                                                <button class="btn btn-sm btn-warning btn-just-icon" onclick="showTPEdit(#paymentID#)" title="Edit"><i class="nc-icon nc-ruler-pencil"></i></button>
+                                                <button class="btn btn-sm btn-danger btn-just-icon" onclick="deleteTeamPayment(#paymentID#, #url.teamID#)" title="Delete"><i class="nc-icon nc-simple-remove"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr id="tp-edit-#paymentID#" style="display:none;">
+                                            <td colspan="6" style="background:##f8f9fa; padding:10px 12px;">
+                                                <div class="d-flex flex-wrap align-items-end" style="gap:8px;">
+                                                    <div>
+                                                        <label class="small mb-0">Amount ($)</label>
+                                                        <input type="number" class="form-control form-control-sm" id="edit-tp-amt-#paymentID#" value="#amount_paid#" step="0.01" min="0.01" style="width:110px;">
+                                                    </div>
+                                                    <div>
+                                                        <label class="small mb-0">Method</label>
+                                                        <select class="form-control form-control-sm" id="edit-tp-method-#paymentID#">
+                                                            <option value="cash" <cfif payment_method EQ "cash">selected</cfif>>Cash</option>
+                                                            <option value="venmo" <cfif payment_method EQ "venmo">selected</cfif>>Venmo</option>
+                                                            <option value="zelle" <cfif payment_method EQ "zelle">selected</cfif>>Zelle</option>
+                                                            <option value="check" <cfif payment_method EQ "check">selected</cfif>>Check</option>
+                                                            <option value="paypal" <cfif payment_method EQ "paypal">selected</cfif>>PayPal</option>
+                                                            <option value="stripe" <cfif payment_method EQ "stripe">selected</cfif>>Stripe</option>
+                                                            <option value="other" <cfif payment_method EQ "other">selected</cfif>>Other</option>
+                                                        </select>
+                                                    </div>
+                                                    <div style="flex:1; min-width:180px;">
+                                                        <label class="small mb-0">Notes / Transaction ID</label>
+                                                        <input type="text" class="form-control form-control-sm" id="edit-tp-notes-#paymentID#" value="#encodeForHTMLAttribute(stripe_session_id)#">
+                                                    </div>
+                                                    <div class="d-flex" style="gap:4px;">
+                                                        <button class="btn btn-sm btn-success" onclick="saveTeamPayment(#paymentID#, #url.teamID#)"><i class="nc-icon nc-check-2"></i> Save</button>
+                                                        <button class="btn btn-sm btn-secondary" onclick="cancelTPEdit(#paymentID#)">Cancel</button>
+                                                    </div>
+                                                </div>
+                                            </td>
                                         </tr>
                                     </cfloop>
                                 <cfelse>
                                     <tr>
-                                        <td colspan="5" class="text-center">No team payments recorded.</td>
+                                        <td colspan="6" class="text-center">No team payments recorded.</td>
                                     </tr>
                                 </cfif>
                             </tbody>
@@ -246,21 +283,44 @@
                                     <th>Amount</th>
                                     <th>Player</th>
                                     <th>Transaction ID</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <cfif getPlayerContributions.recordCount GT 0>
                                     <cfloop query="getPlayerContributions">
-                                        <tr>
+                                        <tr id="pc-row-#contributionID#">
                                             <td>#dateFormat(created_at, 'mm/dd/yyyy')# #timeFormat(created_at, 'h:mm tt')#</td>
                                             <td>$#numberFormat(amount, '999,999.00')#</td>
                                             <td>#firstName# #lastName#</td>
-                                            <td>#stripe_session_id#</td>
+                                            <td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="#encodeForHTMLAttribute(stripe_session_id)#">#stripe_session_id#</td>
+                                            <td style="white-space:nowrap;">
+                                                <button class="btn btn-sm btn-warning btn-just-icon" onclick="showPCEdit(#contributionID#)" title="Edit"><i class="nc-icon nc-ruler-pencil"></i></button>
+                                                <button class="btn btn-sm btn-danger btn-just-icon" onclick="deletePlayerContrib(#contributionID#, #url.teamID#)" title="Delete"><i class="nc-icon nc-simple-remove"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr id="pc-edit-#contributionID#" style="display:none;">
+                                            <td colspan="5" style="background:##f8f9fa; padding:10px 12px;">
+                                                <div class="d-flex flex-wrap align-items-end" style="gap:8px;">
+                                                    <div>
+                                                        <label class="small mb-0">Amount ($)</label>
+                                                        <input type="number" class="form-control form-control-sm" id="edit-pc-amt-#contributionID#" value="#amount#" step="0.01" min="0.01" style="width:110px;">
+                                                    </div>
+                                                    <div style="flex:1; min-width:180px;">
+                                                        <label class="small mb-0">Notes / Transaction ID</label>
+                                                        <input type="text" class="form-control form-control-sm" id="edit-pc-notes-#contributionID#" value="#encodeForHTMLAttribute(stripe_session_id)#">
+                                                    </div>
+                                                    <div class="d-flex" style="gap:4px;">
+                                                        <button class="btn btn-sm btn-success" onclick="savePlayerContrib(#contributionID#, #url.teamID#)"><i class="nc-icon nc-check-2"></i> Save</button>
+                                                        <button class="btn btn-sm btn-secondary" onclick="cancelPCEdit(#contributionID#)">Cancel</button>
+                                                    </div>
+                                                </div>
+                                            </td>
                                         </tr>
                                     </cfloop>
                                 <cfelse>
                                     <tr>
-                                        <td colspan="4" class="text-center">No player contributions recorded.</td>
+                                        <td colspan="5" class="text-center">No player contributions recorded.</td>
                                     </tr>
                                 </cfif>
                             </tbody>
@@ -352,6 +412,67 @@
                         requiredText.style.display = 'none';
                     }
                 });
+                </script>
+                <script>
+                var currentTeamID = #url.teamID#;
+
+                function reloadTeamDetails(activeTab) {
+                    $.ajax({
+                        url: 'team_details.cfm',
+                        data: { teamID: currentTeamID },
+                        success: function(response) {
+                            $('##teamDetailsContent').html(response);
+                            if (activeTab) {
+                                setTimeout(function() { $('##' + activeTab).tab('show'); }, 100);
+                            }
+                        }
+                    });
+                }
+
+                function deleteTeamPayment(paymentID, teamID) {
+                    if (!confirm('Delete this team payment? This cannot be undone.')) return;
+                    $.post('delete_payment.cfm', { paymentID: paymentID, paymentType: 'team', teamID: teamID }, function(res) {
+                        if (res.success) { reloadTeamDetails('team-payments-tab'); }
+                        else { alert('Error: ' + res.message); }
+                    }, 'json').fail(function() { alert('Request failed. Please try again.'); });
+                }
+
+                function deletePlayerContrib(paymentID, teamID) {
+                    if (!confirm('Delete this player contribution? This cannot be undone.')) return;
+                    $.post('delete_payment.cfm', { paymentID: paymentID, paymentType: 'player', teamID: teamID }, function(res) {
+                        if (res.success) { reloadTeamDetails('player-contributions-tab'); }
+                        else { alert('Error: ' + res.message); }
+                    }, 'json').fail(function() { alert('Request failed. Please try again.'); });
+                }
+
+                function showTPEdit(id) { $('##tp-row-' + id).hide(); $('##tp-edit-' + id).show(); }
+                function cancelTPEdit(id) { $('##tp-edit-' + id).hide(); $('##tp-row-' + id).show(); }
+
+                function saveTeamPayment(paymentID, teamID) {
+                    $.post('edit_payment.cfm', {
+                        paymentID: paymentID, paymentType: 'team', teamID: teamID,
+                        amount: $('##edit-tp-amt-' + paymentID).val(),
+                        paymentMethod: $('##edit-tp-method-' + paymentID).val(),
+                        notes: $('##edit-tp-notes-' + paymentID).val()
+                    }, function(res) {
+                        if (res.success) { reloadTeamDetails('team-payments-tab'); }
+                        else { alert('Error: ' + res.message); }
+                    }, 'json').fail(function() { alert('Request failed. Please try again.'); });
+                }
+
+                function showPCEdit(id) { $('##pc-row-' + id).hide(); $('##pc-edit-' + id).show(); }
+                function cancelPCEdit(id) { $('##pc-edit-' + id).hide(); $('##pc-row-' + id).show(); }
+
+                function savePlayerContrib(paymentID, teamID) {
+                    $.post('edit_payment.cfm', {
+                        paymentID: paymentID, paymentType: 'player', teamID: teamID,
+                        amount: $('##edit-pc-amt-' + paymentID).val(),
+                        notes: $('##edit-pc-notes-' + paymentID).val()
+                    }, function(res) {
+                        if (res.success) { reloadTeamDetails('player-contributions-tab'); }
+                        else { alert('Error: ' + res.message); }
+                    }, 'json').fail(function() { alert('Request failed. Please try again.'); });
+                }
                 </script>
             </div>
         </div>
