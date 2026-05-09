@@ -96,18 +96,16 @@ $(document).ready(function () {
           hotKeyAdd("TO");
           break;
         case 83: // s
-          playerNodeIndex = $(playerNode).parent().index() + 1;
-          // console.log("DOWN - playerNodeIndex: " + playerNodeIndex);
-          if (playerNodeIndex < 5) {
-            var newPlayerNode = $("tr").find(".playerBox")[playerNodeIndex];
-            $(newPlayerNode).trigger("click");
+          playerNodeIndex = $(".playerBox").index(playerNode) + 1;
+          if (playerNodeIndex < $(".playerBox").length) {
+            $($(".playerBox")[playerNodeIndex]).trigger("click");
           }
           break;
         case 87: // w
-          playerNodeIndex = $(playerNode).parent().index() - 1;
-          // console.log("UP - playerNodeIndex: " + playerNodeIndex);
-          var newPlayerNode = $("tr").find(".playerBox")[playerNodeIndex];
-          $(newPlayerNode).trigger("click");
+          playerNodeIndex = $(".playerBox").index(playerNode) - 1;
+          if (playerNodeIndex >= 0) {
+            $($(".playerBox")[playerNodeIndex]).trigger("click");
+          }
           break;
       }
     }
@@ -193,10 +191,10 @@ $(document).ready(function () {
       addToValue("FTA", 1, playerID);
     } else if ($(this).hasClass("FOULS")) {
       var currentHalf = getCurrentHalf();
-      console.log(currentHalf);
       var currentNum = parseFloat($(".Fouls_Half_" + currentHalf).html());
       currentNum += 1;
       $(".Fouls_Half_" + currentHalf).html(currentNum);
+      patchFouls(currentHalf);
     }
   });
 
@@ -232,9 +230,29 @@ $(document).ready(function () {
       } else if ($(this).hasClass("FTM")) {
         addToValue("PTS", -1, playerID);
         addToValue("FTA", -1, playerID);
+      } else if ($(this).hasClass("FOULS")) {
+        var currentHalf = getCurrentHalf();
+        var currentNum = parseFloat($(".Fouls_Half_" + currentHalf).html());
+        if (currentNum > 0) {
+          $(".Fouls_Half_" + currentHalf).html(currentNum - 1);
+          patchFouls(currentHalf);
+        }
       }
     }
   });
+
+  function patchFouls(half) {
+    if (!window.LIVE_SCORE_CONFIG) return;
+    var cfg = window.LIVE_SCORE_CONFIG;
+    var key = (cfg.isHome ? 'home' : 'away') + '_fouls_h' + half;
+    var body = {};
+    body[key] = parseInt($('.Fouls_Half_' + half).html()) || 0;
+    fetch(cfg.apiBase + '/api/schedule/' + cfg.scheduleID + '/fouls', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', 'x-admin-key': cfg.adminKey },
+      body: JSON.stringify(body)
+    }).catch(function() {});
+  }
 
   function addToValue(id, addValue, playerID) {
     var fieldValueSpan = $("#" + playerID).find("#" + id);
@@ -337,29 +355,44 @@ $(document).ready(function () {
 
   // 1st Half to 2nd Half Logic
   $(".switch-label").click(function () {
-    var currentHalf = $(this).data("value");
+    var currentHalf = $(this).attr("data-value");
     if (currentHalf == "1") {
-      $(this).data("value", "2");
-      // 1st half is over - timeouts do not carry over
-      $(".Timeouts_Half_1").html("0");
+      $(this).attr("data-value", "2");
     } else {
-      $(this).data("value", "1");
+      $(this).attr("data-value", "1");
     }
   });
 
-  // Use Timeout button - decrements current half's timeouts
-  $("#useTimeout").click(function (e) {
+  // Timeout +/- buttons
+  function patchTimeouts(half) {
+    if (!window.LIVE_SCORE_CONFIG) return;
+    var cfg = window.LIVE_SCORE_CONFIG;
+    var key = (cfg.isHome ? 'home' : 'away') + '_timeouts_h' + half;
+    var body = {};
+    body[key] = parseInt($('.Timeouts_Half_' + half).html()) || 0;
+    fetch(cfg.apiBase + '/api/schedule/' + cfg.scheduleID + '/timeouts', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', 'x-admin-key': cfg.adminKey },
+      body: JSON.stringify(body)
+    }).catch(function() {});
+  }
+
+  $(".to-minus, .to-plus").click(function (e) {
     e.stopPropagation();
-    var currentHalf = getCurrentHalf();
-    var remaining = parseInt($(".Timeouts_Half_" + currentHalf).html());
-    if (remaining > 0) {
-      remaining -= 1;
-      $(".Timeouts_Half_" + currentHalf).html(remaining);
+    var half = $(this).data("half");
+    var span = $(".Timeouts_Half_" + half);
+    var val = parseInt(span.html());
+    if ($(this).hasClass("to-minus") && val > 0) {
+      span.html(val - 1);
+      patchTimeouts(half);
+    } else if ($(this).hasClass("to-plus") && val < 10) {
+      span.html(val + 1);
+      patchTimeouts(half);
     }
   });
 
   function getCurrentHalf() {
-    return $(".switch-label").data("value");
+    return $(".switch-label").attr("data-value");
   }
 });
 

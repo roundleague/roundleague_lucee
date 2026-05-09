@@ -217,12 +217,25 @@
     renderDisplay();
     patchClock("stopped");
     resetScores();
-    // Reset shot clock too
+    // Reset shot clock
     stopShotClockTicker();
     shotClockRemaining = SHOT_CLOCK_SECONDS;
     shotClockBuzzed = false;
     renderShotClock();
     patchShotClock(SHOT_CLOCK_SECONDS, "stopped");
+    // Reset fouls and timeouts UI
+    document.querySelectorAll(".Fouls_Half_1, .Fouls_Half_2").forEach(function (el) { el.textContent = "0"; });
+    document.querySelectorAll(".Timeouts_Half_1, .Timeouts_Half_2").forEach(function (el) { el.textContent = "2"; });
+    // Reset fouls and timeouts in DB
+    var headers = { "Content-Type": "application/json", "x-admin-key": cfg.adminKey };
+    fetch(API_BASE + "/schedule/" + cfg.scheduleID + "/fouls", {
+      method: "PATCH", headers: headers,
+      body: JSON.stringify({ home_fouls_h1: 0, home_fouls_h2: 0, away_fouls_h1: 0, away_fouls_h2: 0 }),
+    });
+    fetch(API_BASE + "/schedule/" + cfg.scheduleID + "/timeouts", {
+      method: "PATCH", headers: headers,
+      body: JSON.stringify({ home_timeouts_h1: 2, home_timeouts_h2: 2, away_timeouts_h1: 2, away_timeouts_h2: 2 }),
+    });
   });
 
   // ── Period toggle ─────────────────────────────────────────

@@ -66,7 +66,7 @@
       align-items: center; gap: 12px;
     }
 
-    .team-name  { font-size: clamp(1.6rem, 4vw, 3.4rem); text-transform: uppercase; letter-spacing: .06em; text-align: center; }
+    .team-name  { font-size: clamp(1.6rem, 4vw, 3.4rem); text-transform: uppercase; letter-spacing: .06em; text-align: center; min-height: 3em; display: flex; align-items: center; justify-content: center; }
     .team-score { font-size: clamp(6rem, 20vw, 16rem); line-height: 1; font-variant-numeric: tabular-nums; }
     .team-label { font-size: clamp(.7rem, 1.4vw, 1rem); letter-spacing: .2em; text-transform: uppercase; }
 
@@ -85,6 +85,25 @@
     #status-badge { margin-top: 6px; font-size: clamp(.7rem, 1.4vw, 1rem); letter-spacing: .25em; }
     #status-badge.live { animation: pulse 2s ease-in-out infinite; }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
+
+    .team-fouls-block { display: flex; flex-direction: column; align-items: center; gap: 2px; margin-top: -4px; }
+    .team-fouls { font-size: clamp(1.4rem, 4vw, 3rem); font-variant-numeric: tabular-nums; line-height: 1; }
+    body.s1 .team-fouls { color: #bbb; }
+    body.s2 .team-fouls { color: #cc6600; }
+    body.s3 .team-fouls { color: #555; }
+
+    .team-timeouts-block { display: flex; flex-direction: column; align-items: center; gap: 4px; margin-top: 6px; }
+    .timeout-dots { display: flex; gap: clamp(4px, 1vw, 10px); }
+    .timeout-dot {
+      width: clamp(10px, 1.8vw, 18px); height: clamp(10px, 1.8vw, 18px);
+      border-radius: 50%; border: 2px solid currentColor;
+      transition: background .2s;
+    }
+    .timeout-dot.used { background: transparent; opacity: .35; }
+    .timeout-dot.remaining { background: currentColor; }
+    body.s1 .timeout-dot { color: #bbb; }
+    body.s2 .timeout-dot { color: #cc6600; }
+    body.s3 .timeout-dot { color: #555; }
 
     #no-game { font-size: 1.4rem; color: #555; text-align: center; letter-spacing: .1em; }
 
@@ -129,8 +148,16 @@
 <div id="board" style="display:none">
   <div class="team-block">
     <div class="team-label">HOME</div>
-    <div class="team-name" id="homeName">—</div>
+    <div class="team-name" id="homeName">&mdash;</div>
     <div class="team-score" id="homeScore">0</div>
+    <div class="team-fouls-block">
+      <div class="team-label">TEAM FOULS</div>
+      <div class="team-fouls" id="homeFouls">0</div>
+    </div>
+    <div class="team-timeouts-block">
+      <div class="team-label">TIMEOUTS</div>
+      <div class="timeout-dots" id="homeTimeoutDots"></div>
+    </div>
   </div>
 
   <div id="center-block">
@@ -145,8 +172,16 @@
 
   <div class="team-block">
     <div class="team-label">AWAY</div>
-    <div class="team-name" id="awayName">—</div>
+    <div class="team-name" id="awayName">&mdash;</div>
     <div class="team-score" id="awayScore">0</div>
+    <div class="team-fouls-block">
+      <div class="team-label">TEAM FOULS</div>
+      <div class="team-fouls" id="awayFouls">0</div>
+    </div>
+    <div class="team-timeouts-block">
+      <div class="team-label">TIMEOUTS</div>
+      <div class="timeout-dots" id="awayTimeoutDots"></div>
+    </div>
   </div>
 </div>
 
@@ -183,6 +218,34 @@
   var shotRunning   = false;
   var shotTicker    = null;
   var shotBuzzed    = false;
+
+  // Team foul state (per half, home + away)
+  var foulState = { home_fouls_h1: 0, home_fouls_h2: 0, away_fouls_h1: 0, away_fouls_h2: 0 };
+
+  function renderFouls() {
+    var h = clockPeriod === 2 ? 'h2' : 'h1';
+    document.getElementById('homeFouls').textContent = foulState['home_fouls_' + h];
+    document.getElementById('awayFouls').textContent = foulState['away_fouls_' + h];
+  }
+
+  // Timeout state (per half, home + away) — default 2 per half
+  var timeoutState = { home_timeouts_h1: 2, home_timeouts_h2: 2, away_timeouts_h1: 2, away_timeouts_h2: 2 };
+
+  function renderTimeouts() {
+    var h = clockPeriod === 2 ? 'h2' : 'h1';
+    renderDots('homeTimeoutDots', timeoutState['home_timeouts_' + h], 2);
+    renderDots('awayTimeoutDots', timeoutState['away_timeouts_' + h], 2);
+  }
+
+  function renderDots(elId, remaining, total) {
+    var el = document.getElementById(elId);
+    if (!el) return;
+    var html = '';
+    for (var i = 0; i < total; i++) {
+      html += '<div class="timeout-dot ' + (i < remaining ? 'remaining' : 'used') + '"></div>';
+    }
+    el.innerHTML = html;
+  }
 
   // Audio buzzer
   var sounds = {
@@ -278,13 +341,32 @@
       }
       renderShotClock();
     }
+
+    renderFouls();
+    renderTimeouts();
+  }
+
+  function applyFoulData(d) {
+    if (d.home_fouls_h1 !== undefined) foulState.home_fouls_h1 = d.home_fouls_h1;
+    if (d.home_fouls_h2 !== undefined) foulState.home_fouls_h2 = d.home_fouls_h2;
+    if (d.away_fouls_h1 !== undefined) foulState.away_fouls_h1 = d.away_fouls_h1;
+    if (d.away_fouls_h2 !== undefined) foulState.away_fouls_h2 = d.away_fouls_h2;
+    renderFouls();
+  }
+
+  function applyTimeoutData(d) {
+    if (d.home_timeouts_h1 !== undefined) timeoutState.home_timeouts_h1 = d.home_timeouts_h1;
+    if (d.home_timeouts_h2 !== undefined) timeoutState.home_timeouts_h2 = d.home_timeouts_h2;
+    if (d.away_timeouts_h1 !== undefined) timeoutState.away_timeouts_h1 = d.away_timeouts_h1;
+    if (d.away_timeouts_h2 !== undefined) timeoutState.away_timeouts_h2 = d.away_timeouts_h2;
+    renderTimeouts();
   }
 
   function fetchClock() {
     if (!scheduleID) return;
     fetch(API_BASE + '/schedule/' + scheduleID + '/clock')
       .then(function(r) { return r.ok ? r.json() : null; })
-      .then(function(d) { if (d) applyClockState(d); })
+      .then(function(d) { if (d) { applyClockState(d); applyFoulData(d); applyTimeoutData(d); } })
       .catch(function() {});
   }
 
@@ -299,6 +381,8 @@
         document.getElementById('awayName').textContent  = nameAway || overrideAway || g.awayTeam || '—';
         document.getElementById('homeScore').textContent = g.homeScore !== null ? g.homeScore : 0;
         document.getElementById('awayScore').textContent = g.awayScore !== null ? g.awayScore : 0;
+        applyFoulData(g);
+        applyTimeoutData(g);
 
         var badge = document.getElementById('status-badge');
         badge.textContent = (g.status || 'scheduled').toUpperCase();
@@ -322,9 +406,21 @@
       method: 'PATCH', headers: headers,
       body: JSON.stringify({ clock_status: 'stopped', clock_remaining_seconds: 1500, clock_period: 1, shot_clock_remaining: 30, shot_clock_status: 'stopped' })
     });
+    fetch(API_BASE + '/schedule/' + scheduleID + '/fouls', {
+      method: 'PATCH', headers: headers,
+      body: JSON.stringify({ home_fouls_h1: 0, home_fouls_h2: 0, away_fouls_h1: 0, away_fouls_h2: 0 })
+    });
+    fetch(API_BASE + '/schedule/' + scheduleID + '/timeouts', {
+      method: 'PATCH', headers: headers,
+      body: JSON.stringify({ home_timeouts_h1: 2, home_timeouts_h2: 2, away_timeouts_h1: 2, away_timeouts_h2: 2 })
+    });
     // Update display immediately without waiting for next poll
     document.getElementById('homeScore').textContent = '—';
     document.getElementById('awayScore').textContent = '—';
+    foulState = { home_fouls_h1: 0, home_fouls_h2: 0, away_fouls_h1: 0, away_fouls_h2: 0 };
+    timeoutState = { home_timeouts_h1: 2, home_timeouts_h2: 2, away_timeouts_h1: 2, away_timeouts_h2: 2 };
+    renderFouls();
+    renderTimeouts();
     clockRemaining = 1500;
     clockRunning   = false;
     clockPeriod    = 1;
@@ -364,6 +460,8 @@
         badge.className = data.status === 'live' ? 'live' : '';
       }
     });
+    socket.on('fouls:update', function(data) { applyFoulData(data); });
+    socket.on('timeouts:update', function(data) { applyTimeoutData(data); });
     socket.on('subhorn', function() { playBuzzer('sub'); });
 
   } else {
@@ -457,6 +555,8 @@
         if (data.status === 'final') enterGameOver();
       }
     });
+    socket.on('fouls:update', function(data) { if (autoState === 'live') applyFoulData(data); });
+    socket.on('timeouts:update', function(data) { if (autoState === 'live') applyTimeoutData(data); });
     socket.on('subhorn', function() { if (autoState === 'live') playBuzzer('sub'); });
 
     enterWaiting();

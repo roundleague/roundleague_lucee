@@ -115,9 +115,6 @@
             <button type="button" class="pure-button button-warning" id="clockResetShot">Reset Shot Clock</button>
         </span>
         <button type="button" class="pure-button button-secondary" id="clockSubHorn" style="margin-left:8px;">Sub Horn</button>
-        <a href="/pages/scoreboard/scoreboard.cfm?game=#url.scheduleID#&home=#URLEncodedFormat(getTeamsPlaying.Home)#&away=#URLEncodedFormat(getTeamsPlaying.Away)#"
-           target="_blank"
-           style="margin-left:12px;font-size:0.9rem;color:##007acc;text-decoration:underline;">Open Scoreboard &nearr;</a>
         <span style="font-size:0.75rem;color:##999;margin-left:12px;">Space = Start/Pause &middot; R = Reset Shot Clock &middot; T = Start/Stop Shot Clock</span>
     </div>
     </cfif>
@@ -203,14 +200,17 @@
                     <td colspan="2">
                         2nd Half Fouls: <span class="Fouls_Half_2">0</span>
                     </td>
-                    <td colspan="2">
-                        1st Half TOs: <span class="Timeouts_Half_1">2</span>
+                    <td colspan="2" style="text-align:center;white-space:nowrap;">
+                        <div style="font-size:.75em;margin-bottom:2px;">H1 TOs</div>
+                        <button type="button" class="pure-button to-minus" data-half="1" style="padding:2px 8px;">-</button>
+                        <span class="Timeouts_Half_1" style="display:inline-block;min-width:1.4em;text-align:center;font-weight:bold;">2</span>
+                        <button type="button" class="pure-button to-plus" data-half="1" style="padding:2px 8px;">+</button>
                     </td>
-                    <td colspan="2">
-                        2nd Half TOs: <span class="Timeouts_Half_2">2</span>
-                    </td>
-                    <td colspan="1">
-                        <button type="button" class="pure-button button-timeout" id="useTimeout">Use TO</button>
+                    <td colspan="2" style="text-align:center;white-space:nowrap;">
+                        <div style="font-size:.75em;margin-bottom:2px;">H2 TOs</div>
+                        <button type="button" class="pure-button to-minus" data-half="2" style="padding:2px 8px;">-</button>
+                        <span class="Timeouts_Half_2" style="display:inline-block;min-width:1.4em;text-align:center;font-weight:bold;">2</span>
+                        <button type="button" class="pure-button to-plus" data-half="2" style="padding:2px 8px;">+</button>
                     </td>
                     <td colspan="1">
                         Total: <span class="teamTotalPts">0</span>
