@@ -64,6 +64,41 @@
         </cfif>
     </cfloop>
 
+    <!--- Store sub events for the historical record --->
+    <cfif structKeyExists(form, "subEvents") AND len(trim(form.subEvents)) GT 2>
+        <cfset subArray = DeserializeJSON(form.subEvents)>
+        <cfloop array="#subArray#" index="sub">
+            <cfquery datasource="roundleague">
+                INSERT INTO game_subs (scheduleID, teamID, playerOutID, playerInID, homeScore, awayScore, seq)
+                VALUES (
+                    <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">,
+                    <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.teamID#">,
+                    <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#sub.playerOutID#">,
+                    <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#sub.playerInID#">,
+                    <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#sub.homeScore#">,
+                    <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#sub.awayScore#">,
+                    <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#sub.seq#">
+                )
+            </cfquery>
+        </cfloop>
+    </cfif>
+
+    <!--- Save +/- values directly from the live display on the StatsApp screen --->
+    <cfif structKeyExists(form, "plusMinusValues") AND len(trim(form.plusMinusValues)) GT 2>
+        <cfset pmData = DeserializeJSON(form.plusMinusValues)>
+        <cfloop list="#playerIDList#" index="i">
+            <cfif NOT (form["FGA_" & i] EQ 0 AND form["PTS_" & i] EQ 0 AND form["REBS_" & i] EQ 0 AND form["ASTS_" & i] EQ 0 AND form["STLS_" & i] EQ 0 AND form["BLKS_" & i] EQ 0 AND form["FOULS_" & i] EQ 0)>
+                <cfif structKeyExists(pmData, i)>
+                    <cfquery datasource="roundleague">
+                        UPDATE playergamelog SET plusMinus = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#val(pmData[i])#">
+                        WHERE scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">
+                        AND playerID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#i#">
+                    </cfquery>
+                </cfif>
+            </cfif>
+        </cfloop>
+    </cfif>
+
     <cfquery name="scoresExist" datasource="roundleague">
         SELECT homeScore, awayScore, divisionID, status
         From Schedule

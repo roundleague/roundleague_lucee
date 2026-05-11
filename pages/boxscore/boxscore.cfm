@@ -1,5 +1,24 @@
 <cfinclude template="/header.cfm">
 
+<!--- LOCAL ONLY: Reset game data for re-testing --->
+<cfif CGI.HTTP_HOST CONTAINS "localhost" OR CGI.HTTP_HOST CONTAINS "127.0.0.1" AND isDefined("form.resetGame") AND isDefined("url.scheduleID")>
+    <cfquery datasource="roundleague">
+        DELETE FROM PlayerGameLog WHERE scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">
+    </cfquery>
+    <cfquery datasource="roundleague">
+        DELETE FROM recaps WHERE scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">
+    </cfquery>
+    <cfquery datasource="roundleague">
+        DELETE FROM game_subs WHERE scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">
+    </cfquery>
+    <cfquery datasource="roundleague">
+        UPDATE schedule
+        SET homeScore = NULL, awayScore = NULL, status = 'scheduled'
+        WHERE scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">
+    </cfquery>
+    <cflocation url="boxscore.cfm?scheduleID=#url.scheduleID#" addtoken="false">
+</cfif>
+
 <!--- Page Specific CSS/JS Here --->
 <link href="../boxscore/boxscore.css?v=1.6" rel="stylesheet">
 <!--- POG-style fonts for player stats modal --->
@@ -8,7 +27,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
 
 <cfquery name="getPlayerLogs" datasource="roundleague">
-	SELECT DISTINCT pgl.PlayerID, p.firstName, p.lastName, FGM, FGA, 3FGM, 3FGA, FTM, FTA, Points, Rebounds, Assists, Steals, Blocks, Turnovers, pgl.teamID, t.teamName, pgl.Fouls, r.jersey, p.PermissionToShare
+	SELECT DISTINCT pgl.PlayerID, p.firstName, p.lastName, FGM, FGA, 3FGM, 3FGA, FTM, FTA, Points, Rebounds, Assists, Steals, Blocks, Turnovers, pgl.teamID, t.teamName, pgl.Fouls, r.jersey, p.PermissionToShare, pgl.plusMinus
 	FROM PlayerGameLog pgl
 	JOIN Players p on p.playerID = pgl.playerID
     JOIN Teams t on t.teamID = pgl.teamID
@@ -149,7 +168,7 @@
                     <cfset totalPTS = 0>
                     <thead>
                         <tr>
-                            <td colspan="12">#GetPlayerLogs.teamName#</td>
+                            <td colspan="13">#GetPlayerLogs.teamName#</td>
                         </tr>
                             <tr>
                                 <th colspan="2">Player</th>
@@ -162,6 +181,7 @@
                                 <th>BLK</th>
                                 <th>TO</th>
                                 <th>FLS</th>
+                                <th>+/-</th>
                                 <th>PTS</th>
                             </tr>
                     </thead>
@@ -202,6 +222,7 @@
     				<td data-label="BLKS">#getPlayerLogs.Blocks#</td>
     				<td data-label="TO">#getPlayerLogs.Turnovers#</td>
                     <td data-label="FLS">#val(getPlayerLogs.Fouls)#</td>
+                    <td data-label="+/-"><cfif NOT isNull(getPlayerLogs.plusMinus) AND getPlayerLogs.plusMinus NEQ ""><cfif getPlayerLogs.plusMinus GT 0><span style="color:##2e7d32;font-weight:bold">+#getPlayerLogs.plusMinus#</span><cfelseif getPlayerLogs.plusMinus LT 0><span style="color:##c62828;font-weight:bold">#getPlayerLogs.plusMinus#</span><cfelse>0</cfif><cfelse>&mdash;</cfif></td>
     				<td data-label="PTS">#getPlayerLogs.Points#</td>
     			</tr>
                 <cfset currentTeamID = getPlayerlogs.teamID>
@@ -224,6 +245,7 @@
                         <td data-label="BLKS"><b>#TotalBLK#</b></td>
                         <td data-label="TO"><b>#TotalTO#</b></td>
                         <td data-label="FLS"><b>#TotalFLS#</b></td>
+                        <td data-label="+/-">&mdash;</td>
                         <td data-label="PTS"><b>#TotalPTS#</b></td>
                     </tr>
                     <cfif currentTeamID NEQ nextTeamID>
@@ -267,6 +289,17 @@
         </table>
         <br>
         <cfinclude template="recap.cfm">
+
+        <cfif CGI.HTTP_HOST CONTAINS "localhost" OR CGI.HTTP_HOST CONTAINS "127.0.0.1">
+        <div style="margin:24px auto;max-width:500px;padding:16px;background:##fff3cd;border:1px solid ##ffc107;border-radius:6px;text-align:center;">
+            <form method="POST" action="boxscore.cfm?scheduleID=#url.scheduleID#" onsubmit="return confirm('Reset all data for scheduleID #url.scheduleID#? This deletes PlayerGameLog, recaps, game_subs and sets status back to scheduled.')">
+                <input type="hidden" name="resetGame" value="1">
+                <button type="submit" style="background:##dc3545;color:white;border:none;padding:8px 20px;border-radius:4px;font-weight:bold;cursor:pointer;font-size:14px;">&##x26A0; Reset Game Data</button>
+                <div style="font-size:11px;color:##856404;margin-top:6px;">Deletes PlayerGameLog &bull; recaps &bull; game_subs &bull; Resets score + status &mdash; LOCAL ONLY</div>
+            </form>
+        </div>
+        </cfif>
+
       </div>
     </div>
 </div>

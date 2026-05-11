@@ -180,6 +180,7 @@
                     <th>FTM</th>
                     <th>FTA</th>
                     <th>PTS</th>
+                    <th>+/-</th>
                 </tr>
             </thead>
             <tbody>
@@ -295,6 +296,7 @@
                             <button type="button" class="button-success pure-button PTS">+1</button>
                             <button type="button" class="button-error pure-button PTS">-1</button>
                         </td>
+                        <td id="pm_#playerID#" style="text-align:center;font-weight:bold;min-width:36px;">0</td>
                         <!--- Use this to see which players were active, needed for DNP function --->
                         <input type="hidden" name="playerIDList" value="#playerID#">
                     </tr>
@@ -302,6 +304,8 @@
             </tbody>
         </table>
         <br>
+        <input type="hidden" name="subEvents" id="subEventsInput" value="[]">
+        <input type="hidden" name="plusMinusValues" id="plusMinusValuesInput" value="{}">
         <input class="saveBtn" type="button" name="openModal" style="margin-left: 25px; margin-bottom: 25px;" value="Save">
         <input type="button" id="btnExport" style="margin-left: 25px; margin-bottom: 25px;" value="Export" />
         <span class="legend">#dnpIcon# - At the end of the game, click to toggle player as Did Not Play. Use W (Up) and S (Down) to navigate through the active 5 players.</span>

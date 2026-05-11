@@ -53,14 +53,14 @@
 
 <!--- Queries --->
 <cfquery name="getTeamMatchups" datasource="roundleague">
-  SELECT scheduleID, hometeamID, awayteamID, WEEK, a.teamName AS Home, b.teamName AS Away, homeScore, 0 AS IsPlayoffs, 0 as BracketGameID, 0 as BracketRoundID, 0 as Playoffs_BracketID
+  SELECT scheduleID, hometeamID, awayteamID, WEEK, a.teamName AS Home, b.teamName AS Away, homeScore, s.status, 0 AS IsPlayoffs, 0 as BracketGameID, 0 as BracketRoundID, 0 as Playoffs_BracketID
   FROM schedule s
   LEFT JOIN teams as a ON s.hometeamID = a.teamID
   LEFT JOIN teams as b ON s.awayTeamID = b.teamID
   WHERE (a.teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.teamID#"> OR b.teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.teamID#">)
-  AND s.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#"> 
+  AND s.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
   UNION
-  SELECT playoffs_scheduleID, hometeamID, awayteamID, WEEK, a.teamName AS Home, b.teamName AS Away, homeScore, 1 AS IsPlayoffs, BracketGameID, BracketRoundID, s.Playoffs_BracketID
+  SELECT playoffs_scheduleID, hometeamID, awayteamID, WEEK, a.teamName AS Home, b.teamName AS Away, homeScore, CASE WHEN homeScore IS NOT NULL THEN 'final' ELSE 'scheduled' END AS status, 1 AS IsPlayoffs, BracketGameID, BracketRoundID, s.Playoffs_BracketID
   FROM playoffs_schedule s
   JOIN playoffs_bracket pb ON pb.Playoffs_bracketID = s.Playoffs_BracketID
   LEFT JOIN teams as a ON s.hometeamID = a.teamID
@@ -96,7 +96,7 @@
                   <cfelse>
                     <cfset opponentTeam = getTeamMatchups.home>
                   </cfif>
-                  <option <cfif homeScore NEQ ''>disabled</cfif> data-bracketid="#getTeamMatchups.Playoffs_BracketID#" data-bracketroundid="#getTeamMatchups.bracketRoundID#" data-bracketgameid="#getTeamMatchups.BracketGameID#" data-playoffs="#getTeamMatchups.isPlayoffs#" value="#getTeamMatchups.scheduleID#"<cfif form.scheduleID EQ getTeamMatchups.scheduleID>selected</cfif>>Week #getTeamMatchups.Week# VS #opponentTeam#<cfif getTeamMatchups.isPlayoffs> (Playoffs)</cfif><cfif homeScore NEQ ''> (Already Played)</cfif></option>
+                  <option <cfif getTeamMatchups.status EQ 'final'>disabled</cfif> data-bracketid="#getTeamMatchups.Playoffs_BracketID#" data-bracketroundid="#getTeamMatchups.bracketRoundID#" data-bracketgameid="#getTeamMatchups.BracketGameID#" data-playoffs="#getTeamMatchups.isPlayoffs#" value="#getTeamMatchups.scheduleID#"<cfif form.scheduleID EQ getTeamMatchups.scheduleID>selected</cfif>>Week #getTeamMatchups.Week# VS #opponentTeam#<cfif getTeamMatchups.isPlayoffs> (Playoffs)</cfif><cfif getTeamMatchups.status EQ 'final'> (Already Played)</cfif></option>
               </cfloop>
           </select>
         </cfif>

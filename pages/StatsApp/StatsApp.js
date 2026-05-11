@@ -15,6 +15,12 @@ $(document).ready(function () {
     var finalScore = $(".teamTotalPts").text();
     $(".defaultScore").val(finalScore);
 
+    // Pre-populate opponent score from live tracking
+    if (typeof LIVE_SCORE_CONFIG !== "undefined") {
+      var opponentScore = LIVE_SCORE_CONFIG.isHome ? currentScores.awayScore : currentScores.homeScore;
+      $("#saveScoresModal input[type='number']").not(".defaultScore").val(opponentScore);
+    }
+
     // Remove the player highlight to prevent any numbers from updating stats
     $("td.playerBox").removeClass("playerHighlight");
 
@@ -271,6 +277,7 @@ $(document).ready(function () {
       if (typeof window._rlUpdateScore === "function") {
         window._rlUpdateScore(currentNum);
       }
+      updatePMDisplay();
     }
   }
 
@@ -320,6 +327,13 @@ $(document).ready(function () {
         droppable = $(this),
         dragPos = draggable.position(),
         dropPos = droppable.position();
+
+      // Detect cross-boundary sub (starter ↔ bench) and record silently
+      if (isPlayerInBench(draggable[0]) !== isPlayerInBench(droppable[0])) {
+        var outRow = isPlayerInBench(draggable[0]) ? droppable[0] : draggable[0];
+        var inRow  = isPlayerInBench(draggable[0]) ? draggable[0] : droppable[0];
+        recordSub(outRow, inRow);
+      }
 
       draggable.css({
         left: dropPos.left + "px",
@@ -396,6 +410,79 @@ $(document).ready(function () {
   }
 });
 
+// +/- sub tracking state (module-level so accessible from jQuery ready + sub button handler)
+var subEvents = [];
+var currentScores = { homeScore: 0, awayScore: 0 };
+var initialStarters = new Set();
+
+function computeLivePM(playerID) {
+  if (typeof LIVE_SCORE_CONFIG === 'undefined') return 0;
+  var myScore = parseInt(document.querySelector('.teamTotalPts').textContent) || 0;
+  var curH, curA;
+  if (LIVE_SCORE_CONFIG.isHome) {
+    curH = myScore; curA = currentScores.awayScore;
+  } else {
+    curA = myScore; curH = currentScores.homeScore;
+  }
+  var enterH = 0, enterA = 0, pm = 0;
+  var onCourt = initialStarters.has(playerID);
+  for (var k = 0; k < subEvents.length; k++) {
+    var ev = subEvents[k];
+    if (ev.playerOutID === playerID && onCourt) {
+      pm += LIVE_SCORE_CONFIG.isHome
+        ? (ev.homeScore - ev.awayScore) - (enterH - enterA)
+        : (ev.awayScore - ev.homeScore) - (enterA - enterH);
+      onCourt = false;
+    }
+    if (ev.playerInID === playerID && !onCourt) {
+      enterH = ev.homeScore; enterA = ev.awayScore; onCourt = true;
+    }
+  }
+  if (onCourt) {
+    pm += LIVE_SCORE_CONFIG.isHome
+      ? (curH - curA) - (enterH - enterA)
+      : (curA - curH) - (enterA - enterH);
+  }
+  return pm;
+}
+
+function updatePMDisplay() {
+  if (typeof LIVE_SCORE_CONFIG === 'undefined') return;
+  document.querySelectorAll('.dragdrop').forEach(function(row) {
+    var playerID = playerIDFromRow(row);
+    var cell = document.getElementById('pm_' + playerID);
+    if (!cell) return;
+    var pm = computeLivePM(playerID);
+    cell.textContent = pm > 0 ? '+' + pm : String(pm);
+    cell.style.color = pm > 0 ? '#2e7d32' : pm < 0 ? '#c62828' : '';
+  });
+}
+
+function playerIDFromRow(row) {
+  return parseInt(row.id.replace(/\D/g, ''), 10);
+}
+
+function recordSub(outRow, inRow) {
+  var myScore = parseInt(document.querySelector('.teamTotalPts').textContent) || 0;
+  var homeScore, awayScore;
+  if (typeof LIVE_SCORE_CONFIG !== 'undefined' && LIVE_SCORE_CONFIG.isHome) {
+    homeScore = myScore;
+    awayScore = currentScores.awayScore;
+  } else {
+    awayScore = myScore;
+    homeScore = currentScores.homeScore;
+  }
+  subEvents.push({
+    playerOutID: playerIDFromRow(outRow),
+    playerInID:  playerIDFromRow(inRow),
+    homeScore:   homeScore,
+    awayScore:   awayScore,
+    seq:         subEvents.length + 1
+  });
+  document.getElementById('subEventsInput').value = JSON.stringify(subEvents);
+  updatePMDisplay();
+}
+
 // Multi-substitution functionality
 let selectedPlayers = {
   starters: [],
@@ -463,6 +550,28 @@ document.addEventListener("click", function (e) {
 
 // Handle substitution
 document.addEventListener("DOMContentLoaded", function () {
+  // Record which players started so computeLivePM can replay sub intervals correctly
+  var benchToggle = document.getElementById('benchToggle');
+  document.querySelectorAll('.dragdrop').forEach(function(row) {
+    if (benchToggle && row.rowIndex < benchToggle.rowIndex) {
+      initialStarters.add(playerIDFromRow(row));
+    }
+  });
+  updatePMDisplay();
+
+  // Serialize live +/- display values into the form before submission
+  var gameForm = document.querySelector('form[name="gameLogForm"]');
+  if (gameForm) {
+    gameForm.addEventListener('submit', function() {
+      var pmValues = {};
+      document.querySelectorAll('[id^="pm_"]').forEach(function(cell) {
+        var playerID = parseInt(cell.id.replace('pm_', ''), 10);
+        pmValues[playerID] = parseInt(cell.textContent) || 0;
+      });
+      document.getElementById('plusMinusValuesInput').value = JSON.stringify(pmValues);
+    });
+  }
+
   const subButton = document.getElementById("subButton");
   if (subButton) {
     subButton.addEventListener("click", function () {
@@ -480,6 +589,11 @@ document.addEventListener("DOMContentLoaded", function () {
       const benchRows = selectedPlayers.bench.map((id) =>
         document.getElementById(id),
       );
+
+      // Record each sub pair silently before performing DOM moves
+      starterRows.forEach(function(starterRow, index) {
+        recordSub(starterRow, benchRows[index]);
+      });
 
       // Perform the substitution by moving rows
       starterRows.forEach((starterRow, index) => {
@@ -552,6 +666,15 @@ document.addEventListener("click", function (e) {
         "x-admin-key": cfg.adminKey,
       },
       body: JSON.stringify(body),
+    });
+  }
+
+  // Track opponent score so recordSub can snapshot both sides
+  if (window.gameSocket) {
+    window.gameSocket.on('score:update', function(data) {
+      if (data.homeScore != null) currentScores.homeScore = data.homeScore;
+      if (data.awayScore != null) currentScores.awayScore = data.awayScore;
+      updatePMDisplay();
     });
   }
 
