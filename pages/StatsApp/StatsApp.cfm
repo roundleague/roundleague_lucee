@@ -111,11 +111,15 @@
         <button type="button" class="pure-button button-danger" id="clockReset">Reset Game</button>
         <span style="margin-left:16px;border-left:2px solid ##ddd;padding-left:16px;display:flex;align-items:center;gap:10px;">
             <span style="font-size:0.85rem;color:##555;font-weight:bold;letter-spacing:.05em;">SHOT</span>
-            <span id="shotClockDisplay" style="font-size:2rem;font-weight:bold;font-variant-numeric:tabular-nums;min-width:36px;text-align:center;">30</span>
-            <button type="button" class="pure-button button-warning" id="clockResetShot">Reset Shot Clock</button>
+            <span id="shotClockDisplay" style="font-size:2rem;font-weight:bold;font-variant-numeric:tabular-nums;min-width:36px;text-align:center;cursor:pointer;" title="Click to edit shot clock">30</span>
+            <input id="shotClockEditInput" type="text" maxlength="2" placeholder="24"
+                   style="display:none;font-size:2rem;font-weight:bold;font-variant-numeric:tabular-nums;width:48px;border:none;border-bottom:2px solid ##e67e00;background:transparent;outline:none;text-align:center;padding:0;">
+            <button type="button" class="pure-button button-success" id="shotClockStart">Start</button>
+            <button type="button" class="pure-button" id="shotClockPause" disabled>Pause</button>
+            <button type="button" class="pure-button button-warning" id="clockResetShot">Reset Shot</button>
         </span>
         <button type="button" class="pure-button button-secondary" id="clockSubHorn" style="margin-left:8px;">Sub Horn</button>
-        <span style="font-size:0.75rem;color:##999;margin-left:12px;">Space = Start/Pause &middot; R = Reset Shot Clock &middot; T = Start/Stop Shot Clock</span>
+        <span style="font-size:0.75rem;color:##999;margin-left:12px;">Space = Start/Pause &middot; R = Reset Shot &middot; T = Start/Stop Shot &middot; E = Edit Shot Clock</span>
     </div>
     </cfif>
 

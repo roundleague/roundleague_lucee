@@ -30,8 +30,12 @@
   var btnPause = document.getElementById("clockPause");
   var btnReset = document.getElementById("clockReset");
   var shotClockEl = document.getElementById("shotClockDisplay");
+  var shotClockEditInput = document.getElementById("shotClockEditInput");
+  var btnShotStart = document.getElementById("shotClockStart");
+  var btnShotPause = document.getElementById("shotClockPause");
   var btnResetShot = document.getElementById("clockResetShot");
   var btnSubHorn = document.getElementById("clockSubHorn");
+  var shotEditWasRunning = false;
   if (!displayEl) return;
 
   function pad(n) {
@@ -156,16 +160,33 @@
           patchShotClock(0, "stopped");
         }
       } else {
-        clearInterval(shotClockTicker);
-        shotClockTicker = null;
+        stopShotClockTicker();
         patchShotClock(0, "stopped");
       }
     }, 1000);
+    if (btnShotStart) btnShotStart.disabled = true;
+    if (btnShotPause) btnShotPause.disabled = false;
   }
 
   function stopShotClockTicker() {
     clearInterval(shotClockTicker);
     shotClockTicker = null;
+    if (btnShotStart) btnShotStart.disabled = false;
+    if (btnShotPause) btnShotPause.disabled = true;
+  }
+
+  if (btnShotStart) {
+    btnShotStart.addEventListener("click", function () {
+      startShotClockTicker();
+      patchShotClock(shotClockRemaining, "running");
+    });
+  }
+
+  if (btnShotPause) {
+    btnShotPause.addEventListener("click", function () {
+      stopShotClockTicker();
+      patchShotClock(shotClockRemaining, "stopped");
+    });
   }
 
   if (btnResetShot) {
@@ -177,6 +198,51 @@
       patchShotClock(SHOT_CLOCK_SECONDS, "running");
       startShotClockTicker();
     });
+  }
+
+  // ── Shot clock inline edit ────────────────────────────────
+  function enterShotEditMode() {
+    shotEditWasRunning = !!shotClockTicker;
+    if (shotEditWasRunning) stopShotClockTicker();
+    if (shotClockEditInput) {
+      shotClockEditInput.value = shotClockRemaining;
+      shotClockEl.style.display = "none";
+      shotClockEditInput.style.display = "";
+      shotClockEditInput.focus();
+      shotClockEditInput.select();
+    }
+  }
+
+  function exitShotEditMode(commit) {
+    if (!shotClockEditInput || shotClockEditInput.style.display === "none") return;
+    if (commit) {
+      var val = Math.max(0, Math.min(99, parseInt(shotClockEditInput.value, 10) || 0));
+      shotClockRemaining = val;
+      shotClockBuzzed = false;
+      renderShotClock();
+      patchShotClock(shotClockRemaining, shotEditWasRunning ? "running" : "stopped");
+      if (shotEditWasRunning) startShotClockTicker();
+    } else {
+      renderShotClock();
+      if (!shotClockTicker) {
+        if (btnShotStart) btnShotStart.disabled = false;
+        if (btnShotPause) btnShotPause.disabled = true;
+      }
+    }
+    shotClockEditInput.style.display = "none";
+    shotClockEl.style.display = "";
+  }
+
+  if (shotClockEl) {
+    shotClockEl.addEventListener("click", function () { enterShotEditMode(); });
+  }
+
+  if (shotClockEditInput) {
+    shotClockEditInput.addEventListener("keydown", function (e) {
+      if (e.key === "Enter")  { e.preventDefault(); exitShotEditMode(true); }
+      if (e.key === "Escape") { e.preventDefault(); exitShotEditMode(false); }
+    });
+    shotClockEditInput.addEventListener("blur", function () { exitShotEditMode(true); });
   }
 
   if (btnSubHorn) {
@@ -318,6 +384,10 @@
         startShotClockTicker();
       } else if (!serverShotRunning && shotClockTicker) {
         stopShotClockTicker();
+      } else {
+        // Sync button states even when ticker state didn't change
+        if (btnShotStart) btnShotStart.disabled = !!shotClockTicker;
+        if (btnShotPause) btnShotPause.disabled = !shotClockTicker;
       }
     }
   }
@@ -404,6 +474,8 @@
         startShotClockTicker();
         patchShotClock(shotClockRemaining, "running");
       }
+    } else if (e.key === "e" || e.key === "E") {
+      enterShotEditMode();
     }
   });
 
