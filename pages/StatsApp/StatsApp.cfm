@@ -117,9 +117,10 @@
             <button type="button" class="pure-button button-success" id="shotClockStart">Start</button>
             <button type="button" class="pure-button" id="shotClockPause" disabled>Pause</button>
             <button type="button" class="pure-button button-warning" id="clockResetShot">Reset Shot</button>
+            <button type="button" class="pure-button" id="clockResetShot14" style="background:##e67e00;color:white;">Reset to 14</button>
         </span>
         <button type="button" class="pure-button button-secondary" id="clockSubHorn" style="margin-left:8px;">Sub Horn</button>
-        <span style="font-size:0.75rem;color:##999;margin-left:12px;">Space = Start/Pause &middot; R = Reset Shot &middot; T = Start/Stop Shot &middot; E = Edit Shot Clock</span>
+        <span style="font-size:0.75rem;color:##999;margin-left:12px;">Space = Start/Pause &middot; R = Reset Shot (24) &middot; F = Reset to 14 &middot; T = Start/Stop Shot &middot; E = Edit Shot Clock</span>
     </div>
     </cfif>
 

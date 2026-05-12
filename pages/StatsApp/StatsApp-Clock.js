@@ -10,6 +10,7 @@
   var API_BASE = (cfg.apiBase || "https://round-league-api.onrender.com") + "/api";
   var HALF_SECONDS = 25 * 60;
   var SHOT_CLOCK_SECONDS = 24;
+  var SHOT_CLOCK_OREB_SECONDS = 14;
 
   // Game clock state
   var remainingSeconds = HALF_SECONDS;
@@ -34,6 +35,7 @@
   var btnShotStart = document.getElementById("shotClockStart");
   var btnShotPause = document.getElementById("shotClockPause");
   var btnResetShot = document.getElementById("clockResetShot");
+  var btnResetShot14 = document.getElementById("clockResetShot14");
   var btnSubHorn = document.getElementById("clockSubHorn");
   var shotEditWasRunning = false;
   if (!displayEl) return;
@@ -196,6 +198,17 @@
       shotClockBuzzed = false;
       renderShotClock();
       patchShotClock(SHOT_CLOCK_SECONDS, "running");
+      startShotClockTicker();
+    });
+  }
+
+  if (btnResetShot14) {
+    btnResetShot14.addEventListener("click", function () {
+      stopShotClockTicker();
+      shotClockRemaining = SHOT_CLOCK_OREB_SECONDS;
+      shotClockBuzzed = false;
+      renderShotClock();
+      patchShotClock(SHOT_CLOCK_OREB_SECONDS, "running");
       startShotClockTicker();
     });
   }
@@ -476,6 +489,8 @@
       }
     } else if (e.key === "e" || e.key === "E") {
       enterShotEditMode();
+    } else if (e.key === "f" || e.key === "F") {
+      if (btnResetShot14) btnResetShot14.click();
     }
   });
 
