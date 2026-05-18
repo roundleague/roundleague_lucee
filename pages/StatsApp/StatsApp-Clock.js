@@ -9,7 +9,7 @@
 
   var API_BASE = (cfg.apiBase || "https://round-league-api.onrender.com") + "/api";
   var HALF_SECONDS = 25 * 60;
-  var SHOT_CLOCK_SECONDS = 24;
+  var SHOT_CLOCK_SECONDS = 30;
   var SHOT_CLOCK_OREB_SECONDS = 14;
 
   // Game clock state
