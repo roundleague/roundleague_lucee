@@ -330,7 +330,7 @@
   });
 
   // ── Server sync ───────────────────────────────────────────
-  function applyClockState(data) {
+  function applyClockState(data, isPolled) {
     var serverRunning = data.clock_status === "running";
     var serverSeconds = Math.max(
       0,
@@ -340,16 +340,19 @@
 
     // Reset buzz flag if clock was reset (time jumped up)
     if (serverSeconds > remainingSeconds + 5) gameBuzzed = false;
-    // Only overwrite local game clock from server echo when ticker is not
-    // running, or when value differs by more than 2s (real reset/pause).
-    // Prevents shot-clock patches from bouncing remainingSeconds back.
-    if (!ticker || Math.abs(serverSeconds - remainingSeconds) > 2) {
+    // Polled responses use the server's TIMESTAMPDIFF-computed value — always
+    // snap to correct drift. Socket events may carry another client's stale
+    // game-clock value (from shot-clock patches), so keep the 2s guard there.
+    if (!ticker || isPolled || Math.abs(serverSeconds - remainingSeconds) > 2) {
       remainingSeconds = serverSeconds;
     }
 
     if (serverPeriod !== period) {
       period = serverPeriod;
       if (periodEl) periodEl.textContent = "H" + period;
+      // Sync the half-switch so getCurrentHalf() stays accurate on all clients.
+      var switchLabel = document.querySelector(".switch-label");
+      if (switchLabel) switchLabel.setAttribute("data-value", String(serverPeriod));
     }
 
     if (serverRunning && !ticker) {
@@ -381,12 +384,15 @@
         parseInt(data.shot_clock_display_seconds, 10) || 0,
       );
 
-      if (serverShotSeconds > shotClockRemaining + 5) shotClockBuzzed = false;
+      // Any upward jump means a reset — always clear the buzz and apply it.
+      if (serverShotSeconds > shotClockRemaining) shotClockBuzzed = false;
       // Keep local shot ticker authoritative while running unless a meaningful
       // drift/reset happens, otherwise echoed socket updates can double-step.
+      // Upward jumps (resets) always apply regardless of threshold.
       if (
         !shotClockTicker ||
         !serverShotRunning ||
+        serverShotSeconds > shotClockRemaining ||
         Math.abs(serverShotSeconds - shotClockRemaining) > 1
       ) {
         shotClockRemaining = serverShotSeconds;
@@ -411,7 +417,7 @@
         return r.ok ? r.json() : null;
       })
       .then(function (d) {
-        if (d) applyClockState(d);
+        if (d) applyClockState(d, true);
       })
       .catch(function () {});
   }
@@ -494,8 +500,10 @@
     }
   });
 
-  // Initial sync — socket handles subsequent updates
+  // Initial sync — socket handles subsequent updates; poll every 10s as fallback
+  // for missed socket events and to correct accumulated clock drift.
   fetchClock();
+  setInterval(fetchClock, 10000);
   if (window.gameSocket) {
     window.gameSocket.on("clock:update", function (data) {
       applyClockState(data);
