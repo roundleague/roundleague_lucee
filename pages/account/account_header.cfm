@@ -74,7 +74,7 @@
                 <a href="/pages/account/switch_team.cfm?playerID=#url.playerID#" class="nav-button" style="text-decoration: none; color: inherit;">
                     <i class="fa-solid fa-arrows-rotate"></i> Change Team
                 </a>
-                <a class="nav-button disabled" data-toggle="tooltip" data-trigger="click hover" data-placement="top" title="Coming Soon">
+                <a href="/pages/account/my_media.cfm?playerID=#url.playerID#" class="nav-button" style="text-decoration: none; color: inherit;">
                     <i class="fa-solid fa-photo-film"></i> My Media
                 </a>
                 <a class="nav-button disabled" data-toggle="tooltip" data-trigger="click hover" data-placement="top" title="Coming Soon">

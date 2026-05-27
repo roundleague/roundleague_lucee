@@ -33,7 +33,11 @@
                             <p>Live Scoreboard</p>
                         </a>
 
-                        <div class="tool-card empty"></div>
+                        <a href="/admin-dashboard/pages/teamPhotos/teamPhotos.cfm" class="tool-card">
+                            <i class="nc-icon nc-album-2"></i>
+                            <p>Team Photo Upload</p>
+                        </a>
+
                         <div class="tool-card empty"></div>
                         <div class="tool-card empty"></div>
                         <div class="tool-card empty"></div>

@@ -1,0 +1,45 @@
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.photo-thumb {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.gallery-thumb-wrap {
+  position: relative;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.gallery-thumb-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0);
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 6px;
+  transition: background 0.2s ease;
+}
+
+.gallery-thumb-wrap:hover .gallery-thumb-overlay {
+  background: rgba(0, 0, 0, 0.38);
+}
+
+.delete-btn {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  padding: 4px 8px;
+  line-height: 1;
+}
+
+.gallery-thumb-wrap:hover .delete-btn {
+  opacity: 1;
+}
