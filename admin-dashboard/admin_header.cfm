@@ -55,7 +55,7 @@ Coded by www.creative-tim.com
         </a>
       </div>
       <div class="sidebar-wrapper">
-        <cfif !findNoCase("statswapper", CGI.REQUEST_URL)>
+        <cfif !findNoCase("statswapper", CGI.REQUEST_URL) AND !findNoCase("teamPhotos", CGI.REQUEST_URL)>
           <ul class="nav">
     <!---           <li>
                 <a href="javascript:;">
