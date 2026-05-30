@@ -43,3 +43,85 @@
 .gallery-thumb-wrap:hover .delete-btn {
   opacity: 1;
 }
+
+.gallery-thumb-wrap {
+  cursor: pointer;
+}
+
+/* Lightbox */
+#adminLightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.88);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+}
+
+#adminLightbox-img {
+  max-width: 86vw;
+  max-height: 88vh;
+  object-fit: contain;
+  border-radius: 6px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+  cursor: default;
+}
+
+.lightbox-close {
+  position: fixed;
+  top: 18px;
+  right: 26px;
+  color: #fff;
+  font-size: 36px;
+  font-weight: 300;
+  cursor: pointer;
+  line-height: 1;
+  opacity: 0.8;
+  transition: opacity 0.15s;
+  user-select: none;
+  z-index: 10001;
+}
+
+.lightbox-close:hover {
+  opacity: 1;
+}
+
+.lb-arrow {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  color: #fff;
+  font-size: 22px;
+  padding: 14px 18px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.15s;
+  user-select: none;
+  z-index: 10000;
+  line-height: 1;
+}
+
+.lb-arrow:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.lb-prev { left: 14px; }
+.lb-next { right: 14px; }
+
+/* Pagination */
+.page-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+.page-ctrl-btn {
+  min-width: 36px;
+}

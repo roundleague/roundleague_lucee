@@ -1,5 +1,20 @@
 var _objectURLs = [];
 var _currentTeamID = null;
+var _galleryPhotos = [];
+var _currentPage = 0;
+var _lightboxIndex = -1;
+var PAGE_SIZE = 24;
+
+// ── Keyboard nav ─────────────────────────────────────────────────────────────
+
+document.addEventListener('keydown', function(e) {
+  var lb = document.getElementById('adminLightbox');
+  if (lb && lb.style.display === 'flex') {
+    if (e.key === 'ArrowLeft') lightboxPrev();
+    else if (e.key === 'ArrowRight') lightboxNext();
+    else if (e.key === 'Escape') closeLightbox();
+  }
+});
 
 // ── Team dropdown ────────────────────────────────────────────────────────────
 
@@ -18,38 +33,79 @@ function onTeamChange(teamID) {
 async function loadGallery(teamID) {
   var card = document.getElementById('galleryCard');
   var grid = document.getElementById('galleryGrid');
-  var countEl = document.getElementById('galleryCount');
 
   grid.innerHTML = '<p class="text-muted">Loading...</p>';
+  document.getElementById('galleryPageControls').innerHTML = '';
   card.style.display = 'block';
 
   try {
     var res = await fetch(API_BASE + '/api/photos/team/' + teamID + '?seasonID=' + SEASON_ID);
-    var photos = await res.json();
-
-    grid.innerHTML = '';
-
-    if (!photos.length) {
-      countEl.textContent = 'No photos uploaded yet.';
-      document.getElementById('deleteAllBtn').style.display = 'none';
-      return;
-    }
-
-    countEl.textContent = photos.length + ' photo' + (photos.length !== 1 ? 's' : '');
-    document.getElementById('deleteAllBtn').style.display = '';
-
-    photos.forEach(function(photo) {
-      grid.appendChild(makeGalleryThumb(photo));
-    });
+    _galleryPhotos = await res.json();
+    _currentPage = 0;
+    renderGalleryPage();
   } catch (err) {
     grid.innerHTML = '<p class="text-danger">Failed to load photos.</p>';
   }
 }
 
-function makeGalleryThumb(photo) {
+function renderGalleryPage() {
+  var grid = document.getElementById('galleryGrid');
+  var countEl = document.getElementById('galleryCount');
+  var total = _galleryPhotos.length;
+
+  grid.innerHTML = '';
+
+  if (!total) {
+    countEl.textContent = 'No photos uploaded yet.';
+    document.getElementById('deleteAllBtn').style.display = 'none';
+    document.getElementById('galleryPageControls').innerHTML = '';
+    return;
+  }
+
+  countEl.textContent = total + ' photo' + (total !== 1 ? 's' : '');
+  document.getElementById('deleteAllBtn').style.display = '';
+
+  var start = _currentPage * PAGE_SIZE;
+  var end = Math.min(start + PAGE_SIZE, total);
+  for (var i = start; i < end; i++) {
+    grid.appendChild(makeGalleryThumb(_galleryPhotos[i], i));
+  }
+
+  renderPageControls();
+}
+
+function renderPageControls() {
+  var container = document.getElementById('galleryPageControls');
+  var totalPages = Math.ceil(_galleryPhotos.length / PAGE_SIZE);
+
+  if (totalPages <= 1) {
+    container.innerHTML = '';
+    return;
+  }
+
+  var html = '<div class="page-controls">';
+  html += '<button class="btn btn-sm btn-default btn-round page-ctrl-btn" onclick="goToPage(' + (_currentPage - 1) + ')"' + (_currentPage === 0 ? ' disabled' : '') + '><i class="fa fa-chevron-left"></i></button>';
+  for (var i = 0; i < totalPages; i++) {
+    html += '<button class="btn btn-sm ' + (i === _currentPage ? 'btn-primary' : 'btn-default') + ' btn-round page-ctrl-btn" onclick="goToPage(' + i + ')">' + (i + 1) + '</button>';
+  }
+  html += '<button class="btn btn-sm btn-default btn-round page-ctrl-btn" onclick="goToPage(' + (_currentPage + 1) + ')"' + (_currentPage === totalPages - 1 ? ' disabled' : '') + '><i class="fa fa-chevron-right"></i></button>';
+  html += '</div>';
+
+  container.innerHTML = html;
+}
+
+function goToPage(page) {
+  var totalPages = Math.ceil(_galleryPhotos.length / PAGE_SIZE);
+  if (page < 0 || page >= totalPages) return;
+  _currentPage = page;
+  renderGalleryPage();
+}
+
+function makeGalleryThumb(photo, index) {
   var wrap = document.createElement('div');
   wrap.className = 'gallery-thumb-wrap';
   wrap.dataset.photoId = photo.photoID;
+  wrap.onclick = (function(idx) { return function() { openLightbox(idx); }; })(index);
 
   var img = document.createElement('img');
   img.src = photo.photoURL;
@@ -63,10 +119,12 @@ function makeGalleryThumb(photo) {
   btn.className = 'btn btn-danger btn-sm delete-btn';
   btn.innerHTML = '<i class="fa fa-trash"></i>';
   btn.title = 'Delete photo';
-  btn.onclick = function(e) {
-    e.stopPropagation();
-    deletePhoto(photo.photoID, wrap);
-  };
+  btn.onclick = (function(pid, idx) {
+    return function(e) {
+      e.stopPropagation();
+      deletePhoto(pid, idx);
+    };
+  })(photo.photoID, index);
 
   overlay.appendChild(btn);
   wrap.appendChild(img);
@@ -74,9 +132,42 @@ function makeGalleryThumb(photo) {
   return wrap;
 }
 
+// ── Lightbox ─────────────────────────────────────────────────────────────────
+
+function openLightbox(index) {
+  _lightboxIndex = index;
+  var lb = document.getElementById('adminLightbox');
+  document.getElementById('adminLightbox-img').src = _galleryPhotos[index].photoURL;
+  lb.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  updateLightboxArrows();
+}
+
+function closeLightbox() {
+  document.getElementById('adminLightbox').style.display = 'none';
+  document.getElementById('adminLightbox-img').src = '';
+  document.body.style.overflow = '';
+  _lightboxIndex = -1;
+}
+
+function lightboxPrev() {
+  if (_lightboxIndex > 0) openLightbox(_lightboxIndex - 1);
+}
+
+function lightboxNext() {
+  if (_lightboxIndex < _galleryPhotos.length - 1) openLightbox(_lightboxIndex + 1);
+}
+
+function updateLightboxArrows() {
+  var prev = document.getElementById('lb-prev');
+  var next = document.getElementById('lb-next');
+  if (prev) prev.style.display = _lightboxIndex > 0 ? '' : 'none';
+  if (next) next.style.display = _lightboxIndex < _galleryPhotos.length - 1 ? '' : 'none';
+}
+
 // ── Delete individual ────────────────────────────────────────────────────────
 
-async function deletePhoto(photoID, thumbEl) {
+async function deletePhoto(photoID, index) {
   if (!confirm('Delete this photo?')) return;
 
   try {
@@ -84,20 +175,14 @@ async function deletePhoto(photoID, thumbEl) {
       method: 'DELETE',
       headers: { 'x-admin-key': ADMIN_KEY }
     });
-
     if (!res.ok) throw new Error('Delete failed');
 
-    thumbEl.remove();
+    _galleryPhotos.splice(index, 1);
 
-    // Update count
-    var remaining = document.querySelectorAll('#galleryGrid .gallery-thumb-wrap').length;
-    var countEl = document.getElementById('galleryCount');
-    if (remaining === 0) {
-      countEl.textContent = 'No photos uploaded yet.';
-      document.getElementById('deleteAllBtn').style.display = 'none';
-    } else {
-      countEl.textContent = remaining + ' photo' + (remaining !== 1 ? 's' : '');
-    }
+    var totalPages = Math.ceil(_galleryPhotos.length / PAGE_SIZE);
+    if (_currentPage >= totalPages && _currentPage > 0) _currentPage--;
+
+    renderGalleryPage();
   } catch (err) {
     alert('Could not delete photo: ' + err.message);
   }
@@ -106,13 +191,13 @@ async function deletePhoto(photoID, thumbEl) {
 // ── Delete all ───────────────────────────────────────────────────────────────
 
 async function deleteAll() {
-  var thumbs = document.querySelectorAll('#galleryGrid .gallery-thumb-wrap');
-  if (!thumbs.length) return;
-  if (!confirm('Delete all ' + thumbs.length + ' photo' + (thumbs.length !== 1 ? 's' : '') + ' for this team?')) return;
+  var total = _galleryPhotos.length;
+  if (!total) return;
+  if (!confirm('Delete all ' + total + ' photo' + (total !== 1 ? 's' : '') + ' for this team?')) return;
 
   document.getElementById('deleteAllBtn').disabled = true;
 
-  var ids = Array.from(thumbs).map(function(el) { return el.dataset.photoId; });
+  var ids = _galleryPhotos.map(function(p) { return p.photoID; });
   var failed = 0;
 
   for (var i = 0; i < ids.length; i++) {
@@ -128,7 +213,9 @@ async function deleteAll() {
   }
 
   document.getElementById('deleteAllBtn').disabled = false;
-  loadGallery(_currentTeamID);
+  _galleryPhotos = [];
+  _currentPage = 0;
+  renderGalleryPage();
 
   if (failed > 0) alert(failed + ' photo(s) could not be deleted.');
 }
@@ -187,7 +274,7 @@ async function startUpload() {
   for (var i = 0; i < files.length; i++) {
     var file = files[i];
     document.getElementById('progressText').textContent =
-      (i + 1) + ' / ' + files.length + ' — ' + file.name;
+      (i + 1) + ' / ' + files.length + ' -- ' + file.name;
 
     try {
       var presignRes = await fetch(API_BASE + '/api/photos/presign', {
@@ -238,7 +325,6 @@ async function startUpload() {
     }
   }
 
-  // Clean up
   document.getElementById('progressArea').style.display = 'none';
   document.getElementById('previewSection').style.display = 'none';
   document.getElementById('photoFiles').value = '';

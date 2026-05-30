@@ -1,6 +1,6 @@
 <cfinclude template="/admin-dashboard/admin_header.cfm">
 
-<link href="/admin-dashboard/pages/teamPhotos/teamPhotos.css?v=1.2" rel="stylesheet">
+<link href="/admin-dashboard/pages/teamPhotos/teamPhotos.css?v=1.3" rel="stylesheet">
 
 <cfquery name="getTeams" datasource="roundleague">
   SELECT DISTINCT t.teamID, t.teamName
@@ -89,13 +89,22 @@
         </div>
         <div class="card-body">
           <div id="galleryGrid" class="photo-grid"></div>
+          <div id="galleryPageControls"></div>
         </div>
       </div>
     </div>
   </div>
 
+  <!--- Lightbox --->
+  <div id="adminLightbox" onclick="closeLightbox()">
+    <span class="lightbox-close">&times;</span>
+    <button class="lb-arrow lb-prev" id="lb-prev" onclick="lightboxPrev(); event.stopPropagation()"><i class="fa fa-chevron-left"></i></button>
+    <img id="adminLightbox-img" src="" alt="Photo" onclick="event.stopPropagation()">
+    <button class="lb-arrow lb-next" id="lb-next" onclick="lightboxNext(); event.stopPropagation()"><i class="fa fa-chevron-right"></i></button>
+  </div>
+
 </div>
 </cfoutput>
 
-<script src="/admin-dashboard/pages/teamPhotos/teamPhotos.js?v=1.2"></script>
+<script src="/admin-dashboard/pages/teamPhotos/teamPhotos.js?v=1.3"></script>
 <cfinclude template="/admin-dashboard/admin_footer.cfm">
