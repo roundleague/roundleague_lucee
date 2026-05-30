@@ -277,6 +277,9 @@ async function startUpload() {
       (i + 1) + ' / ' + files.length + ' -- ' + file.name;
 
     try {
+      var blob = await resizeImage(file, 1500);
+      var uploadType = blob === file ? (file.type || 'image/jpeg') : 'image/jpeg';
+
       var presignRes = await fetch(API_BASE + '/api/photos/presign', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-admin-key': ADMIN_KEY },
@@ -284,7 +287,7 @@ async function startUpload() {
           teamID: parseInt(teamID),
           seasonID: SEASON_ID,
           filename: file.name,
-          contentType: file.type || 'image/jpeg'
+          contentType: uploadType
         })
       });
       if (!presignRes.ok) {
@@ -295,8 +298,8 @@ async function startUpload() {
 
       var putRes = await fetch(pd.presignedUrl, {
         method: 'PUT',
-        headers: { 'Content-Type': file.type || 'image/jpeg' },
-        body: file
+        headers: { 'Content-Type': uploadType },
+        body: blob
       });
       if (!putRes.ok) throw new Error('S3 upload failed for ' + file.name);
 
@@ -334,6 +337,28 @@ async function startUpload() {
 
   showSuccess(uploaded + ' photo' + (uploaded !== 1 ? 's' : '') + ' uploaded successfully.');
   loadGallery(teamID);
+}
+
+// ── Image resize (client-side, before upload) ─────────────────────────────────
+
+function resizeImage(file, maxPx) {
+  return new Promise(function(resolve) {
+    var url = URL.createObjectURL(file);
+    var img = new Image();
+    img.onerror = function() { URL.revokeObjectURL(url); resolve(file); };
+    img.onload = function() {
+      URL.revokeObjectURL(url);
+      var w = img.naturalWidth;
+      var h = img.naturalHeight;
+      var scale = Math.min(maxPx / w, maxPx / h, 1);
+      var canvas = document.createElement('canvas');
+      canvas.width = Math.round(w * scale);
+      canvas.height = Math.round(h * scale);
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob(function(blob) { resolve(blob || file); }, 'image/jpeg', 0.85);
+    };
+    img.src = url;
+  });
 }
 
 // ── Helpers ──────────────────────────────────────────────────────────────────

@@ -1,6 +1,6 @@
 <cfinclude template="/admin-dashboard/admin_header.cfm">
 
-<link href="/admin-dashboard/pages/teamPhotos/teamPhotos.css?v=1.3" rel="stylesheet">
+<link href="/admin-dashboard/pages/teamPhotos/teamPhotos.css?v=1.4" rel="stylesheet">
 
 <cfquery name="getTeams" datasource="roundleague">
   SELECT DISTINCT t.teamID, t.teamName
@@ -106,5 +106,5 @@
 </div>
 </cfoutput>
 
-<script src="/admin-dashboard/pages/teamPhotos/teamPhotos.js?v=1.3"></script>
+<script src="/admin-dashboard/pages/teamPhotos/teamPhotos.js?v=1.4"></script>
 <cfinclude template="/admin-dashboard/admin_footer.cfm">
