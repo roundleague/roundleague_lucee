@@ -268,8 +268,14 @@
   var btnSync = document.getElementById("clockSync");
   if (btnSync) {
     btnSync.addEventListener("click", function () {
-      // Re-broadcast full clock + shot clock state to all connected clients
       patchShotClock(shotClockRemaining, shotClockTicker ? "running" : "stopped");
+      var btn = this;
+      btn.textContent = "Synced";
+      btn.style.background = "#28a745";
+      setTimeout(function () {
+        btn.textContent = "Sync Board";
+        btn.style.background = "#6c757d";
+      }, 1500);
     });
   }
 

@@ -120,7 +120,7 @@
             <button type="button" class="pure-button" id="clockResetShot14" style="background:##e67e00;color:white;">Reset to 14</button>
         </span>
         <button type="button" class="pure-button button-secondary" id="clockSubHorn" style="margin-left:8px;">Sub Horn</button>
-        <button type="button" class="pure-button" id="clockSync" style="margin-left:4px;background:##6c757d;color:#fff;">Sync Board</button>
+        <button type="button" class="pure-button" id="clockSync" style="margin-left:4px;background:##6c757d;color:##fff;">Sync Board</button>
         <span style="font-size:0.75rem;color:##999;margin-left:12px;">Space = Start/Pause &middot; R = Reset Shot (30) &middot; F = Reset to 14 &middot; T = Start/Stop Shot &middot; E = Edit Shot Clock</span>
     </div>
     </cfif>
