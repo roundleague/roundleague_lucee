@@ -100,7 +100,7 @@
     </cfif>
 
     <cfquery name="scoresExist" datasource="roundleague">
-        SELECT homeScore, awayScore, divisionID, status
+        SELECT homeTeamID, awayTeamID, seasonID, divisionID, homeScore, awayScore, status
         From Schedule
         WHERE scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">
     </cfquery>
@@ -126,71 +126,57 @@
             <cfhttpparam type="body" value='{"status":"final"}'>
         </cfhttp>
 
-        <!--- Point Differential --->
-        <cfset HomeDifference = homeScore - awayScore>
-        <cfset AwayDifference = awayScore - homeScore>
-
-        <!--- home team section --->
-        <cfquery name="checkHomeStandings" datasource="roundleague">
-            SELECT teamID
-            FROM standings
-            WHERE teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.homeTeamID#">
-            AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.seasonID#">
-        </cfquery>
-        <cfif checkHomeStandings.recordCount>
-            <cfquery name="updateStandings" datasource="roundleague">
-                UPDATE Standings
-                SET <cfif form.homeScore GT form.awayScore>WINS<cfelse>LOSSES</cfif> = <cfif form.homeScore GT form.awayScore>WINS<cfelse>LOSSES</cfif> + 1,
-                    PointDifferential = PointDifferential + #HomeDifference#
-                WHERE teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.homeTeamID#">
-                AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.seasonID#"> 
-            </cfquery>
-        <cfelse>
-            <cfquery name="insertStandings" datasource="roundleague">
-                INSERT INTO Standings (TeamID, Wins, Losses, SeasonID, DivisionID, PointDifferential)
-                VALUES 
-                (
-                    <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.homeTeamID#">,
-                    <cfif form.homeScore GT form.awayScore>1<cfelse>0</cfif>,
-                    <cfif form.homeScore LT form.awayScore>1<cfelse>0</cfif>,
-                    <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.SeasonID#">,
-                    <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.DivisionID#">,
-                    <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#HomeDifference#">
-                )
-            </cfquery>
-        </cfif>
-
-        <!--- away team section --->
-        <cfquery name="checkAwayStandings" datasource="roundleague">
-            SELECT teamID
-            FROM standings
-            WHERE teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.AwayTeamID#">
-            AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.seasonID#">
-        </cfquery>
-        <cfif checkAwayStandings.recordCount>
-            <cfquery name="updateStandings" datasource="roundleague">
-                UPDATE Standings
-                SET <cfif form.awayScore GT form.homeScore>WINS<cfelse>LOSSES</cfif> = <cfif form.awayScore GT form.homeScore>WINS<cfelse>LOSSES</cfif> + 1,
-                    PointDifferential = PointDifferential + #AwayDifference#
-                WHERE teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.awayTeamID#">
-                AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.seasonID#">
-            </cfquery>
-        <cfelse>
-            <cfquery name="insertStandings" datasource="roundleague">
-                INSERT INTO Standings (TeamID, Wins, Losses, SeasonID, DivisionID, PointDifferential)
-                VALUES 
-                (
-                    <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.awayTeamID#">,
-                    <cfif form.awayScore GT form.homeScore>1<cfelse>0</cfif>,
-                    <cfif form.awayScore LT form.homeScore>1<cfelse>0</cfif>,
-                    <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.SeasonID#">,
-                    <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.DivisionID#">,
-                    <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#AwayDifference#">
-                )
-            </cfquery>
-        </cfif>
-
     </cfif>
+
+    <!--- Recalculate standings from scratch for both teams — idempotent, safe to run on every save --->
+    <cfloop list="#scoresExist.homeTeamID#,#scoresExist.awayTeamID#" index="teamToRecalc">
+        <cfquery name="recalcStandings" datasource="roundleague">
+            SELECT
+                SUM(CASE WHEN (HomeTeamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#teamToRecalc#"> AND HomeScore > AwayScore)
+                           OR (AwayTeamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#teamToRecalc#"> AND AwayScore > HomeScore)
+                         THEN 1 ELSE 0 END) AS calcWins,
+                SUM(CASE WHEN (HomeTeamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#teamToRecalc#"> AND HomeScore < AwayScore)
+                           OR (AwayTeamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#teamToRecalc#"> AND AwayScore < HomeScore)
+                         THEN 1 ELSE 0 END) AS calcLosses,
+                SUM(CASE WHEN HomeTeamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#teamToRecalc#">
+                         THEN HomeScore - AwayScore
+                         ELSE AwayScore - HomeScore END) AS calcPointDiff
+            FROM schedule
+            WHERE status = 'final'
+            AND SeasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#scoresExist.seasonID#">
+            AND (HomeTeamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#teamToRecalc#">
+                 OR AwayTeamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#teamToRecalc#">)
+        </cfquery>
+
+        <cfquery name="checkTeamStandings" datasource="roundleague">
+            SELECT StandingsID FROM standings
+            WHERE teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#teamToRecalc#">
+            AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#scoresExist.seasonID#">
+        </cfquery>
+
+        <cfif checkTeamStandings.recordCount>
+            <cfquery datasource="roundleague">
+                UPDATE standings
+                SET Wins = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#recalcStandings.calcWins#">,
+                    Losses = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#recalcStandings.calcLosses#">,
+                    PointDifferential = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#recalcStandings.calcPointDiff#">
+                WHERE teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#teamToRecalc#">
+                AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#scoresExist.seasonID#">
+            </cfquery>
+        <cfelse>
+            <cfquery datasource="roundleague">
+                INSERT INTO standings (TeamID, Wins, Losses, SeasonID, DivisionID, PointDifferential)
+                VALUES (
+                    <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#teamToRecalc#">,
+                    <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#recalcStandings.calcWins#">,
+                    <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#recalcStandings.calcLosses#">,
+                    <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#scoresExist.seasonID#">,
+                    <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#scoresExist.divisionID#">,
+                    <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#recalcStandings.calcPointDiff#">
+                )
+            </cfquery>
+        </cfif>
+    </cfloop>
 
     <!--- Generate recap once both teams have submitted stats (runs regardless of prior finalization) --->
     <cfquery name="checkExistingRecap" datasource="roundleague">
