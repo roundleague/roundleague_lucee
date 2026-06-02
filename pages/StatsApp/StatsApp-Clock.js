@@ -265,6 +265,14 @@
     });
   }
 
+  var btnSync = document.getElementById("clockSync");
+  if (btnSync) {
+    btnSync.addEventListener("click", function () {
+      // Re-broadcast full clock + shot clock state to all connected clients
+      patchShotClock(shotClockRemaining, shotClockTicker ? "running" : "stopped");
+    });
+  }
+
   // ── Reset game ────────────────────────────────────────────
   function resetScores() {
     fetch(API_BASE + "/schedule/" + cfg.scheduleID + "/score", {
