@@ -3,6 +3,7 @@ $(document).ready(function () {
   var globalHistory = [];
   var actionLog = [];
   var currentLogPage = 0;
+  var suppressLogPush = false;
   var logStorageKey = window.RL_LOG_CONFIG
     ? 'rl_statslog_' + window.RL_LOG_CONFIG.scheduleID + '_' + window.RL_LOG_CONFIG.teamID
     : null;
@@ -149,8 +150,10 @@ $(document).ready(function () {
     // Push to globalHistory
     var undoNode = $(addNode).siblings(".button-error");
     globalHistory.push(undoNode);
-    actionLog.push(buildLogEntry(category, undoNode));
-    saveLogToStorage();
+    if (!suppressLogPush) {
+      actionLog.push(buildLogEntry(category, undoNode));
+      saveLogToStorage();
+    }
 
     var playerID = $(addNode).closest("tr").attr("id");
     var fieldValueSpan = $(addNode).siblings(".fieldValue");
@@ -182,14 +185,16 @@ $(document).ready(function () {
     // Push to globalHistory
     var undoNode = $(this).siblings(".button-error");
     globalHistory.push(undoNode);
-    var btnClasses = $(this).attr('class').split(' ');
-    var knownStats = ['FGM','3FGM','FGA','3FGA','REBS','ASTS','STLS','BLKS','TO','FOULS','FTM','FTA','PTS'];
-    var logStat = '';
-    for (var si = 0; si < btnClasses.length; si++) {
-      if (knownStats.indexOf(btnClasses[si]) !== -1) { logStat = btnClasses[si]; break; }
+    if (!suppressLogPush) {
+      var btnClasses = $(this).attr('class').split(' ');
+      var knownStats = ['FGM','3FGM','FGA','3FGA','REBS','ASTS','STLS','BLKS','TO','FOULS','FTM','FTA','PTS'];
+      var logStat = '';
+      for (var si = 0; si < btnClasses.length; si++) {
+        if (knownStats.indexOf(btnClasses[si]) !== -1) { logStat = btnClasses[si]; break; }
+      }
+      actionLog.push(buildLogEntry(logStat, undoNode));
+      saveLogToStorage();
     }
-    actionLog.push(buildLogEntry(logStat, undoNode));
-    saveLogToStorage();
 
     var playerID = $(this).closest("tr").attr("id");
     var fieldValueSpan = $(this).siblings(".fieldValue");
@@ -444,7 +449,7 @@ $(document).ready(function () {
   function saveLogToStorage() {
     if (!logStorageKey) return;
     var serialized = actionLog.map(function(e) {
-      return { id: e.id, gameTime: e.gameTime, playerName: e.playerName, stat: e.stat };
+      return { id: e.id, gameTime: e.gameTime, type: e.type, playerName: e.playerName, stat: e.stat, playerOutName: e.playerOutName, playerInName: e.playerInName, removed: e.removed || false };
     });
     try { localStorage.setItem(logStorageKey, JSON.stringify(serialized)); } catch(err) {}
   }
@@ -456,26 +461,37 @@ $(document).ready(function () {
       if (!raw) return;
       var parsed = JSON.parse(raw);
       parsed.forEach(function(e) {
-        actionLog.push({ id: e.id, gameTime: e.gameTime, playerName: e.playerName, stat: e.stat, undoNode: null });
+        actionLog.push({ id: e.id, gameTime: e.gameTime, type: e.type, playerName: e.playerName, stat: e.stat, playerOutName: e.playerOutName, playerInName: e.playerInName, removed: e.removed || false, undoNode: null });
       });
     } catch(err) {}
   }
 
   function removeLogEntry(id) {
-    var idx = -1;
+    var entry = null;
     for (var i = 0; i < actionLog.length; i++) {
-      if (actionLog[i].id === id) { idx = i; break; }
+      if (actionLog[i].id === id) { entry = actionLog[i]; break; }
     }
-    if (idx === -1) return;
-    var entry = actionLog[idx];
+    if (!entry || entry.removed) return;
     if (entry.undoNode) {
       $(entry.undoNode).trigger('click');
       var ghIdx = globalHistory.indexOf(entry.undoNode);
       if (ghIdx !== -1) globalHistory.splice(ghIdx, 1);
     }
-    actionLog.splice(idx, 1);
-    var totalPages = Math.ceil(actionLog.length / 10) || 1;
-    if (currentLogPage >= totalPages) currentLogPage = totalPages - 1;
+    entry.removed = true;
+    saveLogToStorage();
+    renderLog();
+  }
+
+  function undoRemoveLogEntry(id) {
+    var entry = null;
+    for (var i = 0; i < actionLog.length; i++) {
+      if (actionLog[i].id === id) { entry = actionLog[i]; break; }
+    }
+    if (!entry || !entry.removed || !entry.undoNode) return;
+    suppressLogPush = true;
+    $(entry.undoNode).siblings('.button-success').trigger('click');
+    suppressLogPush = false;
+    entry.removed = false;
     saveLogToStorage();
     renderLog();
   }
@@ -502,19 +518,28 @@ $(document).ready(function () {
       var timeLabel = e.gameTime
         ? '<span style="font-size:.85em;color:#555;min-width:80px;display:inline-block;">' + e.gameTime + '</span>&nbsp;'
         : '';
-      var content, removeBtn;
+      var rowStyle = e.removed
+        ? 'display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eee;opacity:.45;'
+        : 'display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eee;';
+      var textStyle = e.removed ? 'text-decoration:line-through;' : '';
+      var content, actionBtn;
       if (e.type === 'sub') {
         content = timeLabel + '<strong>' + e.playerOutName + '</strong> OUT / <strong>' + e.playerInName + '</strong> IN';
-        removeBtn = '';
+        actionBtn = '';
+      } else if (e.removed) {
+        content = timeLabel + '<span style="' + textStyle + '"><strong>' + e.playerName + '</strong> &mdash; ' + e.stat + ' +1</span>';
+        actionBtn = e.undoNode
+          ? '<button type="button" class="pure-button log-undo-remove-btn" data-id="' + e.id + '" style="padding:2px 10px;font-size:.8em;">Undo</button>'
+          : '';
       } else {
         content = timeLabel + '<strong>' + e.playerName + '</strong> &mdash; ' + e.stat + ' +1';
-        removeBtn = e.undoNode
+        actionBtn = e.undoNode
           ? '<button type="button" class="pure-button button-danger log-remove-btn" data-id="' + e.id + '" style="padding:2px 10px;font-size:.8em;">Remove</button>'
           : '<button type="button" class="pure-button" disabled title="Cannot undo after page refresh" style="padding:2px 10px;font-size:.8em;opacity:.45;">Remove</button>';
       }
-      return '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eee;">'
+      return '<div style="' + rowStyle + '">'
         + '<span>' + content + '</span>'
-        + removeBtn
+        + actionBtn
         + '</div>';
     }).join('');
     body.innerHTML = rows;
@@ -534,6 +559,10 @@ $(document).ready(function () {
 
   $(document).on('click', '.log-remove-btn', function() {
     removeLogEntry($(this).data('id'));
+  });
+
+  $(document).on('click', '.log-undo-remove-btn', function() {
+    undoRemoveLogEntry($(this).data('id'));
   });
 
   $(document).on('click', '#playLogPrevPage', function() {
