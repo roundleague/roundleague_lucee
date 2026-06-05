@@ -502,11 +502,18 @@ $(document).ready(function () {
       var timeLabel = e.gameTime
         ? '<span style="font-size:.85em;color:#555;min-width:80px;display:inline-block;">' + e.gameTime + '</span>&nbsp;'
         : '';
-      var removeBtn = e.undoNode
-        ? '<button type="button" class="pure-button button-danger log-remove-btn" data-id="' + e.id + '" style="padding:2px 10px;font-size:.8em;">Remove</button>'
-        : '<button type="button" class="pure-button" disabled title="Cannot undo after page refresh" style="padding:2px 10px;font-size:.8em;opacity:.45;">Remove</button>';
+      var content, removeBtn;
+      if (e.type === 'sub') {
+        content = timeLabel + '<strong>' + e.playerOutName + '</strong> OUT / <strong>' + e.playerInName + '</strong> IN';
+        removeBtn = '';
+      } else {
+        content = timeLabel + '<strong>' + e.playerName + '</strong> &mdash; ' + e.stat + ' +1';
+        removeBtn = e.undoNode
+          ? '<button type="button" class="pure-button button-danger log-remove-btn" data-id="' + e.id + '" style="padding:2px 10px;font-size:.8em;">Remove</button>'
+          : '<button type="button" class="pure-button" disabled title="Cannot undo after page refresh" style="padding:2px 10px;font-size:.8em;opacity:.45;">Remove</button>';
+      }
       return '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eee;">'
-        + '<span>' + timeLabel + '<strong>' + e.playerName + '</strong> &mdash; ' + e.stat + ' +1</span>'
+        + '<span>' + content + '</span>'
         + removeBtn
         + '</div>';
     }).join('');
@@ -543,6 +550,22 @@ $(document).ready(function () {
     }
   });
 
+  onSubRecorded = function(outRow, inRow) {
+    var clockEl = document.getElementById('clockDisplay');
+    var periodEl = document.getElementById('clockPeriodLabel');
+    var gameTime = clockEl
+      ? (clockEl.textContent.trim() + ' ' + (periodEl ? periodEl.textContent.trim() : '')).trim()
+      : null;
+    actionLog.push({
+      id: Date.now() + '-' + Math.random().toString(36).slice(2),
+      gameTime: gameTime || null,
+      type: 'sub',
+      playerOutName: outRow.querySelector('.playerName').textContent.trim(),
+      playerInName: inRow.querySelector('.playerName').textContent.trim()
+    });
+    saveLogToStorage();
+  };
+
   loadLogFromStorage();
 });
 
@@ -550,6 +573,7 @@ $(document).ready(function () {
 var subEvents = [];
 var currentScores = { homeScore: 0, awayScore: 0 };
 var initialStarters = new Set();
+var onSubRecorded = null;
 
 function computeLivePM(playerID) {
   if (typeof LIVE_SCORE_CONFIG === 'undefined') return 0;
@@ -617,6 +641,7 @@ function recordSub(outRow, inRow) {
   });
   document.getElementById('subEventsInput').value = JSON.stringify(subEvents);
   updatePMDisplay();
+  if (typeof onSubRecorded === 'function') onSubRecorded(outRow, inRow);
 }
 
 // Multi-substitution functionality
