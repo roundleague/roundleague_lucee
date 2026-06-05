@@ -527,6 +527,7 @@ $(document).ready(function () {
   }
 
   $('.logBtn').click(function() {
+    $('#clearLogConfirm').hide();
     renderLog();
     document.getElementById('playLogModal').style.display = 'block';
   });
@@ -542,6 +543,23 @@ $(document).ready(function () {
   $(document).on('click', '#playLogNextPage', function() {
     var totalPages = Math.ceil(actionLog.length / 10) || 1;
     if (currentLogPage < totalPages - 1) { currentLogPage++; renderLog(); }
+  });
+
+  $('#clearLogBtn').click(function() {
+    $('#clearLogConfirm').show();
+  });
+
+  $('#clearLogCancel').click(function() {
+    $('#clearLogConfirm').hide();
+  });
+
+  $('#clearLogYes').click(function() {
+    actionLog = [];
+    currentLogPage = 0;
+    globalHistory = [];
+    saveLogToStorage();
+    renderLog();
+    $('#clearLogConfirm').hide();
   });
 
   $('form[name=gameLogForm]').on('submit', function() {

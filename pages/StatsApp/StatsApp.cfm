@@ -184,6 +184,12 @@
               <footer class="w3-container w3-teal" style="padding:10px;">
                 <button type="button" onclick="document.getElementById('playLogModal').style.display='none'"
                         class="pure-button">Close</button>
+                <button type="button" id="clearLogBtn" class="pure-button button-danger" style="margin-left:8px;">Clear Log</button>
+                <div id="clearLogConfirm" style="display:none;margin-top:10px;background:#fff3cd;border:1px solid ##ffc107;border-radius:4px;padding:8px 10px;">
+                  <span style="font-size:.9em;color:##555;">This removes the log history only. Stats already entered are not affected.</span><br>
+                  <button type="button" id="clearLogYes" class="pure-button button-danger" style="margin-top:6px;padding:2px 12px;font-size:.85em;">Yes, Clear</button>
+                  <button type="button" id="clearLogCancel" class="pure-button" style="margin-top:6px;margin-left:6px;padding:2px 12px;font-size:.85em;">Cancel</button>
+                </div>
               </footer>
             </div>
           </div>
