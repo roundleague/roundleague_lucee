@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  lucee:
+    image: ortussolutions/commandbox:lucee5-stable
+    ports:
+      - "8080:8080"   # Application
+      - "8443:8443"   # Application (HTTPS)
+    volumes:
+      - .:/app
+    environment:
+      # Tell CommandBox where the webroot is
+      BOX_SERVER_APP_WEBROOTDIRECTORY: /app
+      # CommandBox auto-detects .cfconfig.json in the webroot
+      # and applies all datasource/server settings automatically
+      APP_DIR: /app
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: unless-stopped
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root_dev_password
+      MYSQL_DATABASE: roundleague
+      MYSQL_USER: roundleague
+      MYSQL_PASSWORD: roundleague_dev
+    ports:
+      - "3306:3306"   # Expose so HeidiSQL / TablePlus can connect locally
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot_dev_password"]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+      start_period: 20s
+    restart: unless-stopped
+
+volumes:
+  mysql_data:

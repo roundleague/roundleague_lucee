@@ -5,3 +5,6 @@ pages/boxscore/config.cfm
 api-keys.cfm
 .claude
 MVP.md
+
+# Docker / local dev — DB dump files (get from lead dev)
+db/*.sql

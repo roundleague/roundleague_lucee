@@ -1,0 +1,18 @@
+{
+  "datasources": {
+    "roundleague": {
+      "database": "roundleague",
+      "dbdriver": "MySQL",
+      "host": "mysql",
+      "port": "3306",
+      "username": "roundleague",
+      "password": "roundleague_dev",
+      "class": "com.mysql.cj.jdbc.Driver",
+      "custom": "useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true&useSSL=false",
+      "connectionLimit": "-1",
+      "connectionTimeout": "1",
+      "validate": false,
+      "storage": false
+    }
+  }
+}
