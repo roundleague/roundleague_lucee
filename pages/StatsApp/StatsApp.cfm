@@ -98,7 +98,6 @@
     <div style="position:relative;min-width:960px">
         <button type="button" class="pure-button undoBtn">Undo</button>
         <button type="button" class="pure-button sub-button" id="subButton">Sub</button>
-        <button type="button" class="pure-button logBtn" style="margin-left:8px;">Log</button>
     </div>
 
     <cfif url.isPlayoffs NEQ 1>
@@ -217,8 +216,8 @@
             </thead>
             <tbody>
                 <tr id="gameMetaRow">
-                    <td colspan="2">
-                        Game Controls
+                    <td colspan="2" style="text-align:center;">
+                        <button type="button" class="pure-button logBtn">Log</button>
                     </td>
                     <td colspan="2">
                         <label class="switch switch-left-right">
@@ -245,9 +244,11 @@
                         <span class="Timeouts_Half_2" style="display:inline-block;min-width:1.4em;text-align:center;font-weight:bold;">2</span>
                         <button type="button" class="pure-button to-plus" data-half="2" style="padding:2px 8px;">+</button>
                     </td>
+                    <td colspan="2"></td>
                     <td colspan="1">
                         Total: <span class="teamTotalPts">0</span>
                     </td>
+                    <td></td>
                 </tr>
                 <cfloop query="getPlayers">
                     <cfif getPlayers.currentRow EQ 6>
