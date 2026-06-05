@@ -52,7 +52,7 @@ cp api-keys.example.cfm api-keys.cfm
 
 Then open `api-keys.cfm` and replace the placeholder values.
 
-**Docker environment** — Copy the example `.env` file. The defaults are fine for local development and do not need to be changed unless you have a port conflict:
+**Docker environment** — Copy the example `.env` file. The defaults are fine for local development; if you change any MySQL credentials in `.env`, update `.cfconfig.json` to match.
 
 ```bash
 cp .env.example .env
@@ -155,7 +155,7 @@ The lead developer periodically exports a fresh snapshot from production and sha
 
 ```bash
 # Drop and recreate the database (you will be prompted for the root password from your .env)
-docker compose exec mysql mysql -u root -p -e "DROP DATABASE roundleague; CREATE DATABASE roundleague;"
+docker compose exec mysql mysql -u root -p -e "DROP DATABASE IF EXISTS roundleague; CREATE DATABASE IF NOT EXISTS roundleague;"
 
 # Re-import the new dump (you will be prompted for the roundleague user password)
 docker compose exec -T mysql mysql -u roundleague -p roundleague < path/to/new_dump.sql
