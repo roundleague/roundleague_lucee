@@ -1,6 +1,11 @@
 // A $( document ).ready() block.
 $(document).ready(function () {
   var globalHistory = [];
+  var actionLog = [];
+  var currentLogPage = 0;
+  var logStorageKey = window.RL_LOG_CONFIG
+    ? 'rl_statslog_' + window.RL_LOG_CONFIG.scheduleID + '_' + window.RL_LOG_CONFIG.teamID
+    : null;
   var playerFlag = false;
   var playerNode;
   var playerNodeRow;
@@ -144,6 +149,8 @@ $(document).ready(function () {
     // Push to globalHistory
     var undoNode = $(addNode).siblings(".button-error");
     globalHistory.push(undoNode);
+    actionLog.push(buildLogEntry(category, undoNode));
+    saveLogToStorage();
 
     var playerID = $(addNode).closest("tr").attr("id");
     var fieldValueSpan = $(addNode).siblings(".fieldValue");
@@ -175,6 +182,14 @@ $(document).ready(function () {
     // Push to globalHistory
     var undoNode = $(this).siblings(".button-error");
     globalHistory.push(undoNode);
+    var btnClasses = $(this).attr('class').split(' ');
+    var knownStats = ['FGM','3FGM','FGA','3FGA','REBS','ASTS','STLS','BLKS','TO','FOULS','FTM','FTA','PTS'];
+    var logStat = '';
+    for (var si = 0; si < btnClasses.length; si++) {
+      if (knownStats.indexOf(btnClasses[si]) !== -1) { logStat = btnClasses[si]; break; }
+    }
+    actionLog.push(buildLogEntry(logStat, undoNode));
+    saveLogToStorage();
 
     var playerID = $(this).closest("tr").attr("id");
     var fieldValueSpan = $(this).siblings(".fieldValue");
@@ -408,6 +423,127 @@ $(document).ready(function () {
   function getCurrentHalf() {
     return $(".switch-label").attr("data-value");
   }
+
+  // Play-by-Play Log
+  function buildLogEntry(stat, undoNode) {
+    var playerName = $(undoNode).closest('tr').find('.playerName').text().trim();
+    var clockEl = document.getElementById('clockDisplay');
+    var periodEl = document.getElementById('clockPeriodLabel');
+    var gameTime = clockEl
+      ? (clockEl.textContent.trim() + ' ' + (periodEl ? periodEl.textContent.trim() : '')).trim()
+      : null;
+    return {
+      id: Date.now() + '-' + Math.random().toString(36).slice(2),
+      gameTime: gameTime || null,
+      playerName: playerName,
+      stat: stat,
+      undoNode: undoNode
+    };
+  }
+
+  function saveLogToStorage() {
+    if (!logStorageKey) return;
+    var serialized = actionLog.map(function(e) {
+      return { id: e.id, gameTime: e.gameTime, playerName: e.playerName, stat: e.stat };
+    });
+    try { localStorage.setItem(logStorageKey, JSON.stringify(serialized)); } catch(err) {}
+  }
+
+  function loadLogFromStorage() {
+    if (!logStorageKey) return;
+    try {
+      var raw = localStorage.getItem(logStorageKey);
+      if (!raw) return;
+      var parsed = JSON.parse(raw);
+      parsed.forEach(function(e) {
+        actionLog.push({ id: e.id, gameTime: e.gameTime, playerName: e.playerName, stat: e.stat, undoNode: null });
+      });
+    } catch(err) {}
+  }
+
+  function removeLogEntry(id) {
+    var idx = -1;
+    for (var i = 0; i < actionLog.length; i++) {
+      if (actionLog[i].id === id) { idx = i; break; }
+    }
+    if (idx === -1) return;
+    var entry = actionLog[idx];
+    if (entry.undoNode) {
+      $(entry.undoNode).trigger('click');
+      var ghIdx = globalHistory.indexOf(entry.undoNode);
+      if (ghIdx !== -1) globalHistory.splice(ghIdx, 1);
+    }
+    actionLog.splice(idx, 1);
+    var totalPages = Math.ceil(actionLog.length / 10) || 1;
+    if (currentLogPage >= totalPages) currentLogPage = totalPages - 1;
+    saveLogToStorage();
+    renderLog();
+  }
+
+  function renderLog() {
+    var body = document.getElementById('playLogBody');
+    var pager = document.getElementById('playLogPager');
+    if (!body) return;
+
+    var perPage = 10;
+    var sorted = actionLog.slice().reverse();
+    var totalPages = Math.ceil(sorted.length / perPage) || 1;
+    if (currentLogPage >= totalPages) currentLogPage = totalPages - 1;
+    var start = currentLogPage * perPage;
+    var page = sorted.slice(start, start + perPage);
+
+    if (page.length === 0) {
+      body.innerHTML = '<p style="color:#888;text-align:center;">No entries yet.</p>';
+      pager.innerHTML = '';
+      return;
+    }
+
+    var rows = page.map(function(e) {
+      var timeLabel = e.gameTime
+        ? '<span style="font-size:.85em;color:#555;min-width:80px;display:inline-block;">' + e.gameTime + '</span>&nbsp;'
+        : '';
+      var removeBtn = e.undoNode
+        ? '<button type="button" class="pure-button button-danger log-remove-btn" data-id="' + e.id + '" style="padding:2px 10px;font-size:.8em;">Remove</button>'
+        : '<button type="button" class="pure-button" disabled title="Cannot undo after page refresh" style="padding:2px 10px;font-size:.8em;opacity:.45;">Remove</button>';
+      return '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eee;">'
+        + '<span>' + timeLabel + '<strong>' + e.playerName + '</strong> &mdash; ' + e.stat + ' +1</span>'
+        + removeBtn
+        + '</div>';
+    }).join('');
+    body.innerHTML = rows;
+
+    pager.innerHTML = sorted.length > perPage
+      ? '<button type="button" id="playLogPrevPage" class="pure-button"' + (currentLogPage === 0 ? ' disabled' : '') + '>&laquo; Prev</button>'
+        + '<span style="margin:0 10px;">' + (currentLogPage + 1) + ' / ' + totalPages + '</span>'
+        + '<button type="button" id="playLogNextPage" class="pure-button"' + (currentLogPage >= totalPages - 1 ? ' disabled' : '') + '>Next &raquo;</button>'
+      : '';
+  }
+
+  $('.logBtn').click(function() {
+    renderLog();
+    document.getElementById('playLogModal').style.display = 'block';
+  });
+
+  $(document).on('click', '.log-remove-btn', function() {
+    removeLogEntry($(this).data('id'));
+  });
+
+  $(document).on('click', '#playLogPrevPage', function() {
+    if (currentLogPage > 0) { currentLogPage--; renderLog(); }
+  });
+
+  $(document).on('click', '#playLogNextPage', function() {
+    var totalPages = Math.ceil(actionLog.length / 10) || 1;
+    if (currentLogPage < totalPages - 1) { currentLogPage++; renderLog(); }
+  });
+
+  $('form[name=gameLogForm]').on('submit', function() {
+    if (logStorageKey) {
+      try { localStorage.removeItem(logStorageKey); } catch(err) {}
+    }
+  });
+
+  loadLogFromStorage();
 });
 
 // +/- sub tracking state (module-level so accessible from jQuery ready + sub button handler)

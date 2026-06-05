@@ -98,6 +98,7 @@
     <div style="position:relative;min-width:960px">
         <button type="button" class="pure-button undoBtn">Undo</button>
         <button type="button" class="pure-button sub-button" id="subButton">Sub</button>
+        <button type="button" class="pure-button logBtn" style="margin-left:8px;">Log</button>
     </div>
 
     <cfif url.isPlayoffs NEQ 1>
@@ -167,6 +168,25 @@
             </div>
           </div>
         </div>
+
+        <!-- Play-by-Play Log Modal -->
+          <div id="playLogModal" class="w3-modal">
+            <div class="w3-modal-content w3-animate-top w3-card-4" style="max-width:520px;">
+              <header class="w3-container w3-teal">
+                <span onclick="document.getElementById('playLogModal').style.display='none'"
+                      class="w3-button w3-display-topright">&times;</span>
+                <h2>Play-by-Play Log</h2>
+              </header>
+              <div class="w3-container" style="padding:20px;">
+                <div id="playLogBody"></div>
+                <div id="playLogPager" style="margin-top:12px;text-align:center;"></div>
+              </div>
+              <footer class="w3-container w3-teal" style="padding:10px;">
+                <button type="button" onclick="document.getElementById('playLogModal').style.display='none'"
+                        class="pure-button">Close</button>
+              </footer>
+            </div>
+          </div>
 
         <table id="sort" class="grid pure-table pure-table-horizontal statsAppTable">
             <thead>
@@ -335,6 +355,12 @@
     </script>
     </cfif>
 
+    <script>
+    window.RL_LOG_CONFIG = {
+      scheduleID: '#url.scheduleID#',
+      teamID: '#url.teamID#'
+    };
+    </script>
     <script src="StatsApp-Clock.js?v=#GetFileInfo(ExpandPath('StatsApp-Clock.js')).lastModified.getTime()#"></script>
     <script src="StatsApp.js?v=#GetFileInfo(ExpandPath('StatsApp.js')).lastModified.getTime()#"></script>
     <script src="StatsApp-Export.js?v=#GetFileInfo(ExpandPath('StatsApp-Export.js')).lastModified.getTime()#"></script>
