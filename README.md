@@ -42,15 +42,21 @@ cd roundleague_lucee
 
 ---
 
-### Step 2 — Set up your API keys
+### Step 2 — Set up your credentials
 
-The app requires two private API keys that are **not** committed to the repo. Copy the example file and fill in the values (contact the lead developer to get the actual keys):
+**API keys** — The app requires two private keys that are not committed to the repo. Copy the example file and fill in the real values (contact the lead developer):
 
 ```bash
 cp api-keys.example.cfm api-keys.cfm
 ```
 
-Then open `api-keys.cfm` and replace the placeholder values with the real keys.
+Then open `api-keys.cfm` and replace the placeholder values.
+
+**Docker environment** — Copy the example `.env` file. The defaults are fine for local development and do not need to be changed unless you have a port conflict:
+
+```bash
+cp .env.example .env
+```
 
 ---
 
@@ -84,17 +90,18 @@ Get the SQL dump file from the lead developer and run one of the following:
 
 **Option A — Command line:**
 ```bash
-docker compose exec -T mysql mysql -u roundleague -proundleague_dev roundleague < path/to/dump.sql
+# You will be prompted for the password (value of MYSQL_PASSWORD in your .env — default: roundleague_dev)
+docker compose exec -T mysql mysql -u roundleague -p roundleague < path/to/dump.sql
 ```
 
 **Option B — HeidiSQL or TablePlus (GUI):**
-Connect to the local MySQL instance with these credentials:
+Connect to the local MySQL instance with these credentials (passwords are in your `.env` file):
 | Field | Value |
 |-------|-------|
 | Host | `127.0.0.1` |
 | Port | `3306` |
 | Username | `roundleague` |
-| Password | `roundleague_dev` |
+| Password | value of `MYSQL_PASSWORD` in your `.env` (default: `roundleague_dev`) |
 | Database | `roundleague` |
 
 Then run the SQL dump file through the query editor.
@@ -147,9 +154,11 @@ npx gulp watch
 The lead developer periodically exports a fresh snapshot from production and shares the dump file. To overlay your local DB with a fresh copy:
 
 ```bash
-# Drop and recreate the database, then re-import
-docker compose exec mysql mysql -u root -proot_dev_password -e "DROP DATABASE roundleague; CREATE DATABASE roundleague;"
-docker compose exec -T mysql mysql -u roundleague -proundleague_dev roundleague < path/to/new_dump.sql
+# Drop and recreate the database (you will be prompted for the root password from your .env)
+docker compose exec mysql mysql -u root -p -e "DROP DATABASE roundleague; CREATE DATABASE roundleague;"
+
+# Re-import the new dump (you will be prompted for the roundleague user password)
+docker compose exec -T mysql mysql -u roundleague -p roundleague < path/to/new_dump.sql
 ```
 
 ---

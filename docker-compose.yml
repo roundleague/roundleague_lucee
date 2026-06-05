@@ -22,16 +22,16 @@ services:
   mysql:
     image: mysql:8.0
     environment:
-      MYSQL_ROOT_PASSWORD: root_dev_password
-      MYSQL_DATABASE: roundleague
-      MYSQL_USER: roundleague
-      MYSQL_PASSWORD: roundleague_dev
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
       - "3306:3306"   # Expose so HeidiSQL / TablePlus can connect locally
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot_dev_password"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "--******"]
       interval: 5s
       timeout: 10s
       retries: 10
