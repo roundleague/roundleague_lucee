@@ -1,0 +1,160 @@
+-- Round League — Database Schema
+-- Safe to run multiple times (CREATE TABLE IF NOT EXISTS)
+
+CREATE TABLE IF NOT EXISTS Seasons (
+  SeasonID       INT AUTO_INCREMENT PRIMARY KEY,
+  SeasonName     VARCHAR(100) NOT NULL,
+  Status         VARCHAR(20)  NOT NULL DEFAULT 'Inactive',
+  PreviousSeasonID INT DEFAULT NULL,
+  StartDate      DATE DEFAULT NULL,
+  EndDate        DATE DEFAULT NULL
+);
+
+CREATE TABLE IF NOT EXISTS leagues (
+  leagueID   INT AUTO_INCREMENT PRIMARY KEY,
+  seasonID   INT NOT NULL,
+  LeagueName VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS Divisions (
+  DivisionID   INT AUTO_INCREMENT PRIMARY KEY,
+  seasonID     INT NOT NULL,
+  divisionName VARCHAR(100) NOT NULL,
+  isWomens     TINYINT(1) NOT NULL DEFAULT 0,
+  leagueID     INT NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS Teams (
+  teamID          INT AUTO_INCREMENT PRIMARY KEY,
+  status          VARCHAR(20)  NOT NULL DEFAULT 'Active',
+  teamName        VARCHAR(100) NOT NULL,
+  CaptainPlayerID INT NOT NULL DEFAULT 0,
+  RegisterDate    DATETIME DEFAULT NULL,
+  DivisionID      INT NOT NULL DEFAULT 0,
+  SeasonID        INT NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS Players (
+  playerID         INT AUTO_INCREMENT PRIMARY KEY,
+  RegisterDate     DATE DEFAULT NULL,
+  Email            VARCHAR(254) NOT NULL,
+  FirstName        VARCHAR(50)  NOT NULL,
+  LastName         VARCHAR(50)  NOT NULL,
+  BirthDate        DATE DEFAULT NULL,
+  Phone            VARCHAR(20)  DEFAULT NULL,
+  HighestLevel     VARCHAR(50)  DEFAULT NULL,
+  FreeAgent        VARCHAR(3)   DEFAULT 'No',
+  Position         VARCHAR(20)  DEFAULT NULL,
+  Height           VARCHAR(10)  DEFAULT NULL,
+  Weight           VARCHAR(10)  DEFAULT NULL,
+  Hometown         VARCHAR(100) DEFAULT NULL,
+  School           VARCHAR(100) DEFAULT NULL,
+  PermissionToShare VARCHAR(3)  DEFAULT 'No',
+  Instagram        VARCHAR(100) DEFAULT NULL,
+  Gender           VARCHAR(20)  DEFAULT NULL,
+  MastersLeague    VARCHAR(3)   DEFAULT 'No',
+  ZipCode          VARCHAR(10)  DEFAULT NULL,
+  is_youth         TINYINT(1)   NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS users (
+  userID       INT AUTO_INCREMENT PRIMARY KEY,
+  userName     VARCHAR(254) NOT NULL,
+  password     VARCHAR(100) NOT NULL,
+  dateModified DATE DEFAULT NULL,
+  playerID     INT  DEFAULT NULL,
+  status       VARCHAR(20) NOT NULL DEFAULT 'Active',
+  role         VARCHAR(20) NOT NULL DEFAULT 'Player'
+);
+
+CREATE TABLE IF NOT EXISTS Roster (
+  rosterID   INT AUTO_INCREMENT PRIMARY KEY,
+  PlayerID   INT NOT NULL,
+  TeamID     INT NOT NULL,
+  SeasonID   INT NOT NULL,
+  DivisionID INT NOT NULL DEFAULT 0,
+  Jersey     INT NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS schedule (
+  scheduleID  INT AUTO_INCREMENT PRIMARY KEY,
+  homeTeamID  INT DEFAULT NULL,
+  awayTeamID  INT DEFAULT NULL,
+  `WEEK`      INT NOT NULL DEFAULT 0,
+  startTime   TIME DEFAULT NULL,
+  `DATE`      DATE DEFAULT NULL,
+  divisionID  INT NOT NULL DEFAULT 0,
+  seasonID    INT NOT NULL DEFAULT 0,
+  homeScore   INT DEFAULT NULL,
+  awayScore   INT DEFAULT NULL,
+  status      VARCHAR(20) DEFAULT NULL
+);
+
+CREATE TABLE IF NOT EXISTS standings (
+  StandingsID      INT AUTO_INCREMENT PRIMARY KEY,
+  TeamID           INT NOT NULL,
+  Wins             INT NOT NULL DEFAULT 0,
+  Losses           INT NOT NULL DEFAULT 0,
+  SeasonID         INT NOT NULL,
+  DivisionID       INT NOT NULL DEFAULT 0,
+  PointDifferential INT NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS PlayerGameLog (
+  logID      INT AUTO_INCREMENT PRIMARY KEY,
+  PlayerID   INT NOT NULL,
+  FGM        INT NOT NULL DEFAULT 0,
+  FGA        INT NOT NULL DEFAULT 0,
+  `3FGM`     INT NOT NULL DEFAULT 0,
+  `3FGA`     INT NOT NULL DEFAULT 0,
+  FTM        INT NOT NULL DEFAULT 0,
+  FTA        INT NOT NULL DEFAULT 0,
+  Points     INT NOT NULL DEFAULT 0,
+  Rebounds   INT NOT NULL DEFAULT 0,
+  Assists    INT NOT NULL DEFAULT 0,
+  Steals     INT NOT NULL DEFAULT 0,
+  Blocks     INT NOT NULL DEFAULT 0,
+  Turnovers  INT NOT NULL DEFAULT 0,
+  SeasonID   INT NOT NULL,
+  TeamID     INT NOT NULL,
+  ScheduleID INT NOT NULL,
+  Fouls      INT NOT NULL DEFAULT 0,
+  plusMinus  INT NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS PlayerStats (
+  statsID    INT AUTO_INCREMENT PRIMARY KEY,
+  PlayerID   INT NOT NULL,
+  Points     DECIMAL(10,1) NOT NULL DEFAULT 0.0,
+  Rebounds   DECIMAL(10,1) NOT NULL DEFAULT 0.0,
+  Assists    DECIMAL(10,1) NOT NULL DEFAULT 0.0,
+  Steals     DECIMAL(10,1) NOT NULL DEFAULT 0.0,
+  Blocks     DECIMAL(10,1) NOT NULL DEFAULT 0.0,
+  Turnovers  DECIMAL(10,1) NOT NULL DEFAULT 0.0,
+  SeasonID   INT NOT NULL,
+  TeamID     INT NOT NULL,
+  FGM        DECIMAL(10,1) NOT NULL DEFAULT 0.0,
+  FGA        DECIMAL(10,1) NOT NULL DEFAULT 0.0,
+  `3FGM`     DECIMAL(10,1) NOT NULL DEFAULT 0.0,
+  `3FGA`     DECIMAL(10,1) NOT NULL DEFAULT 0.0,
+  FTM        DECIMAL(10,1) NOT NULL DEFAULT 0.0,
+  FTA        DECIMAL(10,1) NOT NULL DEFAULT 0.0,
+  GamesPlayed INT NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS game_subs (
+  subID       INT AUTO_INCREMENT PRIMARY KEY,
+  scheduleID  INT NOT NULL,
+  teamID      INT NOT NULL,
+  playerOutID INT NOT NULL,
+  playerInID  INT NOT NULL,
+  homeScore   INT NOT NULL DEFAULT 0,
+  awayScore   INT NOT NULL DEFAULT 0,
+  seq         INT NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS recaps (
+  recapID    INT AUTO_INCREMENT PRIMARY KEY,
+  scheduleID INT NOT NULL,
+  recapText  TEXT NOT NULL
+);

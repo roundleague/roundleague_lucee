@@ -49,23 +49,39 @@ if [ $ELAPSED -ge $MAX ]; then
 fi
 ok "      MySQL is ready."
 
-# ── Optional: import SQL dump ─────────────────────────────────────────────────
-echo ""
-warn "Do you have a SQL dump to import? Enter the path (or press Enter to skip):"
-read -r DUMP_PATH
+# ── 4. Database: schema + seed ────────────────────────────────────────────────
+PW=$(grep "^MYSQL_PASSWORD=" .env | cut -d= -f2)
 
-if [ -n "$DUMP_PATH" ]; then
-    DUMP_PATH="${DUMP_PATH//\"/}"
-    if [ ! -f "$DUMP_PATH" ]; then
-        warn "File not found — skipping. You can import manually later."
-    else
-        PW=$(grep "^MYSQL_PASSWORD=" .env | cut -d= -f2)
-        log "Importing database..."
-        docker compose exec -T mysql mysql -u roundleague -p"$PW" roundleague < "$DUMP_PATH"
-        ok "Database imported."
-    fi
+log "[4/4] Applying database schema..."
+docker compose exec -T mysql mysql -u roundleague -p"$PW" roundleague < scripts/schema.sql
+ok "      Schema applied."
+
+echo ""
+warn "Load sample seed data? (8 teams, 40 players, completed games, standings)"
+warn "Skip if you have a real database dump to import instead. [y/N]"
+read -r SEED_ANSWER
+
+if [[ "$SEED_ANSWER" =~ ^[Yy]$ ]]; then
+    log "      Loading seed data..."
+    docker compose exec -T mysql mysql -u roundleague -p"$PW" roundleague < scripts/seed.sql
+    ok "      Seed data loaded. All player passwords: password123"
 else
-    warn "Skipping database import."
+    warn "      Seed skipped."
+    echo ""
+    warn "Do you have a SQL dump to import? Enter the path (or press Enter to skip):"
+    read -r DUMP_PATH
+    if [ -n "$DUMP_PATH" ]; then
+        DUMP_PATH="${DUMP_PATH//\"/}"
+        if [ ! -f "$DUMP_PATH" ]; then
+            warn "File not found — skipping. You can import manually later."
+        else
+            log "Importing database dump..."
+            docker compose exec -T mysql mysql -u roundleague -p"$PW" roundleague < "$DUMP_PATH"
+            ok "Database imported."
+        fi
+    else
+        warn "Skipping database import."
+    fi
 fi
 
 # ── Done ──────────────────────────────────────────────────────────────────────
