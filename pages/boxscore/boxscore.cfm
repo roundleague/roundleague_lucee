@@ -1,7 +1,7 @@
 <cfinclude template="/header.cfm">
 
 <!--- LOCAL ONLY: Reset game data for re-testing --->
-<cfif CGI.HTTP_HOST CONTAINS "localhost" OR CGI.HTTP_HOST CONTAINS "127.0.0.1" AND isDefined("form.resetGame") AND isDefined("url.scheduleID")>
+<cfif (CGI.HTTP_HOST CONTAINS "localhost" OR CGI.HTTP_HOST CONTAINS "127.0.0.1") AND isDefined("form.resetGame") AND isDefined("url.scheduleID")>
     <cfquery datasource="roundleague">
         DELETE FROM PlayerGameLog WHERE scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">
     </cfquery>
