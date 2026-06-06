@@ -75,7 +75,7 @@ Or connect via **HeidiSQL / TablePlus** with these credentials:
 | Field | Value |
 |-------|-------|
 | Host | `127.0.0.1` |
-| Port | `3306` |
+| Port | `3307` |
 | Username | `roundleague` |
 | Password | `roundleague_dev` (or whatever `MYSQL_PASSWORD` is set to in your `.env`) |
 | Database | `roundleague` |
