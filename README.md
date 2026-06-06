@@ -62,7 +62,7 @@ The first run downloads Docker images and takes a few minutes. Re-running `setup
 
 ---
 
-### Import the database (if you skipped it during setup)
+### Import real data to test real life scenarios
 
 Get the SQL dump from the lead developer, then run:
 
@@ -79,25 +79,6 @@ Or connect via **HeidiSQL / TablePlus** with these credentials:
 | Username | `roundleague` |
 | Password | `roundleague_dev` (or whatever `MYSQL_PASSWORD` is set to in your `.env`) |
 | Database | `roundleague` |
-
----
-
-### Frontend Assets (optional)
-
-Only needed if you are editing SCSS stylesheets.
-
-**Root project styles:**
-```bash
-npm install
-npx gulp watch
-```
-
-**Admin dashboard styles:**
-```bash
-cd admin-dashboard
-npm install
-npx gulp watch
-```
 
 ---
 
