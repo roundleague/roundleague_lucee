@@ -1,8 +1,6 @@
-version: '3.8'
-
 services:
   lucee:
-    image: ortussolutions/commandbox:lucee5-stable
+    image: ortussolutions/commandbox:lucee-light
     ports:
       - "8080:8080"   # Application
       - "8443:8443"   # Application (HTTPS)
