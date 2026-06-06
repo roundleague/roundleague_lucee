@@ -50,10 +50,18 @@ fi
 ok "      MySQL is ready."
 
 # ── 4. Database: schema + seed ────────────────────────────────────────────────
-PW=$(grep "^MYSQL_PASSWORD=" .env | cut -d= -f2)
+ROOT_PW=$(grep "^MYSQL_ROOT_PASSWORD=" .env | cut -d= -f2)
+
+# Copy SQL file into the container and run it via source (avoids Windows stdin-pipe issues)
+run_sql() {
+    local file="$1"
+    local dest="/tmp/$(basename "$file")"
+    docker compose cp "$file" mysql:"$dest"
+    docker compose exec mysql mysql -u root -p"$ROOT_PW" roundleague -e "source $dest"
+}
 
 log "[4/4] Applying database schema..."
-docker compose exec -T mysql mysql -u roundleague -p"$PW" roundleague < scripts/schema.sql
+run_sql scripts/schema.sql
 ok "      Schema applied."
 
 echo ""
@@ -63,7 +71,7 @@ read -r SEED_ANSWER
 
 if [[ "$SEED_ANSWER" =~ ^[Yy]$ ]]; then
     log "      Loading seed data..."
-    docker compose exec -T mysql mysql -u roundleague -p"$PW" roundleague < scripts/seed.sql
+    run_sql scripts/seed.sql
     ok "      Seed data loaded. All player passwords: password123"
 else
     warn "      Seed skipped."
@@ -76,7 +84,7 @@ else
             warn "File not found — skipping. You can import manually later."
         else
             log "Importing database dump..."
-            docker compose exec -T mysql mysql -u roundleague -p"$PW" roundleague < "$DUMP_PATH"
+            run_sql "$DUMP_PATH"
             ok "Database imported."
         fi
     else
@@ -90,5 +98,5 @@ ok "=== Setup complete! ==="
 echo ""
 echo "  App:         http://localhost:8080"
 echo "  Lucee admin: http://localhost:8080/lucee/admin/web.cfm"
-echo "  DB:          127.0.0.1:3306  user=roundleague"
+echo "  DB:          127.0.0.1:3307  user=roundleague"
 echo ""

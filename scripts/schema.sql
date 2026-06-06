@@ -1,145 +1,61 @@
 -- Round League — Database Schema
--- Safe to run multiple times (CREATE TABLE IF NOT EXISTS)
+-- Generated from production INFORMATION_SCHEMA. Safe to re-run (CREATE TABLE IF NOT EXISTS).
 
-CREATE TABLE IF NOT EXISTS Seasons (
-  SeasonID       INT AUTO_INCREMENT PRIMARY KEY,
-  SeasonName     VARCHAR(100) NOT NULL,
-  Status         VARCHAR(20)  NOT NULL DEFAULT 'Inactive',
-  PreviousSeasonID INT DEFAULT NULL,
-  StartDate      DATE DEFAULT NULL,
-  EndDate        DATE DEFAULT NULL
+CREATE TABLE IF NOT EXISTS app_events (
+  id         INT AUTO_INCREMENT PRIMARY KEY,
+  player_id  INT DEFAULT NULL,
+  event      VARCHAR(50) NOT NULL,
+  metadata   JSON DEFAULT NULL,
+  created_at DATETIME NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS leagues (
-  leagueID   INT AUTO_INCREMENT PRIMARY KEY,
-  seasonID   INT NOT NULL,
-  LeagueName VARCHAR(100) NOT NULL
+CREATE TABLE IF NOT EXISTS awards (
+  AwardID       INT AUTO_INCREMENT PRIMARY KEY,
+  AwardName     VARCHAR(200) DEFAULT NULL,
+  PlayerID      INT DEFAULT NULL,
+  Week          INT DEFAULT NULL,
+  IsSeasonAward BIT(1) DEFAULT NULL,
+  DateAwarded   DATE DEFAULT NULL,
+  SeasonID      INT DEFAULT NULL,
+  DivisionID    INT DEFAULT NULL
 );
 
-CREATE TABLE IF NOT EXISTS Divisions (
+CREATE TABLE IF NOT EXISTS boxscores (
+  BoxScoreID    INT AUTO_INCREMENT PRIMARY KEY,
+  HomeTeamID    INT DEFAULT NULL,
+  HomeTeamScore INT DEFAULT NULL,
+  HomeTeamWin   BIT(1) DEFAULT NULL,
+  AwayTeamID    INT DEFAULT NULL,
+  AwayTeamScore INT DEFAULT NULL,
+  AwayTeamWin   BIT(1) DEFAULT NULL,
+  SeasonID      INT DEFAULT NULL,
+  DatePlayed    DATE DEFAULT NULL,
+  ScheduleID    INT DEFAULT NULL,
+  DivisionID    INT DEFAULT NULL
+);
+
+CREATE TABLE IF NOT EXISTS champions (
+  championsID         INT AUTO_INCREMENT PRIMARY KEY,
+  teamID              INT DEFAULT NULL,
+  seasonID            INT DEFAULT NULL,
+  playoffs_bracketID  INT DEFAULT NULL,
+  backup_bracket_name VARCHAR(100) DEFAULT ''
+);
+
+CREATE TABLE IF NOT EXISTS divisions (
   DivisionID   INT AUTO_INCREMENT PRIMARY KEY,
-  seasonID     INT NOT NULL,
-  divisionName VARCHAR(100) NOT NULL,
-  isWomens     TINYINT(1) NOT NULL DEFAULT 0,
-  leagueID     INT NOT NULL DEFAULT 0
+  SeasonID     INT DEFAULT NULL,
+  DivisionName VARCHAR(50) DEFAULT NULL,
+  IsWomens     BIT(1) DEFAULT NULL,
+  leagueID     INT DEFAULT NULL
 );
 
-CREATE TABLE IF NOT EXISTS Teams (
-  teamID          INT AUTO_INCREMENT PRIMARY KEY,
-  status          VARCHAR(20)  NOT NULL DEFAULT 'Active',
-  teamName        VARCHAR(100) NOT NULL,
-  CaptainPlayerID INT NOT NULL DEFAULT 0,
-  RegisterDate    DATETIME DEFAULT NULL,
-  DivisionID      INT NOT NULL DEFAULT 0,
-  SeasonID        INT NOT NULL DEFAULT 0
-);
-
-CREATE TABLE IF NOT EXISTS Players (
-  playerID         INT AUTO_INCREMENT PRIMARY KEY,
-  RegisterDate     DATE DEFAULT NULL,
-  Email            VARCHAR(254) NOT NULL,
-  FirstName        VARCHAR(50)  NOT NULL,
-  LastName         VARCHAR(50)  NOT NULL,
-  BirthDate        DATE DEFAULT NULL,
-  Phone            VARCHAR(20)  DEFAULT NULL,
-  HighestLevel     VARCHAR(50)  DEFAULT NULL,
-  FreeAgent        VARCHAR(3)   DEFAULT 'No',
-  Position         VARCHAR(20)  DEFAULT NULL,
-  Height           VARCHAR(10)  DEFAULT NULL,
-  Weight           VARCHAR(10)  DEFAULT NULL,
-  Hometown         VARCHAR(100) DEFAULT NULL,
-  School           VARCHAR(100) DEFAULT NULL,
-  PermissionToShare VARCHAR(3)  DEFAULT 'No',
-  Instagram        VARCHAR(100) DEFAULT NULL,
-  Gender           VARCHAR(20)  DEFAULT NULL,
-  MastersLeague    VARCHAR(3)   DEFAULT 'No',
-  ZipCode          VARCHAR(10)  DEFAULT NULL,
-  is_youth         TINYINT(1)   NOT NULL DEFAULT 0
-);
-
-CREATE TABLE IF NOT EXISTS users (
-  userID       INT AUTO_INCREMENT PRIMARY KEY,
-  userName     VARCHAR(254) NOT NULL,
-  password     VARCHAR(100) NOT NULL,
-  dateModified DATE DEFAULT NULL,
-  playerID     INT  DEFAULT NULL,
-  status       VARCHAR(20) NOT NULL DEFAULT 'Active',
-  role         VARCHAR(20) NOT NULL DEFAULT 'Player'
-);
-
-CREATE TABLE IF NOT EXISTS Roster (
-  rosterID   INT AUTO_INCREMENT PRIMARY KEY,
-  PlayerID   INT NOT NULL,
-  TeamID     INT NOT NULL,
-  SeasonID   INT NOT NULL,
-  DivisionID INT NOT NULL DEFAULT 0,
-  Jersey     INT NOT NULL DEFAULT 0
-);
-
-CREATE TABLE IF NOT EXISTS schedule (
-  scheduleID  INT AUTO_INCREMENT PRIMARY KEY,
-  homeTeamID  INT DEFAULT NULL,
-  awayTeamID  INT DEFAULT NULL,
-  `WEEK`      INT NOT NULL DEFAULT 0,
-  startTime   TIME DEFAULT NULL,
-  `DATE`      DATE DEFAULT NULL,
-  divisionID  INT NOT NULL DEFAULT 0,
-  seasonID    INT NOT NULL DEFAULT 0,
-  homeScore   INT DEFAULT NULL,
-  awayScore   INT DEFAULT NULL,
-  status      VARCHAR(20) DEFAULT NULL
-);
-
-CREATE TABLE IF NOT EXISTS standings (
-  StandingsID      INT AUTO_INCREMENT PRIMARY KEY,
-  TeamID           INT NOT NULL,
-  Wins             INT NOT NULL DEFAULT 0,
-  Losses           INT NOT NULL DEFAULT 0,
-  SeasonID         INT NOT NULL,
-  DivisionID       INT NOT NULL DEFAULT 0,
-  PointDifferential INT NOT NULL DEFAULT 0
-);
-
-CREATE TABLE IF NOT EXISTS PlayerGameLog (
-  logID      INT AUTO_INCREMENT PRIMARY KEY,
-  PlayerID   INT NOT NULL,
-  FGM        INT NOT NULL DEFAULT 0,
-  FGA        INT NOT NULL DEFAULT 0,
-  `3FGM`     INT NOT NULL DEFAULT 0,
-  `3FGA`     INT NOT NULL DEFAULT 0,
-  FTM        INT NOT NULL DEFAULT 0,
-  FTA        INT NOT NULL DEFAULT 0,
-  Points     INT NOT NULL DEFAULT 0,
-  Rebounds   INT NOT NULL DEFAULT 0,
-  Assists    INT NOT NULL DEFAULT 0,
-  Steals     INT NOT NULL DEFAULT 0,
-  Blocks     INT NOT NULL DEFAULT 0,
-  Turnovers  INT NOT NULL DEFAULT 0,
-  SeasonID   INT NOT NULL,
-  TeamID     INT NOT NULL,
-  ScheduleID INT NOT NULL,
-  Fouls      INT NOT NULL DEFAULT 0,
-  plusMinus  INT NOT NULL DEFAULT 0
-);
-
-CREATE TABLE IF NOT EXISTS PlayerStats (
-  statsID    INT AUTO_INCREMENT PRIMARY KEY,
-  PlayerID   INT NOT NULL,
-  Points     DECIMAL(10,1) NOT NULL DEFAULT 0.0,
-  Rebounds   DECIMAL(10,1) NOT NULL DEFAULT 0.0,
-  Assists    DECIMAL(10,1) NOT NULL DEFAULT 0.0,
-  Steals     DECIMAL(10,1) NOT NULL DEFAULT 0.0,
-  Blocks     DECIMAL(10,1) NOT NULL DEFAULT 0.0,
-  Turnovers  DECIMAL(10,1) NOT NULL DEFAULT 0.0,
-  SeasonID   INT NOT NULL,
-  TeamID     INT NOT NULL,
-  FGM        DECIMAL(10,1) NOT NULL DEFAULT 0.0,
-  FGA        DECIMAL(10,1) NOT NULL DEFAULT 0.0,
-  `3FGM`     DECIMAL(10,1) NOT NULL DEFAULT 0.0,
-  `3FGA`     DECIMAL(10,1) NOT NULL DEFAULT 0.0,
-  FTM        DECIMAL(10,1) NOT NULL DEFAULT 0.0,
-  FTA        DECIMAL(10,1) NOT NULL DEFAULT 0.0,
-  GamesPlayed INT NOT NULL DEFAULT 0
+CREATE TABLE IF NOT EXISTS game_notifications (
+  id         INT AUTO_INCREMENT PRIMARY KEY,
+  scheduleID INT NOT NULL,
+  userID     INT NOT NULL,
+  type       ENUM('24h','2h') NOT NULL,
+  sentAt     TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS game_subs (
@@ -148,13 +64,328 @@ CREATE TABLE IF NOT EXISTS game_subs (
   teamID      INT NOT NULL,
   playerOutID INT NOT NULL,
   playerInID  INT NOT NULL,
-  homeScore   INT NOT NULL DEFAULT 0,
-  awayScore   INT NOT NULL DEFAULT 0,
-  seq         INT NOT NULL DEFAULT 0
+  homeScore   INT NOT NULL,
+  awayScore   INT NOT NULL,
+  seq         INT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS leagues (
+  leagueID   INT AUTO_INCREMENT PRIMARY KEY,
+  leagueName VARCHAR(50) NOT NULL DEFAULT '',
+  seasonID   INT DEFAULT NULL
+);
+
+CREATE TABLE IF NOT EXISTS merge_audit_log (
+  auditID        INT AUTO_INCREMENT PRIMARY KEY,
+  keptPlayerID   INT NOT NULL,
+  mergedPlayerID INT NOT NULL,
+  mergedByUser   VARCHAR(100) NOT NULL,
+  mergeDate      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS password_reset_tokens (
+  id        INT AUTO_INCREMENT PRIMARY KEY,
+  userID    INT NOT NULL,
+  token     VARCHAR(64) NOT NULL,
+  expiresAt DATETIME NOT NULL,
+  usedAt    DATETIME DEFAULT NULL,
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS pending_signups (
+  pending_signupsID INT AUTO_INCREMENT PRIMARY KEY,
+  userID            INT DEFAULT NULL,
+  confirmationCode  VARCHAR(200) DEFAULT NULL
+);
+
+CREATE TABLE IF NOT EXISTS pending_teams (
+  pending_teamsID     INT AUTO_INCREMENT PRIMARY KEY,
+  teamName            VARCHAR(200) NOT NULL,
+  selectedDivision    VARCHAR(50) NOT NULL DEFAULT '0',
+  status              VARCHAR(25) NOT NULL DEFAULT '0',
+  captainFirstName    VARCHAR(100) NOT NULL,
+  captainLastName     VARCHAR(100) NOT NULL,
+  age                 INT NOT NULL DEFAULT 0,
+  email               VARCHAR(100) NOT NULL DEFAULT '0',
+  phoneNumber         VARCHAR(100) NOT NULL DEFAULT '0',
+  highestLevel        VARCHAR(100) NOT NULL DEFAULT '0',
+  playerCountEstimate INT NOT NULL DEFAULT 0,
+  dateAdded           DATE DEFAULT NULL
+);
+
+CREATE TABLE IF NOT EXISTS player_payment_contributions (
+  id                INT AUTO_INCREMENT PRIMARY KEY,
+  player_id         INT NOT NULL,
+  team_id           INT NOT NULL,
+  amount            DECIMAL(10,2) NOT NULL,
+  season            VARCHAR(50) NOT NULL,
+  stripe_session_id VARCHAR(255) DEFAULT NULL,
+  created_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS playergamelog (
+  PlayerGameLogID INT AUTO_INCREMENT PRIMARY KEY,
+  PlayerID        INT DEFAULT NULL,
+  FGM             INT DEFAULT NULL,
+  FGA             INT DEFAULT NULL,
+  `3FGM`          INT DEFAULT NULL,
+  `3FGA`          INT DEFAULT NULL,
+  FTM             INT DEFAULT NULL,
+  FTA             INT DEFAULT NULL,
+  Points          INT DEFAULT NULL,
+  Rebounds        INT DEFAULT NULL,
+  Assists         INT DEFAULT NULL,
+  Steals          INT DEFAULT NULL,
+  Blocks          INT DEFAULT NULL,
+  Turnovers       INT DEFAULT NULL,
+  BoxScoreID      INT DEFAULT NULL,
+  SeasonID        INT DEFAULT NULL,
+  DivisionID      INT DEFAULT NULL,
+  TeamID          INT DEFAULT NULL,
+  ScheduleID      INT DEFAULT NULL,
+  Fouls           INT DEFAULT NULL,
+  plusMinus       INT DEFAULT NULL
+);
+
+CREATE TABLE IF NOT EXISTS players (
+  PlayerID              INT AUTO_INCREMENT PRIMARY KEY,
+  RegisterDate          DATE NOT NULL,
+  Email                 VARCHAR(200) NOT NULL DEFAULT '',
+  firstName             VARCHAR(200) NOT NULL DEFAULT '',
+  lastName              VARCHAR(200) NOT NULL DEFAULT '',
+  BirthDate             DATE NOT NULL,
+  Phone                 VARCHAR(200) NOT NULL DEFAULT '',
+  HighestLevel          VARCHAR(200) DEFAULT NULL,
+  FullyVaccinated       VARCHAR(100) NOT NULL DEFAULT '',
+  FreeAgent             VARCHAR(50) DEFAULT NULL,
+  position              VARCHAR(200) NOT NULL DEFAULT '',
+  height                VARCHAR(200) NOT NULL DEFAULT '',
+  weight                VARCHAR(200) NOT NULL DEFAULT '',
+  hometown              VARCHAR(200) NOT NULL DEFAULT '',
+  School                VARCHAR(200) NOT NULL DEFAULT '',
+  PermissionToShare     VARCHAR(20) DEFAULT NULL,
+  Status                VARCHAR(200) NOT NULL DEFAULT '',
+  PhotoURL              VARCHAR(200) NOT NULL DEFAULT '',
+  Instagram             VARCHAR(200) NOT NULL DEFAULT '',
+  DivisionID            INT NOT NULL DEFAULT 0,
+  Team                  VARCHAR(200) DEFAULT NULL,
+  Gender                VARCHAR(50) DEFAULT NULL,
+  MastersLeague         VARCHAR(50) DEFAULT NULL,
+  ZipCode               INT DEFAULT NULL,
+  ShoeSize              VARCHAR(50) DEFAULT NULL,
+  ShoeType              VARCHAR(250) DEFAULT NULL,
+  AdidasConflict        VARCHAR(50) DEFAULT NULL,
+  AdidasInterestTesting VARCHAR(50) DEFAULT NULL,
+  ModifiedDate          DATE DEFAULT NULL,
+  mergedIntoPlayerID    INT DEFAULT NULL,
+  is_youth              TINYINT(1) NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS playerstats (
+  PlayerStatsID INT AUTO_INCREMENT PRIMARY KEY,
+  PlayerID      INT DEFAULT NULL,
+  Points        FLOAT DEFAULT NULL,
+  Rebounds      FLOAT DEFAULT NULL,
+  Assists       FLOAT DEFAULT NULL,
+  FGM           FLOAT DEFAULT NULL,
+  FGA           FLOAT DEFAULT NULL,
+  `3FGM`        FLOAT DEFAULT NULL,
+  `3FGA`        FLOAT DEFAULT NULL,
+  FTM           FLOAT DEFAULT NULL,
+  FTA           FLOAT DEFAULT NULL,
+  Steals        FLOAT DEFAULT NULL,
+  Blocks        FLOAT DEFAULT NULL,
+  Turnovers     FLOAT DEFAULT NULL,
+  GamesPlayed   INT DEFAULT NULL,
+  SeasonID      INT DEFAULT NULL,
+  DivisionID    INT DEFAULT NULL,
+  TeamID        INT DEFAULT NULL
+);
+
+CREATE TABLE IF NOT EXISTS playoffs_bracket (
+  Playoffs_bracketID INT AUTO_INCREMENT PRIMARY KEY,
+  Name               VARCHAR(50) NOT NULL DEFAULT '',
+  SeasonID           INT DEFAULT NULL,
+  SortOrder          INT DEFAULT NULL,
+  MaxTeamSize        INT DEFAULT NULL
+);
+
+CREATE TABLE IF NOT EXISTS playoffs_playergamelog (
+  Playoffs_PlayerGameLogID INT AUTO_INCREMENT PRIMARY KEY,
+  PlayerID                 INT DEFAULT NULL,
+  FGM                      INT DEFAULT NULL,
+  FGA                      INT DEFAULT NULL,
+  `3FGM`                   INT DEFAULT NULL,
+  `3FGA`                   INT DEFAULT NULL,
+  FTM                      INT DEFAULT NULL,
+  FTA                      INT DEFAULT NULL,
+  Points                   INT DEFAULT NULL,
+  Rebounds                 INT DEFAULT NULL,
+  Assists                  INT DEFAULT NULL,
+  Steals                   INT DEFAULT NULL,
+  Blocks                   INT DEFAULT NULL,
+  Turnovers                INT DEFAULT NULL,
+  BoxScoreID               INT DEFAULT NULL,
+  SeasonID                 INT DEFAULT NULL,
+  DivisionID               INT DEFAULT NULL,
+  TeamID                   INT DEFAULT NULL,
+  Playoffs_ScheduleID      INT DEFAULT NULL,
+  Fouls                    INT DEFAULT NULL
+);
+
+CREATE TABLE IF NOT EXISTS playoffs_schedule (
+  Playoffs_ScheduleID INT AUTO_INCREMENT PRIMARY KEY,
+  HomeTeamID          INT DEFAULT NULL,
+  AwayTeamID          INT DEFAULT NULL,
+  Week                INT DEFAULT NULL,
+  StartTime           TIME DEFAULT NULL,
+  Date                DATE DEFAULT NULL,
+  Playoffs_BracketID  INT DEFAULT NULL,
+  SeasonID            INT DEFAULT NULL,
+  HomeScore           INT DEFAULT NULL,
+  AwayScore           INT DEFAULT NULL,
+  BracketGameID       INT DEFAULT NULL,
+  BracketRoundID      INT DEFAULT NULL,
+  HomeSeed            INT DEFAULT NULL,
+  AwaySeed            INT DEFAULT NULL,
+  Location            VARCHAR(250) DEFAULT NULL
+);
+
+CREATE TABLE IF NOT EXISTS push_tokens (
+  id        INT AUTO_INCREMENT PRIMARY KEY,
+  userID    INT NOT NULL,
+  token     VARCHAR(255) NOT NULL,
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS recaps (
-  recapID    INT AUTO_INCREMENT PRIMARY KEY,
+  recapsID   INT AUTO_INCREMENT PRIMARY KEY,
   scheduleID INT NOT NULL,
   recapText  TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS roster (
+  RosterID     INT AUTO_INCREMENT PRIMARY KEY,
+  PlayerID     INT NOT NULL,
+  TeamID       INT DEFAULT NULL,
+  SeasonID     INT NOT NULL,
+  DivisionID   INT DEFAULT NULL,
+  Jersey       INT DEFAULT NULL,
+  Starter      INT DEFAULT NULL,
+  DateModified DATE DEFAULT NULL
+);
+
+CREATE TABLE IF NOT EXISTS schedule (
+  ScheduleID              INT AUTO_INCREMENT PRIMARY KEY,
+  HomeTeamID              INT DEFAULT NULL,
+  AwayTeamID              INT DEFAULT NULL,
+  Week                    INT DEFAULT NULL,
+  StartTime               TIME DEFAULT NULL,
+  Date                    DATE DEFAULT NULL,
+  DivisionID              INT DEFAULT NULL,
+  SeasonID                INT DEFAULT NULL,
+  HomeBoxScoreLink        VARCHAR(1000) DEFAULT NULL,
+  AwayBoxScoreLink        VARCHAR(1000) DEFAULT NULL,
+  HomeScore               INT DEFAULT NULL,
+  AwayScore               INT DEFAULT NULL,
+  status                  ENUM('scheduled','live','final') NOT NULL DEFAULT 'scheduled',
+  clock_status            ENUM('stopped','running','paused') NOT NULL DEFAULT 'stopped',
+  clock_remaining_seconds INT NOT NULL DEFAULT 1500,
+  clock_updated_at        DATETIME DEFAULT NULL,
+  clock_period            TINYINT NOT NULL DEFAULT 1,
+  shot_clock_remaining    TINYINT NOT NULL DEFAULT 30,
+  shot_clock_status       ENUM('stopped','running') NOT NULL DEFAULT 'stopped',
+  shot_clock_updated_at   DATETIME DEFAULT NULL,
+  home_fouls_h1           INT NOT NULL DEFAULT 0,
+  home_fouls_h2           INT NOT NULL DEFAULT 0,
+  away_fouls_h1           INT NOT NULL DEFAULT 0,
+  away_fouls_h2           INT NOT NULL DEFAULT 0,
+  home_timeouts_h1        INT NOT NULL DEFAULT 2,
+  home_timeouts_h2        INT NOT NULL DEFAULT 2,
+  away_timeouts_h1        INT NOT NULL DEFAULT 2,
+  away_timeouts_h2        INT NOT NULL DEFAULT 2
+);
+
+CREATE TABLE IF NOT EXISTS seasons (
+  SeasonID         INT AUTO_INCREMENT PRIMARY KEY,
+  SeasonName       VARCHAR(100) DEFAULT NULL,
+  Status           VARCHAR(50) DEFAULT NULL,
+  StartDate        DATE DEFAULT NULL,
+  EndDate          DATE DEFAULT NULL,
+  PreviousSeasonID INT DEFAULT NULL,
+  team_fee         DECIMAL(10,2) DEFAULT 1000.00
+);
+
+CREATE TABLE IF NOT EXISTS standings (
+  StandingsID       INT AUTO_INCREMENT PRIMARY KEY,
+  TeamID            INT DEFAULT NULL,
+  Wins              INT DEFAULT NULL,
+  Losses            INT DEFAULT NULL,
+  SeasonID          INT DEFAULT NULL,
+  DivisionID        INT DEFAULT NULL,
+  PointDifferential INT DEFAULT NULL
+);
+
+CREATE TABLE IF NOT EXISTS team_payments (
+  id                INT AUTO_INCREMENT PRIMARY KEY,
+  team_id           INT NOT NULL,
+  season            VARCHAR(50) NOT NULL,
+  amount_paid       DECIMAL(10,2) NOT NULL,
+  payment_method    VARCHAR(20) DEFAULT NULL,
+  paid_by_player_id INT DEFAULT NULL,
+  stripe_session_id VARCHAR(255) DEFAULT NULL,
+  created_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS team_photos (
+  photoID    INT AUTO_INCREMENT PRIMARY KEY,
+  teamID     INT NOT NULL,
+  seasonID   INT NOT NULL,
+  s3Key      VARCHAR(500) NOT NULL,
+  photoURL   VARCHAR(500) NOT NULL,
+  filename   VARCHAR(255) DEFAULT NULL,
+  uploadedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS team_preferences (
+  id             INT AUTO_INCREMENT PRIMARY KEY,
+  teamID         INT NOT NULL,
+  timePreference VARCHAR(50) DEFAULT 'No Preference',
+  skillLevel     INT DEFAULT 2,
+  dayPreference  VARCHAR(20) DEFAULT 'No Preference',
+  blackouts      TEXT DEFAULT NULL,
+  seasonID       INT DEFAULT NULL,
+  created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS teams (
+  teamId          INT AUTO_INCREMENT PRIMARY KEY,
+  Status          VARCHAR(50) NOT NULL DEFAULT '0',
+  teamName        VARCHAR(50) NOT NULL DEFAULT '',
+  CaptainPlayerID INT NOT NULL DEFAULT 0,
+  RegisterDate    DATE NOT NULL,
+  DivisionID      INT DEFAULT 0,
+  SeasonID        INT NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS transactions (
+  TransactionsID    INT AUTO_INCREMENT PRIMARY KEY,
+  PlayerID          INT DEFAULT NULL,
+  FromTeamID        INT DEFAULT NULL,
+  ToTeamID          INT DEFAULT NULL,
+  SeasonID          INT DEFAULT NULL,
+  CaptainModifiedBy INT DEFAULT NULL,
+  DateModified      DATE DEFAULT NULL
+);
+
+CREATE TABLE IF NOT EXISTS users (
+  userID       INT AUTO_INCREMENT PRIMARY KEY,
+  userName     VARCHAR(100) DEFAULT NULL,
+  password     VARCHAR(100) DEFAULT NULL,
+  dateModified DATE DEFAULT NULL,
+  playerID     INT DEFAULT NULL,
+  status       VARCHAR(50) DEFAULT NULL,
+  role         VARCHAR(50) DEFAULT NULL
 );
