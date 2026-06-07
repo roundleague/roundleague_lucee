@@ -120,6 +120,20 @@
         if (remainingSeconds === 0 && !gameBuzzed) {
           gameBuzzed = true;
           playBuzzer("long");
+          if (period === 1) {
+            setTimeout(function () {
+              if (confirm("End of 1st half — switch to 2nd half?")) {
+                period = 2;
+                if (periodEl) periodEl.textContent = "H2";
+                var switchLabel = document.querySelector(".switch-label");
+                if (switchLabel) switchLabel.setAttribute("data-value", "2");
+                remainingSeconds = HALF_SECONDS;
+                gameBuzzed = false;
+                renderDisplay();
+                patchClock("stopped");
+              }
+            }, 500);
+          }
         }
       } else {
         stopClock();
