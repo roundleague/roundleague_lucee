@@ -3,6 +3,9 @@
 <!--- Page Specific CSS/JS Here --->
 <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.6/build/pure-min.css" integrity="sha384-Uu6IeWbM+gzNVXJcM9XV3SohHtmWE+3VGi496jvgX1jyvDTXfdK+rfZc8C1Aehk5" crossorigin="anonymous">
 <!--- Scripts --->
+<cfoutput>
+<script>window.SCHEDULE_API_BASE = '#isDefined("application.apiBase") ? application.apiBase : "https://round-league-api.onrender.com"#';</script>
+</cfoutput>
 <script src="/pages/Schedule/schedule-2.js"></script>
 <link href="../Schedule/schedule-2.css?v=1.2" rel="stylesheet">
 
@@ -167,7 +170,12 @@
                     #(len(DateTimeFormat(getSchedule.startTime, "h:nn tt")) GT 0) ? DateTimeFormat(getSchedule.startTime, "h:nn tt") : 'BYE'#
                   </td>
                   <td data-label="Status">
-                    <span class="statusBadge #statusClass#">#gameStatus#</span>
+                    <div class="statusCellWrap">
+                      <span class="statusBadge #statusClass#">#gameStatus#</span>
+                      <cfif dbStatus EQ 'live'>
+                        <span class="liveClockEl" data-schedule-id="#getSchedule.scheduleID#">--:-- H1</span>
+                      </cfif>
+                    </div>
                   </td>
                 </tr>
               </cfloop>
@@ -248,6 +256,9 @@
                 </a>
                 <div class="gameBlockFooter">
                   <span class="statusBadge #mStatusClass#">#mGameStatus#</span>
+                  <cfif mDbStatus EQ 'live'>
+                    <span class="liveClockEl" data-schedule-id="#getSchedule.scheduleID#">--:-- H1</span>
+                  </cfif>
                 </div>
 
               <cfelseif mGameIsBye>

@@ -411,6 +411,20 @@
   letter-spacing: 0.02em;
 }
 
+/* Live game clock */
+.statusCellWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+.liveClockEl {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--rl-primary);
+  letter-spacing: 0.06em;
+}
+
 /* ========================================
    RESPONSIVE
    ======================================== */

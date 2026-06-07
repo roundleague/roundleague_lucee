@@ -1,3 +1,66 @@
+(function () {
+  var API_BASE = (window.SCHEDULE_API_BASE || 'https://round-league-api.onrender.com') + '/api';
+
+  function pad(n) { return n < 10 ? '0' + n : '' + n; }
+
+  function initLiveClocks() {
+    var clockEls = document.querySelectorAll('.liveClockEl[data-schedule-id]');
+    if (!clockEls.length) return;
+
+    var clocks = {};
+
+    clockEls.forEach(function (el) {
+      var id = el.getAttribute('data-schedule-id');
+      if (!clocks[id]) clocks[id] = { els: [], remainingSeconds: 0, period: 1, ticker: null };
+      clocks[id].els.push(el);
+    });
+
+    function render(id) {
+      var c = clocks[id];
+      var m = Math.floor(c.remainingSeconds / 60);
+      var s = c.remainingSeconds % 60;
+      var text = pad(m) + ':' + pad(s) + ' H' + c.period;
+      c.els.forEach(function (el) { el.textContent = text; });
+    }
+
+    function sync(id) {
+      fetch(API_BASE + '/schedule/' + id + '/clock')
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          var c = clocks[id];
+          c.remainingSeconds = Math.max(0, parseInt(data.clock_display_seconds, 10) || 0);
+          c.period = data.clock_period || 1;
+          var running = data.clock_status === 'running';
+          render(id);
+          if (c.ticker) { clearInterval(c.ticker); c.ticker = null; }
+          if (running) {
+            c.ticker = setInterval(function () {
+              if (c.remainingSeconds > 0) {
+                c.remainingSeconds--;
+                render(id);
+              } else {
+                clearInterval(c.ticker);
+                c.ticker = null;
+              }
+            }, 1000);
+          }
+        })
+        .catch(function () {});
+    }
+
+    Object.keys(clocks).forEach(function (id) {
+      sync(id);
+      setInterval(function () { sync(id); }, 15000);
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initLiveClocks);
+  } else {
+    initLiveClocks();
+  }
+})();
+
 function myFunction() {
   var input, filter, table, tr, i, txtValue, txtValue2;
   input = document.getElementById("myInput");
