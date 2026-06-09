@@ -43,7 +43,11 @@
                             <p>Round League Reach</p>
                         </a>
 
-                        <div class="tool-card empty"></div>
+                        <a href="/admin-dashboard/pages/statCorrections/statCorrections.cfm" class="tool-card">
+                            <i class="nc-icon nc-chat-33"></i>
+                            <p>Stat Corrections</p>
+                        </a>
+
                         <div class="tool-card empty"></div>
                         <div class="tool-card empty"></div>
                         <div class="tool-card empty"></div>
