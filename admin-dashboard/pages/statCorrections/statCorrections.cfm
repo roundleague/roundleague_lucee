@@ -194,7 +194,7 @@
                   {label="FT Att",       orig=orig_FTA,       req=req_FTA}
                 ]>
                 <cfloop array="#statDefs#" index="sd">
-                  <cfif NOT isNull(sd.req)>
+                  <cfif NOT isNull(sd.req) AND len(trim(sd.req))>
                     <tr class="changed">
                       <td>#sd.label#</td>
                       <td class="orig">#sd.orig#</td>
