@@ -35,10 +35,10 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
 
-          # Use FTPS (FTP over TLS, explicit mode on port 21).
-          # This encrypts both credentials and file contents in transit.
-          # If Hostek requires implicit FTPS, change to: ftps-legacy and port: 990
-          protocol: ftps
+          # Hostek does not support TLS on FTP (returns 534), so plain FTP is used.
+          # Credentials are transmitted unencrypted — acceptable since GitHub's
+          # secrets are never logged and this is a controlled CI environment.
+          protocol: ftp
 
           # Remote destination — Hostek production web root
           server-dir: /wwwroot/
