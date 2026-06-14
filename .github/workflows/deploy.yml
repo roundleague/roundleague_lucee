@@ -1,0 +1,80 @@
+name: Deploy to Hostek Production
+
+# Trigger: runs on every push to the main branch
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: FTP Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repository so the runner has the source files.
+      # Only tracked files are checked out — anything in .gitignore (api-keys.cfm,
+      # WEB-INF/, .env, boxscores/, etc.) is never present on the runner.
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: No build step needed.
+      # Compiled CSS (assets/css/) is already committed to git, so Gulp does not
+      # need to run in CI. If you ever move to uncommitted SCSS-only, add an
+      # npm install + gulp compile-scss step here before deployment.
+
+      # Step 3: Upload changed files to Hostek via FTPS.
+      # FTP-Deploy-Action v4 maintains a .ftp-deploy-sync-state.json file on the
+      # server to track what has already been uploaded — only modified or new files
+      # are transferred on each run, keeping deploys fast.
+      - name: Deploy to Hostek via FTPS
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          # Hostek FTP credentials — stored as GitHub repository secrets
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+
+          # Use FTPS (FTP over TLS, explicit mode on port 21).
+          # This encrypts both credentials and file contents in transit.
+          # If Hostek requires implicit FTPS, change to: ftps-legacy and port: 990
+          protocol: ftps
+
+          # Remote destination — Hostek production web root
+          server-dir: /wwwroot/
+
+          # Local source — repository root
+          local-dir: ./
+
+          # Do NOT wipe the server before uploading. This preserves files that
+          # exist on the server but are not in git (e.g. api-keys.cfm, user uploads).
+          dangerous-clean-slate: false
+
+          # Files to exclude from upload. Note: files already in .gitignore are
+          # never checked out by actions/checkout, so they don't need to be listed
+          # here. This list only covers files that ARE in git but should not go
+          # to production.
+          exclude: |
+            [
+              "**/.git*",
+              "**/.git*/**",
+              "**/node_modules/**",
+              ".vscode/**",
+              ".gitattributes",
+              ".DS_Store",
+              "README.md",
+              "CHANGELOG.md",
+              "docker-compose.yml",
+              "setup.sh",
+              "gulpfile.js",
+              "package.json",
+              "package-lock.json",
+              "admin-dashboard/gulpfile.js",
+              "admin-dashboard/package.json",
+              "admin-dashboard/package-lock.json",
+              ".env.example",
+              ".cfconfig.json",
+              "api-keys.example.cfm",
+              "docs/**",
+              "scripts/*.sql"
+            ]
