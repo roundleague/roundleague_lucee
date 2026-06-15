@@ -115,7 +115,7 @@
             </a>
           </li> --->
           <li class="nav-item">
-            <a class="nav-link" rel="tooltip" data-placement="bottom" href="https://docs.google.com/document/d/e/2PACX-1vSAgkeAcc_34PTnJmDjb6HyDuPRYyNfGmLdywFtEB_ePATrRs0ficHVOlW50n8SiPUvApGp1OV6Kaw4/pub" target="_blank">
+            <a class="nav-link" rel="tooltip" data-placement="bottom" href="/pages/Rules/league-rules.cfm">
               League Rules
             </a>
           </li>
