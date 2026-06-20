@@ -234,7 +234,7 @@ Week 2 - Monday, March 2nd
             
             <div class="form-group">
               <label>
-                <input type="checkbox" id="clearExisting" name="clearExisting" value="1" checked>
+                <input type="checkbox" id="clearExisting" name="clearExisting" value="1">
                 <strong style="color:##c0392b;">DELETE EXISTING SCHEDULE FOR THIS DIVISION?</strong>
               </label>
             </div>
