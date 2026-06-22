@@ -48,7 +48,11 @@
                             <p>Stat Corrections</p>
                         </a>
 
-                        <div class="tool-card empty"></div>
+                        <a href="/admin-dashboard/pages/leagueRules/leagueRules.cfm" class="tool-card">
+                            <i class="nc-icon nc-single-copy-04"></i>
+                            <p>League Rules</p>
+                        </a>
+
                         <div class="tool-card empty"></div>
                         <div class="tool-card empty"></div>
                         <div class="tool-card empty"></div>

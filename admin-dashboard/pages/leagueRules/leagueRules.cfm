@@ -1,52 +1,15 @@
+<cfinclude template="/admin-dashboard/admin_header.cfm">
+
+<link href="/admin-dashboard/pages/leagueRules/leagueRules.css" rel="stylesheet">
+<link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+
 <cfquery name="qRules" datasource="roundleague">
     SELECT contentHTML FROM site_content WHERE pageKey = 'league-rules'
 </cfquery>
 
-<cfinclude template="/header.cfm">
+<cfset defaultRules = '<h1 class="ql-align-center">League Rules &amp; Regulations</h1>
+        <p class="ql-align-center">The Round &mdash; 4145 SW Watson Ave, Beaverton, OR 97005</p>
 
-<style>
-  .rules-page { background-color: #fff; margin-top: 70px; padding-bottom: 60px; }
-  .rules-page h1 { font-size: 2rem; font-weight: 700; margin-bottom: 4px; }
-  .rules-page .subtitle { color: #888; margin-bottom: 40px; font-size: 0.95rem; }
-  .rules-section { margin-bottom: 36px; }
-  .rules-section h2 { font-size: 1.1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #c0392b; border-bottom: 2px solid #f0f0f0; padding-bottom: 8px; margin-bottom: 16px; }
-  .rules-section h3 { font-size: 0.95rem; font-weight: 700; margin-top: 18px; margin-bottom: 8px; color: #111; }
-  .rules-section p, .rules-section li { font-size: 0.92rem; color: #111; line-height: 1.7; }
-  .rules-section ul, .rules-section ol { padding-left: 20px; }
-  .rules-section li { margin-bottom: 4px; }
-  .rules-note { background: #fafafa; border-left: 3px solid #c0392b; padding: 12px 16px; border-radius: 0 4px 4px 0; font-size: 0.88rem; color: #111; margin-top: 10px; }
-  /* styles for Quill-generated content */
-  .lr-dynamic-content h1 { font-size: 2rem; font-weight: 700; margin-bottom: 4px; margin-top: 30px; text-align: center; }
-  .lr-dynamic-content h2 { font-size: 1.1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #c0392b; border-bottom: 2px solid #f0f0f0; padding-bottom: 8px; margin-bottom: 16px; margin-top: 36px; }
-  .lr-dynamic-content h3 { font-size: 0.95rem; font-weight: 700; margin-top: 18px; margin-bottom: 8px; color: #111; }
-  .lr-dynamic-content p, .lr-dynamic-content li { font-size: 0.92rem; color: #111; line-height: 1.7; }
-  .lr-dynamic-content ul, .lr-dynamic-content ol { padding-left: 20px; }
-  .lr-dynamic-content li { margin-bottom: 4px; }
-  .lr-dynamic-content .ql-align-center { text-align: center; }
-  .lr-dynamic-content p.ql-align-center:first-of-type { color: #888; font-size: 0.95rem; margin-bottom: 40px; }
-</style>
-
-<cfif qRules.recordCount>
-<div class="rules-page">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-8 ml-auto mr-auto lr-dynamic-content">
-        <cfoutput>#qRules.contentHTML#</cfoutput>
-      </div>
-    </div>
-  </div>
-</div>
-<cfelse>
-<cfoutput>
-<div class="rules-page">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-8 ml-auto mr-auto">
-
-        <h1 class="text-center" style="margin-top:30px;">League Rules &amp; Regulations</h1>
-        <p class="text-center subtitle">The Round &mdash; 4145 SW Watson Ave, Beaverton, OR 97005</p>
-
-        <!--- 1. General Information --->
         <div class="rules-section">
           <h2>1. General Information</h2>
           <ul>
@@ -60,7 +23,6 @@
           </ul>
         </div>
 
-        <!--- 2. Liability & Waiver --->
         <div class="rules-section">
           <h2>2. Liability &amp; Waiver</h2>
           <p>All participants compete at their own risk.</p>
@@ -68,7 +30,6 @@
           <p>All players must sign a participation waiver prior to competing. Failure to complete a waiver will result in ineligibility.</p>
         </div>
 
-        <!--- 3. League Structure --->
         <div class="rules-section">
           <h2>3. League Structure</h2>
           <p>The Round League consists of two divisions:</p>
@@ -79,7 +40,6 @@
           <p>League administration reserves the right to adjust divisions for competitive balance.</p>
         </div>
 
-        <!--- 4. Playoff Eligibility --->
         <div class="rules-section">
           <h2>4. Playoff Eligibility</h2>
           <p>Top half of teams in each division will advance to playoffs.</p>
@@ -101,18 +61,15 @@
           </ul>
         </div>
 
-        <!--- 5. Game Rules --->
         <div class="rules-section">
           <h2>5. Game Rules</h2>
           <p>All divisions will follow the 2026&ndash;2027 NCAA Rulebook, except where modified below.</p>
-
           <h3>Game Format</h3>
           <ul>
             <li>Two 25-minute halves (running clock)</li>
             <li>2 timeouts per half (30 seconds each)</li>
             <li>Timeouts do not carry over</li>
           </ul>
-
           <h3>Clock Rules</h3>
           <ul>
             <li>Clock stops on all timeouts</li>
@@ -120,20 +77,16 @@
             <li>If the margin is 11 points or more, the clock continues to run</li>
             <li>Clock stops on made baskets and all dead balls within the final 30 seconds of each half</li>
           </ul>
-
           <h3>Advance Rule</h3>
           <p>One advance to half court permitted if a timeout is called within the final 30 seconds of the second half.</p>
-
           <h3>Fouls</h3>
           <ul>
             <li>6 personal fouls per player</li>
             <li>7 team fouls = single bonus</li>
             <li>10+ team fouls = double bonus</li>
           </ul>
-
           <h3>Minimum Players</h3>
           <p>Minimum of 4 players required to start a game.</p>
-
           <h3>Forfeits</h3>
           <ul>
             <li>A team that fails to appear for two games in one season may be removed from the current season and suspended from future participation</li>
@@ -141,7 +94,6 @@
           </ul>
         </div>
 
-        <!--- 6. Overtime --->
         <div class="rules-section">
           <h2>6. Overtime</h2>
           <h3>First Overtime</h3>
@@ -157,7 +109,6 @@
           </ul>
         </div>
 
-        <!--- 7. Technical Foul & Discipline --->
         <div class="rules-section">
           <h2>7. Technical Foul &amp; Discipline Policy</h2>
           <p>The Round League enforces strict sportsmanship standards.</p>
@@ -171,21 +122,18 @@
           <p style="margin-top:12px;">League administration reserves the right to issue suspensions beyond automatic penalties.</p>
         </div>
 
-        <!--- 8. Officials Authority --->
         <div class="rules-section">
           <h2>8. Officials Authority</h2>
           <p>Game officials have full authority over gameplay and conduct.</p>
           <p>All referee decisions are final and are not subject to protest.</p>
         </div>
 
-        <!--- 9. Protest Policy --->
         <div class="rules-section">
           <h2>9. Protest Policy</h2>
           <p>No game protests will be accepted.</p>
           <p>The judgment of officials and league administration is final.</p>
         </div>
 
-        <!--- 10. Tiebreaker Procedures --->
         <div class="rules-section">
           <h2>10. Tiebreaker Procedures</h2>
           <p>In the event of identical regular season records, playoff seeding will be determined by:</p>
@@ -196,14 +144,12 @@
           </ol>
         </div>
 
-        <!--- 11. Makeup Games --->
         <div class="rules-section">
           <h2>11. Makeup Games</h2>
           <p>Games canceled due to inclement weather or uncontrollable circumstances will be rescheduled.</p>
           <p>Makeup dates will be determined based on court availability.</p>
         </div>
 
-        <!--- 12. Dress Code --->
         <div class="rules-section">
           <h2>12. Dress Code</h2>
           <ul>
@@ -216,7 +162,6 @@
           <p>Failure to comply may result in removal from the game until corrected.</p>
         </div>
 
-        <!--- League Rights --->
         <div class="rules-section">
           <h2>League Rights &amp; Discretion</h2>
           <p>The Round League reserves the right to:</p>
@@ -227,13 +172,67 @@
             <li>Remove any participant deemed detrimental to the league environment</li>
           </ul>
           <p>All decisions made by league administration are final.</p>
+        </div>'>
+
+<cfoutput>
+<div class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="card-title mb-0">League Rules Editor</h4>
+                    <button id="saveBtn" class="btn btn-primary btn-sm">Save Rules</button>
+                </div>
+                <div class="card-body">
+
+                    <cfif isDefined("url.saved") AND url.saved EQ 1>
+                        <div class="alert alert-success alert-dismissible" role="alert">
+                            Rules saved successfully.
+                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        </div>
+                    </cfif>
+                    <cfif isDefined("url.error") AND url.error EQ 1>
+                        <div class="alert alert-danger alert-dismissible" role="alert">
+                            An error occurred while saving. Please try again.
+                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        </div>
+                    </cfif>
+
+                    <p class="text-muted lr-hint">Changes made here will appear immediately on the public <a href="/pages/Rules/league-rules.cfm" target="_blank">League Rules page</a>.</p>
+
+                    <form id="rulesForm" method="POST" action="/admin-dashboard/pages/leagueRules/saveLeagueRules.cfm">
+                        <input type="hidden" name="rulesContent" id="rulesContent">
+                        <div id="rulesEditor"></div>
+                    </form>
+
+                </div>
+            </div>
         </div>
-
-      </div>
     </div>
-  </div>
 </div>
-</cfoutput>
-</cfif>
 
-<cfinclude template="/footer.cfm">
+<script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+<script>
+    var quill = new Quill('##rulesEditor', {
+        theme: 'snow',
+        modules: {
+            toolbar: [
+                [{ 'header': [1, 2, 3, false] }],
+                ['bold', 'italic', 'underline'],
+                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                ['clean']
+            ]
+        }
+    });
+
+    var existingContent = <cfif qRules.recordCount>#serializeJSON(qRules.contentHTML)#<cfelse>#serializeJSON(defaultRules)#</cfif>;
+    quill.clipboard.dangerouslyPasteHTML(existingContent);
+
+    document.getElementById('saveBtn').addEventListener('click', function() {
+        document.getElementById('rulesContent').value = quill.root.innerHTML;
+        document.getElementById('rulesForm').submit();
+    });
+</script>
+</cfoutput>
+
+<cfinclude template="/admin-dashboard/admin_footer.cfm">
