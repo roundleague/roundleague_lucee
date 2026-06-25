@@ -12,6 +12,9 @@
         DELETE FROM game_subs WHERE scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">
     </cfquery>
     <cfquery datasource="roundleague">
+        DELETE FROM game_plays WHERE scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">
+    </cfquery>
+    <cfquery datasource="roundleague">
         UPDATE schedule
         SET homeScore = NULL, awayScore = NULL, status = 'scheduled'
         WHERE scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">
@@ -20,7 +23,8 @@
 </cfif>
 
 <!--- Page Specific CSS/JS Here --->
-<link href="../boxscore/boxscore.css?v=1.6" rel="stylesheet">
+<cfset _v = getFileInfo(expandPath("/pages/boxscore/boxscore.css")).lastModified.getTime()>
+<link href="/pages/boxscore/boxscore.css?v=<cfoutput>#_v#</cfoutput>" rel="stylesheet">
 <!--- POG-style fonts for player stats modal --->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -57,6 +61,19 @@
     FROM standings
     WHERE teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.AwayTeamID# ">
     AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+</cfquery>
+
+<cfquery name="getPlayByPlay" datasource="roundleague">
+    SELECT gp.playID, gp.stat_type, gp.points_scored,
+           gp.home_score, gp.away_score, gp.period,
+           p.firstName, p.lastName, t.teamName
+    FROM game_plays gp
+    JOIN Players p ON p.playerID = gp.playerID
+    JOIN Teams t   ON t.teamID   = gp.teamID
+    WHERE gp.scheduleID   = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">
+      AND gp.points_scored > 0
+      AND gp.is_removed    = 0
+    ORDER BY gp.playID DESC
 </cfquery>
 
 <cfset boxscore = createObject("component", "boxscore")>
@@ -126,8 +143,15 @@
 
         <div class="rotateTip">Rotate your device to see the full box score</div>
 
-        <!--- End Test --->
+        <ul class="nav nav-tabs" id="gameTab" style="margin-bottom:16px;">
+            <li class="active"><a href="##boxscore-tab" data-toggle="tab">Box Score</a></li>
+            <li><a href="##playbyplay-tab" data-toggle="tab">Play-By-Play</a></li>
+        </ul>
 
+        <div class="tab-content">
+
+        <!--- Box Score Tab --->
+        <div class="tab-pane active" id="boxscore-tab">
         <table class="bolder smallFont">
             <cfset currentTeamID = ''>
 
@@ -287,6 +311,51 @@
                 </cfif>
         	</cfloop>
         </table>
+        </div><!--- end #boxscore-tab --->
+
+        <!--- Play-By-Play Tab --->
+        <div class="tab-pane" id="playbyplay-tab">
+            <cfif getPlayByPlay.recordCount EQ 0>
+                <p style="color:##888;text-align:center;padding:30px 0;">No scoring plays recorded yet.</p>
+            <cfelse>
+                <table class="pure-table pure-table-striped smallFont" style="width:100%;margin-top:8px;">
+                    <thead>
+                        <tr>
+                            <th>Period</th>
+                            <th>Team</th>
+                            <th>Player</th>
+                            <th>Play</th>
+                            <th>Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <cfloop query="getPlayByPlay">
+                            <cfif stat_type EQ "FGM">
+                                <cfset playLabel = "2-pt field goal">
+                            <cfelseif stat_type EQ "3FGM">
+                                <cfset playLabel = "3-pt field goal">
+                            <cfelseif stat_type EQ "FTM">
+                                <cfset playLabel = "free throw">
+                            <cfelse>
+                                <cfset playLabel = stat_type>
+                            </cfif>
+                            <tr>
+                                <td>H#period#</td>
+                                <td>#teamName#</td>
+                                <td>#firstName# #lastName#</td>
+                                <td>#playLabel#</td>
+                                <td style="white-space:nowrap;">#home_score# &ndash; #away_score#</td>
+                            </tr>
+                        </cfloop>
+                    </tbody>
+                </table>
+                <p style="font-size:.8em;color:##aaa;margin-top:8px;">
+                    #getTeamsPlaying.Home# (home) &ndash; #getTeamsPlaying.Away# (away) &bull; Showing scoring plays only
+                </p>
+            </cfif>
+        </div><!--- end ##playbyplay-tab --->
+
+        </div><!--- end .tab-content --->
         <br>
         <cfinclude template="recap.cfm">
 

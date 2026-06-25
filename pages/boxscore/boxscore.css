@@ -363,3 +363,42 @@ a.playerLink {
 	-webkit-touch-callout: none;
 	touch-action: pan-y;
 }
+
+/* ============================================
+   Game tabs — overrides paper-kit nav styles
+   ============================================ */
+ul#gameTab.nav-tabs {
+	border-bottom: 2px solid #ddd;
+	margin-bottom: 16px;
+	padding-left: 0;
+}
+
+ul#gameTab.nav-tabs > li > a {
+	color: #888;
+	border-radius: 4px 4px 0 0;
+	border: 1px solid transparent;
+	font-weight: 600;
+	font-size: 13px;
+	letter-spacing: 0.5px;
+	text-transform: uppercase;
+	padding: 10px 20px;
+	background: transparent;
+	display: block;
+}
+
+ul#gameTab.nav-tabs > li > a:hover {
+	color: #444;
+	background: #f5f5f5;
+	border-color: #ddd #ddd transparent;
+	text-decoration: none;
+}
+
+ul#gameTab.nav-tabs > li.active > a,
+ul#gameTab.nav-tabs > li.active > a:hover,
+ul#gameTab.nav-tabs > li.active > a:focus {
+	color: #333;
+	background: white;
+	border: 1px solid #ddd;
+	border-bottom-color: white;
+	margin-bottom: -2px;
+}

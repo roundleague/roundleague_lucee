@@ -150,8 +150,10 @@ $(document).ready(function () {
     // Push to globalHistory
     var undoNode = $(addNode).siblings(".button-error");
     globalHistory.push(undoNode);
+    var logEntry = null;
     if (!suppressLogPush) {
-      actionLog.push(buildLogEntry(category, undoNode));
+      logEntry = buildLogEntry(category, undoNode);
+      actionLog.push(logEntry);
       saveLogToStorage();
     }
 
@@ -179,12 +181,15 @@ $(document).ready(function () {
       addToValue("PTS", 1, playerID);
       addToValue("FTA", 1, playerID);
     }
+
+    if (logEntry) { try { persistPlay(logEntry, playerID); } catch(e) {} }
   }
 
   $(".button-success").click(function () {
     // Push to globalHistory
     var undoNode = $(this).siblings(".button-error");
     globalHistory.push(undoNode);
+    var logEntry = null;
     if (!suppressLogPush) {
       var btnClasses = $(this).attr('class').split(' ');
       var knownStats = ['FGM','3FGM','FGA','3FGA','REBS','ASTS','STLS','BLKS','TO','FOULS','FTM','FTA','PTS'];
@@ -192,7 +197,8 @@ $(document).ready(function () {
       for (var si = 0; si < btnClasses.length; si++) {
         if (knownStats.indexOf(btnClasses[si]) !== -1) { logStat = btnClasses[si]; break; }
       }
-      actionLog.push(buildLogEntry(logStat, undoNode));
+      logEntry = buildLogEntry(logStat, undoNode);
+      actionLog.push(logEntry);
       saveLogToStorage();
     }
 
@@ -222,6 +228,8 @@ $(document).ready(function () {
       $(".Fouls_Half_" + currentHalf).html(currentNum);
       patchFouls(currentHalf);
     }
+
+    if (logEntry) { try { persistPlay(logEntry, playerID); } catch(e) {} }
   });
 
   $(document).keydown(function (e) {
@@ -454,6 +462,56 @@ $(document).ready(function () {
     try { localStorage.setItem(logStorageKey, JSON.stringify(serialized)); } catch(err) {}
   }
 
+  function persistPlay(entry, playerIDStr) {
+    if (!window.RL_LOG_CONFIG) return;
+    var cfg = window.RL_LOG_CONFIG;
+    var pointsMap = { FGM: 2, '3FGM': 3, FTM: 1 };
+    var points = pointsMap[entry.stat] || 0;
+    var periodEl = document.getElementById('clockPeriodLabel');
+    var periodNum = periodEl ? (parseInt(periodEl.textContent) || 1) : 1;
+    var numericPlayerID = parseInt((playerIDStr || '').replace(/\D/g, ''), 10) || 0;
+    var homeScore = 0, awayScore = 0;
+    if (window.currentScores) {
+      homeScore = window.currentScores.homeScore || 0;
+      awayScore = window.currentScores.awayScore || 0;
+    }
+    var domScore = parseInt($('.teamTotalPts').text()) || 0;
+    if (window.LIVE_SCORE_CONFIG) {
+      if (window.LIVE_SCORE_CONFIG.isHome) homeScore = domScore;
+      else awayScore = domScore;
+    }
+    fetch('/pages/StatsApp/StatsApp-LogPlay.cfm', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        action: 'add',
+        scheduleID: cfg.scheduleID,
+        teamID: cfg.teamID,
+        playerID: numericPlayerID,
+        stat_type: entry.stat || '',
+        points_scored: points,
+        home_score: homeScore,
+        away_score: awayScore,
+        period: periodNum,
+        local_play_id: entry.id
+      })
+    }).catch(function() {});
+  }
+
+  function persistRemovePlay(localPlayID) {
+    if (!window.RL_LOG_CONFIG) return;
+    var cfg = window.RL_LOG_CONFIG;
+    fetch('/pages/StatsApp/StatsApp-LogPlay.cfm', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        action: 'remove',
+        scheduleID: cfg.scheduleID,
+        local_play_id: localPlayID
+      })
+    }).catch(function() {});
+  }
+
   function loadLogFromStorage() {
     if (!logStorageKey) return;
     try {
@@ -478,6 +536,7 @@ $(document).ready(function () {
       if (ghIdx !== -1) globalHistory.splice(ghIdx, 1);
     }
     entry.removed = true;
+    try { persistRemovePlay(entry.id); } catch(e) {}
     saveLogToStorage();
     renderLog();
   }
