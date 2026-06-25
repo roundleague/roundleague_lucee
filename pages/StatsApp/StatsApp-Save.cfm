@@ -263,6 +263,11 @@
                           "top_p": 1
                         }'>
                     </cfhttp>
+                    <cfif tRecapResult.statusCode NEQ "200 OK">
+                        <cflog file="recap" type="error"
+                               text="scheduleID=#attributes.scheduleID# | HTTP #tRecapResult.statusCode# | #tRecapResult.fileContent#">
+                        <cfthrow message="OpenAI returned #tRecapResult.statusCode#">
+                    </cfif>
                     <cfset tRecapParsed = DeserializeJSON(tRecapResult.fileContent)>
                     <cfif structKeyExists(tRecapParsed, "choices") AND arrayLen(tRecapParsed.choices)>
                         <cfquery datasource="roundleague">
@@ -273,7 +278,10 @@
                             )
                         </cfquery>
                     </cfif>
-                <cfcatch></cfcatch>
+                <cfcatch>
+                    <cflog file="recap" type="error"
+                           text="scheduleID=#attributes.scheduleID# | #cfcatch.type#: #cfcatch.message# #cfcatch.detail#">
+                </cfcatch>
                 </cftry>
             </cfthread>
             <!--- No cfthread join — redirect happens while recap generates in background --->
