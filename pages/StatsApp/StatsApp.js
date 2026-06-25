@@ -182,6 +182,10 @@ $(document).ready(function () {
       addToValue("FTA", 1, playerID);
     }
 
+    if (category === "FGM" || category === "3FGM" || category === "REBS" || category === "TO") {
+      if (window.shotClockControl) window.shotClockControl.resetTo30AndStart();
+    }
+
     if (logEntry) { try { persistPlay(logEntry, playerID); } catch(e) {} }
   }
 
@@ -227,6 +231,10 @@ $(document).ready(function () {
       currentNum += 1;
       $(".Fouls_Half_" + currentHalf).html(currentNum);
       patchFouls(currentHalf);
+    }
+
+    if (logStat === "FGM" || logStat === "3FGM" || logStat === "REBS" || logStat === "TO") {
+      if (window.shotClockControl) window.shotClockControl.resetTo30AndStart();
     }
 
     if (logEntry) { try { persistPlay(logEntry, playerID); } catch(e) {} }

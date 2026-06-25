@@ -38,6 +38,7 @@
   var btnResetShot14 = document.getElementById("clockResetShot14");
   var btnSubHorn = document.getElementById("clockSubHorn");
   var shotEditWasRunning = false;
+  var shotClockWasRunningOnPause = false;
   if (!displayEl) return;
 
   function pad(n) {
@@ -142,13 +143,25 @@
     }, 1000);
     btnStart.disabled = true;
     btnPause.disabled = false;
+    if (shotClockWasRunningOnPause && !shotClockBuzzed) {
+      startShotClockTicker();
+      patchShotClock(shotClockRemaining, "running");
+    }
+    shotClockWasRunningOnPause = false;
     patchClock("running");
     patchGameStatus("live");
   }
 
-  function stopClock() {
+  function stopClock(saveForResume) {
     clearInterval(ticker);
     ticker = null;
+    if (saveForResume) {
+      shotClockWasRunningOnPause = !!shotClockTicker;
+      if (shotClockTicker) {
+        stopShotClockTicker();
+        patchShotClock(shotClockRemaining, "stopped");
+      }
+    }
     btnStart.disabled = false;
     btnPause.disabled = true;
   }
@@ -158,7 +171,7 @@
   });
 
   btnPause.addEventListener("click", function () {
-    stopClock();
+    stopClock(true);
     patchClock("paused");
   });
 
@@ -219,11 +232,7 @@
   if (btnResetShot14) {
     btnResetShot14.addEventListener("click", function () {
       stopShotClockTicker();
-      shotClockRemaining = SHOT_CLOCK_OREB_SECONDS;
-      shotClockBuzzed = false;
-      renderShotClock();
-      patchShotClock(SHOT_CLOCK_OREB_SECONDS, "running");
-      startShotClockTicker();
+      patchShotClock(shotClockRemaining, "stopped");
     });
   }
 
@@ -506,7 +515,7 @@
     if (e.code === "Space") {
       e.preventDefault();
       if (ticker) {
-        stopClock();
+        stopClock(true);
         patchClock("paused");
       } else {
         startClock();
@@ -540,4 +549,15 @@
 
   renderDisplay();
   renderShotClock();
+
+  window.shotClockControl = {
+    resetTo30AndStart: function () {
+      stopShotClockTicker();
+      shotClockRemaining = SHOT_CLOCK_SECONDS;
+      shotClockBuzzed = false;
+      renderShotClock();
+      patchShotClock(SHOT_CLOCK_SECONDS, "running");
+      startShotClockTicker();
+    }
+  };
 })();
