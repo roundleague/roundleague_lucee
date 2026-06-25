@@ -249,7 +249,6 @@
                       scheduleID="#url.scheduleID#"
                       totalMessage="#recapTotalMessage#"
                       openAiKey="#apiKey#">
-                <cflog file="recap" type="information" text="Thread started for scheduleID=#attributes.scheduleID#">
                 <cftry>
                     <cfhttp url="https://api.openai.com/v1/chat/completions" method="POST" result="tRecapResult">
                         <cfhttpparam type="header" name="Content-Type" value="application/json">
@@ -265,8 +264,6 @@
                         }'>
                     </cfhttp>
                     <cfif tRecapResult.statusCode NEQ "200 OK">
-                        <cflog file="recap" type="error"
-                               text="scheduleID=#attributes.scheduleID# | HTTP #tRecapResult.statusCode# | #tRecapResult.fileContent#">
                         <cfthrow message="OpenAI returned #tRecapResult.statusCode#">
                     </cfif>
                     <cfset tRecapParsed = DeserializeJSON(tRecapResult.fileContent)>
@@ -278,14 +275,8 @@
                                 <cfqueryparam cfsqltype="cf_sql_longvarchar" value="#tRecapParsed.choices[1].message.content#">
                             )
                         </cfquery>
-                        <cflog file="recap" type="information" text="Recap inserted for scheduleID=#attributes.scheduleID#">
-                    <cfelse>
-                        <cflog file="recap" type="warning" text="No choices in OpenAI response for scheduleID=#attributes.scheduleID# | #tRecapResult.fileContent#">
                     </cfif>
-                <cfcatch>
-                    <cflog file="recap" type="error"
-                           text="scheduleID=#attributes.scheduleID# | #cfcatch.type#: #cfcatch.message# #cfcatch.detail#">
-                </cfcatch>
+                <cfcatch></cfcatch>
                 </cftry>
             </cfthread>
             <!--- No cfthread join — redirect happens while recap generates in background --->
