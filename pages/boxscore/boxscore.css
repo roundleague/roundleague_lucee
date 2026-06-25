@@ -371,6 +371,8 @@ ul#gameTab.nav-tabs {
 	border-bottom: 2px solid #ddd;
 	margin-bottom: 16px;
 	padding-left: 0;
+	display: flex;
+	justify-content: center;
 }
 
 ul#gameTab.nav-tabs > li > a {
