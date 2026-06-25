@@ -27,7 +27,8 @@ This project runs on **Lucee (CFML)** with a **MySQL** database, containerized w
 |------|---------|----------|
 | [Git](https://git-scm.com/) | Clone the repo | https://git-scm.com/ |
 | [Docker Desktop](https://www.docker.com/products/docker-desktop/) | Runs Lucee + MySQL | https://www.docker.com/products/docker-desktop/ |
-| [Node.js](https://nodejs.org/) (LTS) | Frontend assets (Gulp/SCSS) — optional unless editing styles | https://nodejs.org/ |
+| [HeidiSQL](https://www.heidisql.com/) | GUI client to browse/query your local MySQL database | https://www.heidisql.com/ |
+| [Jira account](https://roundleague.atlassian.net/jira/software/projects/RL/boards/2) | Track and pick up tickets from the RL project board | Request access from the lead developer |
 
 > **Windows users:** Make sure Docker Desktop is running before proceeding.
 
