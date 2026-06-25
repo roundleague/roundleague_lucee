@@ -117,11 +117,11 @@
             <button type="button" class="pure-button button-success" id="shotClockStart">Start</button>
             <button type="button" class="pure-button" id="shotClockPause" disabled>Pause</button>
             <button type="button" class="pure-button button-warning" id="clockResetShot">Reset Shot</button>
-            <button type="button" class="pure-button" id="clockResetShot14" style="background:##6c757d;color:white;">Shot Off</button>
+            <button type="button" class="pure-button" id="clockResetShot14" style="background:##27ae60;color:white;">SC: ON</button>
         </span>
         <button type="button" class="pure-button button-secondary" id="clockSubHorn" style="margin-left:8px;">Sub Horn</button>
         <button type="button" class="pure-button" id="clockSync" style="margin-left:4px;background:##6c757d;color:##fff;">Sync Board</button>
-        <span style="font-size:0.75rem;color:##999;margin-left:12px;">Space = Start/Pause &middot; R = Reset Shot (30) &middot; F = Shot Off &middot; T = Start/Stop Shot &middot; E = Edit Shot Clock</span>
+        <span style="font-size:0.75rem;color:##999;margin-left:12px;">Space = Start/Pause &middot; R = Reset Shot (30) &middot; F = Toggle SC On/Off &middot; T = Start/Stop Shot &middot; E = Edit Shot Clock</span>
     </div>
     </cfif>
 

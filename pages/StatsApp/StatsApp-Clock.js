@@ -39,7 +39,22 @@
   var btnSubHorn = document.getElementById("clockSubHorn");
   var shotEditWasRunning = false;
   var shotClockWasRunningOnPause = false;
+  var shotClockEnabled = true;
   if (!displayEl) return;
+
+  function setShotClockEnabled(enabled) {
+    shotClockEnabled = enabled;
+    if (!enabled) {
+      stopShotClockTicker();
+      shotClockRemaining = 0;
+      renderShotClock();
+      patchShotClock(0, "stopped");
+    }
+    if (btnResetShot14) {
+      btnResetShot14.textContent = enabled ? "SC: ON" : "SC: OFF";
+      btnResetShot14.style.background = enabled ? "#27ae60" : "#6c757d";
+    }
+  }
 
   function pad(n) {
     return n < 10 ? "0" + n : "" + n;
@@ -220,6 +235,7 @@
 
   if (btnResetShot) {
     btnResetShot.addEventListener("click", function () {
+      if (!shotClockEnabled) setShotClockEnabled(true);
       stopShotClockTicker();
       shotClockRemaining = SHOT_CLOCK_SECONDS;
       shotClockBuzzed = false;
@@ -231,8 +247,7 @@
 
   if (btnResetShot14) {
     btnResetShot14.addEventListener("click", function () {
-      stopShotClockTicker();
-      patchShotClock(shotClockRemaining, "stopped");
+      setShotClockEnabled(!shotClockEnabled);
     });
   }
 
@@ -550,8 +565,11 @@
   renderDisplay();
   renderShotClock();
 
+  setShotClockEnabled(true);
+
   window.shotClockControl = {
     resetTo30AndStart: function () {
+      if (!shotClockEnabled) return;
       stopShotClockTicker();
       shotClockRemaining = SHOT_CLOCK_SECONDS;
       shotClockBuzzed = false;
