@@ -9,6 +9,25 @@ CREATE TABLE IF NOT EXISTS app_events (
   created_at DATETIME NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS game_plays (
+  playID                  INT AUTO_INCREMENT PRIMARY KEY,
+  scheduleID              INT NOT NULL,
+  playerID                INT NOT NULL,
+  teamID                  INT NOT NULL,
+  stat_type               VARCHAR(20) NOT NULL,
+  points_scored           TINYINT DEFAULT 0,
+  home_score              SMALLINT DEFAULT 0,
+  away_score              SMALLINT DEFAULT 0,
+  period                  TINYINT DEFAULT 1,
+  clock_remaining_seconds INT DEFAULT NULL,
+  local_play_id           VARCHAR(60) NOT NULL,
+  is_removed              TINYINT(1) DEFAULT 0,
+  created_at              TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_local_play (scheduleID, local_play_id),
+  INDEX idx_schedule      (scheduleID),
+  INDEX idx_scoring       (scheduleID, points_scored, is_removed)
+);
+
 CREATE TABLE IF NOT EXISTS awards (
   AwardID       INT AUTO_INCREMENT PRIMARY KEY,
   AwardName     VARCHAR(200) DEFAULT NULL,

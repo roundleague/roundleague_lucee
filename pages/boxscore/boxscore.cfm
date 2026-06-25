@@ -12,6 +12,9 @@
         DELETE FROM game_subs WHERE scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">
     </cfquery>
     <cfquery datasource="roundleague">
+        DELETE FROM game_plays WHERE scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">
+    </cfquery>
+    <cfquery datasource="roundleague">
         UPDATE schedule
         SET homeScore = NULL, awayScore = NULL, status = 'scheduled'
         WHERE scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">
@@ -20,7 +23,8 @@
 </cfif>
 
 <!--- Page Specific CSS/JS Here --->
-<link href="../boxscore/boxscore.css?v=1.6" rel="stylesheet">
+<cfset _v = getFileInfo(expandPath("/pages/boxscore/boxscore.css")).lastModified.getTime()>
+<link href="/pages/boxscore/boxscore.css?v=<cfoutput>#_v#</cfoutput>" rel="stylesheet">
 <!--- POG-style fonts for player stats modal --->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -37,7 +41,7 @@
 </cfquery>
 
 <cfquery name="getTeamsPlaying" datasource="roundleague">
-    SELECT scheduleID, WEEK, a.teamName AS Home, b.teamName AS Away, s.startTime, Date_FORMAT(s.date, "%M %d, %Y") AS Date, s.homeScore, s.awayscore, a.teamID as HomeTeamID, b.teamID as AwayTeamID
+    SELECT scheduleID, WEEK, a.teamName AS Home, b.teamName AS Away, s.startTime, Date_FORMAT(s.date, "%M %d, %Y") AS Date, s.homeScore, s.awayscore, s.status, a.teamID as HomeTeamID, b.teamID as AwayTeamID
     FROM schedule s
     LEFT JOIN teams as a ON s.hometeamID = a.teamID
     LEFT JOIN teams as b ON s.awayTeamID = b.teamID
@@ -57,6 +61,20 @@
     FROM standings
     WHERE teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.AwayTeamID# ">
     AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+</cfquery>
+
+<cfquery name="getPlayByPlay" datasource="roundleague">
+    SELECT gp.playID, gp.stat_type, gp.points_scored,
+           gp.home_score, gp.away_score, gp.period,
+           p.firstName, p.lastName, t.teamName
+    FROM game_plays gp
+    JOIN Players p ON p.playerID = gp.playerID
+    JOIN Teams t   ON t.teamID   = gp.teamID
+    WHERE gp.scheduleID   = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">
+      AND gp.points_scored > 0
+      AND gp.is_removed    = 0
+    ORDER BY
+        <cfif getTeamsPlaying.status EQ 'final'>gp.period ASC, gp.playID ASC<cfelse>gp.period DESC, gp.playID DESC</cfif>
 </cfquery>
 
 <cfset boxscore = createObject("component", "boxscore")>
@@ -126,8 +144,17 @@
 
         <div class="rotateTip">Rotate your device to see the full box score</div>
 
-        <!--- End Test --->
+        <cfset defaultTab = (getPlayerLogs.recordCount EQ 0) ? "playbyplay" : "boxscore">
 
+        <ul class="nav nav-tabs" id="gameTab">
+            <li class="<cfif defaultTab EQ 'boxscore'>active</cfif>"><a href="##boxscore-tab">Box Score</a></li>
+            <li class="<cfif defaultTab EQ 'playbyplay'>active</cfif>"><a href="##playbyplay-tab">Play-By-Play</a></li>
+        </ul>
+
+        <div class="tab-content">
+
+        <!--- Box Score Tab --->
+        <div class="tab-pane <cfif defaultTab EQ 'boxscore'>active</cfif>" id="boxscore-tab">
         <table class="bolder smallFont">
             <cfset currentTeamID = ''>
 
@@ -287,6 +314,64 @@
                 </cfif>
         	</cfloop>
         </table>
+        </div><!--- end #boxscore-tab --->
+
+        <!--- Play-By-Play Tab --->
+        <div class="tab-pane <cfif defaultTab EQ 'playbyplay'>active</cfif>" id="playbyplay-tab">
+            <cfif getPlayByPlay.recordCount EQ 0>
+                <p style="color:##888;text-align:center;padding:40px 0;font-size:14px;">No scoring plays recorded yet.</p>
+            <cfelse>
+                <cfset pbpCurrentPeriod = "">
+                <cfset pbpOpenBody = false>
+                <table class="pbp-table">
+                    <thead>
+                        <tr>
+                            <th>TEAM</th>
+                            <th>PLAYER</th>
+                            <th>PLAY</th>
+                            <th style="text-align:right;">SCORE</th>
+                        </tr>
+                    </thead>
+                    <cfloop query="getPlayByPlay">
+                        <cfif period NEQ pbpCurrentPeriod>
+                            <cfif pbpOpenBody></tbody></cfif>
+                            <cfset pbpCurrentPeriod = period>
+                            <cfset pbpOpenBody = true>
+                            <tbody class="pbp-half-body">
+                            <tr class="pbp-half-header pbp-half-toggle">
+                                <td colspan="4">
+                                    <cfif period EQ 1>1st Half<cfelseif period EQ 2>2nd Half<cfelse>OT<cfif period GT 3> #period - 2#</cfif></cfif>
+                                    <span class="pbp-toggle-icon">&##9660;</span>
+                                </td>
+                            </tr>
+                        </cfif>
+                        <cfif stat_type EQ "FGM">
+                            <cfset badgeClass = "pbp-badge-2pt">
+                            <cfset badgeText = "2PT">
+                        <cfelseif stat_type EQ "3FGM">
+                            <cfset badgeClass = "pbp-badge-3pt">
+                            <cfset badgeText = "3PT">
+                        <cfelseif stat_type EQ "FTM">
+                            <cfset badgeClass = "pbp-badge-ft">
+                            <cfset badgeText = "FT">
+                        <cfelse>
+                            <cfset badgeClass = "">
+                            <cfset badgeText = stat_type>
+                        </cfif>
+                        <tr>
+                            <td class="pbp-team">#teamName#</td>
+                            <td class="pbp-player">#firstName# #lastName#</td>
+                            <td><span class="pbp-badge #badgeClass#">#badgeText#</span></td>
+                            <td class="pbp-score">#home_score# &ndash; #away_score#</td>
+                        </tr>
+                    </cfloop>
+                    <cfif pbpOpenBody></tbody></cfif>
+                </table>
+                <p class="pbp-legend">#getTeamsPlaying.Home# (home) &bull; #getTeamsPlaying.Away# (away)</p>
+            </cfif>
+        </div><!--- end ##playbyplay-tab --->
+
+        </div><!--- end .tab-content --->
         <br>
         <cfinclude template="recap.cfm">
 
@@ -372,5 +457,37 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="../boxscore/playerStatsModal.js?v=1.0"></script>
 
+<script>
+(function() {
+    // Tab switching
+    var navLinks = document.querySelectorAll('#gameTab a');
+    var panes    = document.querySelectorAll('.tab-content .tab-pane');
+    navLinks.forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            var targetId = this.getAttribute('href').replace('#', '');
+            navLinks.forEach(function(l) { l.parentElement.classList.remove('active'); });
+            this.parentElement.classList.add('active');
+            panes.forEach(function(p) { p.classList.remove('active'); });
+            document.getElementById(targetId).classList.add('active');
+        });
+    });
+
+    // Play-by-play half section toggle
+    document.querySelectorAll('.pbp-half-toggle').forEach(function(header) {
+        header.addEventListener('click', function() {
+            var tbody = this.closest('tbody');
+            var rows = Array.from(tbody.querySelectorAll('tr')).filter(function(r) {
+                return !r.classList.contains('pbp-half-header');
+            });
+            var collapsing = !this.classList.contains('collapsed');
+            rows.forEach(function(r) { r.style.display = collapsing ? 'none' : ''; });
+            this.classList.toggle('collapsed', collapsing);
+            var icon = this.querySelector('.pbp-toggle-icon');
+            if (icon) icon.innerHTML = collapsing ? '&#9654;' : '&#9660;';
+        });
+    });
+})();
+</script>
 <cfinclude template="/footer.cfm">
 <script src="../boxscore/recap.js?v=1.1"></script>

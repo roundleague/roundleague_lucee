@@ -243,30 +243,40 @@
             <cfset recapTotalMessage = recapFirstTeamTotals & recapSecondTeamTotals & recapTeamScores & recapPlayerPrompts>
 
             <cfinclude template="/pages/boxscore/config.cfm">
-            <cfhttp url="https://api.openai.com/v1/chat/completions" method="POST" result="recapHttpResult">
-                <cfhttpparam type="header" name="Content-Type" value="application/json">
-                <cfhttpparam type="header" name="Authorization" value="Bearer #apiKey#">
-                <cfhttpparam type="body" value='{
-                  "model": "gpt-3.5-turbo",
-                  "messages": [
-                    {"role":"system","content":"Recap this basketball game like ESPN would based on the following stats in less than 1000 characters. Majority sentences should highlight individual performances but make sure one sentence compares team totals."},
-                    {"role":"user","content":"#JSStringFormat(recapTotalMessage)#"}
-                  ],
-                  "temperature": 1.0,
-                  "top_p": 1
-                }'>
-            </cfhttp>
 
-            <cfset recapApiResponse = DeserializeJSON(recapHttpResult.fileContent)>
-            <cfif structKeyExists(recapApiResponse, "choices") AND arrayLen(recapApiResponse.choices)>
-                <cfquery name="insertGameRecap" datasource="roundleague">
-                    INSERT INTO recaps (scheduleID, recapText)
-                    VALUES (
-                        <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">,
-                        <cfqueryparam cfsqltype="cf_sql_longvarchar" value="#recapApiResponse.choices[1].message.content#">
-                    )
-                </cfquery>
-            </cfif>
+            <!--- Fire recap generation in background — main request redirects immediately --->
+            <cfthread action="run" name="recap_#url.scheduleID#_#getTickCount()#"
+                      scheduleID="#url.scheduleID#"
+                      totalMessage="#recapTotalMessage#"
+                      openAiKey="#apiKey#">
+                <cftry>
+                    <cfhttp url="https://api.openai.com/v1/chat/completions" method="POST" result="tRecapResult">
+                        <cfhttpparam type="header" name="Content-Type" value="application/json">
+                        <cfhttpparam type="header" name="Authorization" value="Bearer #attributes.openAiKey#">
+                        <cfhttpparam type="body" value='{
+                          "model": "gpt-3.5-turbo",
+                          "messages": [
+                            {"role":"system","content":"Recap this basketball game like ESPN would based on the following stats in less than 1000 characters. Majority sentences should highlight individual performances but make sure one sentence compares team totals."},
+                            {"role":"user","content":"#JSStringFormat(attributes.totalMessage)#"}
+                          ],
+                          "temperature": 1.0,
+                          "top_p": 1
+                        }'>
+                    </cfhttp>
+                    <cfset tRecapParsed = DeserializeJSON(tRecapResult.fileContent)>
+                    <cfif structKeyExists(tRecapParsed, "choices") AND arrayLen(tRecapParsed.choices)>
+                        <cfquery datasource="roundleague">
+                            INSERT INTO recaps (scheduleID, recapText)
+                            VALUES (
+                                <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#attributes.scheduleID#">,
+                                <cfqueryparam cfsqltype="cf_sql_longvarchar" value="#tRecapParsed.choices[1].message.content#">
+                            )
+                        </cfquery>
+                    </cfif>
+                <cfcatch></cfcatch>
+                </cftry>
+            </cfthread>
+            <!--- No cfthread join — redirect happens while recap generates in background --->
         </cfif>
     </cfif>
 

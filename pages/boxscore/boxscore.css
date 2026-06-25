@@ -363,3 +363,197 @@ a.playerLink {
 	-webkit-touch-callout: none;
 	touch-action: pan-y;
 }
+
+/* ============================================
+   Game tabs — modern underline style
+   ============================================ */
+ul#gameTab.nav-tabs {
+	border-bottom: 2px solid #e8e8e8;
+	display: flex;
+	justify-content: center;
+	padding: 0;
+	margin-bottom: 24px;
+	list-style: none;
+}
+
+ul#gameTab.nav-tabs > li {
+	margin: 0;
+}
+
+ul#gameTab.nav-tabs > li > a {
+	display: block;
+	padding: 12px 30px;
+	color: #bbb;
+	font-weight: 700;
+	font-size: 11px;
+	letter-spacing: 1.5px;
+	text-transform: uppercase;
+	border: none;
+	border-bottom: 3px solid transparent;
+	margin-bottom: -2px;
+	background: transparent;
+	border-radius: 0;
+	text-decoration: none;
+}
+
+ul#gameTab.nav-tabs > li > a:hover {
+	color: #555;
+	border-bottom-color: #ccc;
+	background: transparent;
+	text-decoration: none;
+}
+
+ul#gameTab.nav-tabs > li.active > a,
+ul#gameTab.nav-tabs > li.active > a:hover,
+ul#gameTab.nav-tabs > li.active > a:focus {
+	color: #111;
+	border: none;
+	border-bottom: 3px solid #111;
+	margin-bottom: -2px;
+	background: transparent;
+}
+
+/* ============================================
+   ESPN-style play-by-play table
+   ============================================ */
+.pbp-table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 4px;
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.pbp-table thead tr {
+	background: #111;
+	color: #fff;
+}
+
+.pbp-table thead th {
+	padding: 8px 12px;
+	font-size: 9px;
+	font-weight: 700;
+	letter-spacing: 1.5px;
+	text-transform: uppercase;
+	text-align: left;
+	border: none;
+}
+
+.pbp-table tbody tr {
+	border-bottom: 1px solid #f0f0f0;
+}
+
+.pbp-table tbody tr:hover {
+	background: #fafafa;
+}
+
+.pbp-table tbody td {
+	padding: 8px 12px;
+	vertical-align: middle;
+	border: none;
+}
+
+/* Half section divider */
+.pbp-half-header td {
+	background: #f4f4f4;
+	font-size: 10px;
+	font-weight: 800;
+	letter-spacing: 2px;
+	text-transform: uppercase;
+	color: #777;
+	padding: 5px 12px;
+	border-top: 2px solid #e0e0e0;
+	border-bottom: 1px solid #e0e0e0;
+}
+
+.pbp-half-body:first-of-type .pbp-half-header td {
+	border-top: none;
+}
+
+.pbp-half-toggle {
+	cursor: pointer;
+	user-select: none;
+}
+
+.pbp-half-toggle:hover td {
+	background: #ebebeb;
+}
+
+.pbp-toggle-icon {
+	float: right;
+	font-size: 9px;
+	color: #aaa;
+	line-height: 1.6;
+}
+
+.pbp-team {
+	font-size: 11px;
+	color: #777;
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+.pbp-player {
+	font-size: 12px;
+	font-weight: 700;
+	color: #111;
+}
+
+.pbp-badge {
+	display: inline-block;
+	padding: 2px 7px;
+	border-radius: 3px;
+	font-size: 9px;
+	font-weight: 800;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	white-space: nowrap;
+}
+
+.pbp-badge-2pt {
+	background: #e8f5e9;
+	color: #2e7d32;
+}
+
+.pbp-badge-3pt {
+	background: #e3f2fd;
+	color: #1565c0;
+}
+
+.pbp-badge-ft {
+	background: #fff3e0;
+	color: #e65100;
+}
+
+.pbp-score {
+	font-size: 12px;
+	font-weight: 800;
+	color: #111;
+	white-space: nowrap;
+	text-align: right;
+	letter-spacing: -0.5px;
+}
+
+@media only screen and (max-width: 480px) {
+	.pbp-table thead th,
+	.pbp-table tbody td {
+		padding: 7px 8px;
+	}
+	.pbp-team {
+		font-size: 10px;
+	}
+	.pbp-player {
+		font-size: 11px;
+	}
+	.pbp-score {
+		font-size: 11px;
+	}
+}
+
+.pbp-legend {
+	font-size: 11px;
+	color: #bbb;
+	text-align: center;
+	margin-top: 14px;
+	padding-bottom: 8px;
+	letter-spacing: 0.3px;
+}
