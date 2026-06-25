@@ -263,6 +263,9 @@
                           "top_p": 1
                         }'>
                     </cfhttp>
+                    <cfif tRecapResult.statusCode NEQ "200 OK">
+                        <cfthrow message="OpenAI returned #tRecapResult.statusCode#">
+                    </cfif>
                     <cfset tRecapParsed = DeserializeJSON(tRecapResult.fileContent)>
                     <cfif structKeyExists(tRecapParsed, "choices") AND arrayLen(tRecapParsed.choices)>
                         <cfquery datasource="roundleague">

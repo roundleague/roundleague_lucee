@@ -38,7 +38,23 @@
   var btnResetShot14 = document.getElementById("clockResetShot14");
   var btnSubHorn = document.getElementById("clockSubHorn");
   var shotEditWasRunning = false;
+  var shotClockWasRunningOnPause = false;
+  var shotClockEnabled = true;
   if (!displayEl) return;
+
+  function setShotClockEnabled(enabled) {
+    shotClockEnabled = enabled;
+    if (!enabled) {
+      stopShotClockTicker();
+      shotClockRemaining = 0;
+      renderShotClock();
+      patchShotClock(0, "stopped");
+    }
+    if (btnResetShot14) {
+      btnResetShot14.textContent = enabled ? "SC: ON" : "SC: OFF";
+      btnResetShot14.style.background = enabled ? "#27ae60" : "#6c757d";
+    }
+  }
 
   function pad(n) {
     return n < 10 ? "0" + n : "" + n;
@@ -142,13 +158,25 @@
     }, 1000);
     btnStart.disabled = true;
     btnPause.disabled = false;
+    if (shotClockWasRunningOnPause && !shotClockBuzzed) {
+      startShotClockTicker();
+      patchShotClock(shotClockRemaining, "running");
+    }
+    shotClockWasRunningOnPause = false;
     patchClock("running");
     patchGameStatus("live");
   }
 
-  function stopClock() {
+  function stopClock(saveForResume) {
     clearInterval(ticker);
     ticker = null;
+    if (saveForResume) {
+      shotClockWasRunningOnPause = !!shotClockTicker;
+      if (shotClockTicker) {
+        stopShotClockTicker();
+        patchShotClock(shotClockRemaining, "stopped");
+      }
+    }
     btnStart.disabled = false;
     btnPause.disabled = true;
   }
@@ -158,7 +186,7 @@
   });
 
   btnPause.addEventListener("click", function () {
-    stopClock();
+    stopClock(true);
     patchClock("paused");
   });
 
@@ -207,6 +235,7 @@
 
   if (btnResetShot) {
     btnResetShot.addEventListener("click", function () {
+      if (!shotClockEnabled) setShotClockEnabled(true);
       stopShotClockTicker();
       shotClockRemaining = SHOT_CLOCK_SECONDS;
       shotClockBuzzed = false;
@@ -218,12 +247,7 @@
 
   if (btnResetShot14) {
     btnResetShot14.addEventListener("click", function () {
-      stopShotClockTicker();
-      shotClockRemaining = SHOT_CLOCK_OREB_SECONDS;
-      shotClockBuzzed = false;
-      renderShotClock();
-      patchShotClock(SHOT_CLOCK_OREB_SECONDS, "running");
-      startShotClockTicker();
+      setShotClockEnabled(!shotClockEnabled);
     });
   }
 
@@ -506,7 +530,7 @@
     if (e.code === "Space") {
       e.preventDefault();
       if (ticker) {
-        stopClock();
+        stopClock(true);
         patchClock("paused");
       } else {
         startClock();
@@ -540,4 +564,18 @@
 
   renderDisplay();
   renderShotClock();
+
+  setShotClockEnabled(true);
+
+  window.shotClockControl = {
+    resetTo30AndStart: function () {
+      if (!shotClockEnabled) return;
+      stopShotClockTicker();
+      shotClockRemaining = SHOT_CLOCK_SECONDS;
+      shotClockBuzzed = false;
+      renderShotClock();
+      patchShotClock(SHOT_CLOCK_SECONDS, "running");
+      startShotClockTicker();
+    }
+  };
 })();
