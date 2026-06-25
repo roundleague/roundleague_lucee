@@ -341,7 +341,7 @@
                             <tr class="pbp-half-header pbp-half-toggle">
                                 <td colspan="4">
                                     <cfif period EQ 1>1st Half<cfelseif period EQ 2>2nd Half<cfelse>OT<cfif period GT 3> #period - 2#</cfif></cfif>
-                                    <span class="pbp-toggle-icon">&#9660;</span>
+                                    <span class="pbp-toggle-icon">&##9660;</span>
                                 </td>
                             </tr>
                         </cfif>
