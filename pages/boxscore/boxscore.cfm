@@ -73,7 +73,7 @@
     WHERE gp.scheduleID   = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">
       AND gp.points_scored > 0
       AND gp.is_removed    = 0
-    ORDER BY gp.playID DESC
+    ORDER BY gp.period ASC, gp.playID ASC
 </cfquery>
 
 <cfset boxscore = createObject("component", "boxscore")>
@@ -320,10 +320,10 @@
             <cfif getPlayByPlay.recordCount EQ 0>
                 <p style="color:##888;text-align:center;padding:40px 0;font-size:14px;">No scoring plays recorded yet.</p>
             <cfelse>
+                <cfset pbpCurrentPeriod = "">
                 <table class="pbp-table">
                     <thead>
                         <tr>
-                            <th>PER</th>
                             <th>TEAM</th>
                             <th>PLAYER</th>
                             <th>PLAY</th>
@@ -332,6 +332,14 @@
                     </thead>
                     <tbody>
                         <cfloop query="getPlayByPlay">
+                            <cfif period NEQ pbpCurrentPeriod>
+                                <cfset pbpCurrentPeriod = period>
+                                <tr class="pbp-half-header">
+                                    <td colspan="4">
+                                        <cfif period EQ 1>1st Half<cfelseif period EQ 2>2nd Half<cfelse>OT<cfif period GT 3> #period - 2#</cfif></cfif>
+                                    </td>
+                                </tr>
+                            </cfif>
                             <cfif stat_type EQ "FGM">
                                 <cfset badgeClass = "pbp-badge-2pt">
                                 <cfset badgeText = "2PT">
@@ -346,7 +354,6 @@
                                 <cfset badgeText = stat_type>
                             </cfif>
                             <tr>
-                                <td class="pbp-period">H#period#</td>
                                 <td class="pbp-team">#teamName#</td>
                                 <td class="pbp-player">#firstName# #lastName#</td>
                                 <td><span class="pbp-badge #badgeClass#">#badgeText#</span></td>
