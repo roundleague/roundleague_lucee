@@ -465,8 +465,24 @@ ul#gameTab.nav-tabs > li.active > a:focus {
 	border-bottom: 1px solid #e0e0e0;
 }
 
-.pbp-half-header:first-child td {
+.pbp-half-body:first-of-type .pbp-half-header td {
 	border-top: none;
+}
+
+.pbp-half-toggle {
+	cursor: pointer;
+	user-select: none;
+}
+
+.pbp-half-toggle:hover td {
+	background: #ebebeb;
+}
+
+.pbp-toggle-icon {
+	float: right;
+	font-size: 9px;
+	color: #aaa;
+	line-height: 1.6;
 }
 
 .pbp-team {

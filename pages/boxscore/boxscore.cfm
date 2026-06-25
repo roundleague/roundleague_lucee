@@ -41,7 +41,7 @@
 </cfquery>
 
 <cfquery name="getTeamsPlaying" datasource="roundleague">
-    SELECT scheduleID, WEEK, a.teamName AS Home, b.teamName AS Away, s.startTime, Date_FORMAT(s.date, "%M %d, %Y") AS Date, s.homeScore, s.awayscore, a.teamID as HomeTeamID, b.teamID as AwayTeamID
+    SELECT scheduleID, WEEK, a.teamName AS Home, b.teamName AS Away, s.startTime, Date_FORMAT(s.date, "%M %d, %Y") AS Date, s.homeScore, s.awayscore, s.status, a.teamID as HomeTeamID, b.teamID as AwayTeamID
     FROM schedule s
     LEFT JOIN teams as a ON s.hometeamID = a.teamID
     LEFT JOIN teams as b ON s.awayTeamID = b.teamID
@@ -73,7 +73,8 @@
     WHERE gp.scheduleID   = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">
       AND gp.points_scored > 0
       AND gp.is_removed    = 0
-    ORDER BY gp.period ASC, gp.playID ASC
+    ORDER BY
+        <cfif getTeamsPlaying.status EQ 'final'>gp.period ASC, gp.playID ASC<cfelse>gp.period DESC, gp.playID DESC</cfif>
 </cfquery>
 
 <cfset boxscore = createObject("component", "boxscore")>
@@ -321,6 +322,7 @@
                 <p style="color:##888;text-align:center;padding:40px 0;font-size:14px;">No scoring plays recorded yet.</p>
             <cfelse>
                 <cfset pbpCurrentPeriod = "">
+                <cfset pbpOpenBody = false>
                 <table class="pbp-table">
                     <thead>
                         <tr>
@@ -330,37 +332,40 @@
                             <th style="text-align:right;">SCORE</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <cfloop query="getPlayByPlay">
-                            <cfif period NEQ pbpCurrentPeriod>
-                                <cfset pbpCurrentPeriod = period>
-                                <tr class="pbp-half-header">
-                                    <td colspan="4">
-                                        <cfif period EQ 1>1st Half<cfelseif period EQ 2>2nd Half<cfelse>OT<cfif period GT 3> #period - 2#</cfif></cfif>
-                                    </td>
-                                </tr>
-                            </cfif>
-                            <cfif stat_type EQ "FGM">
-                                <cfset badgeClass = "pbp-badge-2pt">
-                                <cfset badgeText = "2PT">
-                            <cfelseif stat_type EQ "3FGM">
-                                <cfset badgeClass = "pbp-badge-3pt">
-                                <cfset badgeText = "3PT">
-                            <cfelseif stat_type EQ "FTM">
-                                <cfset badgeClass = "pbp-badge-ft">
-                                <cfset badgeText = "FT">
-                            <cfelse>
-                                <cfset badgeClass = "">
-                                <cfset badgeText = stat_type>
-                            </cfif>
-                            <tr>
-                                <td class="pbp-team">#teamName#</td>
-                                <td class="pbp-player">#firstName# #lastName#</td>
-                                <td><span class="pbp-badge #badgeClass#">#badgeText#</span></td>
-                                <td class="pbp-score">#home_score# &ndash; #away_score#</td>
+                    <cfloop query="getPlayByPlay">
+                        <cfif period NEQ pbpCurrentPeriod>
+                            <cfif pbpOpenBody></tbody></cfif>
+                            <cfset pbpCurrentPeriod = period>
+                            <cfset pbpOpenBody = true>
+                            <tbody class="pbp-half-body">
+                            <tr class="pbp-half-header pbp-half-toggle">
+                                <td colspan="4">
+                                    <cfif period EQ 1>1st Half<cfelseif period EQ 2>2nd Half<cfelse>OT<cfif period GT 3> #period - 2#</cfif></cfif>
+                                    <span class="pbp-toggle-icon">&#9660;</span>
+                                </td>
                             </tr>
-                        </cfloop>
-                    </tbody>
+                        </cfif>
+                        <cfif stat_type EQ "FGM">
+                            <cfset badgeClass = "pbp-badge-2pt">
+                            <cfset badgeText = "2PT">
+                        <cfelseif stat_type EQ "3FGM">
+                            <cfset badgeClass = "pbp-badge-3pt">
+                            <cfset badgeText = "3PT">
+                        <cfelseif stat_type EQ "FTM">
+                            <cfset badgeClass = "pbp-badge-ft">
+                            <cfset badgeText = "FT">
+                        <cfelse>
+                            <cfset badgeClass = "">
+                            <cfset badgeText = stat_type>
+                        </cfif>
+                        <tr>
+                            <td class="pbp-team">#teamName#</td>
+                            <td class="pbp-player">#firstName# #lastName#</td>
+                            <td><span class="pbp-badge #badgeClass#">#badgeText#</span></td>
+                            <td class="pbp-score">#home_score# &ndash; #away_score#</td>
+                        </tr>
+                    </cfloop>
+                    <cfif pbpOpenBody></tbody></cfif>
                 </table>
                 <p class="pbp-legend">#getTeamsPlaying.Home# (home) &bull; #getTeamsPlaying.Away# (away)</p>
             </cfif>
@@ -454,6 +459,7 @@
 
 <script>
 (function() {
+    // Tab switching
     var navLinks = document.querySelectorAll('#gameTab a');
     var panes    = document.querySelectorAll('.tab-content .tab-pane');
     navLinks.forEach(function(link) {
@@ -464,6 +470,21 @@
             this.parentElement.classList.add('active');
             panes.forEach(function(p) { p.classList.remove('active'); });
             document.getElementById(targetId).classList.add('active');
+        });
+    });
+
+    // Play-by-play half section toggle
+    document.querySelectorAll('.pbp-half-toggle').forEach(function(header) {
+        header.addEventListener('click', function() {
+            var tbody = this.closest('tbody');
+            var rows = Array.from(tbody.querySelectorAll('tr')).filter(function(r) {
+                return !r.classList.contains('pbp-half-header');
+            });
+            var collapsing = !this.classList.contains('collapsed');
+            rows.forEach(function(r) { r.style.display = collapsing ? 'none' : ''; });
+            this.classList.toggle('collapsed', collapsing);
+            var icon = this.querySelector('.pbp-toggle-icon');
+            if (icon) icon.innerHTML = collapsing ? '&#9654;' : '&#9660;';
         });
     });
 })();
