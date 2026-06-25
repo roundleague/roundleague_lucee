@@ -143,15 +143,17 @@
 
         <div class="rotateTip">Rotate your device to see the full box score</div>
 
-        <ul class="nav nav-tabs" id="gameTab" style="margin-bottom:16px;">
-            <li class="active"><a href="##boxscore-tab" data-toggle="tab">Box Score</a></li>
-            <li><a href="##playbyplay-tab" data-toggle="tab">Play-By-Play</a></li>
+        <cfset defaultTab = (getPlayerLogs.recordCount EQ 0) ? "playbyplay" : "boxscore">
+
+        <ul class="nav nav-tabs" id="gameTab">
+            <li class="<cfif defaultTab EQ 'boxscore'>active</cfif>"><a href="##boxscore-tab">Box Score</a></li>
+            <li class="<cfif defaultTab EQ 'playbyplay'>active</cfif>"><a href="##playbyplay-tab">Play-By-Play</a></li>
         </ul>
 
         <div class="tab-content">
 
         <!--- Box Score Tab --->
-        <div class="tab-pane active" id="boxscore-tab">
+        <div class="tab-pane <cfif defaultTab EQ 'boxscore'>active</cfif>" id="boxscore-tab">
         <table class="bolder smallFont">
             <cfset currentTeamID = ''>
 
@@ -314,44 +316,46 @@
         </div><!--- end #boxscore-tab --->
 
         <!--- Play-By-Play Tab --->
-        <div class="tab-pane" id="playbyplay-tab">
+        <div class="tab-pane <cfif defaultTab EQ 'playbyplay'>active</cfif>" id="playbyplay-tab">
             <cfif getPlayByPlay.recordCount EQ 0>
-                <p style="color:##888;text-align:center;padding:30px 0;">No scoring plays recorded yet.</p>
+                <p style="color:##888;text-align:center;padding:40px 0;font-size:14px;">No scoring plays recorded yet.</p>
             <cfelse>
-                <table class="pure-table pure-table-striped smallFont" style="width:100%;margin-top:8px;">
+                <table class="pbp-table">
                     <thead>
                         <tr>
-                            <th>Period</th>
-                            <th>Team</th>
-                            <th>Player</th>
-                            <th>Play</th>
-                            <th>Score</th>
+                            <th>PER</th>
+                            <th>TEAM</th>
+                            <th>PLAYER</th>
+                            <th>PLAY</th>
+                            <th style="text-align:right;">SCORE</th>
                         </tr>
                     </thead>
                     <tbody>
                         <cfloop query="getPlayByPlay">
                             <cfif stat_type EQ "FGM">
-                                <cfset playLabel = "2-pt field goal">
+                                <cfset badgeClass = "pbp-badge-2pt">
+                                <cfset badgeText = "2PT">
                             <cfelseif stat_type EQ "3FGM">
-                                <cfset playLabel = "3-pt field goal">
+                                <cfset badgeClass = "pbp-badge-3pt">
+                                <cfset badgeText = "3PT">
                             <cfelseif stat_type EQ "FTM">
-                                <cfset playLabel = "free throw">
+                                <cfset badgeClass = "pbp-badge-ft">
+                                <cfset badgeText = "FT">
                             <cfelse>
-                                <cfset playLabel = stat_type>
+                                <cfset badgeClass = "">
+                                <cfset badgeText = stat_type>
                             </cfif>
                             <tr>
-                                <td>H#period#</td>
-                                <td>#teamName#</td>
-                                <td>#firstName# #lastName#</td>
-                                <td>#playLabel#</td>
-                                <td style="white-space:nowrap;">#home_score# &ndash; #away_score#</td>
+                                <td class="pbp-period">H#period#</td>
+                                <td class="pbp-team">#teamName#</td>
+                                <td class="pbp-player">#firstName# #lastName#</td>
+                                <td><span class="pbp-badge #badgeClass#">#badgeText#</span></td>
+                                <td class="pbp-score">#home_score# &ndash; #away_score#</td>
                             </tr>
                         </cfloop>
                     </tbody>
                 </table>
-                <p style="font-size:.8em;color:##aaa;margin-top:8px;">
-                    #getTeamsPlaying.Home# (home) &ndash; #getTeamsPlaying.Away# (away) &bull; Showing scoring plays only
-                </p>
+                <p class="pbp-legend">#getTeamsPlaying.Home# (home) &bull; #getTeamsPlaying.Away# (away)</p>
             </cfif>
         </div><!--- end ##playbyplay-tab --->
 
@@ -441,5 +445,21 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="../boxscore/playerStatsModal.js?v=1.0"></script>
 
+<script>
+(function() {
+    var navLinks = document.querySelectorAll('#gameTab a');
+    var panes    = document.querySelectorAll('.tab-content .tab-pane');
+    navLinks.forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            var targetId = this.getAttribute('href').replace('#', '');
+            navLinks.forEach(function(l) { l.parentElement.classList.remove('active'); });
+            this.parentElement.classList.add('active');
+            panes.forEach(function(p) { p.classList.remove('active'); });
+            document.getElementById(targetId).classList.add('active');
+        });
+    });
+})();
+</script>
 <cfinclude template="/footer.cfm">
 <script src="../boxscore/recap.js?v=1.1"></script>
