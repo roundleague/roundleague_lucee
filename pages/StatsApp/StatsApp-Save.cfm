@@ -249,6 +249,7 @@
                       scheduleID="#url.scheduleID#"
                       totalMessage="#recapTotalMessage#"
                       openAiKey="#apiKey#">
+                <cflog file="recap" type="information" text="Thread started for scheduleID=#attributes.scheduleID#">
                 <cftry>
                     <cfhttp url="https://api.openai.com/v1/chat/completions" method="POST" result="tRecapResult">
                         <cfhttpparam type="header" name="Content-Type" value="application/json">
@@ -277,6 +278,9 @@
                                 <cfqueryparam cfsqltype="cf_sql_longvarchar" value="#tRecapParsed.choices[1].message.content#">
                             )
                         </cfquery>
+                        <cflog file="recap" type="information" text="Recap inserted for scheduleID=#attributes.scheduleID#">
+                    <cfelse>
+                        <cflog file="recap" type="warning" text="No choices in OpenAI response for scheduleID=#attributes.scheduleID# | #tRecapResult.fileContent#">
                     </cfif>
                 <cfcatch>
                     <cflog file="recap" type="error"
