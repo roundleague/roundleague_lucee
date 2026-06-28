@@ -1,0 +1,355 @@
+/* ============================================================
+   Round League – Login Page Shared Styles
+   Brand: Blue #0C4CC0 | Red #FA4F4F | Black #000 | White #FFF
+   ============================================================ */
+
+:root {
+  --rl-blue:       #0C4CC0;
+  --rl-blue-dark:  #0a3d9e;
+  --rl-red:        #FA4F4F;
+  --rl-red-dark:   #e03a3a;
+  --rl-black:      #000000;
+  --rl-white:      #ffffff;
+  --rl-bg:         #f5f7fa;
+  --rl-card-shadow: 0 4px 32px rgba(12, 76, 192, 0.12);
+}
+
+/* ── Page wrapper ────────────────────────────────────────── */
+.rl-login-page {
+  min-height: calc(100vh - 70px);
+  background: var(--rl-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 16px 64px;
+}
+
+.rl-login-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  width: 100%;
+}
+
+/* ── Heading: "Login to the [ball] League" ───────────────── */
+.rl-login-heading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-family: 'League Gothic', 'Impact', 'Arial Narrow', Arial, sans-serif;
+  font-size: 2.8rem;
+  font-weight: 400; /* League Gothic is inherently bold */
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--rl-black);
+  line-height: 1;
+  text-align: center;
+}
+
+.rl-login-heading .ball-icon {
+  width: 120px;
+  height: 120px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  display: block;
+  object-fit: cover;
+}
+
+/* ── Login card ──────────────────────────────────────────── */
+.rl-login-card {
+  background: var(--rl-white);
+  border-radius: 14px;
+  box-shadow: var(--rl-card-shadow);
+  padding: 40px 44px;
+  max-width: 420px;
+  width: 100%;
+}
+
+/* ── Form elements ───────────────────────────────────────── */
+.rl-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.rl-form label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #555;
+  margin-bottom: 6px;
+  margin-top: 18px;
+  display: block;
+}
+
+.rl-form label:first-child {
+  margin-top: 0;
+}
+
+.rl-form .form-control,
+.rl-form input[type="text"],
+.rl-form input[type="password"],
+.rl-form input[type="email"] {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid #dde1ea;
+  border-radius: 8px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.95rem;
+  color: var(--rl-black);
+  background: #fafbfc;
+  transition: border-color 0.18s, box-shadow 0.18s;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.rl-form .form-control:focus,
+.rl-form input[type="text"]:focus,
+.rl-form input[type="password"]:focus,
+.rl-form input[type="email"]:focus {
+  border-color: var(--rl-blue);
+  box-shadow: 0 0 0 3px rgba(12, 76, 192, 0.12);
+  background: #fff;
+}
+
+/* ── Buttons ─────────────────────────────────────────────── */
+.rl-btn-primary,
+.rl-btn-secondary {
+  display: block;
+  width: 100%;
+  padding: 13px 20px;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background 0.18s, transform 0.1s;
+  text-align: center;
+}
+
+.rl-btn-primary {
+  background: var(--rl-blue);
+  color: var(--rl-white);
+  margin-top: 24px;
+}
+
+.rl-btn-primary:hover {
+  background: var(--rl-red);
+}
+
+.rl-btn-primary:active {
+  transform: scale(0.98);
+}
+
+.rl-btn-secondary {
+  background: transparent;
+  color: #888;
+  border: 1.5px solid #dde1ea;
+  margin-top: 10px;
+  font-weight: 600;
+  font-size: 0.88rem;
+}
+
+.rl-btn-secondary:hover {
+  border-color: var(--rl-blue);
+  color: var(--rl-blue);
+}
+
+/* ── Alert messages ──────────────────────────────────────── */
+.rl-alert {
+  padding: 10px 14px;
+  border-radius: 7px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.87rem;
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+
+.rl-alert--error {
+  background: #fff0f0;
+  color: #c0392b;
+  border: 1px solid #f5c6cb;
+}
+
+.rl-alert--success {
+  background: #eefaf3;
+  color: #1e7a46;
+  border: 1px solid #b7dfc9;
+}
+
+/* ── Dark variant (scoreboard login) ────────────────────── */
+.rl-login-page--dark {
+  background: var(--rl-blue);
+}
+
+.rl-login-page--dark .rl-login-heading {
+  color: var(--rl-white);
+}
+
+.rl-login-page--dark .rl-login-card {
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 40px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.rl-login-page--dark .rl-form label {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.rl-login-page--dark .rl-form .form-control,
+.rl-login-page--dark .rl-form input[type="text"],
+.rl-login-page--dark .rl-form input[type="password"],
+.rl-login-page--dark .rl-form input[type="email"] {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: var(--rl-white);
+}
+
+.rl-login-page--dark .rl-form .form-control::placeholder,
+.rl-login-page--dark .rl-form input::placeholder {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.rl-login-page--dark .rl-form .form-control:focus,
+.rl-login-page--dark .rl-form input:focus {
+  border-color: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12);
+}
+
+.rl-login-page--dark .rl-btn-primary {
+  background: var(--rl-red);
+}
+
+.rl-login-page--dark .rl-btn-primary:hover {
+  background: var(--rl-red-dark);
+}
+
+.rl-login-page--dark .rl-btn-secondary {
+  color: rgba(255, 255, 255, 0.65);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.rl-login-page--dark .rl-btn-secondary:hover {
+  border-color: rgba(255, 255, 255, 0.7);
+  color: var(--rl-white);
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .rl-login-heading {
+    font-size: 2.1rem;
+    gap: 10px;
+  }
+
+  .rl-login-heading .ball-icon {
+    width: 90px;
+    height: 90px;
+  }
+
+  .rl-login-card {
+    padding: 30px 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .rl-login-page {
+    padding: 32px 0 48px;
+    align-items: flex-start;
+  }
+
+  .rl-login-inner {
+    gap: 20px;
+  }
+
+  .rl-login-heading {
+    font-size: 1.75rem;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .rl-login-heading .ball-icon {
+    width: 86px;
+    height: 86px;
+    min-width: 86px;
+    border-radius: 50%;
+    object-fit: cover;
+    order: -1;
+  }
+
+  .rl-login-card {
+    border-radius: 0;
+    box-shadow: none;
+    padding: 28px 20px;
+    max-width: 100%;
+    border-top: 1px solid #e8ecf2;
+    border-bottom: 1px solid #e8ecf2;
+  }
+
+  .rl-login-page--dark .rl-login-card {
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+}
+
+/* ── Post-login swish animation ──────────────────────────── */
+@keyframes rl-ball-swish {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 1;
+    box-shadow: none;
+  }
+  20% {
+    transform: translate(55px, -10px) rotate(32deg);
+    opacity: 1;
+    box-shadow:
+      -16px 0 8px 4px rgba(255, 255, 255, 0.9),
+      -34px 0 10px 5px rgba(255, 255, 255, 0.55),
+      -56px 0 12px 3px rgba(255, 255, 255, 0.25);
+  }
+  55% {
+    transform: translate(170px, -18px) rotate(95deg);
+    opacity: 0.9;
+    box-shadow:
+      -20px 0 10px 6px rgba(255, 255, 255, 0.95),
+      -45px 0 14px 7px rgba(255, 255, 255, 0.70),
+      -80px 0 16px 5px rgba(255, 255, 255, 0.42),
+      -120px 0 18px 3px rgba(255, 255, 255, 0.18),
+      -162px 0 20px 1px rgba(255, 255, 255, 0.06);
+  }
+  85% {
+    transform: translate(280px, -8px) rotate(145deg);
+    opacity: 0.45;
+    box-shadow:
+      -22px 0 10px 6px rgba(255, 255, 255, 0.8),
+      -50px 0 14px 6px rgba(255, 255, 255, 0.5),
+      -90px 0 16px 4px rgba(255, 255, 255, 0.28),
+      -135px 0 18px 2px rgba(255, 255, 255, 0.1);
+  }
+  100% {
+    transform: translate(380px, 0px) rotate(178deg);
+    opacity: 0;
+    box-shadow: none;
+  }
+}
+
+@keyframes rl-page-fade {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+.rl-login-page.animating {
+  pointer-events: none;
+  overflow-x: hidden;
+  animation: rl-page-fade 0.4s ease-out 0.3s both;
+}
+
+.rl-login-page.animating .ball-icon {
+  position: relative;
+  z-index: 10;
+  animation: rl-ball-swish 0.68s cubic-bezier(0.3, 0, 0.2, 1) forwards;
+}
