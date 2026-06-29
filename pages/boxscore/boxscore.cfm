@@ -66,6 +66,7 @@
 <cfquery name="getPlayByPlay" datasource="roundleague">
     SELECT gp.playID, gp.stat_type, gp.points_scored,
            gp.home_score, gp.away_score, gp.period,
+           gp.clock_remaining_seconds,
            p.firstName, p.lastName, t.teamName
     FROM game_plays gp
     JOIN Players p ON p.playerID = gp.playerID
@@ -329,6 +330,7 @@
                             <th>TEAM</th>
                             <th>PLAYER</th>
                             <th>PLAY</th>
+                            <th style="text-align:right;">CLOCK</th>
                             <th style="text-align:right;">SCORE</th>
                         </tr>
                     </thead>
@@ -339,7 +341,7 @@
                             <cfset pbpOpenBody = true>
                             <tbody class="pbp-half-body">
                             <tr class="pbp-half-header pbp-half-toggle">
-                                <td colspan="4">
+                                <td colspan="5">
                                     <cfif period EQ 1>1st Half<cfelseif period EQ 2>2nd Half<cfelse>OT<cfif period GT 3> #period - 2#</cfif></cfif>
                                     <span class="pbp-toggle-icon">&##9660;</span>
                                 </td>
@@ -362,6 +364,7 @@
                             <td class="pbp-team">#teamName#</td>
                             <td class="pbp-player">#firstName# #lastName#</td>
                             <td><span class="pbp-badge #badgeClass#">#badgeText#</span></td>
+                            <td class="pbp-clock" style="text-align:right;"><cfif NOT isNull(clock_remaining_seconds)>#numberFormat(int(clock_remaining_seconds/60),'00')#:#numberFormat(clock_remaining_seconds mod 60,'00')#<cfelse>&mdash;</cfif></td>
                             <td class="pbp-score">#home_score# &ndash; #away_score#</td>
                         </tr>
                     </cfloop>

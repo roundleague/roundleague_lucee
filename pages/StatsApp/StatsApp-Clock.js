@@ -139,13 +139,21 @@
           if (period === 1) {
             setTimeout(function () {
               if (confirm("End of 1st half — switch to 2nd half?")) {
+                stopClock();
                 period = 2;
                 if (periodEl) periodEl.textContent = "H2";
                 var switchLabel = document.querySelector(".switch-label");
                 if (switchLabel) switchLabel.setAttribute("data-value", "2");
+                var switchInput = document.querySelector(".switch-input");
+                if (switchInput) switchInput.checked = false;
                 remainingSeconds = HALF_SECONDS;
                 gameBuzzed = false;
                 renderDisplay();
+                stopShotClockTicker();
+                shotClockRemaining = SHOT_CLOCK_SECONDS;
+                shotClockBuzzed = false;
+                renderShotClock();
+                patchShotClock(SHOT_CLOCK_SECONDS, "stopped");
                 patchClock("stopped");
               }
             }, 500);
@@ -345,6 +353,10 @@
     period = 1;
     gameBuzzed = false;
     if (periodEl) periodEl.textContent = "H1";
+    var resetSwitchLabel = document.querySelector(".switch-label");
+    if (resetSwitchLabel) resetSwitchLabel.setAttribute("data-value", "1");
+    var resetSwitchInput = document.querySelector(".switch-input");
+    if (resetSwitchInput) resetSwitchInput.checked = true;
     renderDisplay();
     patchClock("stopped");
     resetScores();
@@ -405,6 +417,8 @@
       // Sync the half-switch so getCurrentHalf() stays accurate on all clients.
       var switchLabel = document.querySelector(".switch-label");
       if (switchLabel) switchLabel.setAttribute("data-value", String(serverPeriod));
+      var switchInput = document.querySelector(".switch-input");
+      if (switchInput) switchInput.checked = (serverPeriod === 1);
     }
 
     if (serverRunning && !ticker) {

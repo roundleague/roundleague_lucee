@@ -476,7 +476,15 @@ $(document).ready(function () {
     var pointsMap = { FGM: 2, '3FGM': 3, FTM: 1 };
     var points = pointsMap[entry.stat] || 0;
     var periodEl = document.getElementById('clockPeriodLabel');
-    var periodNum = periodEl ? (parseInt(periodEl.textContent) || 1) : 1;
+    var periodNum = periodEl ? (parseInt(periodEl.textContent.replace(/\D/g, ''), 10) || 1) : 1;
+    var clockDisplayEl = document.getElementById('clockDisplay');
+    var clockSeconds = '';
+    if (clockDisplayEl) {
+      var parts = clockDisplayEl.textContent.trim().split(':');
+      if (parts.length === 2) {
+        clockSeconds = parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10);
+      }
+    }
     var numericPlayerID = parseInt((playerIDStr || '').replace(/\D/g, ''), 10) || 0;
     var homeScore = 0, awayScore = 0;
     if (window.currentScores) {
@@ -501,6 +509,7 @@ $(document).ready(function () {
         home_score: homeScore,
         away_score: awayScore,
         period: periodNum,
+        clock_remaining_seconds: clockSeconds,
         local_play_id: entry.id
       })
     }).catch(function() {});
