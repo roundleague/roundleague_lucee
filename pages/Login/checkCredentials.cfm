@@ -11,6 +11,7 @@
 	</cfif>
 	<cfif access>
 		<cfset session.loggedIn = true>
+		<cfset session.userName = getCredentials.userName>
 		<cflocation url="../StatsApp/StatsApp-Select.cfm">
 	<cfelse>
 		<span class="errorMsg">Credentials did not match, please try again.</span>

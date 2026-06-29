@@ -23,6 +23,11 @@ Coded by www.creative-tim.com
 </cfquery>
 <cfset session.currentSeasonID = currentSeason.seasonID>
 
+<cfset displayName = "Guest">
+<cfif isDefined("session.loggedIn") AND session.loggedIn AND isDefined("session.userName") AND len(trim(session.userName))>
+  <cfset displayName = session.userName>
+</cfif>
+
 <head>
   <meta charset="utf-8" />
   <link rel="apple-touch-icon" sizes="76x76" href="/admin-dashboard/assets/img/apple-icon.png">
@@ -170,7 +175,7 @@ Coded by www.creative-tim.com
                 <span class="navbar-toggler-bar bar3"></span>
               </button>
             </div>
-            <a class="navbar-brand" href="javascript:;">Welcome, RL Staff</a>
+            <a class="navbar-brand" href="javascript:;"><cfoutput>Welcome, #htmlEditFormat(displayName)#</cfoutput></a>
           </div>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-bar navbar-kebab"></span>
