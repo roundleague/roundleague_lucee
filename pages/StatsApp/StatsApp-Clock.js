@@ -133,6 +133,9 @@
       if (remainingSeconds > 0) {
         remainingSeconds--;
         renderDisplay();
+        // Heartbeat every second so listeners (overlay, other displays) stay
+        // live even when the shot clock isn't ticking to piggyback updates.
+        patchClock("running");
         if (remainingSeconds === 0 && !gameBuzzed) {
           gameBuzzed = true;
           playBuzzer("long");
@@ -394,7 +397,7 @@
   });
 
   // ── Server sync ───────────────────────────────────────────
-  function applyClockState(data, isPolled) {
+  function applyClockState(data) {
     var serverRunning = data.clock_status === "running";
     var serverSeconds = Math.max(
       0,
@@ -404,10 +407,12 @@
 
     // Reset buzz flag if clock was reset (time jumped up)
     if (serverSeconds > remainingSeconds + 5) gameBuzzed = false;
-    // Polled responses use the server's TIMESTAMPDIFF-computed value — always
-    // snap to correct drift. Socket events may carry another client's stale
-    // game-clock value (from shot-clock patches), so keep the 2s guard there.
-    if (!ticker || isPolled || Math.abs(serverSeconds - remainingSeconds) > 2) {
+    // The local ticker is the source of truth while running — only snap to
+    // the server value on real drift (>2s), not on every poll/echo. Polled
+    // responses are computed via TIMESTAMPDIFF and can land a second off
+    // just from request latency/rounding, which used to cause a visible
+    // flash backward every 10s.
+    if (!ticker || Math.abs(serverSeconds - remainingSeconds) > 2) {
       remainingSeconds = serverSeconds;
     }
 
@@ -483,7 +488,7 @@
         return r.ok ? r.json() : null;
       })
       .then(function (d) {
-        if (d) applyClockState(d, true);
+        if (d) applyClockState(d);
       })
       .catch(function () {});
   }
