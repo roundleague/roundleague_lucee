@@ -24,8 +24,23 @@ Coded by www.creative-tim.com
 <cfset session.currentSeasonID = currentSeason.seasonID>
 
 <cfset displayName = "Guest">
-<cfif isDefined("session.loggedIn") AND session.loggedIn AND isDefined("session.userName") AND len(trim(session.userName))>
-  <cfset displayName = session.userName>
+<cfif isDefined("session.loggedIn") AND session.loggedIn>
+  <cfif isDefined("session.userName") AND len(trim(session.userName))>
+    <cfset displayName = session.userName>
+  <cfelseif isDefined("session.currentSessionUserID")>
+    <cfquery name="lookupName" datasource="roundleague">
+      SELECT u.userName, p.firstName, p.lastName
+      FROM users u
+      LEFT JOIN players p ON u.playerID = p.PlayerID
+      WHERE u.userID = <cfqueryparam value="#session.currentSessionUserID#" cfsqltype="cf_sql_integer">
+    </cfquery>
+    <cfif lookupName.recordCount AND len(trim(lookupName.firstName))>
+      <cfset session.userName = trim(lookupName.firstName & " " & lookupName.lastName)>
+    <cfelse>
+      <cfset session.userName = lookupName.userName>
+    </cfif>
+    <cfset displayName = session.userName>
+  </cfif>
 </cfif>
 
 <head>
