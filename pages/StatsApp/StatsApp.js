@@ -1,6 +1,7 @@
 // A $( document ).ready() block.
 $(document).ready(function () {
   var globalHistory = [];
+  var globalHistoryLogIds = [];
   var actionLog = [];
   var currentLogPage = 0;
   var suppressLogPush = false;
@@ -156,6 +157,7 @@ $(document).ready(function () {
       actionLog.push(logEntry);
       saveLogToStorage();
     }
+    globalHistoryLogIds.push(logEntry ? logEntry.id : null);
 
     var playerID = $(addNode).closest("tr").attr("id");
     var fieldValueSpan = $(addNode).siblings(".fieldValue");
@@ -205,6 +207,7 @@ $(document).ready(function () {
       actionLog.push(logEntry);
       saveLogToStorage();
     }
+    globalHistoryLogIds.push(logEntry ? logEntry.id : null);
 
     var playerID = $(this).closest("tr").attr("id");
     var fieldValueSpan = $(this).siblings(".fieldValue");
@@ -249,7 +252,9 @@ $(document).ready(function () {
 
   $(".undoBtn").click(function () {
     var undoAction = globalHistory.pop();
+    var logId = globalHistoryLogIds.pop();
     $(undoAction).trigger("click");
+    if (logId) { markLogEntryRemoved(logId); }
   });
 
   $(".button-error").click(function () {
@@ -541,6 +546,18 @@ $(document).ready(function () {
     } catch(err) {}
   }
 
+  function markLogEntryRemoved(id) {
+    var entry = null;
+    for (var i = 0; i < actionLog.length; i++) {
+      if (actionLog[i].id === id) { entry = actionLog[i]; break; }
+    }
+    if (!entry || entry.removed) return;
+    entry.removed = true;
+    try { persistRemovePlay(entry.id); } catch(e) {}
+    saveLogToStorage();
+    renderLog();
+  }
+
   function removeLogEntry(id) {
     var entry = null;
     for (var i = 0; i < actionLog.length; i++) {
@@ -550,12 +567,12 @@ $(document).ready(function () {
     if (entry.undoNode) {
       $(entry.undoNode).trigger('click');
       var ghIdx = globalHistory.indexOf(entry.undoNode);
-      if (ghIdx !== -1) globalHistory.splice(ghIdx, 1);
+      if (ghIdx !== -1) {
+        globalHistory.splice(ghIdx, 1);
+        globalHistoryLogIds.splice(ghIdx, 1);
+      }
     }
-    entry.removed = true;
-    try { persistRemovePlay(entry.id); } catch(e) {}
-    saveLogToStorage();
-    renderLog();
+    markLogEntryRemoved(id);
   }
 
   function undoRemoveLogEntry(id) {
@@ -662,6 +679,7 @@ $(document).ready(function () {
     actionLog = [];
     currentLogPage = 0;
     globalHistory = [];
+    globalHistoryLogIds = [];
     saveLogToStorage();
     renderLog();
     $('#clearLogConfirm').hide();
