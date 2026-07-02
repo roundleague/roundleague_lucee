@@ -124,7 +124,7 @@
 					From Teams
 					Where TeamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.teamID#">
 				),
-				<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.currentJersey#">
+				<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.currentJersey#" null="#NOT len(trim(form.currentJersey))#">
 			)
 		</cfquery>
 		<cflog file="register_security" type="information"
@@ -183,8 +183,8 @@
 				<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#checkDuplicate.playerID#">,
 				<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.teamID#">,
 				<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.seasonSelect#">,
-				<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getDivision.DivisionID#">,
-				<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.currentJersey#">
+				<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getDivision.DivisionID#" null="#NOT len(trim(getDivision.DivisionID))#">,
+				<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.currentJersey#" null="#NOT len(trim(form.currentJersey))#">
 			)
 		</cfquery>
 

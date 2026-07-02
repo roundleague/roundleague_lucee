@@ -1,0 +1,70 @@
+.dashboard-welcome h2 {
+    margin-bottom: 4px;
+    font-weight: 700;
+}
+
+.dashboard-welcome .card-category {
+    margin-bottom: 0;
+    color: #252422;
+}
+
+.tools-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 24px;
+}
+
+.tool-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    padding: 40px 20px;
+    text-decoration: none;
+    color: #333;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    min-height: 150px;
+    cursor: pointer;
+}
+
+.tool-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    text-decoration: none;
+    color: #333;
+}
+
+.tool-card i {
+    font-size: 2.4rem;
+    margin-bottom: 14px;
+    color: #51cbce;
+}
+
+.tool-card p {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-align: center;
+    line-height: 1.3;
+}
+
+@media (max-width: 991px) {
+    .tools-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 767px) {
+    .tools-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+
+    .tool-card {
+        padding: 28px 16px;
+        min-height: 120px;
+    }
+}

@@ -23,6 +23,36 @@ Coded by www.creative-tim.com
 </cfquery>
 <cfset session.currentSeasonID = currentSeason.seasonID>
 
+<cfset displayName = "Guest">
+<cfif isDefined("session.userName") AND len(trim(session.userName))>
+  <cfset displayName = session.userName>
+<cfelseif isDefined("session.playerLoggedIn") AND session.playerLoggedIn AND isDefined("session.playerID")>
+  <cfquery name="lookupPlayerName" datasource="roundleague">
+    SELECT firstName, lastName
+    FROM players
+    WHERE PlayerID = <cfqueryparam value="#session.playerID#" cfsqltype="cf_sql_integer">
+  </cfquery>
+  <cfif lookupPlayerName.recordCount AND len(trim(lookupPlayerName.firstName))>
+    <cfset session.userName = trim(lookupPlayerName.firstName & " " & lookupPlayerName.lastName)>
+    <cfset displayName = session.userName>
+  </cfif>
+<cfelseif isDefined("session.loggedIn") AND session.loggedIn AND isDefined("session.currentSessionUserID")>
+  <cfquery name="lookupAdminName" datasource="roundleague">
+    SELECT u.userName, p.firstName, p.lastName
+    FROM users u
+    LEFT JOIN players p ON u.playerID = p.PlayerID
+    WHERE u.userID = <cfqueryparam value="#session.currentSessionUserID#" cfsqltype="cf_sql_integer">
+  </cfquery>
+  <cfif lookupAdminName.recordCount AND len(trim(lookupAdminName.firstName))>
+    <cfset session.userName = trim(lookupAdminName.firstName & " " & lookupAdminName.lastName)>
+  <cfelseif lookupAdminName.recordCount>
+    <cfset session.userName = lookupAdminName.userName>
+  </cfif>
+  <cfif isDefined("session.userName") AND len(trim(session.userName))>
+    <cfset displayName = session.userName>
+  </cfif>
+</cfif>
+
 <head>
   <meta charset="utf-8" />
   <link rel="apple-touch-icon" sizes="76x76" href="/admin-dashboard/assets/img/apple-icon.png">
@@ -170,7 +200,7 @@ Coded by www.creative-tim.com
                 <span class="navbar-toggler-bar bar3"></span>
               </button>
             </div>
-            <a class="navbar-brand" href="javascript:;">Welcome, RL Staff</a>
+            <a class="navbar-brand" href="javascript:;"><cfoutput>Welcome, #htmlEditFormat(displayName)#</cfoutput></a>
           </div>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-bar navbar-kebab"></span>
