@@ -24,21 +24,31 @@ Coded by www.creative-tim.com
 <cfset session.currentSeasonID = currentSeason.seasonID>
 
 <cfset displayName = "Guest">
-<cfif isDefined("session.loggedIn") AND session.loggedIn>
-  <cfif isDefined("session.userName") AND len(trim(session.userName))>
+<cfif isDefined("session.userName") AND len(trim(session.userName))>
+  <cfset displayName = session.userName>
+<cfelseif isDefined("session.playerLoggedIn") AND session.playerLoggedIn AND isDefined("session.playerID")>
+  <cfquery name="lookupPlayerName" datasource="roundleague">
+    SELECT firstName, lastName
+    FROM players
+    WHERE PlayerID = <cfqueryparam value="#session.playerID#" cfsqltype="cf_sql_integer">
+  </cfquery>
+  <cfif lookupPlayerName.recordCount AND len(trim(lookupPlayerName.firstName))>
+    <cfset session.userName = trim(lookupPlayerName.firstName & " " & lookupPlayerName.lastName)>
     <cfset displayName = session.userName>
-  <cfelseif isDefined("session.currentSessionUserID")>
-    <cfquery name="lookupName" datasource="roundleague">
-      SELECT u.userName, p.firstName, p.lastName
-      FROM users u
-      LEFT JOIN players p ON u.playerID = p.PlayerID
-      WHERE u.userID = <cfqueryparam value="#session.currentSessionUserID#" cfsqltype="cf_sql_integer">
-    </cfquery>
-    <cfif lookupName.recordCount AND len(trim(lookupName.firstName))>
-      <cfset session.userName = trim(lookupName.firstName & " " & lookupName.lastName)>
-    <cfelse>
-      <cfset session.userName = lookupName.userName>
-    </cfif>
+  </cfif>
+<cfelseif isDefined("session.loggedIn") AND session.loggedIn AND isDefined("session.currentSessionUserID")>
+  <cfquery name="lookupAdminName" datasource="roundleague">
+    SELECT u.userName, p.firstName, p.lastName
+    FROM users u
+    LEFT JOIN players p ON u.playerID = p.PlayerID
+    WHERE u.userID = <cfqueryparam value="#session.currentSessionUserID#" cfsqltype="cf_sql_integer">
+  </cfquery>
+  <cfif lookupAdminName.recordCount AND len(trim(lookupAdminName.firstName))>
+    <cfset session.userName = trim(lookupAdminName.firstName & " " & lookupAdminName.lastName)>
+  <cfelseif lookupAdminName.recordCount>
+    <cfset session.userName = lookupAdminName.userName>
+  </cfif>
+  <cfif isDefined("session.userName") AND len(trim(session.userName))>
     <cfset displayName = session.userName>
   </cfif>
 </cfif>
