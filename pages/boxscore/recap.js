@@ -1,4 +1,10 @@
 // recap.js
+
+// zero out Bootstrap's scrollbar-width measurement so it adds no padding-right on open
+$('#recapModal')
+	.on('show.bs.modal', function() { document.documentElement.style.overflowY = 'scroll'; })
+	.on('hidden.bs.modal', function() { document.documentElement.style.removeProperty('overflow-y'); });
+
 const recapMessageText = $('#recapText').text()
 
 // Split the paragraph into sentences
