@@ -159,25 +159,28 @@ a.playerLink:hover {
 /* ============================================
    Box Score Table
    ============================================ */
+
+
 table.bolder {
 	width: 100%;
 	border-collapse: collapse;
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, sans-serif;
-	color: #333;
+	color: #111;
 	margin-bottom: 28px;
 }
 
-/* Team name row — the colspan td inside thead */
+/* Team name row */
 table.bolder thead td {
-	background: #f4f4f4;
-	font-size: 11px;
-	font-weight: 700;
-	letter-spacing: 0.08em;
+	background: #111;
+	font-size: 12px;
+	font-weight: 800;
+	letter-spacing: 0.12em;
 	text-transform: uppercase;
-	color: #555;
-	padding: 10px 12px;
-	border-bottom: 1px solid #e8e8e8;
+	color: #fff;
+	padding: 12px 24px;
+	border: none;
 	text-align: left;
+	clip-path: polygon(20px 0%, 100% 0%, 100% 100%, 0% 100%);
 }
 
 /* Stat column header row */
@@ -187,9 +190,14 @@ table.bolder thead th {
 	font-weight: 700;
 	text-transform: uppercase;
 	letter-spacing: 0.08em;
-	color: #999;
-	border-bottom: 2px solid #e8e8e8;
+	color: #555;
+	border-bottom: 2px solid #d0d0d0;
+	border-right: 1px solid #e8e8e8;
 	text-align: center;
+}
+
+table.bolder thead th:last-child {
+	border-right: none;
 }
 
 table.bolder thead th:first-child {
@@ -199,24 +207,60 @@ table.bolder thead th:first-child {
 /* Player rows */
 table.bolder tbody td {
 	padding: 9px 8px;
-	border-bottom: 1px solid #f0f0f0;
+	border-bottom: 1px solid #ddd;
+	border-right: 1px solid #ebebeb;
 	vertical-align: middle;
 	text-align: center;
+	font-weight: 500;
+}
+
+table.bolder tbody td:last-child {
+	border-right: none;
+}
+
+/* Alternating row background */
+table.bolder tbody tr:nth-child(even) td {
+	background: #f5f6f9;
 }
 
 table.bolder tbody td:first-child {
 	text-align: left;
 }
 
-table.bolder tbody tr:hover {
+table.bolder tbody tr:hover td {
 	background: #fafafa;
+}
+
+table.bolder tbody tr:hover td:first-child {
 	box-shadow: inset 3px 0 0 var(--rl-primary);
 }
 
-/* TOTALS row */
-table.bolder tbody tr.smallFont td {
-	background: #f8f8f8;
-	color: #444;
+/* Spacer row between teams — no styling, no hover, just height.
+   hidden only on left/right so the second team's header top border still wins.
+   background: #fff covers any border bleed from rows above/below. */
+table.bolder tr.bolder-spacer td,
+table.bolder tr.bolder-spacer:hover td {
+	height: 16px;
+	padding: 0;
+	border-top: none;
+	border-bottom: none;
+	border-left: 0 hidden transparent;
+	border-right: 0 hidden transparent;
+	background: #fff;
+	box-shadow: none;
+	position: static;
+}
+
+/* TOTALS row — overrides zebra and disables hover */
+table.bolder tbody tr.smallFont td,
+table.bolder tbody tr.smallFont:hover td {
+	background: #ebebeb;
+	color: #333;
+	font-weight: 600;
+}
+
+table.bolder tbody tr.smallFont:hover td:first-child {
+	box-shadow: none;
 }
 
 table.smallFont td {
@@ -225,6 +269,59 @@ table.smallFont td {
 
 tr.smallFont th {
 	font-size: small;
+}
+
+/* ============================================
+   Box Score — Desktop scroll + sticky name column (desktop only, min-width: 481px)
+   Mobile box score behavior is handled separately in the mobile section below.
+   ============================================ */
+@media only screen and (min-width: 481px) {
+	/* Horizontal scroll wrapper — only activates when table overflows */
+	.bolder-wrap {
+		overflow-x: auto;
+	}
+
+	/* Prevent the table from compressing — forces scroll instead of squish */
+	.bolder-wrap table.bolder {
+		min-width: 700px;
+	}
+
+	/* Team name header row — stays pinned to the left while stats scroll */
+	.bolder-wrap table.bolder thead td {
+		position: sticky;
+		left: 0;
+		z-index: 3;
+	}
+
+	/* "Player" column header + all player name cells */
+	.bolder-wrap table.bolder thead th:first-child,
+	.bolder-wrap table.bolder tbody td:first-child {
+		position: sticky;
+		left: 0;
+		z-index: 2;
+		background: #fff;
+		box-shadow: 2px 0 4px -1px rgba(0,0,0,0.08);
+	}
+
+	.bolder-wrap table.bolder tbody tr:hover td:first-child {
+		background: #fafafa;
+	}
+
+	/* Spacer row — cancel sticky + shadow inherited from td:first-child rule */
+	.bolder-wrap table.bolder tr.bolder-spacer td,
+	.bolder-wrap table.bolder tr.bolder-spacer:hover td {
+		position: static;
+		background: #fff;
+		box-shadow: none;
+		border-left: 0 hidden transparent;
+		border-right: 0 hidden transparent;
+	}
+
+	.bolder-wrap table.bolder tbody tr.smallFont td:first-child,
+	.bolder-wrap table.bolder tbody tr.smallFont:hover td:first-child {
+		background: #ebebeb;
+		box-shadow: 2px 0 4px -1px rgba(0,0,0,0.08);
+	}
 }
 
 /* ============================================

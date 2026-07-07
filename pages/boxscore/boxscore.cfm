@@ -156,6 +156,7 @@
 
         <!--- Box Score Tab --->
         <div class="tab-pane <cfif defaultTab EQ 'boxscore'>active</cfif>" id="boxscore-tab">
+        <div class="bolder-wrap">
         <table class="bolder smallFont">
             <cfset currentTeamID = ''>
 
@@ -276,6 +277,10 @@
                         <td data-label="+/-">&mdash;</td>
                         <td data-label="PTS"><b>#TotalPTS#</b></td>
                     </tr>
+                    <!--- Spacer row between the two teams --->
+                    <cfif currentTeamID NEQ nextTeamID>
+                        <tr class="bolder-spacer"><td colspan="13"></td></tr>
+                    </cfif>
                     <cfif currentTeamID NEQ nextTeamID>
                         <cfset firstTeamStruct = {
                             "TotalFGM": TotalFGM,
@@ -312,9 +317,12 @@
                         }>
                         <cfset secondTeamTotals = boxscore.generateTeamStatsPrompt(GetPlayerLogs.teamName, secondTeamStruct)>
                     </cfif>
+                
                 </cfif>
         	</cfloop>
         </table>
+
+        </div><!--- end .bolder-wrap --->
         </div><!--- end #boxscore-tab --->
 
         <!--- Play-By-Play Tab --->
