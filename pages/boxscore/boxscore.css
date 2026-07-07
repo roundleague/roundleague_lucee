@@ -285,57 +285,6 @@ tr.smallFont th {
 	font-size: small;
 }
 
-/* ============================================
-   Desktop: horizontal scroll + sticky name column
-   ============================================ */
-@media only screen and (min-width: 481px) {
-	/* Horizontal scroll wrapper — only activates when table overflows */
-	.bolder-wrap {
-		overflow-x: auto;
-	}
-
-	/* Prevent the table from compressing — forces scroll instead of squish */
-	.bolder-wrap table.bolder {
-		min-width: 700px;
-	}
-
-	/* Team name header row — stays pinned to the left while stats scroll */
-	.bolder-wrap table.bolder thead td {
-		position: sticky;
-		left: 0;
-		z-index: 3;
-	}
-
-	/* "Player" column header + all player name cells */
-	.bolder-wrap table.bolder thead th:first-child,
-	.bolder-wrap table.bolder tbody td:first-child {
-		position: sticky;
-		left: 0;
-		z-index: 2;
-		background: #fff;
-		box-shadow: 2px 0 4px -1px rgba(0,0,0,0.08);
-	}
-
-	.bolder-wrap table.bolder tbody tr:hover td:first-child {
-		background: #fafafa;
-	}
-
-	/* Spacer row — cancel sticky + shadow inherited from td:first-child rule */
-	.bolder-wrap table.bolder tr.bolder-spacer td,
-	.bolder-wrap table.bolder tr.bolder-spacer:hover td {
-		position: static;
-		background: #fff;
-		box-shadow: none;
-		border-left: 0 hidden transparent;
-		border-right: 0 hidden transparent;
-	}
-
-	.bolder-wrap table.bolder tbody tr.smallFont td:first-child,
-	.bolder-wrap table.bolder tbody tr.smallFont:hover td:first-child {
-		background: #ebebeb;
-		box-shadow: 2px 0 4px -1px rgba(0,0,0,0.08);
-	}
-}
 
 /* ============================================
    Mobile Stats Icon (visible mobile only)

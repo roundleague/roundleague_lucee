@@ -156,7 +156,6 @@
 
         <!--- Box Score Tab --->
         <div class="tab-pane <cfif defaultTab EQ 'boxscore'>active</cfif>" id="boxscore-tab">
-        <div class="bolder-wrap">
         <table class="bolder smallFont">
             <cfset currentTeamID = ''>
 
@@ -322,7 +321,6 @@
         	</cfloop>
         </table>
 
-        </div><!--- end .bolder-wrap --->
         </div><!--- end #boxscore-tab --->
 
         <!--- Play-By-Play Tab --->
