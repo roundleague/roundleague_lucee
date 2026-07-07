@@ -1,7 +1,5 @@
-/* ===== CSS Custom Properties — matches schedule-2 palette ===== */
 :root {
 	--rl-primary: #dc0000;
-	--rl-primary-soft: rgba(220,0,0,0.08);
 }
 
 
@@ -18,6 +16,7 @@
 	padding: 16px 20px 12px;
 	margin-bottom: 20px;
 	text-align: center;
+	font-size: small;
 }
 
 .gameTitle {
@@ -180,7 +179,6 @@ table.bolder thead td {
 	padding: 12px 24px;
 	border: none;
 	text-align: left;
-	clip-path: polygon(20px 0%, 100% 0%, 100% 100%, 0% 100%);
 }
 
 /* Stat column header row */
@@ -272,8 +270,7 @@ tr.smallFont th {
 }
 
 /* ============================================
-   Box Score — Desktop scroll + sticky name column (desktop only, min-width: 481px)
-   Mobile box score behavior is handled separately in the mobile section below.
+   Desktop: horizontal scroll + sticky name column
    ============================================ */
 @media only screen and (min-width: 481px) {
 	/* Horizontal scroll wrapper — only activates when table overflows */
