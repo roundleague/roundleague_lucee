@@ -88,6 +88,22 @@ a.playerLink:hover {
 		align-items: center;
 	}
 
+	.homeTeamScore {
+		margin-left: 10px;
+		line-height: 28px;
+		font-family: -apple-system, BlinkMacSystemFont, Roboto, Arial, "Helvetica Neue", Helvetica, sans-serif;
+		font-weight: 300;
+		font-size: 24px;
+	}
+
+	.awayTeamScore {
+		margin-right: 10px;
+		line-height: 28px;
+		font-family: -apple-system, BlinkMacSystemFont, Roboto, Arial, "Helvetica Neue", Helvetica, sans-serif;
+		font-weight: 300;
+		font-size: 24px;
+	}
+
 	.finalScoreSection {
 		display: flex;
 		flex-direction: row;
