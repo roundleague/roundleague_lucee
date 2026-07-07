@@ -125,7 +125,6 @@ a.playerLink:hover {
 		justify-content: space-between;
 		align-items: center;
 		width: 33.33%;
-		order: 2;
 		flex: 1;
 	}
 
@@ -283,6 +282,67 @@ table.smallFont td {
 
 tr.smallFont th {
 	font-size: small;
+}
+
+/* ============================================
+   Mobile: stack table rows into label/value cards
+   ============================================ */
+@media only screen and (max-width: 480px) {
+
+	table.bolder thead tr:nth-child(2) {
+		display: none;
+	}
+
+	table.bolder tbody tr {
+		display: block;
+	}
+
+	table.bolder tbody tr:not(.smallFont):not(.bolder-spacer) {
+		border: 1px solid #ebebeb;
+		border-radius: 10px;
+		margin-bottom: 12px;
+		overflow: hidden;
+	}
+
+	table.bolder tbody tr.smallFont {
+		border-radius: 10px;
+		margin-bottom: 12px;
+		overflow: hidden;
+	}
+
+	table.bolder tbody td {
+		display: block;
+		position: relative;
+		text-align: right;
+		padding: 10px 14px 10px 42%;
+		border-right: none;
+	}
+
+	table.bolder tbody td:first-child {
+		text-align: right;
+	}
+
+	table.bolder tbody td::before {
+		content: attr(data-label);
+		position: absolute;
+		left: 14px;
+		top: 50%;
+		transform: translateY(-50%);
+		font-size: 11px;
+		font-weight: 700;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		color: #555;
+		text-align: left;
+	}
+
+	table.bolder tbody tr.smallFont td:first-child {
+		padding-left: 14px;
+	}
+
+	table.bolder tbody tr.smallFont td:first-child::before {
+		content: none;
+	}
 }
 
 
