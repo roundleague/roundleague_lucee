@@ -84,11 +84,11 @@
 <div class="main" style="background-color: white; margin-top: 25px;">
     <div class="section text-center">
       <div class="container">
-
-        <h4 class="gameTitle desktop"> <a class="playerLink" href="/pages/teams/team-profile-page.cfm?teamID=#getTeamsPlaying.HomeTeamID#"> #getTeamsPlaying.Home# #getTeamsPlaying.HomeScore# </a>(#getWinsAndLossesHomeTeam.Wins#-#getWinsAndLossesHomeTeam.Losses#) | <a class="playerLink" href="/pages/teams/team-profile-page.cfm?teamID=#getTeamsPlaying.AwayTeamID#"> #getTeamsPlaying.Away# #getTeamsPlaying.AwayScore# </a> (#getWinsAndLossesAwayTeam.Wins#-#getWinsAndLossesAwayTeam.Losses#)</h4>
-        <h5>#getTeamsPlaying.Date#</h5> 
-        <cfset teamScores = '#getTeamsPlaying.Home# #getTeamsPlaying.HomeScore# | ' & '#getTeamsPlaying.Away# #getTeamsPlaying.AwayScore#' />
-
+        <div class="score-card">
+            <h4 class="gameTitle desktop"> <a class="playerLink" href="/pages/teams/team-profile-page.cfm?teamID=#getTeamsPlaying.HomeTeamID#"> #getTeamsPlaying.Home# #getTeamsPlaying.HomeScore# </a>(#getWinsAndLossesHomeTeam.Wins#-#getWinsAndLossesHomeTeam.Losses#) vs <a class="playerLink" href="/pages/teams/team-profile-page.cfm?teamID=#getTeamsPlaying.AwayTeamID#"> #getTeamsPlaying.Away# #getTeamsPlaying.AwayScore# </a> (#getWinsAndLossesAwayTeam.Wins#-#getWinsAndLossesAwayTeam.Losses#)</h4>
+            <h5 class="game-date">#getTeamsPlaying.Date#</h5>
+            <cfset teamScores = '#getTeamsPlaying.Home# #getTeamsPlaying.HomeScore# | ' & '#getTeamsPlaying.Away# #getTeamsPlaying.AwayScore#' />
+        </div>
 
         <!--- Mobile score section --->
         <div class="finalScoreSection mobile">
@@ -276,6 +276,10 @@
                         <td data-label="+/-">&mdash;</td>
                         <td data-label="PTS"><b>#TotalPTS#</b></td>
                     </tr>
+                    <!--- Spacer row between the two teams --->
+                    <cfif currentTeamID NEQ nextTeamID>
+                        <tr class="bolder-spacer"><td colspan="13"></td></tr>
+                    </cfif>
                     <cfif currentTeamID NEQ nextTeamID>
                         <cfset firstTeamStruct = {
                             "TotalFGM": TotalFGM,
@@ -312,9 +316,11 @@
                         }>
                         <cfset secondTeamTotals = boxscore.generateTeamStatsPrompt(GetPlayerLogs.teamName, secondTeamStruct)>
                     </cfif>
+                
                 </cfif>
         	</cfloop>
         </table>
+
         </div><!--- end #boxscore-tab --->
 
         <!--- Play-By-Play Tab --->

@@ -27,15 +27,17 @@
     <div class="section text-center">
       <div class="container">
 
-        <h4 class="gameTitle"> 
-            <a class="playerLink" href="/pages/teams/team-profile-page.cfm?teamID=#getTeamsPlaying.HomeTeamID#">
-                #getTeamsPlaying.Home# #getTeamsPlaying.HomeScore# 
-            </a> | 
-            <a class="playerLink" href="/pages/teams/team-profile-page.cfm?teamID=#getTeamsPlaying.AwayTeamID#">
-                #getTeamsPlaying.Away# #getTeamsPlaying.AwayScore# 
-            </a> 
-        </h4>
-        <h5>#getTeamsPlaying.Date#</h5>
+        <div class="score-card">
+          <h4 class="gameTitle">
+              <a class="playerLink" href="/pages/teams/team-profile-page.cfm?teamID=#getTeamsPlaying.HomeTeamID#">
+                  #getTeamsPlaying.Home# #getTeamsPlaying.HomeScore#
+              </a> |
+              <a class="playerLink" href="/pages/teams/team-profile-page.cfm?teamID=#getTeamsPlaying.AwayTeamID#">
+                  #getTeamsPlaying.Away# #getTeamsPlaying.AwayScore#
+              </a>
+          </h4>
+          <h5 class="game-date">#getTeamsPlaying.Date#</h5>
+        </div>
 
         <table class="bolder smallFont">
             <cfset currentTeamID = ''>
