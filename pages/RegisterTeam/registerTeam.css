@@ -1,0 +1,25 @@
+.nonTextQuestions {
+  padding: 10px;
+}
+
+h3.description {
+  color: #333;
+}
+
+.biggerLabel {
+  font-size: large;
+}
+
+.errorDiv {
+  padding: 20px;
+  font-weight: bold;
+  color: red;
+}
+
+.toastMessage {
+  font-weight: bold;
+}
+
+label {
+  font-weight: 600;
+}

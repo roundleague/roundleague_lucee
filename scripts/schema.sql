@@ -124,11 +124,14 @@ CREATE TABLE IF NOT EXISTS pending_teams (
   status              VARCHAR(25) NOT NULL DEFAULT '0',
   captainFirstName    VARCHAR(100) NOT NULL,
   captainLastName     VARCHAR(100) NOT NULL,
-  age                 INT NOT NULL DEFAULT 0,
+  allPlayersOver18    VARCHAR(3) NOT NULL DEFAULT '',
   email               VARCHAR(100) NOT NULL DEFAULT '0',
   phoneNumber         VARCHAR(100) NOT NULL DEFAULT '0',
   highestLevel        VARCHAR(100) NOT NULL DEFAULT '0',
-  playerCountEstimate INT NOT NULL DEFAULT 0,
+  playerCountEstimate VARCHAR(100) NOT NULL DEFAULT '0',
+  dayPreference       VARCHAR(100) NOT NULL DEFAULT '',
+  referralSource      VARCHAR(50) NOT NULL DEFAULT '',
+  referralOther       VARCHAR(255) NOT NULL DEFAULT '',
   dateAdded           DATE DEFAULT NULL
 );
 
