@@ -1,6 +1,6 @@
 <cfparam name="form.dayPreference" default="">
-<cfparam name="form.vaccinatedCount" default="">
 <cfparam name="form.referralOther" default="">
+<cfparam name="form.email" default="">
 
 <!--- Required-field validation. Every field checked here maps to a NOT NULL
       column with no usable default, so a missing value must never reach the
@@ -11,11 +11,12 @@
 <cfif len(trim(form.allPlayersOver18)) EQ 0><cfset arrayAppend(local.missingFields, "Over 18 confirmation")></cfif>
 <cfif len(trim(form.captainName)) EQ 0><cfset arrayAppend(local.missingFields, "Captain Name")></cfif>
 <cfif len(trim(form.phoneNumber)) EQ 0><cfset arrayAppend(local.missingFields, "Phone Number")></cfif>
+<cfset local.cleanEmail = lCase(trim(form.email))>
+<cfif NOT reFind("^[^\s@]{1,64}@[^\s@]{1,255}\.[^\s@]{2,}$", local.cleanEmail) OR len(local.cleanEmail) GT 100>
+  <cfset arrayAppend(local.missingFields, "Email (valid address, under 100 characters)")>
+</cfif>
 <cfif len(trim(form.playerCountEstimate)) EQ 0><cfset arrayAppend(local.missingFields, "Player Count")></cfif>
 <cfif len(trim(form.highestLevel)) EQ 0><cfset arrayAppend(local.missingFields, "Level of Experience")></cfif>
-<cfif NOT len(trim(form.vaccinatedCount)) OR NOT isNumeric(form.vaccinatedCount) OR form.vaccinatedCount LT 0 OR form.vaccinatedCount GT 12>
-  <cfset arrayAppend(local.missingFields, "Number of Players Fully Vaccinated (0-12)")>
-</cfif>
 <cfif len(trim(form.referralSource)) EQ 0><cfset arrayAppend(local.missingFields, "How you heard about us")></cfif>
 
 <cfif len(trim(form.teamName)) GT 200 OR len(trim(form.captainName)) GT 200>
@@ -40,6 +41,7 @@
 <cfif reFind(local.suspiciousPattern, form.teamName)
       OR reFind(local.suspiciousPattern, form.captainName)
       OR reFind(local.suspiciousPattern, form.phoneNumber)
+      OR reFind(local.suspiciousPattern, form.email)
       OR reFind(local.suspiciousPattern, form.referralOther)>
   <cflog file="register_security" type="warning"
          text="Suspicious team registration payload rejected from #cgi.remote_addr# teamName=#htmlEditFormat(form.teamName)#">
@@ -64,8 +66,8 @@
   INSERT INTO pending_teams
   (
     teamName, selectedDivision, status, captainFirstName, captainLastName,
-    allPlayersOver18, phoneNumber, highestLevel, playerCountEstimate,
-    vaccinatedCount, dayPreference, referralSource, referralOther, dateAdded
+    allPlayersOver18, email, phoneNumber, highestLevel, playerCountEstimate,
+    dayPreference, referralSource, referralOther, dateAdded
   )
   VALUES
   (
@@ -75,10 +77,10 @@
     <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.captainFirstName#">,
     <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.captainLastName#">,
     <cfqueryparam cfsqltype="cf_sql_varchar" value="#form.allPlayersOver18#">,
+    <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.cleanEmail#">,
     <cfqueryparam cfsqltype="cf_sql_varchar" value="#form.phoneNumber#">,
     <cfqueryparam cfsqltype="cf_sql_varchar" value="#form.highestLevel#">,
     <cfqueryparam cfsqltype="cf_sql_varchar" value="#form.playerCountEstimate#">,
-    <cfqueryparam cfsqltype="cf_sql_integer" value="#form.vaccinatedCount#">,
     <cfqueryparam cfsqltype="cf_sql_varchar" value="#form.dayPreference#">,
     <cfqueryparam cfsqltype="cf_sql_varchar" value="#form.referralSource#">,
     <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.referralOtherValue#">,

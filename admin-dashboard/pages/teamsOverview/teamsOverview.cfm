@@ -19,9 +19,31 @@
 <!--- Pending Teams (from the public registration form) --->
 <cfquery name="getPendingTeams" datasource="roundleague">
 	SELECT pending_teamsID, teamName, selectedDivision, status, captainFirstName, captainLastName,
-	       allPlayersOver18, phoneNumber, highestLevel, playerCountEstimate, vaccinatedCount,
+	       allPlayersOver18, email, phoneNumber, highestLevel, playerCountEstimate,
 	       dayPreference, referralSource, referralOther, dateAdded
 	FROM pending_teams
+	WHERE status = 'Pending'
+	ORDER BY dateAdded DESC
+</cfquery>
+
+<!--- Inactive Teams (real teams marked Inactive via the status dropdown) --->
+<cfquery name="getInactiveTeams" datasource="roundleague">
+	SELECT teamID, t.STATUS, teamName, t.registerDate, p.firstName, p.lastName, d.DivisionName, s.SeasonName
+	FROM teams t
+	LEFT JOIN players p ON p.PlayerID = t.captainPlayerID
+	LEFT JOIN divisions d ON d.divisionID = t.DivisionID
+	LEFT JOIN seasons s ON s.seasonID = t.seasonID
+	WHERE t.status = 'Inactive'
+	ORDER BY teamName
+</cfquery>
+
+<!--- Rejected registrations (kept for later review, not deleted) --->
+<cfquery name="getRejectedTeams" datasource="roundleague">
+	SELECT pending_teamsID, teamName, selectedDivision, status, captainFirstName, captainLastName,
+	       allPlayersOver18, email, phoneNumber, highestLevel, playerCountEstimate,
+	       dayPreference, referralSource, referralOther, dateAdded
+	FROM pending_teams
+	WHERE status = 'Rejected'
 	ORDER BY dateAdded DESC
 </cfquery>
 
@@ -96,6 +118,14 @@
           </cfif>
         </a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" id="inactive-tab" data-toggle="tab" href="##inactiveTeamsPane" role="tab">
+          Inactive Teams
+          <cfif getRejectedTeams.recordCount GT 0>
+            <span class="badge badge-danger">#getRejectedTeams.recordCount#</span>
+          </cfif>
+        </a>
+      </li>
     </ul>
 
     <div class="tab-content">
@@ -146,10 +176,10 @@
               <th>League</th>
               <th>Captain</th>
               <th>Over 18?</th>
+              <th>Email</th>
               <th>Phone</th>
               <th>Experience</th>
               <th>Player Count</th>
-              <th>Vaccinated</th>
               <th>Day Preference</th>
               <th>Referral</th>
               <th>Date Submitted</th>
@@ -170,10 +200,10 @@
                 <td data-label="League">#getPendingTeams.selectedDivision#</td>
                 <td data-label="Captain">#getPendingTeams.captainFirstName# #getPendingTeams.captainLastName#</td>
                 <td data-label="Over 18?">#getPendingTeams.allPlayersOver18#</td>
+                <td data-label="Email">#getPendingTeams.email#</td>
                 <td data-label="Phone">#getPendingTeams.phoneNumber#</td>
                 <td data-label="Experience">#structKeyExists(experienceLabels, getPendingTeams.highestLevel) ? experienceLabels[getPendingTeams.highestLevel] : getPendingTeams.highestLevel#</td>
                 <td data-label="Player Count">#getPendingTeams.playerCountEstimate#</td>
-                <td data-label="Vaccinated">#getPendingTeams.vaccinatedCount#</td>
                 <td data-label="Day Preference">#getPendingTeams.dayPreference#</td>
                 <td data-label="Referral"><cfif getPendingTeams.referralSource EQ 'Other'>#getPendingTeams.referralOther#<cfelse>#getPendingTeams.referralSource#</cfif></td>
                 <td data-label="Date Submitted">#DateFormat(getPendingTeams.dateAdded, "mm/dd/yyyy")#</td>
@@ -184,9 +214,98 @@
                     data-team-name="#getPendingTeams.teamName#"
                     data-captain-first="#getPendingTeams.captainFirstName#"
                     data-captain-last="#getPendingTeams.captainLastName#"
-                    data-captain-phone="#getPendingTeams.phoneNumber#">Approve</button>
+                    data-captain-phone="#getPendingTeams.phoneNumber#"
+                    data-captain-email="#getPendingTeams.email#">Approve</button>
                   <button type="button" class="btn btn-sm btn-outline-secondary rejectBtn"
                     data-pending-id="#getPendingTeams.pending_teamsID#">Reject</button>
+                </td>
+              </tr>
+            </cfloop>
+          </tbody>
+        </table>
+      </div>
+
+      <!--- Inactive Teams Tab --->
+      <div class="tab-pane fade" id="inactiveTeamsPane" role="tabpanel">
+        <h5>Inactive Teams</h5>
+        <table id="inactiveTeamsTable" class="display" style="width:100%">
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Team</th>
+              <th>Captain</th>
+              <th>Register Date</th>
+              <th>Current Division</th>
+              <th>Current Season</th>
+            </tr>
+          </thead>
+          <tbody>
+            <cfloop query="getInactiveTeams">
+              <tr>
+                <td data-label="Status">
+                  <select name="status" class="statusSelect" data-value="#getInactiveTeams.teamID#">
+                    <option value=""></option>
+                    <option value="Active" <cfif getInactiveTeams.status EQ 'Active'>selected</cfif>>Active</option>
+                    <option value="Inactive" <cfif getInactiveTeams.status EQ 'Inactive'>selected</cfif>>Inactive</option>
+                  </select>
+                </td>
+                <td data-label="Team">#getInactiveTeams.teamname#</td>
+                <td data-label="Captain">#getInactiveTeams.firstName# #getInactiveTeams.lastName#</td>
+                <td data-label="Register Date">#DateFormat(getInactiveTeams.RegisterDate, "mm/dd/yyyy")#</td>
+                <td data-label="Current Division">#getInactiveTeams.divisionName#</td>
+                <td data-label="Current Season">#getInactiveTeams.seasonName#</td>
+              </tr>
+            </cfloop>
+          </tbody>
+        </table>
+
+        <hr>
+
+        <h5>Rejected Registrations</h5>
+        <table id="rejectedTeamsTable" class="display" style="width:100%">
+          <thead>
+            <tr>
+              <th>Team</th>
+              <th>League</th>
+              <th>Captain</th>
+              <th>Over 18?</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Experience</th>
+              <th>Player Count</th>
+              <th>Day Preference</th>
+              <th>Referral</th>
+              <th>Date Submitted</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <cfloop query="getRejectedTeams">
+              <tr>
+                <td data-label="Team">#getRejectedTeams.teamName#</td>
+                <td data-label="League">#getRejectedTeams.selectedDivision#</td>
+                <td data-label="Captain">#getRejectedTeams.captainFirstName# #getRejectedTeams.captainLastName#</td>
+                <td data-label="Over 18?">#getRejectedTeams.allPlayersOver18#</td>
+                <td data-label="Email">#getRejectedTeams.email#</td>
+                <td data-label="Phone">#getRejectedTeams.phoneNumber#</td>
+                <td data-label="Experience">#structKeyExists(experienceLabels, getRejectedTeams.highestLevel) ? experienceLabels[getRejectedTeams.highestLevel] : getRejectedTeams.highestLevel#</td>
+                <td data-label="Player Count">#getRejectedTeams.playerCountEstimate#</td>
+                <td data-label="Day Preference">#getRejectedTeams.dayPreference#</td>
+                <td data-label="Referral"><cfif getRejectedTeams.referralSource EQ 'Other'>#getRejectedTeams.referralOther#<cfelse>#getRejectedTeams.referralSource#</cfif></td>
+                <td data-label="Date Submitted">#DateFormat(getRejectedTeams.dateAdded, "mm/dd/yyyy")#</td>
+                <td data-label="Actions">
+                  <button type="button" class="btn btn-sm btn-outline-danger approveBtn"
+                    data-toggle="modal" data-target="##approveTeamModal"
+                    data-pending-id="#getRejectedTeams.pending_teamsID#"
+                    data-team-name="#getRejectedTeams.teamName#"
+                    data-captain-first="#getRejectedTeams.captainFirstName#"
+                    data-captain-last="#getRejectedTeams.captainLastName#"
+                    data-captain-phone="#getRejectedTeams.phoneNumber#"
+                    data-captain-email="#getRejectedTeams.email#">Approve</button>
+                  <button type="button" class="btn btn-sm btn-outline-secondary restoreBtn"
+                    data-pending-id="#getRejectedTeams.pending_teamsID#">Restore to Pending</button>
+                  <button type="button" class="btn btn-sm btn-outline-secondary deletePermanentlyBtn"
+                    data-pending-id="#getRejectedTeams.pending_teamsID#">Delete Permanently</button>
                 </td>
               </tr>
             </cfloop>

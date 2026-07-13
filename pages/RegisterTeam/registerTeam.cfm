@@ -78,6 +78,11 @@
 		                <input type="tel" required id="teamPhoneField" class="form-control border-input" name="phoneNumber" placeholder="123-456-7890">
 		              </div>
 
+		              <div class="form-group">
+		                <label>Team Manager's Email</label>
+		                <input type="email" required class="form-control border-input" name="email" placeholder="Email">
+		              </div>
+
 		              <div class="row">
 			              <div class="col-md-12 ml-auto mr-auto nonTextQuestions">
 			              		<label class="biggerLabel">Player Count</label>
@@ -126,11 +131,6 @@
 			              		  </label>
 			              		</div>
 			              </div>
-		              </div>
-
-		              <div class="form-group">
-		                <label>Number of Players Fully Vaccinated</label>
-		                <input type="number" min="0" max="12" required class="form-control border-input" placeholder="0" name="vaccinatedCount">
 		              </div>
 
 		              <div class="row">

@@ -1,11 +1,15 @@
 $(document).ready(function () {
   var activeTable = $("#teamsOverviewTable").DataTable();
   var pendingTable = $("#pendingTeamsTable").DataTable();
+  var inactiveTable = $("#inactiveTeamsTable").DataTable();
+  var rejectedTable = $("#rejectedTeamsTable").DataTable();
 
   // DataTables mis-sizes columns when initialized inside a hidden Bootstrap tab pane
   $('a[data-toggle="tab"]').on("shown.bs.tab", function () {
     activeTable.columns.adjust();
     pendingTable.columns.adjust();
+    inactiveTable.columns.adjust();
+    rejectedTable.columns.adjust();
   });
 
   $(document).on("change", ".statusSelect", function () {
@@ -97,6 +101,7 @@ $(document).ready(function () {
         firstName: $(this).data("captain-first"),
         lastName: $(this).data("captain-last"),
         phone: $(this).data("captain-phone"),
+        email: $(this).data("captain-email"),
       },
       success: function (data) {
         renderCaptainMatches(Array.isArray(data) ? data : []);
@@ -145,7 +150,7 @@ $(document).ready(function () {
 
   $(document).on("click", ".rejectBtn", function () {
     var pendingTeamID = $(this).data("pending-id");
-    if (!confirm("Reject and delete this pending team registration?")) {
+    if (!confirm("Reject this registration? It will move to the Inactive tab for review.")) {
       return;
     }
 
@@ -166,6 +171,60 @@ $(document).ready(function () {
       error: function (xhr, status, err) {
         console.error("rejectPendingTeam failed:", status, err);
         alert("Failed to reject team. Check the console for details.");
+      },
+    });
+  });
+
+  $(document).on("click", ".restoreBtn", function () {
+    var pendingTeamID = $(this).data("pending-id");
+    if (!confirm("Restore this registration to Pending?")) {
+      return;
+    }
+
+    $.ajax({
+      type: "POST",
+      url: "/library/teams.cfc?method=restorePendingTeam",
+      cache: false,
+      data: {
+        pendingTeamID: pendingTeamID,
+      },
+      success: function (data) {
+        if (data === "Success") {
+          location.reload();
+        } else {
+          alert("Restore failed: " + data);
+        }
+      },
+      error: function (xhr, status, err) {
+        console.error("restorePendingTeam failed:", status, err);
+        alert("Failed to restore registration. Check the console for details.");
+      },
+    });
+  });
+
+  $(document).on("click", ".deletePermanentlyBtn", function () {
+    var pendingTeamID = $(this).data("pending-id");
+    if (!confirm("Permanently delete this registration? This cannot be undone.")) {
+      return;
+    }
+
+    $.ajax({
+      type: "POST",
+      url: "/library/teams.cfc?method=deletePendingTeam",
+      cache: false,
+      data: {
+        pendingTeamID: pendingTeamID,
+      },
+      success: function (data) {
+        if (data === "Success") {
+          location.reload();
+        } else {
+          alert("Delete failed: " + data);
+        }
+      },
+      error: function (xhr, status, err) {
+        console.error("deletePendingTeam failed:", status, err);
+        alert("Failed to delete registration. Check the console for details.");
       },
     });
   });

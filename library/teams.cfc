@@ -59,10 +59,11 @@
  </cffunction> 
 
   <cffunction name="searchDuplicateCaptains" returntype="any" access="remote" returnformat="json"
-	hint="Find existing players matching a pending team's captain by exact name or phone, for duplicate-detection at approval time">
+	hint="Find existing players matching a pending team's captain by exact name, phone, or email, for duplicate-detection at approval time">
 	<cfargument name="firstName" default="" required="yes" type="string">
 	<cfargument name="lastName" default="" required="yes" type="string">
 	<cfargument name="phone" default="" required="yes" type="string">
+	<cfargument name="email" default="" required="no" type="string">
 
 		<cfquery name="matches" datasource="roundleague">
 			SELECT p.PlayerID, p.firstName, p.lastName, p.Email, p.Phone, p.Status, p.Team,
@@ -76,6 +77,10 @@
 					AND LOWER(TRIM(p.lastName)) = LOWER(TRIM(<cfqueryparam cfsqltype="CF_SQL_VARCHAR" value="#lastName#">))
 				)
 				OR p.Phone = <cfqueryparam cfsqltype="CF_SQL_VARCHAR" value="#phone#">
+				OR (
+					LENGTH(TRIM(<cfqueryparam cfsqltype="CF_SQL_VARCHAR" value="#email#">)) > 0
+					AND LOWER(TRIM(p.Email)) = LOWER(TRIM(<cfqueryparam cfsqltype="CF_SQL_VARCHAR" value="#email#">))
+				)
 			)
 			ORDER BY p.PlayerID DESC
 		</cfquery>
@@ -124,6 +129,7 @@
 					<cfquery name="updateExistingCaptain" datasource="roundleague">
 						UPDATE players
 						SET Phone = <cfqueryparam cfsqltype="cf_sql_varchar" value="#getPending.phoneNumber#">,
+						    Email = <cfqueryparam cfsqltype="cf_sql_varchar" value="#getPending.email#">,
 						    Status = 'Active',
 						    DivisionID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#divisionID#">
 						WHERE PlayerID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#linkPlayerID#">
@@ -142,7 +148,7 @@
 						VALUES
 						(
 							<cfqueryparam cfsqltype="cf_sql_date" value="#DateFormat(now(), 'mm/dd/yyyy')#">,
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="">,
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="#getPending.email#">,
 							<cfqueryparam cfsqltype="cf_sql_varchar" value="#getPending.captainFirstName#">,
 							<cfqueryparam cfsqltype="cf_sql_varchar" value="#getPending.captainLastName#">,
 							<cfqueryparam cfsqltype="cf_sql_date" value="1900-01-01">,
@@ -196,7 +202,45 @@
  </cffunction>
 
  <cffunction name="rejectPendingTeam" returntype="any" access="remote" returnformat="json"
-	hint="Delete a pending team registration">
+	hint="Mark a pending team registration as Rejected (kept for later review, not deleted)">
+	<cfargument name="pendingTeamID" default="" required="yes" type="numeric">
+
+		<cftry>
+			<cfquery name="rejectPending" datasource="roundleague">
+				UPDATE pending_teams
+				SET status = 'Rejected'
+				WHERE pending_teamsID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#pendingTeamID#">
+			</cfquery>
+
+			<cfcatch>
+				<cfreturn cfcatch.message>
+			</cfcatch>
+		</cftry>
+
+		<cfreturn 'Success'>
+ </cffunction>
+
+ <cffunction name="restorePendingTeam" returntype="any" access="remote" returnformat="json"
+	hint="Move a rejected registration back to Pending">
+	<cfargument name="pendingTeamID" default="" required="yes" type="numeric">
+
+		<cftry>
+			<cfquery name="restorePending" datasource="roundleague">
+				UPDATE pending_teams
+				SET status = 'Pending'
+				WHERE pending_teamsID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#pendingTeamID#">
+			</cfquery>
+
+			<cfcatch>
+				<cfreturn cfcatch.message>
+			</cfcatch>
+		</cftry>
+
+		<cfreturn 'Success'>
+ </cffunction>
+
+ <cffunction name="deletePendingTeam" returntype="any" access="remote" returnformat="json"
+	hint="Permanently delete a pending team registration (e.g. a previously-rejected row the admin is done reviewing)">
 	<cfargument name="pendingTeamID" default="" required="yes" type="numeric">
 
 		<cftry>

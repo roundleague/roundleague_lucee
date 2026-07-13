@@ -110,7 +110,6 @@ CREATE TABLE IF NOT EXISTS pending_teams (
   phoneNumber         VARCHAR(100) NOT NULL DEFAULT '0',
   highestLevel        VARCHAR(100) NOT NULL DEFAULT '0',
   playerCountEstimate VARCHAR(100) NOT NULL DEFAULT '0',
-  vaccinatedCount     INT NOT NULL DEFAULT 0,
   dayPreference       VARCHAR(100) NOT NULL DEFAULT '',
   referralSource      VARCHAR(50) NOT NULL DEFAULT '',
   referralOther       VARCHAR(255) NOT NULL DEFAULT '',
