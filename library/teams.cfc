@@ -58,6 +58,161 @@
  		<cfreturn 'Success'>
  </cffunction> 
 
+  <cffunction name="searchDuplicateCaptains" returntype="any" access="remote" returnformat="json"
+	hint="Find existing players matching a pending team's captain by exact name or phone, for duplicate-detection at approval time">
+	<cfargument name="firstName" default="" required="yes" type="string">
+	<cfargument name="lastName" default="" required="yes" type="string">
+	<cfargument name="phone" default="" required="yes" type="string">
+
+		<cfquery name="matches" datasource="roundleague">
+			SELECT p.PlayerID, p.firstName, p.lastName, p.Email, p.Phone, p.Status, p.Team,
+			       IFNULL(d.DivisionName, 'N/A') AS DivisionName
+			FROM players p
+			LEFT JOIN divisions d ON d.DivisionID = p.DivisionID
+			WHERE p.mergedIntoPlayerID IS NULL
+			AND (
+				(
+					LOWER(TRIM(p.firstName)) = LOWER(TRIM(<cfqueryparam cfsqltype="CF_SQL_VARCHAR" value="#firstName#">))
+					AND LOWER(TRIM(p.lastName)) = LOWER(TRIM(<cfqueryparam cfsqltype="CF_SQL_VARCHAR" value="#lastName#">))
+				)
+				OR p.Phone = <cfqueryparam cfsqltype="CF_SQL_VARCHAR" value="#phone#">
+			)
+			ORDER BY p.PlayerID DESC
+		</cfquery>
+
+		<cfset results = []>
+		<cfloop query="matches">
+			<cfset arrayAppend(results, {
+				"PlayerID": matches.PlayerID,
+				"firstName": matches.firstName,
+				"lastName": matches.lastName,
+				"Email": matches.Email,
+				"Phone": matches.Phone,
+				"Status": matches.Status,
+				"Team": matches.Team,
+				"DivisionName": matches.DivisionName
+			})>
+		</cfloop>
+
+		<cfreturn results>
+ </cffunction>
+
+  <cffunction name="approvePendingTeam" returntype="any" access="remote" returnformat="json"
+	hint="Approve a pending team registration: create or link the captain as a player, create the team, and remove the pending record">
+	<cfargument name="pendingTeamID" default="" required="yes" type="numeric">
+	<cfargument name="divisionID" default="" required="yes" type="numeric">
+	<cfargument name="seasonID" default="" required="yes" type="numeric">
+	<cfargument name="linkPlayerID" default="0" required="no" type="numeric">
+
+		<cftry>
+			<cftransaction>
+
+				<cfquery name="getPending" datasource="roundleague">
+					SELECT * FROM pending_teams
+					WHERE pending_teamsID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#pendingTeamID#">
+				</cfquery>
+
+				<cfif getPending.recordCount EQ 0>
+					<cfreturn "Pending team not found.">
+				</cfif>
+
+				<cfif linkPlayerID GT 0>
+					<!--- Link to an existing player instead of creating a new one.
+					      Players must re-register each season per the site's own
+					      "returning player" notice, so refreshing these fields is
+					      expected rather than a data-loss risk. --->
+					<cfquery name="updateExistingCaptain" datasource="roundleague">
+						UPDATE players
+						SET Phone = <cfqueryparam cfsqltype="cf_sql_varchar" value="#getPending.phoneNumber#">,
+						    Status = 'Active',
+						    DivisionID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#divisionID#">
+						WHERE PlayerID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#linkPlayerID#">
+					</cfquery>
+					<cfset newPlayerID = linkPlayerID>
+				<cfelse>
+					<!--- Auto-create the captain as a player. BirthDate is NOT NULL with no
+					      real value collected on the registration form (only a team-wide
+					      over-18 yes/no), so a sentinel placeholder date is used. --->
+					<cfquery name="addCaptainPlayer" datasource="roundleague" result="playerInsertResult">
+						INSERT INTO players
+						(RegisterDate, Email, firstName, lastName, BirthDate, Phone,
+						 HighestLevel, FreeAgent, position, height, weight, hometown,
+						 School, PermissionToShare, Status, PhotoURL, Instagram,
+						 DivisionID, Team, MastersLeague, is_youth)
+						VALUES
+						(
+							<cfqueryparam cfsqltype="cf_sql_date" value="#DateFormat(now(), 'mm/dd/yyyy')#">,
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="">,
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="#getPending.captainFirstName#">,
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="#getPending.captainLastName#">,
+							<cfqueryparam cfsqltype="cf_sql_date" value="1900-01-01">,
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="#getPending.phoneNumber#">,
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="#getPending.highestLevel#">,
+							'No',
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="">,
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="">,
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="">,
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="">,
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="">,
+							'No',
+							'Active',
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="">,
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="">,
+							<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#divisionID#">,
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="#getPending.teamName#">,
+							'No',
+							0
+						)
+					</cfquery>
+					<cfset newPlayerID = playerInsertResult.GENERATEDKEY>
+				</cfif>
+
+				<cfquery name="addTeam" datasource="roundleague">
+					INSERT INTO Teams (Status, teamName, CaptainPlayerID, RegisterDate, DivisionID, SeasonID)
+					VALUES
+					(
+						<cfqueryparam cfsqltype="cf_sql_varchar" value="Active">,
+						<cfqueryparam cfsqltype="cf_sql_varchar" value="#getPending.teamName#">,
+						<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#newPlayerID#">,
+						<cfqueryparam cfsqltype="cf_sql_date" value="#DateFormat(now(), 'mm/dd/yyyy')#">,
+						<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#divisionID#">,
+						<cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#seasonID#">
+					)
+				</cfquery>
+
+				<cfquery name="deletePending" datasource="roundleague">
+					DELETE FROM pending_teams
+					WHERE pending_teamsID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#pendingTeamID#">
+				</cfquery>
+
+			</cftransaction>
+
+			<cfcatch>
+				<cfreturn cfcatch.message>
+			</cfcatch>
+		</cftry>
+
+		<cfreturn 'Success'>
+ </cffunction>
+
+ <cffunction name="rejectPendingTeam" returntype="any" access="remote" returnformat="json"
+	hint="Delete a pending team registration">
+	<cfargument name="pendingTeamID" default="" required="yes" type="numeric">
+
+		<cftry>
+			<cfquery name="deletePending" datasource="roundleague">
+				DELETE FROM pending_teams
+				WHERE pending_teamsID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#pendingTeamID#">
+			</cfquery>
+
+			<cfcatch>
+				<cfreturn cfcatch.message>
+			</cfcatch>
+		</cftry>
+
+		<cfreturn 'Success'>
+ </cffunction>
+
   <cffunction name="getTeamNameByTeamID"
 	hint="Get team name by teamID" returntype="string">
 	<cfargument name="teamID" default="" required="yes" type="numeric">

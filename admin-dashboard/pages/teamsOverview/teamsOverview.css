@@ -1,0 +1,21 @@
+#teamsOverviewTabs {
+  margin-bottom: 20px;
+}
+
+#teamsOverviewTabs .nav-link {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+#teamsOverviewTabs .badge {
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+#pendingTeamsTable td {
+  vertical-align: middle;
+}
+
+.approveBtn {
+  margin-right: 5px;
+}
