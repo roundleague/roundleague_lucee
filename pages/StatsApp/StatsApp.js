@@ -980,6 +980,23 @@ document.addEventListener("click", function (e) {
     });
   }
 
+  // Initial sync — socket handles subsequent updates; poll every 10s as fallback
+  // for a late join, a mid-game reload, or a missed socket event (currentScores
+  // otherwise starts at {0,0} and only updates once the opponent scores again).
+  function fetchScore() {
+    fetch(API_BASE + "/schedule/" + cfg.scheduleID)
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) {
+        if (!d) return;
+        if (d.homeScore != null) currentScores.homeScore = d.homeScore;
+        if (d.awayScore != null) currentScores.awayScore = d.awayScore;
+        updatePMDisplay();
+      })
+      .catch(function () {});
+  }
+  fetchScore();
+  setInterval(fetchScore, 10000);
+
   // Mark game as live on page load
   patchScore({ status: "live" });
 

@@ -15,6 +15,25 @@
 
 <cftry>
     <cfif form.action EQ "add" AND len(trim(form.local_play_id)) AND val(form.scheduleID) GT 0>
+        <!--- The client only knows its own team's score for certain (read live from the
+              DOM); the opponent's score depends on a socket push that can be stale or
+              missed entirely (late join, reload, dropped connection). Override whichever
+              side isn't this play's team with the authoritative, synchronously-updated
+              value from the schedule row rather than trusting the client for it. --->
+        <cfset homeScoreToSave = val(form.home_score)>
+        <cfset awayScoreToSave = val(form.away_score)>
+        <cfquery name="getCurrentScore" datasource="roundleague">
+            SELECT HomeTeamID, AwayTeamID, HomeScore, AwayScore
+            FROM schedule
+            WHERE ScheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#val(form.scheduleID)#">
+        </cfquery>
+        <cfif getCurrentScore.recordCount>
+            <cfif val(form.teamID) EQ val(getCurrentScore.HomeTeamID)>
+                <cfset awayScoreToSave = val(getCurrentScore.AwayScore)>
+            <cfelseif val(form.teamID) EQ val(getCurrentScore.AwayTeamID)>
+                <cfset homeScoreToSave = val(getCurrentScore.HomeScore)>
+            </cfif>
+        </cfif>
         <cfquery datasource="roundleague">
             INSERT IGNORE INTO game_plays
                 (scheduleID, playerID, teamID, stat_type, points_scored,
@@ -25,8 +44,8 @@
                 <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#val(form.teamID)#">,
                 <cfqueryparam cfsqltype="CF_SQL_VARCHAR" value="#left(trim(form.stat_type), 20)#">,
                 <cfqueryparam cfsqltype="CF_SQL_TINYINT" value="#val(form.points_scored)#">,
-                <cfqueryparam cfsqltype="CF_SQL_SMALLINT" value="#val(form.home_score)#">,
-                <cfqueryparam cfsqltype="CF_SQL_SMALLINT" value="#val(form.away_score)#">,
+                <cfqueryparam cfsqltype="CF_SQL_SMALLINT" value="#homeScoreToSave#">,
+                <cfqueryparam cfsqltype="CF_SQL_SMALLINT" value="#awayScoreToSave#">,
                 <cfqueryparam cfsqltype="CF_SQL_TINYINT" value="#val(form.period)#">,
                 <cfif len(trim(form.clock_remaining_seconds)) AND isNumeric(form.clock_remaining_seconds)>
                     <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#val(form.clock_remaining_seconds)#">
