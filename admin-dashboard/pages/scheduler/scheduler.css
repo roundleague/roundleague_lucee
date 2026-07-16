@@ -47,3 +47,8 @@
   color: #666;
   font-style: italic;
 }
+
+.editGameBtn {
+  padding: 0;
+  white-space: nowrap;
+}

@@ -99,12 +99,12 @@ Coded by www.creative-tim.com
                   <p>Scoreboard</p>
                 </a>
               </li> --->
-              <!--- <li <cfif findNoCase("scheduler", CGI.REQUEST_URL) AND NOT findNoCase("scheduleImport", CGI.REQUEST_URL)>class="active"</cfif>>
+              <li <cfif findNoCase("scheduler", CGI.REQUEST_URL) AND NOT findNoCase("scheduleImport", CGI.REQUEST_URL)>class="active"</cfif>>
                 <a href="/admin-dashboard/pages/scheduler/scheduler.cfm">
                   <i class="nc-icon nc-laptop"></i>
-                  <p>Scheduler</p>
+                  <p>Edit Schedule</p>
                 </a>
-              </li> --->
+              </li>
               <li <cfif findNoCase("scheduleImport", CGI.REQUEST_URL)>class="active"</cfif>>
                 <a href="/admin-dashboard/pages/scheduler/scheduleImport.cfm">
                   <i class="nc-icon nc-cloud-upload-94"></i>
