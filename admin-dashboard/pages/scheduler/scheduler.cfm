@@ -31,39 +31,54 @@
   ORDER BY WEEK, date, startTime
 </cfquery>
 
-<!--- Active teams in this division, plus any team already referenced by this division's
-      schedule (even if Inactive/stale) so editing an existing row never loses its current team --->
-<cfquery name="getTeamsInDivision" datasource="roundleague">
-  SELECT DISTINCT teamID, teamName FROM (
-    SELECT teamID, teamName
-    FROM teams
-    WHERE seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
-    AND divisionID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.divisionID#">
-    AND status = 'Active'
+<!--- All active teams this season across every division, plus any team already referenced by this
+      division's schedule (even if Inactive/stale) so editing an existing row never loses its current
+      team. Grouped by division so the edit modal can offer non-conference opponents. --->
+<cfquery name="getAllTeams" datasource="roundleague">
+  SELECT DISTINCT teamID, teamName, divisionID, divisionName FROM (
+    SELECT t.teamID, t.teamName, d.DivisionID AS divisionID, d.DivisionName AS divisionName
+    FROM teams t
+    JOIN Divisions d ON d.DivisionID = t.divisionID
+    WHERE t.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+    AND t.status = 'Active'
 
     UNION
 
-    SELECT t.teamID, t.teamName
+    SELECT t.teamID, t.teamName, d.DivisionID AS divisionID, d.DivisionName AS divisionName
     FROM teams t
     JOIN schedule s ON (s.homeTeamID = t.teamID OR s.awayTeamID = t.teamID)
+    JOIN Divisions d ON d.DivisionID = t.divisionID
     WHERE s.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
     AND s.divisionID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.divisionID#">
   ) combinedTeams
-  ORDER BY teamName
+  ORDER BY divisionID, teamName
+</cfquery>
+
+<!--- Season-wide (all divisions) upcoming schedule, used client-side to detect a team already
+      booked elsewhere that week -- now that non-conference games are possible, that booking
+      may live in a different division than the one currently being viewed. --->
+<cfquery name="getSeasonSchedule" datasource="roundleague">
+  SELECT scheduleID, WEEK, a.teamName AS Home, b.teamName AS Away, s.startTime, s.date, s.homeTeamID, s.awayTeamID
+  FROM schedule s
+  LEFT JOIN teams as a ON s.hometeamID = a.teamID
+  LEFT JOIN teams as b ON s.awayTeamID = b.teamID
+  WHERE s.seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+  AND s.date >= <cfqueryparam cfsqltype="CF_SQL_DATE" value="#createDate(year(now()), month(now()), day(now()))#">
+  ORDER BY WEEK, date, startTime
 </cfquery>
 
 <cfset scheduleDataForJS = []>
-<cfloop query="getSchedule">
-  <cfset timeLbl = (len(DateTimeFormat(getSchedule.startTime, "h:nn tt")) GT 0) ? DateTimeFormat(getSchedule.startTime, "h:nn tt") : "BYE">
-  <cfset awayLbl = (timeLbl EQ "BYE") ? "BYE" : getSchedule.Away>
+<cfloop query="getSeasonSchedule">
+  <cfset timeLbl = (len(DateTimeFormat(getSeasonSchedule.startTime, "h:nn tt")) GT 0) ? DateTimeFormat(getSeasonSchedule.startTime, "h:nn tt") : "BYE">
+  <cfset awayLbl = (timeLbl EQ "BYE") ? "BYE" : getSeasonSchedule.Away>
   <cfset arrayAppend(scheduleDataForJS, {
-    "scheduleID": getSchedule.scheduleID,
-    "week": getSchedule.week,
-    "homeTeamID": getSchedule.homeTeamID,
-    "homeName": getSchedule.Home,
-    "awayTeamID": getSchedule.awayTeamID,
+    "scheduleID": getSeasonSchedule.scheduleID,
+    "week": getSeasonSchedule.week,
+    "homeTeamID": getSeasonSchedule.homeTeamID,
+    "homeName": getSeasonSchedule.Home,
+    "awayTeamID": getSeasonSchedule.awayTeamID,
     "awayName": awayLbl,
-    "dateLabel": DateFormat(getSchedule.date, "mm/dd"),
+    "dateLabel": DateFormat(getSeasonSchedule.date, "mm/dd"),
     "timeLabel": timeLbl
   })>
 </cfloop>
@@ -198,17 +213,39 @@
           <div class="form-group">
             <label for="editHomeTeamID">Home Team</label>
             <select name="editHomeTeamID" id="editHomeTeamID" class="form-control">
-              <cfloop query="getTeamsInDivision">
-                <option value="#getTeamsInDivision.teamID#">#getTeamsInDivision.teamName#</option>
+              <cfset lastDivisionID = "">
+              <cfloop query="getAllTeams">
+                <cfif getAllTeams.divisionID NEQ lastDivisionID>
+                  <cfif lastDivisionID NEQ "">
+                    </optgroup>
+                  </cfif>
+                  <optgroup label="#getAllTeams.divisionName#">
+                  <cfset lastDivisionID = getAllTeams.divisionID>
+                </cfif>
+                <option value="#getAllTeams.teamID#">#getAllTeams.teamName#</option>
               </cfloop>
+              <cfif lastDivisionID NEQ "">
+                </optgroup>
+              </cfif>
             </select>
           </div>
           <div class="form-group">
             <label for="editAwayTeamID">Away Team</label>
             <select name="editAwayTeamID" id="editAwayTeamID" class="form-control">
-              <cfloop query="getTeamsInDivision">
-                <option value="#getTeamsInDivision.teamID#">#getTeamsInDivision.teamName#</option>
+              <cfset lastDivisionID = "">
+              <cfloop query="getAllTeams">
+                <cfif getAllTeams.divisionID NEQ lastDivisionID>
+                  <cfif lastDivisionID NEQ "">
+                    </optgroup>
+                  </cfif>
+                  <optgroup label="#getAllTeams.divisionName#">
+                  <cfset lastDivisionID = getAllTeams.divisionID>
+                </cfif>
+                <option value="#getAllTeams.teamID#">#getAllTeams.teamName#</option>
               </cfloop>
+              <cfif lastDivisionID NEQ "">
+                </optgroup>
+              </cfif>
             </select>
           </div>
           <div class="form-group">

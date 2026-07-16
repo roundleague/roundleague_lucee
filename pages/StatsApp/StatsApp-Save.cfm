@@ -164,6 +164,12 @@
                 AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#scoresExist.seasonID#">
             </cfquery>
         <cfelse>
+            <!--- CAUTION: scoresExist.divisionID is this SCHEDULE ROW's division, not necessarily
+                  teamToRecalc's own division (teams.divisionID). Fine as long as every team's
+                  first-ever finalized game of the season is an in-conference game; if a team's
+                  first scored game this season is a non-conference matchup, this stamps the wrong
+                  DivisionID onto their new standings row, and nothing corrects it later since the
+                  UPDATE branch above never touches DivisionID. Revisit if that ever happens. --->
             <cfquery datasource="roundleague">
                 INSERT INTO standings (TeamID, Wins, Losses, SeasonID, DivisionID, PointDifferential)
                 VALUES (
