@@ -1,0 +1,235 @@
+.msg-bulk-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    border-bottom: 1px solid #e9ecef;
+    background: #f8f9fa;
+}
+
+.msg-select-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.875rem;
+    color: #6c757d;
+    cursor: pointer;
+    margin: 0;
+    white-space: nowrap;
+}
+
+.msg-select-label input[type="checkbox"] {
+    margin: 0;
+    cursor: pointer;
+}
+
+.msg-list {
+    border-top: 1px solid #e9ecef;
+}
+
+.msg-row {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: background 0.1s ease;
+    gap: 12px;
+}
+
+.msg-row:hover {
+    background: #f8f9fa;
+}
+
+.msg-row.msg-unread {
+    background: #fff;
+}
+
+.msg-row.msg-unread .msg-sender {
+    font-weight: 700;
+}
+
+.msg-row.msg-unread .msg-preview {
+    color: #333;
+    font-weight: 500;
+}
+
+.msg-check {
+    flex: 0 0 20px;
+}
+
+.msg-checkbox {
+    cursor: pointer;
+}
+
+.msg-status {
+    flex: 0 0 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.msg-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ef8157;
+    display: inline-block;
+}
+
+.msg-sender {
+    flex: 0 0 200px;
+    font-size: 0.875rem;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    overflow: hidden;
+}
+
+.msg-email {
+    font-size: 0.75rem;
+    color: #888;
+    font-weight: 400;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.msg-preview {
+    flex: 1;
+    font-size: 0.875rem;
+    color: #777;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.msg-meta {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.8rem;
+    color: #aaa;
+    white-space: nowrap;
+}
+
+.msg-date {
+    font-size: 0.8rem;
+    color: #aaa;
+}
+
+.msg-jira-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #0052cc;
+    color: #fff !important;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-decoration: none !important;
+}
+
+.msg-jira-badge:hover {
+    background: #0041a8;
+    color: #fff !important;
+}
+
+.msg-jira-badge i {
+    font-size: 0.7rem;
+}
+
+.msg-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+    color: #ccc;
+}
+
+.msg-empty i {
+    font-size: 3rem;
+    margin-bottom: 16px;
+}
+
+.msg-empty p {
+    font-size: 1rem;
+    margin: 0;
+}
+
+.msg-modal-body {
+    white-space: pre-wrap;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: #333;
+    min-height: 80px;
+}
+
+.msg-modal-date {
+    font-size: 0.85rem;
+    color: #aaa;
+    white-space: nowrap;
+}
+
+/* Notification badge on tool cards */
+.tool-card-wrap {
+    position: relative;
+    display: block;
+    text-decoration: none;
+}
+
+.tool-badge {
+    position: absolute;
+    top: -15px;
+    right: -20px;
+    background: #fff;
+    color: #000;
+    border-radius: 999px;
+    min-width: 22px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0 6px;
+    border: 2px solid #000;
+    box-shadow: 0 2px 6px rgba(239,129,87,0.5);
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* Sidebar badge */
+.sidebar-unread-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #ef8157;
+    color: #fff;
+    border-radius: 10px;
+    min-width: 20px;
+    height: 20px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0 5px;
+    margin-left: 6px;
+    line-height: 1;
+}
+
+@media (max-width: 767px) {
+    .msg-sender {
+        flex: 0 0 120px;
+    }
+
+    .msg-email {
+        display: none;
+    }
+
+    .msg-meta .msg-date {
+        display: none;
+    }
+}

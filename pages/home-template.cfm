@@ -63,7 +63,7 @@ LIMIT 5
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="##pk">Gallery</a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="##pk">Contact</a>
+                <a class="dropdown-item" href="/pages/Contact/contact.cfm">Contact</a>
               </ul>
             </div>
         </ul>
