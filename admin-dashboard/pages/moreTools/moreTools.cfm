@@ -1,6 +1,16 @@
+<cftry>
+    <cfquery name="msgUnread" datasource="roundleague">
+        SELECT COUNT(*) AS cnt FROM contact_messages WHERE isRead = 0
+    </cfquery>
+    <cfcatch type="any">
+        <cfset msgUnread = { cnt: 0 }>
+    </cfcatch>
+</cftry>
+
 <cfinclude template="/admin-dashboard/admin_header.cfm">
 
 <link href="/admin-dashboard/pages/moreTools/moreTools.css?v=1.1" rel="stylesheet">
+<link href="/admin-dashboard/pages/messages/messages.css?v=1.0" rel="stylesheet">
 
 <!-- End Navbar -->
 <div class="content">
@@ -53,7 +63,18 @@
                             <p>League Rules</p>
                         </a>
 
-                        <div class="tool-card empty"></div>
+                        <cfoutput>
+                        <a href="/admin-dashboard/pages/messages/messages.cfm" class="tool-card">
+                            <span style="position:relative; display:inline-block;">
+                                <i class="nc-icon nc-email-85"></i>
+                                <cfif msgUnread.cnt GT 0>
+                                    <span class="tool-badge">#msgUnread.cnt#</span>
+                                </cfif>
+                            </span>
+                            <p>Messages</p>
+                        </a>
+                        </cfoutput>
+
                         <div class="tool-card empty"></div>
                         <div class="tool-card empty"></div>
                         <div class="tool-card empty"></div>

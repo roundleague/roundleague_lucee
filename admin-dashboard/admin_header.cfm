@@ -16,6 +16,15 @@ Coded by www.creative-tim.com
 <html lang="en">
 
 <!--- Session / Application Variables --->
+<cftry>
+    <cfquery name="sidebarUnread" datasource="roundleague">
+        SELECT COUNT(*) AS cnt FROM contact_messages WHERE isRead = 0
+    </cfquery>
+    <cfcatch type="any">
+        <cfset sidebarUnread = { cnt: 0 }>
+    </cfcatch>
+</cftry>
+
 <cfquery name="currentSeason" datasource="roundleague">
   SELECT SeasonID
   FROM Seasons
@@ -71,6 +80,7 @@ Coded by www.creative-tim.com
   <!-- CSS Just for demo purpose, don't include it in your project -->
   <link href="/admin-dashboard/assets/demo/demo.css" rel="stylesheet" />
   <link href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css" rel="stylesheet">
+  <link href="/admin-dashboard/pages/messages/messages.css?v=1.0" rel="stylesheet">
 </head>
 
 <body class="">
@@ -175,6 +185,19 @@ Coded by www.creative-tim.com
                 <a href="/admin-dashboard/pages/moreTools/moreTools.cfm">
                   <i class="nc-icon nc-grid-45"></i>
                   <p>More Tools</p>
+                </a>
+              </li>
+              <li <cfif findNoCase("messages", CGI.REQUEST_URL)>class="active"</cfif>>
+                <a href="/admin-dashboard/pages/messages/messages.cfm">
+                  <i class="nc-icon nc-email-85"></i>
+                  <p>
+                    Messages
+                    <cfoutput>
+                    <cfif sidebarUnread.cnt GT 0>
+                      <span class="sidebar-unread-badge">#sidebarUnread.cnt#</span>
+                    </cfif>
+                    </cfoutput>
+                  </p>
                 </a>
               </li>
               <!--- <li <cfif findNoCase("ideas", CGI.REQUEST_URL)>class="active"</cfif>>
