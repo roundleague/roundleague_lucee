@@ -123,6 +123,9 @@
 </style>
 
 <div class="content scr-page">
+    <a href="/admin-dashboard/pages/moreTools/moreTools.cfm" class="btn btn-default btn-sm" style="margin-bottom:14px;margin-left:2px;">
+        <i class="nc-icon nc-minimal-left"></i> Back to More Tools
+    </a>
   <h3 class="description">Stat Correction Requests</h3>
 
   <cfif isDefined("url.msg") AND len(trim(url.msg))>

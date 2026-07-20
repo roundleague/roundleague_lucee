@@ -19,6 +19,9 @@
 </script>
 
 <div class="content">
+    <a href="/admin-dashboard/pages/moreTools/moreTools.cfm" class="btn btn-default btn-sm" style="margin-bottom:14px;margin-left:2px;">
+        <i class="nc-icon nc-minimal-left"></i> Back to More Tools
+    </a>
 
   <!--- Upload Card --->
   <div class="row">
