@@ -250,12 +250,13 @@
   // Audio buzzer
   var sounds = {
     sub:  new Audio('/assets/sounds/subhorn.MP3'),
-    long: new Audio('/assets/sounds/gamebuzzer.MP3')
+    long: new Audio('/assets/sounds/gamebuzzer.MP3'),
+    countdown: new Audio('/assets/sounds/shot_clock_countdown_beep.mp3')
   };
 
   function playBuzzer(type) {
     try {
-      var audio = type === 'sub' ? sounds.sub : sounds.long;
+      var audio = type === 'sub' ? sounds.sub : type === 'countdown' ? sounds.countdown : sounds.long;
       audio.currentTime = 0;
       audio.play();
     } catch (e) {}
@@ -296,6 +297,8 @@
         if (shotRemaining === 0 && !shotBuzzed) {
           shotBuzzed = true;
           playBuzzer('long');
+        } else if (shotRemaining > 0 && shotRemaining <= 10) {
+          playBuzzer('countdown');
         }
       }
     }, 1000);
