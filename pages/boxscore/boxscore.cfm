@@ -370,7 +370,7 @@
                             <td class="pbp-team">#teamName#</td>
                             <td class="pbp-player">#firstName# #lastName#</td>
                             <td><span class="pbp-badge #badgeClass#">#badgeText#</span></td>
-                            <td class="pbp-clock" style="text-align:right;"><cfif NOT isNull(clock_remaining_seconds)>#numberFormat(int(clock_remaining_seconds/60),'00')#:#numberFormat(clock_remaining_seconds mod 60,'00')#<cfelse>&mdash;</cfif></td>
+                            <td class="pbp-clock" style="text-align:right;"><cfif len(clock_remaining_seconds)>#numberFormat(int(clock_remaining_seconds/60),'00')#:#numberFormat(clock_remaining_seconds mod 60,'00')#<cfelse>&mdash;</cfif></td>
                             <td class="pbp-score">#home_score# &ndash; #away_score#</td>
                         </tr>
                     </cfloop>
