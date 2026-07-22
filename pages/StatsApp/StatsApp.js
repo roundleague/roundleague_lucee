@@ -172,19 +172,16 @@ $(document).ready(function () {
     if ($(addNode).hasClass("FGM")) {
       addToValue("FGA", 1, playerID);
       addToValue("PTS", 2, playerID);
-      notifyBasketScored(playerID);
     } else if ($(addNode).hasClass("3FGM")) {
       addToValue("FGM", 1, playerID);
       addToValue("FGA", 1, playerID);
       addToValue("3FGA", 1, playerID);
       addToValue("PTS", 3, playerID);
-      notifyBasketScored(playerID);
     } else if ($(addNode).hasClass("3FGA")) {
       addToValue("FGA", 1, playerID);
     } else if ($(addNode).hasClass("FTM")) {
       addToValue("PTS", 1, playerID);
       addToValue("FTA", 1, playerID);
-      notifyBasketScored(playerID);
     }
 
     if (category === "FGM" || category === "3FGM" || category === "REBS" || category === "TO") {
@@ -221,19 +218,16 @@ $(document).ready(function () {
     if ($(this).hasClass("FGM")) {
       addToValue("FGA", 1, playerID);
       addToValue("PTS", 2, playerID);
-      notifyBasketScored(playerID);
     } else if ($(this).hasClass("3FGM")) {
       addToValue("FGM", 1, playerID);
       addToValue("FGA", 1, playerID);
       addToValue("3FGA", 1, playerID);
       addToValue("PTS", 3, playerID);
-      notifyBasketScored(playerID);
     } else if ($(this).hasClass("3FGA")) {
       addToValue("FGA", 1, playerID);
     } else if ($(this).hasClass("FTM")) {
       addToValue("PTS", 1, playerID);
       addToValue("FTA", 1, playerID);
-      notifyBasketScored(playerID);
     } else if ($(this).hasClass("FOULS")) {
       var currentHalf = getCurrentHalf();
       var currentNum = parseFloat($(".Fouls_Half_" + currentHalf).html());
@@ -293,26 +287,6 @@ $(document).ready(function () {
       }
     }
   });
-
-  // Fires only from a confirmed made-basket click (FGM/3FGM/FTM), never from
-  // addToValue's generic PTS handling — that also runs for the .button-error
-  // undo/decrement path, which must NOT trigger the overlay's scoring flash.
-  // Broadcast-only call: no DB write happens here (score + box score are
-  // already persisted via patchScore/persistPlay), it just tells the
-  // overlay who scored and their new game total.
-  function notifyBasketScored(playerID) {
-    if (!window.LIVE_SCORE_CONFIG) return;
-    var cfg = window.LIVE_SCORE_CONFIG;
-    var row = $("#" + playerID);
-    var playerName = row.find(".playerName").text().trim();
-    var jersey = row.find(".jerseyNumber").val();
-    var gamePoints = parseInt(row.find("#PTS").val(), 10) || 0;
-    fetch(cfg.apiBase + '/api/schedule/' + cfg.scheduleID + '/basket-scored', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-admin-key': cfg.adminKey },
-      body: JSON.stringify({ playerName: playerName, jersey: jersey, points: gamePoints })
-    }).catch(function() {});
-  }
 
   function patchFouls(half) {
     if (!window.LIVE_SCORE_CONFIG) return;
