@@ -1,6 +1,7 @@
 $( document ).ready(function() {
 	$('.bootstrap-switch-handle-on').text('Yes');
 	$('.bootstrap-switch-handle-off').text('No');
+	$('.bootstrap-switch-label').html('<i class="fa-solid fa-basketball slider-basketball-icon"></i>');
 
 	function updateSubmitState() {
 		var waiverCount = $('.waiverCheck:checked').length;

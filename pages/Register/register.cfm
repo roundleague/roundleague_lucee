@@ -2,7 +2,7 @@
 
 <!--- Page Specific CSS/JS Here --->
 <link href="https://demos.creative-tim.com/paper-kit-2-pro/assets/css/paper-kit.min.css?v=2.3.1" rel="stylesheet">
-<link href="../Register/register.css?v=1.2" rel="stylesheet">
+<link href="../Register/register.css?v=1.3" rel="stylesheet">
 
 <cfoutput>
 
@@ -31,7 +31,7 @@
 </cfif>
 
 
-<div class="main" style="background-color: white;">
+<div class="main player-reg-wrapper">
     <div class="section text-center">
       <div class="container">
 
@@ -45,7 +45,7 @@
                     </button>
                     <h5 class="modal-title text-center" id="exampleModalLabel">ATHLETIC WAIVER AND RELEASE OF LIABILITY</h5>
                   </div>
-                  <div class="modal-body"> 
+                  <div class="modal-body">
 
                   	<p><b>READ BEFORE SIGNING</b></p>
 
@@ -78,7 +78,7 @@ I, for myself and on behalf of my heirs, assigns, personal representatives and n
                     </button>
                     <h5 class="modal-title text-center" id="exampleModalLabel">PHOTO/VIDEO CONSENT FORM</h5>
                   </div>
-                  <div class="modal-body"> 
+                  <div class="modal-body">
 
                   	<p><b>READ BEFORE SIGNING</b></p>
 
@@ -104,242 +104,234 @@ I, for myself and on behalf of my heirs, assigns, personal representatives and n
 					</div>
 		      </div>
 
-
-
 		      <div class="container">
 		        <div class="row">
-		          <div class="col-md-6 ml-auto mr-auto">
+		          <div class="col-lg-10 ml-auto mr-auto">
+		            <div class="player-reg-header">
+		              <h3 class="description">Register as a Player</h3>
+		              <p>Fill out the form below to create your player profile for the season</p>
+		            </div>
 		            <form class="settings-form" method="POST">
 
-	                  <div class="form-group">
-	                    <label class="teamSelect">Select Season</label><br>
-						<select class="seasonSelect" name="seasonSelect" style="padding: 7px;">
-						  <option value=""></option>
-						  <option value="#getCurrentSeason.seasonID#">#getCurrentSeason.seasonName#</option>
-						</select>
-	                  </div>
-	                  <div class="form-group">
-	                    <label>Gender</label><br>
-						<select class="gender" name="gender" style="padding: 7px;">
-						  <option value=""></option>
-						  <option value="Male">Male</option>
-						  <option value="Female">Female</option>
-						</select>
-	                  </div>
-		              <div class="form-group">
-		                <label>Email</label>
-		                <input type="email" required class="form-control border-input" placeholder="Email" name="email">
-		              </div>
-		              <div class="form-group">
-		                <label>Password</label>
-		                <input type="password" required class="form-control border-input" placeholder="Password" name="password">
-		              </div>
-		              <div class="row">
-		                <div class="col-md-6 col-sm-6">
-		                  <div class="form-group">
-		                    <label>First Name</label>
-		                    <input type="text" required class="form-control border-input" placeholder="First Name" name="firstName">
-		                  </div>
+		              <div class="questions-grid">
+		                <div class="question-card full-width">
+		                  <label class="teamSelect">Select Season</label>
+		                  <select class="seasonSelect" name="seasonSelect">
+		                    <option value=""></option>
+		                    <option value="#getCurrentSeason.seasonID#">#getCurrentSeason.seasonName#</option>
+		                  </select>
 		                </div>
-		                <div class="col-md-6 col-sm-6">
-		                  <div class="form-group">
-		                    <label>Last Name</label>
-		                    <input type="text" required class="form-control border-input" placeholder="Last Name" name="lastName">
-		                  </div>
+
+		                <div class="question-card full-width">
+		                  <label>Gender</label>
+		                  <select class="gender" name="gender">
+		                    <option value=""></option>
+		                    <option value="Male">Male</option>
+		                    <option value="Female">Female</option>
+		                  </select>
 		                </div>
 		              </div>
-		              <div class="row">
-		                <div class="col-md-6 col-sm-6">
-		                  <div class="form-group">
-		                    <label>Birth Date</label>
-		                    <input type="date" required class="form-control border-input" placeholder="Birth Date" name="birthDate">
+
+		              <div class="row field-split">
+		                <div class="col-md-6">
+		                  <div class="field-column">
+		                    <div class="question-card">
+		                      <label>Email</label>
+		                      <input type="email" required class="form-control border-input" placeholder="Email" name="email">
+		                    </div>
+		                    <div class="question-card">
+		                      <label>Password</label>
+		                      <input type="password" required class="form-control border-input" placeholder="Password" name="password">
+		                    </div>
+		                    <div class="question-card">
+		                      <label>First Name</label>
+		                      <input type="text" required class="form-control border-input" placeholder="First Name" name="firstName">
+		                    </div>
+		                    <div class="question-card">
+		                      <label>Last Name</label>
+		                      <input type="text" required class="form-control border-input" placeholder="Last Name" name="lastName">
+		                    </div>
+		                    <div class="question-card">
+		                      <label>Birth Date</label>
+		                      <input type="date" required class="form-control border-input" placeholder="Birth Date" name="birthDate">
+		                    </div>
+		                    <div class="question-card">
+		                      <label>Phone Number</label>
+		                      <input type="tel" required id="phoneField" class="form-control border-input" name="phone" placeholder="123-45-678">
+		                    </div>
 		                  </div>
 		                </div>
-		                <div class="col-md-6 col-sm-6">
-		                  <div class="form-group">
-		                    <label>Phone Number</label>
-		                    <input type="tel" required id="phoneField" class="form-control border-input" name="phone" placeholder="123-45-678" required>
-		                  </div>
-		                </div>
-		              </div>
-		              <div class="row">
-		                <div class="col-md-6 ml-auto mr-auto nonTextQuestions">
-		                  <div class="form-group">
-		                    <label>Zip Code</label>
-		                    <input type="text" required class="form-control border-input" placeholder="Zip Code" name="zipCode" maxlength="5">
-		                  </div>
-		                </div>
-		              </div>
-		              <div class="row">
-		                <div class="col-md-6 ml-auto mr-auto nonTextQuestions">
-		                  <div class="form-group">
-		                    <label>Instagram Handle (No @ Needed)</label>
-		                    <input type="text" class="form-control border-input" placeholder="IG Handle" name="instagram">
-		                  </div>
-		                </div>
-		              </div>
-		              <div class="row">
-		                <div class="col-md-6 ml-auto mr-auto nonTextQuestions">
-		                  <div class="form-group">
-		                    <label>Confirmed Jersey Number (Only fill out if you currently have an existing jersey)</label>
-		                    <input type="number" class="form-control border-input" name="currentJersey">
-		                  </div>
-		                </div>
-		              </div>
-		              <div class="row">
-			              <div class="col-md-6 ml-auto mr-auto nonTextQuestions">
-			                  <div class="form-group">
-			                    <label class="teamSelect">Select Team (Will be verified by Team Captain)</label><br>
-								<select class="teamID" name="teamID" style="padding: 7px;">
-								  <option value=""></option>
-								  <cfloop query="getTeams">
-								  	<option value="#getTeams.TeamID#">#getTeams.TeamName#</option>
-								  </cfloop>
-								  <option value="0">I am signing up as a free agent</option>
-								</select>
-								<!--- <br>
-								<b>If you have a team but do not see it here, please register at a later time once your team has been added.</b> --->
-			                  </div>
-			               </div>
-		              </div>
-		              <div class="row">
-			              <div class="col-md-6 ml-auto mr-auto nonTextQuestions">
-			              		<label class="biggerLabel">Basketball Experience</label>
-			              		<cfloop list="#basketballExp#" index="i" item="x">
-						            <div class="form-check-radio">
-						              <label class="form-check-label">
-						                <input class="form-check-input" type="radio" name="highestLevel" value="#x#"> #x#
-						                <span class="form-check-sign"></span>
-						              </label>
-						            </div>
-					        	</cfloop>
-		              		</div>
-		              </div>
-		              <div class="row">
-			              <div class="col-md-6 ml-auto mr-auto nonTextQuestions">
-			              		<label class="biggerLabel">Position</label>
-			              		<cfloop list="#bballPosition#" index="i" item="x">
-						            <div class="form-check-radio">
-						              <label class="form-check-label">
-						                <input class="form-check-input" type="radio" name="position" value="#x#"> #x#
-						                <span class="form-check-sign"></span>
-						              </label>
-						            </div>
-					        	</cfloop>
-		              		</div>
-		              </div>
-		              <div class="row">
-			              <div class="col-md-6 ml-auto mr-auto nonTextQuestions">
-			                  <div class="form-group">
-			                    <label>Height</label><br>
-								<select name="height" style="padding: 7px;">
-								  <cfloop list="#heightOptions#" index="i" item="x">
-								  	<option value="#x#">#x#</option>
-								  </cfloop>
-								</select>
-			                  </div>
-			               </div>
-		              </div>
-		              <div class="row">
-		                <div class="col-md-6 col-sm-6">
-		                  <div class="form-group">
-		                    <label>Weight</label>
-		                    <input type="number" class="form-control border-input" placeholder="Weight" name="weight">
-		                  </div>
-		                </div>
-		                <div class="col-md-6 col-sm-6">
-		                  <div class="form-group">
-		                    <label>Hometown</label>
-		                    <input type="text" class="form-control border-input" placeholder="Hometown" name="hometown">
-		                  </div>
-		                </div>
-		              </div>
-		              <div class="row">
-		                <div class="col-md-6 col-sm-6">
-		                  <div class="form-group">
-		                    <label>Last School Attended</label>
-		                    <input type="text" class="form-control border-input" placeholder="Last School Attended" name="school">
-		                  </div>
-		                </div>
-		                <div class="col-md-6 col-sm-6">
-		                  <div class="form-group">
-		                    <label>Current City</label>
-		                    <input type="text" class="form-control border-input" name="currentCity">
+		                <div class="col-md-6">
+		                  <div class="field-column">
+		                    <div class="question-card">
+		                      <label>Height</label>
+		                      <select name="height">
+		                        <cfloop list="#heightOptions#" index="i" item="x">
+		                          <option value="#x#">#x#</option>
+		                        </cfloop>
+		                      </select>
+		                    </div>
+		                    <div class="question-card">
+		                      <label>Weight</label>
+		                      <input type="number" class="form-control border-input" placeholder="Weight" name="weight">
+		                    </div>
+		                    <div class="question-card">
+		                      <label>Hometown</label>
+		                      <input type="text" class="form-control border-input" placeholder="Hometown" name="hometown">
+		                    </div>
+		                    <div class="question-card">
+		                      <label>Last School Attended</label>
+		                      <input type="text" class="form-control border-input" placeholder="Last School Attended" name="school">
+		                    </div>
+		                    <div class="question-card">
+		                      <label>Current City</label>
+		                      <input type="text" class="form-control border-input" name="currentCity">
+		                    </div>
+		                    <div class="question-card">
+		                      <label>Zip Code</label>
+		                      <input type="text" required class="form-control border-input" placeholder="Zip Code" name="zipCode" maxlength="5">
+		                    </div>
 		                  </div>
 		                </div>
 		              </div>
 
-	                  <!--- <div class="form-group">
-						  Are you over 18?
-						 <input class="registerRadio firstRadio" type="radio" name="over18" value="1"> Yes
-						 <input class="registerRadio secondRadio" type="radio" name="over18" value="0"> No
-                	  </div> --->
-		              <!--- <div class="form-group">
-		                <label>Description</label>
-		                <textarea class="form-control textarea-limited" placeholder="This is a textarea limited to 150 characters." rows="3" maxlength="150"></textarea>
-		                <h5><small><span id="textarea-limited-message" class="pull-right">150 characters left</span></small></h5>
+		              <div class="questions-grid">
+
+		                <div class="question-card full-width">
+		                  <label class="biggerLabel">Basketball Experience</label>
+		                  <div class="option-row">
+		                    <cfloop list="#basketballExp#" index="i" item="x">
+		                      <div class="form-check-radio">
+		                        <label class="form-check-label">
+		                          <input class="form-check-input" type="radio" name="highestLevel" value="#x#"> #x#
+		                          <span class="form-check-sign"><i class="fa-solid fa-basketball basketball-icon"></i></span>
+		                        </label>
+		                      </div>
+		                    </cfloop>
+		                  </div>
+		                </div>
+
+		                <div class="question-card full-width">
+		                  <label class="biggerLabel">Position</label>
+		                  <div class="option-row">
+		                    <cfloop list="#bballPosition#" index="i" item="x">
+		                      <div class="form-check-radio">
+		                        <label class="form-check-label">
+		                          <input class="form-check-input" type="radio" name="position" value="#x#"> #x#
+		                          <span class="form-check-sign"><i class="fa-solid fa-basketball basketball-icon"></i></span>
+		                        </label>
+		                      </div>
+		                    </cfloop>
+		                  </div>
+		                </div>
+
+		                <div class="question-card">
+		                  <label>Instagram Handle (No @ Needed)</label>
+		                  <input type="text" class="form-control border-input" placeholder="IG Handle" name="instagram">
+		                </div>
+
+		                <div class="question-card">
+		                  <label>Confirmed Jersey Number (Only fill out if you currently have an existing jersey)</label>
+		                  <input type="number" class="form-control border-input" name="currentJersey">
+		                </div>
+
+		                <div class="question-card full-width">
+		                  <label class="teamSelect">Select Team (Will be verified by Team Captain)</label>
+		                  <select class="teamID" name="teamID">
+		                    <option value=""></option>
+		                    <cfloop query="getTeams">
+		                      <option value="#getTeams.TeamID#">#getTeams.TeamName#</option>
+		                    </cfloop>
+		                    <option value="0">I am signing up as a free agent</option>
+		                  </select>
+		                </div>
+
+		                <div class="question-card">
+		                  <ul class="notifications">
+		                    <li class="notification-item">
+		                      <strong>Are you the captain of this team?</strong>
+		                      <input type="checkbox" name="captainCheck" data-toggle="switch" data-on-color="info" data-off-color="default"><span class="toggle"></span>
+		                    </li>
+		                  </ul>
+		                </div>
+
+		                <div class="question-card">
+		                  <ul class="notifications">
+		                    <li class="notification-item">
+		                      Are you over 18?
+		                      <input type="checkbox" name="over18" data-toggle="switch" checked="" data-on-color="info" data-off-color="default"><span class="toggle"></span>
+		                    </li>
+		                  </ul>
+		                </div>
+
+		                <div class="question-card">
+		                  <ul class="notifications">
+		                    <li class="notification-item">
+		                      Are you a free agent?
+		                      <input type="checkbox" name="freeAgent" data-toggle="switch" checked="" data-on-color="info" data-off-color="default"><span class="toggle"></span>
+		                    </li>
+		                  </ul>
+		                </div>
+
+		                <div class="question-card">
+		                  <ul class="notifications">
+		                    <li class="notification-item">
+		                      Do we have your permission to share above information on our website for Player Profiles?
+		                      <input type="checkbox" name="permissionToShare" data-toggle="switch" checked="" data-on-color="info" data-off-color="default"><span class="toggle"></span>
+		                    </li>
+		                  </ul>
+		                </div>
+
+		                <div class="question-card">
+		                  <ul class="notifications">
+		                    <li class="notification-item">
+		                      Do you wish to play in the Master's League? (Age 40+)
+		                      <input type="checkbox" name="mastersLeague" data-toggle="switch" data-on-color="info" data-off-color="default"><span class="toggle"></span>
+		                    </li>
+		                  </ul>
+		                </div>
+
+		                <div class="question-card full-width">
+		                  <label class="biggerLabel">Waivers &amp; Consent</label>
+		                  <button type="button" class="btn btn-outline-danger btn-round modalBtn" data-toggle="modal" data-target="##waiverModal">
+		                    Athletic Waiver
+		                  </button>
+		                  <button type="button" class="btn btn-outline-danger btn-round modalBtn" data-toggle="modal" data-target="##photoModal">
+		                    Photo/Video Waiver
+		                  </button>
+		                  <ul class="notifications acknowledged">
+		                    <li class="notification-item">
+		                      I have acknowledged, read, and agreed to the terms of the Athletic Waiver.
+		                        <div class="form-check">
+		                          <label class="form-check-label">
+		                            <input class="form-check-input waiverCheck" type="checkbox" value="1" name="athleticWaiver">
+		                            <span class="form-check-sign"></span>
+		                          </label>
+		                        </div>
+		                    </li>
+		                    <li class="notification-item">
+		                      I have acknowledged, read, and agreed to the terms of the Photo/Video Waiver.
+		                        <div class="form-check">
+		                          <label class="form-check-label">
+		                            <input class="form-check-input waiverCheck" type="checkbox" value="1" name="photoWaiver">
+		                            <span class="form-check-sign"></span>
+		                          </label>
+		                        </div>
+		                    </li>
+		                    <li class="notification-item" id="guardianAckItem" style="display:none;">
+		                      I confirm that I am the parent or legal guardian of this player and am registering on their behalf.
+		                        <div class="form-check">
+		                          <label class="form-check-label">
+		                            <input class="form-check-input" type="checkbox" value="1" name="guardianAck" id="guardianAck">
+		                            <span class="form-check-sign"></span>
+		                          </label>
+		                        </div>
+		                    </li>
+		                  </ul>
+		                </div>
+
 		              </div>
-		              <label>Notifications</label> ---> 
-		              <ul class="notifications">
-		                <li class="notification-item">
-		                  <strong>Are you the captain of this team?</strong>
-		                  <input type="checkbox" name="captainCheck" data-toggle="switch" data-on-color="info" data-off-color="info"><span class="toggle"></span>
-		                </li>
-		                <li class="notification-item">
-		                  Are you over 18?
-		                  <input type="checkbox" name="over18" data-toggle="switch" checked="" data-on-color="info" data-off-color="info"><span class="toggle"></span>
-		                </li>
-		                <li class="notification-item">
-		                  Are you a free agent?
-		                  <input type="checkbox" name="freeAgent" data-toggle="switch" checked="" data-on-color="info" data-off-color="info"><span class="toggle"></span>
-		                </li>
-		                <li class="notification-item">
-		                  Do we have your permission to share above information on our website for Player Profiles?
-		                  <input type="checkbox" name="permissionToShare" data-toggle="switch" checked="" data-on-color="info" data-off-color="info"><span class="toggle"></span>
-		                </li>
-		                <li class="notification-item">
-		                  Do you wish to play in the Master's League? (Age 40+)
-		                  <input type="checkbox" name="mastersLeague" data-toggle="switch" data-on-color="info" data-off-color="info"><span class="toggle"></span>
-		                </li>
-		                <li class="notification-item">
-		                	<!--- Divider --->
-		                </li>
-		              </ul>
-		            <button type="button" class="btn btn-outline-danger btn-round modalBtn" data-toggle="modal" data-target="##waiverModal">
-		              Athletic Waiver
-		            </button>
-		            <button type="button" class="btn btn-outline-danger btn-round modalBtn" data-toggle="modal" data-target="##photoModal">
-		              Photo/Video Waiver
-		            </button>
-		              <ul class="notifications acknowledged">
-		                <li class="notification-item">
-		                  I have acknowledged, read, and agreed to the terms of the Athletic Waiver.
-				            <div class="form-check">
-				              <label class="form-check-label">
-				                <input class="form-check-input waiverCheck" type="checkbox" value="1" name="athleticWaiver">
-				                <span class="form-check-sign"></span>
-				              </label>
-				            </div>
-		                </li>
-		                <li class="notification-item">
-		                  I have acknowledged, read, and agreed to the terms of the Photo/Video Waiver.
-				            <div class="form-check">
-				              <label class="form-check-label">
-				                <input class="form-check-input waiverCheck" type="checkbox" value="1" name="photoWaiver">
-				                <span class="form-check-sign"></span>
-				              </label>
-				            </div>
-		                </li>
-		                <li class="notification-item" id="guardianAckItem" style="display:none;">
-		                  I confirm that I am the parent or legal guardian of this player and am registering on their behalf.
-				            <div class="form-check">
-				              <label class="form-check-label">
-				                <input class="form-check-input" type="checkbox" value="1" name="guardianAck" id="guardianAck">
-				                <span class="form-check-sign"></span>
-				              </label>
-				            </div>
-		                </li>
-		              </ul>
+
 		              <div class="text-center errorDiv">
 		                <span class="errorMessage"></span>
 		              </div>
@@ -353,10 +345,10 @@ I, for myself and on behalf of my heirs, assigns, personal representatives and n
 		    </div>
 		  </div>
 
-		      </div>
-		    </div>
 		</div>
+	    </div>
+	</div>
 </cfoutput>
 
 <cfinclude template="/footer.cfm">
-<script src="../Register/register.js?v=1.2"></script>
+<script src="../Register/register.js?v=1.3"></script>
