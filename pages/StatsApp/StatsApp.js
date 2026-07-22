@@ -187,7 +187,7 @@ $(document).ready(function () {
       notifyBasketScored(playerID);
     }
 
-    if (category === "FGM" || category === "3FGM" || category === "REBS" || category === "TO") {
+    if (category === "FGM" || category === "3FGM" || category === "FGA" || category === "3FGA" || category === "REBS" || category === "STLS" || category === "TO") {
       if (window.shotClockControl) window.shotClockControl.resetTo30AndStart();
     }
 
@@ -242,7 +242,7 @@ $(document).ready(function () {
       patchFouls(currentHalf);
     }
 
-    if (logStat === "FGM" || logStat === "3FGM" || logStat === "REBS" || logStat === "TO") {
+    if (logStat === "FGM" || logStat === "3FGM" || logStat === "FGA" || logStat === "3FGA" || logStat === "REBS" || logStat === "STLS" || logStat === "TO") {
       if (window.shotClockControl) window.shotClockControl.resetTo30AndStart();
     }
 
