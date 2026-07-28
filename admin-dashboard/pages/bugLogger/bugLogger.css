@@ -1,0 +1,100 @@
+.bug-list {
+    border-top: 1px solid #e9ecef;
+}
+
+.bug-row {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: background 0.1s ease;
+    gap: 12px;
+}
+
+.bug-row:hover {
+    background: #f8f9fa;
+}
+
+.bug-status {
+    flex: 0 0 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bug-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #dc3545;
+    display: inline-block;
+}
+
+.bug-type {
+    flex: 1;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.bug-row-resolved .bug-type {
+    font-weight: 400;
+    color: #888;
+}
+
+.bug-meta {
+    flex: 0 0 auto;
+    font-size: 0.8rem;
+    color: #aaa;
+    white-space: nowrap;
+}
+
+.bug-actions {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.bug-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 50px 20px;
+    color: #ccc;
+}
+
+.bug-empty i {
+    font-size: 2.5rem;
+    margin-bottom: 12px;
+}
+
+.bug-empty p {
+    font-size: 1rem;
+    margin: 0;
+}
+
+.bug-modal-body {
+    white-space: pre-wrap;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: #333;
+    min-height: 60px;
+}
+
+.bug-modal-date {
+    font-size: 0.85rem;
+    color: #aaa;
+    white-space: nowrap;
+}
+
+@media (max-width: 767px) {
+    .bug-meta {
+        display: none;
+    }
+}
