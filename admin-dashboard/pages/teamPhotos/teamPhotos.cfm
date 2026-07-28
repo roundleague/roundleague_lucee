@@ -19,7 +19,6 @@
 </script>
 
 <div class="content">
-
   <!--- Upload Card --->
   <div class="row">
     <div class="col-md-12">
