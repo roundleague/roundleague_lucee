@@ -1,14 +1,8 @@
 // Playoff Schedule Import - Client-side parser
-
-// Colors for bracket badges
-var BRACKET_COLORS = [
-  '#1976d2','#388e3c','#e64a19','#7b1fa2',
-  '#0097a7','#f57c00','#c62828','#00796b'
-];
+// One upload = one bracket + a starting round number (picked in Step 0).
+// Bracket/round are fixed for the whole batch; the parser only extracts matchups.
 
 var parsedGames = [];
-var bracketColorMap = {};
-var bracketColorIdx = 0;
 var teamNameMap = {}; // rawName.toLowerCase() → { teamID, teamName } (manual overrides)
 
 // ── Fuzzy Matching ────────────────────────────────────────────────────────────
@@ -82,72 +76,100 @@ function findSuggestion(teamName) {
   return (bestScore >= threshold && bestMatch) ? { team: bestMatch, score: bestScore } : null;
 }
 
-function getBracketColor(name) {
-  if (!bracketColorMap[name]) {
-    bracketColorMap[name] = BRACKET_COLORS[bracketColorIdx % BRACKET_COLORS.length];
-    bracketColorIdx++;
+// ── Step 0: Bracket & Round picker ─────────────────────────────────────────────
+
+function onBracketSelectChange() {
+  var sel = document.getElementById('bracketSelect');
+  var newBracketRow = document.getElementById('newBracketRow');
+  var roundInput = document.getElementById('roundNumberInput');
+
+  if (sel.value === '__new__') {
+    newBracketRow.style.display = '';
+    roundInput.value = 1;
+  } else {
+    newBracketRow.style.display = 'none';
+    var maxRound = bracketMaxRound[sel.value] || 0;
+    roundInput.value = maxRound + 1;
   }
-  return bracketColorMap[name];
+}
+
+function getSelectedBracket() {
+  var sel = document.getElementById('bracketSelect');
+  if (sel.value === '__new__') {
+    var name = document.getElementById('newBracketName').value.trim();
+    return { bracketID: null, bracketName: name };
+  }
+  return { bracketID: parseInt(sel.value), bracketName: null };
+}
+
+// ── Image Upload ────────────────────────────────────────────────────────────────
+
+function uploadPlayoffImage(input) {
+  var file = input.files[0];
+  if (!file) return;
+
+  var status = document.getElementById('uploadStatus');
+  status.textContent = 'Reading image...';
+
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var base64 = e.target.result.split(',')[1];
+    status.textContent = 'Parsing image with AI...';
+
+    fetch('parsePlayoffScheduleImage.cfm', {
+      method: 'POST',
+      body: JSON.stringify({ image: base64 })
+    })
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        if (data.error) {
+          status.textContent = 'Error: ' + data.error;
+          return;
+        }
+        document.getElementById('pasteArea').value = data.schedule || '';
+        status.textContent = 'Image parsed — review the text below, then click Parse & Preview.';
+        parseSchedule();
+      })
+      .catch(function(err) {
+        status.textContent = 'Error: ' + err.message;
+      });
+  };
+  reader.readAsDataURL(file);
 }
 
 // ── Parsing ──────────────────────────────────────────────────────────────────
 
 function parseSchedule() {
   var text = document.getElementById('pasteArea').value;
-  if (!text.trim()) { alert('Please paste a schedule first.'); return; }
+  if (!text.trim()) { alert('Please paste or upload a schedule first.'); return; }
+
+  var bracket = getSelectedBracket();
+  if (bracket.bracketID === null && !bracket.bracketName) {
+    alert('Enter a name for the new bracket first.');
+    return;
+  }
+
+  var startRound = parseInt(document.getElementById('roundNumberInput').value) || 1;
 
   parsedGames = [];
-  bracketColorMap = {};
-  bracketColorIdx = 0;
 
   var lines = text.split(/\r?\n/);
   var currentDate = '';
   var currentRoundName = '';
-  var currentRoundOrder = 1;        // within the current bracket context
-  var currentBracket = '';
 
-  // First pass: collect all bracket names from division-championship lines
-  // e.g. "East Division Championship" → "East Division"
-  var detectedBrackets = [];
-  var bracketSet = {};
-  lines.forEach(function(line) {
-    line = line.trim();
-    var champMatch = line.match(/^([\w\s']+?)\s+(championship|champions)/i);
-    if (champMatch) {
-      var bn = normalizeBracketName(champMatch[1].trim());
-      if (bn && !bracketSet[bn.toLowerCase()]) {
-        bracketSet[bn.toLowerCase()] = true;
-        detectedBrackets.push(bn);
-      }
-    }
-    // Also detect "West Division", "East Division", "Premier Division" headers
-    var divMatch = line.match(/^([\w\s']+?\s+(?:division|playoffs?))\s*$/i);
-    if (divMatch && !isGameLine(line) && !isDateLine(line)) {
-      var bn = normalizeBracketName(divMatch[1].trim());
-      if (bn && !bracketSet[bn.toLowerCase()]) {
-        bracketSet[bn.toLowerCase()] = true;
-        detectedBrackets.push(bn);
-      }
-    }
-  });
+  // Round order tracker — first distinct round name seen gets startRound,
+  // each subsequent distinct round name increments from there.
+  var roundOrderByName = {};
+  var nextRoundCounter = startRound;
 
-  // Round order tracker per bracket context (reset when bracket changes)
-  var roundOrderByBracketRound = {}; // key: bracketKey+"::"+roundName → roundID
-
-  function getRoundID(bracketName, roundName) {
-    var key = (bracketName || '').toLowerCase() + '::' + roundName.toLowerCase();
-    if (!roundOrderByBracketRound[key]) {
-      // Count distinct rounds for this bracket so far
-      var prefix = (bracketName || '').toLowerCase() + '::';
-      var existing = Object.keys(roundOrderByBracketRound).filter(function(k) {
-        return k.indexOf(prefix) === 0;
-      });
-      roundOrderByBracketRound[key] = existing.length + 1;
+  function getRoundID(roundName) {
+    var key = (roundName || '').toLowerCase();
+    if (!roundOrderByName[key]) {
+      roundOrderByName[key] = nextRoundCounter++;
     }
-    return roundOrderByBracketRound[key];
+    return roundOrderByName[key];
   }
 
-  // Second pass: parse games
   lines.forEach(function(line) {
     line = line.trim();
     if (!line) return;
@@ -168,30 +190,14 @@ function parseSchedule() {
       return;
     }
 
-    // Division header
-    if (isDivisionHeader(line)) {
-      currentBracket = normalizeBracketName(line);
-      return;
-    }
-
     // Game line
     if (isGameLine(line)) {
       var game = parseGameLine(line);
       if (!game) return;
 
       game.date = currentDate;
-      game.roundName = currentRoundName || 'Round';
-      game.suggestedBracket = currentBracket;
-      game.bracketRoundID = getRoundID(currentBracket, game.roundName);
-
-      // Try to infer bracket from championship placeholder text
-      if (game.isPlaceholder && !game.suggestedBracket) {
-        var champMatch = game.rawText.match(/^([\w\s']+?)\s+championship/i);
-        if (champMatch) {
-          var inferred = normalizeBracketName(champMatch[1].trim());
-          if (inferred) game.suggestedBracket = inferred;
-        }
-      }
+      game.roundName = currentRoundName || 'Round ' + startRound;
+      game.bracketRoundID = getRoundID(game.roundName);
 
       // Team lookup
       game.homeTeamID = lookupTeam(game.homeTeamRaw);
@@ -206,7 +212,7 @@ function parseSchedule() {
     return;
   }
 
-  renderPreview(detectedBrackets);
+  renderPreview();
 }
 
 function isDateLine(line) {
@@ -217,11 +223,6 @@ function isDateLine(line) {
 function isRoundHeader(line) {
   if (isDateLine(line) || isGameLine(line)) return false;
   return /\b(semi.?finals?|play.?in|quarter.?finals?|championships?|finals?)\b/i.test(line);
-}
-
-function isDivisionHeader(line) {
-  if (isDateLine(line) || isGameLine(line) || isRoundHeader(line)) return false;
-  return /\b(division|playoffs?)\b/i.test(line) && line.length < 60;
 }
 
 function isGameLine(line) {
@@ -314,13 +315,6 @@ function parseTeamPart(str) {
   return { seed: seed, name: name };
 }
 
-function normalizeBracketName(str) {
-  // Capitalize each word
-  return str.replace(/\w\S*/g, function(txt) {
-    return txt.charAt(0).toUpperCase() + txt.substr(1);
-  }).trim();
-}
-
 function convertTo24(time, ampm) {
   var parts = time.split(':');
   var h = parseInt(parts[0]);
@@ -373,17 +367,9 @@ function getTeamName(id) {
 
 // ── Rendering ─────────────────────────────────────────────────────────────────
 
-function renderPreview(detectedBrackets) {
+function renderPreview() {
   var tbody = document.getElementById('previewBody');
   tbody.innerHTML = '';
-
-  // Collect all bracket names currently assigned + detected
-  var allBrackets = detectedBrackets.slice();
-  parsedGames.forEach(function(g) {
-    if (g.suggestedBracket && allBrackets.indexOf(g.suggestedBracket) === -1) {
-      allBrackets.push(g.suggestedBracket);
-    }
-  });
 
   var unknownTeams = {};
 
@@ -391,10 +377,6 @@ function renderPreview(detectedBrackets) {
     var tr = document.createElement('tr');
     if (!g.homeTeamID && !g.isPlaceholder) tr.classList.add('warning-row');
 
-    // Assigned bracket for this game (mutable)
-    g._bracket = g.suggestedBracket || '';
-
-    // Home cell
     var homeCell = renderTeamCell(g.homeTeamRaw, g.homeTeamID, g.homeSeed, g.isPlaceholder);
     var awayCell = renderTeamCell(g.awayTeamRaw, g.awayTeamID, g.awaySeed, g.isPlaceholder);
 
@@ -403,18 +385,13 @@ function renderPreview(detectedBrackets) {
       if (!g.awayTeamID && g.awayTeamRaw) unknownTeams[g.awayTeamRaw] = true;
     }
 
-    // Bracket dropdown
-    var bracketSelect = buildBracketSelect(allBrackets, g._bracket, idx);
-
     tr.innerHTML = '<td>' + (idx+1) + '</td>' +
-      '<td><span class="round-badge">' + escHtml(g.roundName) + '</span></td>' +
+      '<td><span class="round-badge">Round ' + g.bracketRoundID + ' &mdash; ' + escHtml(g.roundName) + '</span></td>' +
       '<td style="white-space:nowrap">' + escHtml(g.date || '-') + '</td>' +
       '<td style="white-space:nowrap">' + formatTime(g.startTime) + '</td>' +
       '<td>' + homeCell + '</td>' +
-      '<td>' + awayCell + '</td>' +
-      '<td></td>';
+      '<td>' + awayCell + '</td>';
 
-    tr.cells[6].appendChild(bracketSelect);
     tbody.appendChild(tr);
   });
 
@@ -460,68 +437,6 @@ function renderTeamCell(raw, id, seed, isPlaceholder) {
   }
 }
 
-function buildBracketSelect(allBrackets, current, gameIdx) {
-  var sel = document.createElement('select');
-  sel.className = 'form-control bracket-select';
-  sel.dataset.gameIdx = gameIdx;
-  sel.addEventListener('change', function() {
-    var val = this.value;
-    if (val === '__new__') {
-      var name = prompt('Enter new bracket name:');
-      if (name && name.trim()) {
-        name = name.trim();
-        // Add to all selects
-        addBracketOptionToAll(name);
-        this.value = name;
-        parsedGames[gameIdx]._bracket = name;
-      } else {
-        this.value = parsedGames[gameIdx]._bracket || '';
-      }
-    } else {
-      parsedGames[gameIdx]._bracket = val;
-    }
-    buildImportSummary();
-  });
-
-  var emptyOpt = document.createElement('option');
-  emptyOpt.value = '';
-  emptyOpt.textContent = '-- Unassigned --';
-  sel.appendChild(emptyOpt);
-
-  allBrackets.forEach(function(b) {
-    var opt = document.createElement('option');
-    opt.value = b;
-    opt.textContent = b;
-    if (b === current) opt.selected = true;
-    sel.appendChild(opt);
-  });
-
-  var newOpt = document.createElement('option');
-  newOpt.value = '__new__';
-  newOpt.textContent = 'New bracket…';
-  sel.appendChild(newOpt);
-
-  return sel;
-}
-
-function addBracketOptionToAll(name) {
-  var selects = document.querySelectorAll('select.bracket-select');
-  selects.forEach(function(sel) {
-    // Check if already exists
-    var exists = false;
-    for (var i = 0; i < sel.options.length; i++) {
-      if (sel.options[i].value === name) { exists = true; break; }
-    }
-    if (!exists) {
-      var opt = document.createElement('option');
-      opt.value = name;
-      opt.textContent = name;
-      // Insert before "New bracket…"
-      sel.insertBefore(opt, sel.lastElementChild);
-    }
-  });
-}
-
 function updateMatchSummary() {
   var matched = 0, total = 0;
   parsedGames.forEach(function(g) {
@@ -534,42 +449,33 @@ function updateMatchSummary() {
 }
 
 function buildImportSummary() {
-  // Group games by bracket
-  var bracketGroups = {};
-  var unassigned = 0;
+  var bracket = getSelectedBracket();
+  var bracketLabel = bracket.bracketID !== null
+    ? (document.getElementById('bracketSelect').selectedOptions[0].textContent)
+    : (bracket.bracketName || '(unnamed bracket)');
 
-  parsedGames.forEach(function(g) {
-    var b = g._bracket;
-    if (!b) { unassigned++; return; }
-    if (!bracketGroups[b]) bracketGroups[b] = [];
-    bracketGroups[b].push(g);
-  });
+  var rounds = {};
+  parsedGames.forEach(function(g) { rounds[g.bracketRoundID] = true; });
+  var roundList = Object.keys(rounds).sort(function(a,b){ return a-b; });
 
-  var keys = Object.keys(bracketGroups);
-  var html = '<ul style="margin:0; padding-left:18px;">';
-  keys.forEach(function(b) {
-    var color = getBracketColor(b);
-    html += '<li><span class="bracket-badge" style="background:' + color + '">' + escHtml(b) + '</span> ' +
-      bracketGroups[b].length + ' game(s)</li>';
-  });
-  html += '</ul>';
-
-  if (unassigned) {
-    html += '<p class="text-warning" style="margin-top:6px;"><strong>' + unassigned + ' game(s) unassigned</strong> - assign a bracket to all games before importing.</p>';
-  }
+  var html = '<p style="margin:0;"><strong>' + parsedGames.length + ' game(s)</strong> into bracket ' +
+    '<span class="bracket-badge" style="background:#1976d2">' + escHtml(bracketLabel) + '</span> ' +
+    (roundList.length > 1 ? ('rounds ' + roundList.join(', ')) : ('round ' + roundList[0])) + '</p>';
 
   document.getElementById('importSummary').innerHTML = html;
 
   var importBtn = document.getElementById('importBtn');
-  importBtn.disabled = unassigned > 0 || keys.length === 0;
+  importBtn.disabled = parsedGames.length === 0 || (bracket.bracketID === null && !bracket.bracketName);
 }
 
 // ── Form Submission ───────────────────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', function() {
+  onBracketSelectChange();
+
   document.getElementById('importForm').addEventListener('submit', function(e) {
     e.preventDefault();
-    if (!confirm('This will delete ALL existing playoff data for this season and replace it. Continue?')) return;
+    if (!confirm('Import these games? If this round was already imported and none of its games have scores yet, the existing games for this round will be replaced.')) return;
 
     var payload = buildPayload();
     document.getElementById('formImportData').value = JSON.stringify(payload);
@@ -578,55 +484,28 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function buildPayload() {
-  // Group games by bracket name, preserve order
-  var bracketOrder = [];
-  var bracketMap = {};
+  var bracket = getSelectedBracket();
 
-  parsedGames.forEach(function(g) {
-    var b = g._bracket;
-    if (!bracketMap[b]) {
-      bracketMap[b] = [];
-      bracketOrder.push(b);
-    }
-    bracketMap[b].push(g);
+  var formattedGames = parsedGames.map(function(g) {
+    return {
+      bracketRoundID: g.bracketRoundID,
+      date: g.date || '',
+      startTime: g.startTime || '',
+      homeSeed: g.homeSeed,
+      awaySeed: g.awaySeed,
+      homeTeamID: g.homeTeamID || 0,
+      awayTeamID: g.awayTeamID || 0,
+      homeTeamRaw: g.homeTeamRaw,
+      awayTeamRaw: g.awayTeamRaw,
+      isPlaceholder: g.isPlaceholder
+    };
   });
 
-  // Assign BracketRoundID per bracket (re-sequence based on roundName order)
-  var brackets = bracketOrder.map(function(name) {
-    var games = bracketMap[name];
-
-    // Map roundName → roundID in order of first appearance
-    var roundMap = {};
-    var roundCounter = 1;
-    games.forEach(function(g) {
-      var key = g.roundName.toLowerCase();
-      if (!roundMap[key]) {
-        roundMap[key] = roundCounter++;
-      }
-    });
-
-    var gameID = 1;
-    var formattedGames = games.map(function(g) {
-      var fg = {
-        bracketGameID: gameID++,
-        bracketRoundID: roundMap[g.roundName.toLowerCase()],
-        date: g.date || '',
-        startTime: g.startTime || '',
-        homeSeed: g.homeSeed,
-        awaySeed: g.awaySeed,
-        homeTeamID: g.homeTeamID || 0,
-        awayTeamID: g.awayTeamID || 0,
-        homeTeamRaw: g.homeTeamRaw,
-        awayTeamRaw: g.awayTeamRaw,
-        isPlaceholder: g.isPlaceholder
-      };
-      return fg;
-    });
-
-    return { name: name, games: formattedGames };
-  });
-
-  return { brackets: brackets };
+  return {
+    bracketID: bracket.bracketID,
+    bracketName: bracket.bracketName,
+    games: formattedGames
+  };
 }
 
 function useSuggestedTeam(rawName, teamID, teamName) {
@@ -637,29 +516,7 @@ function useSuggestedTeam(rawName, teamID, teamName) {
     if (g.homeTeamRaw && g.homeTeamRaw.toLowerCase().trim() === key) g.homeTeamID = teamID;
     if (g.awayTeamRaw && g.awayTeamRaw.toLowerCase().trim() === key) g.awayTeamID = teamID;
   });
-  // Re-render with current bracket state preserved
-  var selects = document.querySelectorAll('select.bracket-select');
-  var savedBrackets = {};
-  selects.forEach(function(sel) { savedBrackets[sel.dataset.gameIdx] = sel.value; });
-  var detectedBrackets = [];
-  var bracketSet = {};
-  parsedGames.forEach(function(g) {
-    if (g.suggestedBracket && !bracketSet[g.suggestedBracket.toLowerCase()]) {
-      bracketSet[g.suggestedBracket.toLowerCase()] = true;
-      detectedBrackets.push(g.suggestedBracket);
-    }
-    if (g._bracket && !bracketSet[g._bracket.toLowerCase()]) {
-      bracketSet[g._bracket.toLowerCase()] = true;
-      detectedBrackets.push(g._bracket);
-    }
-  });
-  renderPreview(detectedBrackets);
-  // Restore bracket selections
-  document.querySelectorAll('select.bracket-select').forEach(function(sel) {
-    var saved = savedBrackets[sel.dataset.gameIdx];
-    if (saved) sel.value = saved;
-  });
-  buildImportSummary();
+  renderPreview();
 }
 
 function resetImport() {
@@ -668,8 +525,6 @@ function resetImport() {
   document.getElementById('previewCard').style.display = 'none';
   document.getElementById('confirmCard').style.display = 'none';
   parsedGames = [];
-  bracketColorMap = {};
-  bracketColorIdx = 0;
   teamNameMap = {};
 }
 

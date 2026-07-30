@@ -112,7 +112,7 @@
     <cftry>
     <!--- Get the max rounds for current bracket --->
     <cfquery name="getMaxTeams" datasource="roundleague">
-        SELECT MaxTeamSize
+        SELECT MaxTeamSize, AutoAdvance
         FROM playoffs_bracket
         WHERE Playoffs_BracketID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.Playoffs_BracketID#">
     </cfquery>
@@ -199,54 +199,59 @@
         </cfquery>
 
 
-        <!--- Advance Winning Team --->
-        <cfset nextGameId = getAdvanceToGameId(url.bracketGameID, getMaxTeams.MaxTeamSize)>
-        <cfquery name="advanceSchedule" datasource="roundleague">
-            SELECT Playoffs_scheduleID, HomeTeamID, AwayTeamID
-            FROM Playoffs_Schedule
-            WHERE Playoffs_BracketID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.Playoffs_BracketID#">
-            AND BracketGameID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#nextGameId#">
-        </cfquery>
-
-        <cfif advanceSchedule.recordCount NEQ 0>
-            <!--- If this is not the championship game --->
-            <cfif advanceSchedule.homeTeamID EQ ''>
-                <cfset updateTeamCol = 'HomeTeamID'>
-            <cfelse>
-                <cfset updateTeamCol = 'AwayTeamID'>
-            </cfif>
-
-            <cfif form.homeScore GT form.awayScore>
-                <!--- Advance Home Team --->
-                <cfquery name="advanceTeam" datasource="roundleague">
-                    UPDATE Playoffs_Schedule
-                    SET #updateTeamCol# = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.homeTeamID#">
-                    WHERE Playoffs_scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#advanceSchedule.Playoffs_scheduleID#">
-                </cfquery>
-            <cfelse>
-                <!--- Advance Away Team --->
-                <cfquery name="advanceTeam" datasource="roundleague">
-                    UPDATE Playoffs_Schedule
-                    SET #updateTeamCol# = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.awayTeamID#">
-                    WHERE Playoffs_scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#advanceSchedule.Playoffs_scheduleID#">
-                </cfquery>
-            </cfif>
-        <cfelse>
-            <!--- Championship Game - insert winner into champions table --->
-            <cfset winnerTeamID = (form.homeScore GT form.awayScore) ? getTeamsPlaying.homeTeamID : getTeamsPlaying.awayTeamID>
-            <cfquery name="dupChampionCheck" datasource="roundleague">
-                SELECT championsID FROM champions
-                WHERE teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#winnerTeamID#">
-                AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getActiveSeasonID.seasonID#">
+        <!--- Auto-advance is opt-out per bracket: flexible/manual brackets (e.g. custom or double-elim
+              shapes not covered by getAdvanceToGameId's hardcoded sizes) set AutoAdvance = 0 and are
+              left alone here so the hardcoded slot map can't misfire or write bogus champions. --->
+        <cfif getMaxTeams.AutoAdvance EQ 1>
+            <!--- Advance Winning Team --->
+            <cfset nextGameId = getAdvanceToGameId(url.bracketGameID, getMaxTeams.MaxTeamSize)>
+            <cfquery name="advanceSchedule" datasource="roundleague">
+                SELECT Playoffs_scheduleID, HomeTeamID, AwayTeamID
+                FROM Playoffs_Schedule
+                WHERE Playoffs_BracketID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.Playoffs_BracketID#">
+                AND BracketGameID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#nextGameId#">
             </cfquery>
-            <cfif dupChampionCheck.recordCount EQ 0>
-                <cfquery name="insertChampion" datasource="roundleague">
-                    INSERT INTO champions (teamID, seasonID)
-                    VALUES (
-                        <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#winnerTeamID#">,
-                        <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getActiveSeasonID.seasonID#">
-                    )
+
+            <cfif advanceSchedule.recordCount NEQ 0>
+                <!--- If this is not the championship game --->
+                <cfif advanceSchedule.homeTeamID EQ ''>
+                    <cfset updateTeamCol = 'HomeTeamID'>
+                <cfelse>
+                    <cfset updateTeamCol = 'AwayTeamID'>
+                </cfif>
+
+                <cfif form.homeScore GT form.awayScore>
+                    <!--- Advance Home Team --->
+                    <cfquery name="advanceTeam" datasource="roundleague">
+                        UPDATE Playoffs_Schedule
+                        SET #updateTeamCol# = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.homeTeamID#">
+                        WHERE Playoffs_scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#advanceSchedule.Playoffs_scheduleID#">
+                    </cfquery>
+                <cfelse>
+                    <!--- Advance Away Team --->
+                    <cfquery name="advanceTeam" datasource="roundleague">
+                        UPDATE Playoffs_Schedule
+                        SET #updateTeamCol# = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.awayTeamID#">
+                        WHERE Playoffs_scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#advanceSchedule.Playoffs_scheduleID#">
+                    </cfquery>
+                </cfif>
+            <cfelse>
+                <!--- Championship Game - insert winner into champions table --->
+                <cfset winnerTeamID = (form.homeScore GT form.awayScore) ? getTeamsPlaying.homeTeamID : getTeamsPlaying.awayTeamID>
+                <cfquery name="dupChampionCheck" datasource="roundleague">
+                    SELECT championsID FROM champions
+                    WHERE teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#winnerTeamID#">
+                    AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getActiveSeasonID.seasonID#">
                 </cfquery>
+                <cfif dupChampionCheck.recordCount EQ 0>
+                    <cfquery name="insertChampion" datasource="roundleague">
+                        INSERT INTO champions (teamID, seasonID)
+                        VALUES (
+                            <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#winnerTeamID#">,
+                            <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getActiveSeasonID.seasonID#">
+                        )
+                    </cfquery>
+                </cfif>
             </cfif>
         </cfif>
     </cfif>

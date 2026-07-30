@@ -229,7 +229,8 @@ CREATE TABLE IF NOT EXISTS playoffs_bracket (
   Name               VARCHAR(50) NOT NULL DEFAULT '',
   SeasonID           INT DEFAULT NULL,
   SortOrder          INT DEFAULT NULL,
-  MaxTeamSize        INT DEFAULT NULL
+  MaxTeamSize        INT DEFAULT NULL,
+  AutoAdvance        TINYINT(1) NOT NULL DEFAULT 1
 );
 
 CREATE TABLE IF NOT EXISTS playoffs_playergamelog (
