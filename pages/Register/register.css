@@ -1,99 +1,244 @@
-.registerRadio {
-  transform: scale(1.5);
+/* ==========================================================================
+   Player Registration - modern layout
+   Matches the card system introduced on Team Registration
+   (#f5593d brand orange, .question-card / .questions-grid, basketball
+   radio icons, orange-fill checkboxes)
+   ========================================================================== */
+
+.player-reg-wrapper {
+  background: linear-gradient(180deg, #faf9f7 0%, #f5f4f2 100%);
+  padding: 10px 0 40px;
 }
 
-.firstRadio {
-  margin-left: 20px;
-}
-
-.secondRadio {
-  margin-left: 10px;
-}
-
-.nonTextQuestions {
-  padding: 10px;
-}
-
-.modalBtn {
-  margin-bottom: 20px;
-}
-
-.biggerLabel {
-  font-size: large;
-}
-
-ul.acknowledge {
-  float: none;
-}
-
-/* Snackbar */
-#snackbar {
-  visibility: hidden;
-  min-width: 250px;
-  margin-left: -125px;
-  background-color: #333;
-  color: #fff;
+.player-reg-header {
   text-align: center;
-  border-radius: 2px;
-  padding: 16px;
-  position: fixed;
-  z-index: 100;
-  left: 50%;
-  bottom: 30px;
-  font-size: 17px;
+  margin-bottom: 2rem;
 }
 
-#snackbar.show {
-  visibility: visible;
-  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
-  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+.player-reg-header h3.description {
+  color: #403d39;
+  font-weight: 700;
+  display: inline-block;
+  border-bottom: 3px solid #f5593d;
+  padding-bottom: 10px;
+  margin-bottom: 0.5rem;
 }
 
-@-webkit-keyframes fadein {
-  from {
-    bottom: 0;
-    opacity: 0;
-  }
-  to {
-    bottom: 30px;
-    opacity: 1;
-  }
+.player-reg-header p {
+  color: #66615b;
+  margin-bottom: 0;
 }
 
-@keyframes fadein {
-  from {
-    bottom: 0;
-    opacity: 0;
-  }
-  to {
-    bottom: 30px;
-    opacity: 1;
-  }
+/* ---- Grid of question cards ---- */
+.questions-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  align-items: start;
+  margin-bottom: 1.25rem;
 }
 
-@-webkit-keyframes fadeout {
-  from {
-    bottom: 30px;
-    opacity: 1;
+@media (min-width: 768px) {
+  .questions-grid {
+    grid-template-columns: 1fr 1fr;
   }
-  to {
-    bottom: 0;
-    opacity: 0;
+
+  .questions-grid .full-width {
+    grid-column: 1 / -1;
   }
 }
 
-@keyframes fadeout {
-  from {
-    bottom: 30px;
-    opacity: 1;
-  }
-  to {
-    bottom: 0;
-    opacity: 0;
+.question-card {
+  background: linear-gradient(180deg, #ffffff 0%, #faf9f7 100%);
+  border-radius: 1rem;
+  padding: 1.25rem 1.5rem;
+  box-shadow:
+    0 2px 16px rgba(0, 0, 0, 0.06),
+    0 1.5px 4px rgba(0, 0, 0, 0.03);
+  text-align: left;
+}
+
+.question-card .biggerLabel,
+.question-card label:not(.form-check-label) {
+  color: #403d39;
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+/* ---- Text inputs / selects ---- */
+.question-card .form-control.border-input,
+.question-card select {
+  border: 1px solid #e8e6e3;
+  border-radius: 0.5rem;
+  padding: 0.6rem 0.9rem;
+  width: 100%;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.question-card .form-control.border-input:focus,
+.question-card select:focus {
+  border-color: #f5593d;
+  box-shadow: 0 0 0 3px rgba(245, 89, 61, 0.12);
+  outline: none;
+}
+
+.question-card .teamSelect {
+  color: #403d39;
+}
+
+.question-card .registerRequired {
+  border-color: #e04a30 !important;
+  box-shadow: 0 0 0 3px rgba(224, 74, 48, 0.15);
+}
+
+/* ---- Two-column personal info split ---- */
+.field-split {
+  margin-bottom: 1.25rem;
+}
+
+.field-split .field-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.field-split .field-column + .field-column {
+  margin-top: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .field-split .field-column + .field-column {
+    margin-top: 0;
   }
 }
-/* End Snackbar */
 
+/* ---- Radio choices styled as basketballs ---- */
+.form-check-radio .form-check-sign {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  left: 0;
+  top: -3px;
+  width: 24px;
+  height: 24px;
+}
+
+.form-check-radio .form-check-sign::before,
+.form-check-radio .form-check-sign::after,
+.form-check-radio input[type="radio"] + .form-check-sign::after,
+.form-check-radio input[type="radio"]:checked + .form-check-sign::after,
+.form-check-radio input[type="radio"]:checked ~ .form-check-sign::after {
+  content: none !important;
+  display: none !important;
+}
+
+.form-check-radio .form-check-sign i.basketball-icon {
+  font-size: 20px;
+  color: #d7d3cf;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.form-check-radio input[type="radio"]:checked ~ .form-check-sign i.basketball-icon {
+  color: #f5593d;
+  transform: scale(1.15);
+}
+
+.form-check-radio .form-check-label:hover .form-check-sign i.basketball-icon {
+  color: #f5a087;
+}
+
+/* ---- Flex-wrap row for radio option lists (Basketball Experience / Position) ---- */
+.option-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.5rem;
+}
+
+.option-row .form-check-radio {
+  margin-bottom: 8px;
+}
+
+/* ---- Checkbox fill (Waiver acknowledgments) ---- */
+.form-check .form-check-sign::before,
+.form-check .form-check-sign::after {
+  border-radius: 6px;
+}
+
+.form-check input[type="checkbox"]:checked ~ .form-check-sign::before {
+  background-color: #f5593d;
+}
+
+.form-check .form-check-label:hover .form-check-sign::before {
+  background-color: #c9c5c1;
+}
+
+.form-check input[type="checkbox"]:checked ~ .form-check-sign:hover::before {
+  background-color: #e04a30;
+}
+
+/* ---- Toggle switches (Captain / Over 18 / Free Agent / Permission / Master's) ---- */
+.question-card .notifications {
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 0;
+}
+
+.question-card .notifications .notification-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.4rem 0;
+}
+
+.bootstrap-switch.bootstrap-switch-info .bootstrap-switch-handle-on.bootstrap-switch-info,
+.bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-info {
+  background: #f5593d !important;
+  border-color: #f5593d !important;
+  color: #fff !important;
+}
+
+.bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-default {
+  background: #c9c5c1 !important;
+  border-color: #c9c5c1 !important;
+  color: #fff !important;
+}
+
+/* ---- Waivers & Consent card ---- */
+.question-card .modalBtn {
+  margin-bottom: 0.75rem;
+  margin-right: 0.5rem;
+}
+
+.question-card ul.notifications.acknowledged {
+  margin-top: 1rem;
+}
+
+.question-card ul.notifications.acknowledged .notification-item {
+  display: block;
+  padding: 0.6rem 0;
+  border-top: 1px solid #f5f4f2;
+}
+
+.question-card ul.notifications.acknowledged .notification-item:first-child {
+  border-top: none;
+}
+
+/* ---- Waiver reminder notice ---- */
+.waiver-reminder {
+  background: #fffbea;
+  color: #856404;
+  border: 1px solid #ffe8a1;
+  border-radius: 0.5rem;
+  padding: 0.85rem 1.25rem;
+  margin-bottom: 1.25rem;
+  font-weight: 600;
+}
+
+/* ---- Misc ---- */
 .errorDiv {
   padding: 20px;
   font-weight: bold;
@@ -104,23 +249,27 @@ ul.acknowledge {
   font-weight: bold;
 }
 
-.teamSelect {
-  font-size: large;
-  color: red;
-  font-weight: 800;
-}
-
 .registerNote {
   font-weight: bold;
   margin-bottom: 10px;
 }
 
-.registerRequired {
-  border: 3px solid red;
-}
-
 label {
   font-weight: 600;
+}
+
+.saveBtn {
+  background: linear-gradient(135deg, #f5593d 0%, #e04a30 100%);
+  border: none;
+}
+
+.saveBtn:hover,
+.saveBtn:focus {
+  background: linear-gradient(135deg, #e04a30 0%, #d9442a 100%);
+}
+
+.saveBtn:disabled {
+  background: #d7d3cf;
 }
 
 /* Banner Alert Styles */

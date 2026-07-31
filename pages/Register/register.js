@@ -6,7 +6,9 @@ $( document ).ready(function() {
 		var waiverCount = $('.waiverCheck:checked').length;
 		var isUnder18 = !$('[name="over18"]').is(':checked');
 		var guardianOk = !isUnder18 || $('#guardianAck').is(':checked');
-		$('.saveBtn').prop('disabled', !(waiverCount === 2 && guardianOk));
+		if (waiverCount === 2 && guardianOk) {
+			$('#waiverReminder').hide();
+		}
 	}
 
 	$('.waiverCheck, #guardianAck').on('click', updateSubmitState);
@@ -47,6 +49,15 @@ $( document ).ready(function() {
 			$('.errorMessage').text("Please select your team.");
 			return false;
 		}
+
+		var waiverCount = $('.waiverCheck:checked').length;
+		var isUnder18 = !$('[name="over18"]').is(':checked');
+		var guardianOk = !isUnder18 || $('#guardianAck').is(':checked');
+		if (!(waiverCount === 2 && guardianOk)) {
+			$('#waiverReminder').show();
+			return false;
+		}
+		$('#waiverReminder').hide();
 
 		return true;
 	});
