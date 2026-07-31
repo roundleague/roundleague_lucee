@@ -285,7 +285,7 @@ I, for myself and on behalf of my heirs, assigns, personal representatives and n
 		                <div class="question-card">
 		                  <ul class="notifications">
 		                    <li class="notification-item">
-		                      Do you wish to play in the Master's League? (Age 40+)
+		                      Do you wish to play in the Master's League? (Age 35+)
 		                      <input type="checkbox" name="mastersLeague" data-toggle="switch" data-on-color="info" data-off-color="default"><span class="toggle"></span>
 		                    </li>
 		                  </ul>
@@ -332,11 +332,15 @@ I, for myself and on behalf of my heirs, assigns, personal representatives and n
 
 		              </div>
 
+		              <div class="text-center waiver-reminder" id="waiverReminder" style="display:none;">
+		                Please check the boxes above to acknowledge both waivers before submitting.
+		              </div>
 		              <div class="text-center errorDiv">
 		                <span class="errorMessage"></span>
 		              </div>
 		              <div class="text-center">
-		                <button type="submit" class="btn btn-wd btn-info btn-round saveBtn" disabled>Save</button>
+		                <button type="submit" class="btn btn-wd btn-info btn-round saveBtn">Submit</button>
+
 		              </div>
 		            </form>
 		          </div>
