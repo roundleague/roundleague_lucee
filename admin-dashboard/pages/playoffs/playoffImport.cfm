@@ -167,7 +167,7 @@ Monday, April 13th (Championships)
         <div class="card-body">
           <div id="importSummary" class="mb-3"></div>
           <div class="alert alert-danger" style="font-size:13px;">
-            <strong>Warning:</strong> This will permanently delete all existing playoff brackets and schedule entries for Season #session.currentSeasonID# and replace them with the data above.
+            <strong>Warning:</strong> This will permanently delete and replace only the bracket(s) named above, for Season #session.currentSeasonID#. Other brackets already imported for this season are left untouched.
           </div>
           <form method="POST" id="importForm">
             <input type="hidden" name="importData" id="formImportData">

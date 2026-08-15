@@ -692,9 +692,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
   document.getElementById('importForm').addEventListener('submit', function(e) {
     e.preventDefault();
-    if (!confirm('This will delete ALL existing playoff data for this season and replace it. Continue?')) return;
-
     var payload = buildPayload();
+    var bracketNames = payload.brackets.map(function(b) { return b.name; }).join(', ');
+    if (!confirm('This will replace the bracket(s) "' + bracketNames + '" for this season. Other brackets already imported are left untouched. Continue?')) return;
+
     document.getElementById('formImportData').value = JSON.stringify(payload);
     this.submit();
   });

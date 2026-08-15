@@ -5,13 +5,36 @@
 <cfset brackets = importData.brackets>
 <cfset seasonID = session.currentSeasonID>
 
-<!--- Clear all existing playoff data for this season --->
-<cfquery datasource="roundleague">
-  DELETE FROM Playoffs_Schedule WHERE SeasonID = <cfqueryparam value="#seasonID#" cfsqltype="cf_sql_integer">
+<!--- Only replace the bracket(s) actually present in this submission — importing
+      one flyer at a time must not wipe out brackets already imported/played.
+      Preserve each existing bracket's SortOrder so re-importing a fix doesn't
+      reshuffle the dropdown; new bracket names get the next available slot. --->
+<cfset bracketSortOrders = {}>
+<cfquery name="getMaxSortOrder" datasource="roundleague">
+  SELECT MAX(SortOrder) AS maxSort FROM playoffs_bracket
+  WHERE SeasonID = <cfqueryparam value="#seasonID#" cfsqltype="cf_sql_integer">
 </cfquery>
-<cfquery datasource="roundleague">
-  DELETE FROM Playoffs_Bracket WHERE SeasonID = <cfqueryparam value="#seasonID#" cfsqltype="cf_sql_integer">
-</cfquery>
+<cfset nextSortOrder = isNumeric(getMaxSortOrder.maxSort) ? getMaxSortOrder.maxSort : 0>
+
+<cfloop array="#brackets#" index="bracket">
+  <cfquery name="findExistingBracket" datasource="roundleague">
+    SELECT Playoffs_BracketID, SortOrder FROM playoffs_bracket
+    WHERE SeasonID = <cfqueryparam value="#seasonID#" cfsqltype="cf_sql_integer">
+    AND Name = <cfqueryparam value="#bracket.name#" cfsqltype="cf_sql_varchar">
+  </cfquery>
+  <cfif findExistingBracket.recordCount>
+    <cfset bracketSortOrders[bracket.name] = findExistingBracket.SortOrder>
+    <cfquery datasource="roundleague">
+      DELETE FROM Playoffs_Schedule WHERE Playoffs_BracketID = <cfqueryparam value="#findExistingBracket.Playoffs_BracketID#" cfsqltype="cf_sql_integer">
+    </cfquery>
+    <cfquery datasource="roundleague">
+      DELETE FROM Playoffs_Bracket WHERE Playoffs_BracketID = <cfqueryparam value="#findExistingBracket.Playoffs_BracketID#" cfsqltype="cf_sql_integer">
+    </cfquery>
+  <cfelse>
+    <cfset nextSortOrder++>
+    <cfset bracketSortOrders[bracket.name] = nextSortOrder>
+  </cfif>
+</cfloop>
 
 <cfset totalGames = 0>
 <cfset bracketCount = 0>
@@ -54,7 +77,7 @@
     VALUES (
       <cfqueryparam value="#bracket.name#" cfsqltype="cf_sql_varchar">,
       <cfqueryparam value="#seasonID#" cfsqltype="cf_sql_integer">,
-      <cfqueryparam value="#bracketCount#" cfsqltype="cf_sql_integer">,
+      <cfqueryparam value="#bracketSortOrders[bracket.name]#" cfsqltype="cf_sql_integer">,
       <cfqueryparam value="#maxTeamSize#" cfsqltype="cf_sql_integer">,
       <cfqueryparam value="#bracketFormat#" cfsqltype="cf_sql_varchar">
     )
