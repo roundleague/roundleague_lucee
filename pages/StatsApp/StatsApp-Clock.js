@@ -8,6 +8,7 @@
   if (!cfg) return;
 
   var API_BASE = (cfg.apiBase || "https://round-league-api.onrender.com") + "/api";
+  var API_PATH = cfg.apiPath || "/schedule"; // "/playoffs/schedule" for playoff games
   var HALF_SECONDS = 25 * 60;
   var SHOT_CLOCK_SECONDS = 30;
   var SHOT_CLOCK_OREB_SECONDS = 14;
@@ -86,7 +87,7 @@
 
   // ── API patches ───────────────────────────────────────────
   function patchGameStatus(status) {
-    fetch(API_BASE + "/schedule/" + cfg.scheduleID + "/score", {
+    fetch(API_BASE + API_PATH + "/" + cfg.scheduleID + "/score", {
       method: "PATCH",
       headers: { "Content-Type": "application/json", "x-admin-key": cfg.adminKey },
       body: JSON.stringify({ status: status }),
@@ -94,7 +95,7 @@
   }
 
   function patchClock(status) {
-    fetch(API_BASE + "/schedule/" + cfg.scheduleID + "/clock", {
+    fetch(API_BASE + API_PATH + "/" + cfg.scheduleID + "/clock", {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -109,7 +110,7 @@
   }
 
   function patchShotClock(scRemaining, scStatus) {
-    fetch(API_BASE + "/schedule/" + cfg.scheduleID + "/clock", {
+    fetch(API_BASE + API_PATH + "/" + cfg.scheduleID + "/clock", {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -310,7 +311,7 @@
   if (btnSubHorn) {
     btnSubHorn.addEventListener("click", function () {
       playBuzzer("sub");
-      if (window.gameSocket) window.gameSocket.emit("subhorn", cfg.scheduleID);
+      if (window.gameSocket) window.gameSocket.emit("subhorn", { scheduleID: cfg.scheduleID, type: cfg.gameType || "schedule" });
     });
   }
 
@@ -330,7 +331,7 @@
 
   // ── Reset game ────────────────────────────────────────────
   function resetScores() {
-    fetch(API_BASE + "/schedule/" + cfg.scheduleID + "/score", {
+    fetch(API_BASE + API_PATH + "/" + cfg.scheduleID + "/score", {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -374,11 +375,11 @@
     document.querySelectorAll(".Timeouts_Half_1, .Timeouts_Half_2").forEach(function (el) { el.textContent = "2"; });
     // Reset fouls and timeouts in DB
     var headers = { "Content-Type": "application/json", "x-admin-key": cfg.adminKey };
-    fetch(API_BASE + "/schedule/" + cfg.scheduleID + "/fouls", {
+    fetch(API_BASE + API_PATH + "/" + cfg.scheduleID + "/fouls", {
       method: "PATCH", headers: headers,
       body: JSON.stringify({ home_fouls_h1: 0, home_fouls_h2: 0, away_fouls_h1: 0, away_fouls_h2: 0 }),
     });
-    fetch(API_BASE + "/schedule/" + cfg.scheduleID + "/timeouts", {
+    fetch(API_BASE + API_PATH + "/" + cfg.scheduleID + "/timeouts", {
       method: "PATCH", headers: headers,
       body: JSON.stringify({ home_timeouts_h1: 2, home_timeouts_h2: 2, away_timeouts_h1: 2, away_timeouts_h2: 2 }),
     });
@@ -483,7 +484,7 @@
   }
 
   function fetchClock() {
-    fetch(API_BASE + "/schedule/" + cfg.scheduleID + "/clock")
+    fetch(API_BASE + API_PATH + "/" + cfg.scheduleID + "/clock")
       .then(function (r) {
         return r.ok ? r.json() : null;
       })

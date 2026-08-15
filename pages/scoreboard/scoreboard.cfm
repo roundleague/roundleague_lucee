@@ -124,11 +124,28 @@
       font-size: .85rem; font-weight: bold; background: rgba(200,0,0,.55); color: #fff;
     }
     #reset-btn:hover { background: rgba(200,0,0,.85); }
+
+    #resync-btn {
+      /* z-index above #waiting-overlay (200) so it's clickable while showing "WAITING FOR GAME" */
+      position: fixed; top: 16px; left: 130px; z-index: 300;
+      padding: 6px 14px; border: none; border-radius: 4px; cursor: pointer;
+      font-size: .85rem; font-weight: bold; background: rgba(0,90,200,.55); color: #fff;
+    }
+    #resync-btn:hover { background: rgba(0,90,200,.85); }
+
+    #revert-btn {
+      position: fixed; top: 16px; left: 244px; z-index: 300;
+      padding: 6px 14px; border: none; border-radius: 4px; cursor: pointer;
+      font-size: .85rem; font-weight: bold; background: rgba(200,130,0,.6); color: #fff;
+    }
+    #revert-btn:hover { background: rgba(200,130,0,.9); }
   </style>
 </head>
 <body class="s1">
 
 <button id="reset-btn" onclick="resetGame()">Reset Game</button>
+<button id="resync-btn" onclick="resyncActiveGame()" style="display:none;">Resync</button>
+<button id="revert-btn" onclick="revertToScheduled()" style="display:none;">Revert to Scheduled</button>
 
 <div id="style-picker">
   <button onclick="setStyle(1)" class="active">Style 1</button>
@@ -192,9 +209,35 @@
   var ADMIN_KEY  = '<cfoutput>#application.adminApiKey#</cfoutput>';
   var params     = new URLSearchParams(location.search);
   var scheduleID = params.get('game');
+  var gameType   = params.get('type') || 'schedule'; // 'schedule' | 'playoff'
   var overrideHome = params.get('home');
   var overrideAway = params.get('away');
   var styleParam = parseInt(params.get('style') || '1', 10);
+
+  function apiPathFor(type) {
+    return type === 'playoff' ? '/playoffs/schedule' : '/schedule';
+  }
+
+  // Tracks the currently-displayed game's status so #revert-btn only shows while live.
+  var currentGameStatus = null;
+  function setCurrentGameStatus(status) {
+    currentGameStatus = status;
+    var btn = document.getElementById('revert-btn');
+    if (btn) btn.style.display = (status === 'live') ? '' : 'none';
+  }
+
+  // Sets status back to 'scheduled' only — does not touch scores, clock, fouls,
+  // timeouts, or any play-by-play data. Useful for undoing an accidental
+  // "go live" (e.g. StatsApp opened for the wrong game).
+  function revertToScheduled() {
+    if (!scheduleID) return;
+    if (!confirm('Revert this game to Scheduled? Scores and stats will NOT be changed — only the live status.')) return;
+    var headers = { 'Content-Type': 'application/json', 'x-admin-key': ADMIN_KEY };
+    fetch(API_BASE + apiPathFor(gameType) + '/' + scheduleID + '/score', {
+      method: 'PATCH', headers: headers,
+      body: JSON.stringify({ status: 'scheduled' })
+    });
+  }
 
   // Apply URL style param on load
   setStyle(styleParam);
@@ -372,7 +415,7 @@
 
   function fetchClock() {
     if (!scheduleID) return;
-    fetch(API_BASE + '/schedule/' + scheduleID + '/clock')
+    fetch(API_BASE + apiPathFor(gameType) + '/' + scheduleID + '/clock')
       .then(function(r) { return r.ok ? r.json() : null; })
       .then(function(d) { if (d) { applyClockState(d); applyFoulData(d); applyTimeoutData(d); } })
       .catch(function() {});
@@ -380,7 +423,7 @@
 
   function fetchGame(nameHome, nameAway) {
     if (!scheduleID) return;
-    fetch(API_BASE + '/schedule/' + scheduleID)
+    fetch(API_BASE + apiPathFor(gameType) + '/' + scheduleID)
       .then(function(r) { return r.ok ? r.json() : null; })
       .then(function(data) {
         if (!data || !data.game) { document.getElementById('no-game').textContent = 'Game not found.'; return; }
@@ -395,6 +438,7 @@
         var badge = document.getElementById('status-badge');
         badge.textContent = (g.status || 'scheduled').toUpperCase();
         badge.className   = g.status === 'live' ? 'live' : '';
+        setCurrentGameStatus(g.status || 'scheduled');
 
         document.getElementById('board').style.display = 'flex';
         document.getElementById('no-game').style.display = 'none';
@@ -406,19 +450,20 @@
     if (!scheduleID) return;
     if (!confirm('Reset game? This will clear both scores and reset the clock to 25:00 H1.')) return;
     var headers = { 'Content-Type': 'application/json', 'x-admin-key': ADMIN_KEY };
-    fetch(API_BASE + '/schedule/' + scheduleID + '/score', {
+    var basePath = API_BASE + apiPathFor(gameType) + '/' + scheduleID;
+    fetch(basePath + '/score', {
       method: 'PATCH', headers: headers,
       body: JSON.stringify({ homeScore: null, awayScore: null, status: 'scheduled' })
     });
-    fetch(API_BASE + '/schedule/' + scheduleID + '/clock', {
+    fetch(basePath + '/clock', {
       method: 'PATCH', headers: headers,
       body: JSON.stringify({ clock_status: 'stopped', clock_remaining_seconds: 1500, clock_period: 1, shot_clock_remaining: 30, shot_clock_status: 'stopped' })
     });
-    fetch(API_BASE + '/schedule/' + scheduleID + '/fouls', {
+    fetch(basePath + '/fouls', {
       method: 'PATCH', headers: headers,
       body: JSON.stringify({ home_fouls_h1: 0, home_fouls_h2: 0, away_fouls_h1: 0, away_fouls_h2: 0 })
     });
-    fetch(API_BASE + '/schedule/' + scheduleID + '/timeouts', {
+    fetch(basePath + '/timeouts', {
       method: 'PATCH', headers: headers,
       body: JSON.stringify({ home_timeouts_h1: 2, home_timeouts_h2: 2, away_timeouts_h1: 2, away_timeouts_h2: 2 })
     });
@@ -445,6 +490,7 @@
     var badge = document.getElementById('status-badge');
     badge.textContent = 'SCHEDULED';
     badge.className   = '';
+    setCurrentGameStatus('scheduled');
   }
 
   var isAutoMode = !scheduleID;
@@ -459,9 +505,9 @@
     setInterval(fetchGame, 10000);
 
     var socket = io('<cfoutput>#isDefined("application.apiBase") ? application.apiBase : "https://round-league-api.onrender.com"#</cfoutput>');
-    socket.emit('join', scheduleID);
+    socket.emit('join', { scheduleID: scheduleID, type: gameType });
     socket.on('connect', function() {
-      socket.emit('join', scheduleID);
+      socket.emit('join', { scheduleID: scheduleID, type: gameType });
       fetchClock();
       fetchGame();
     });
@@ -473,6 +519,7 @@
         var badge = document.getElementById('status-badge');
         badge.textContent = data.status.toUpperCase();
         badge.className = data.status === 'live' ? 'live' : '';
+        setCurrentGameStatus(data.status);
       }
     });
     socket.on('fouls:update', function(data) { applyFoulData(data); });
@@ -489,18 +536,36 @@
     var gameoverOverlay = document.getElementById('gameover-overlay');
     var boardEl         = document.getElementById('board');
     document.getElementById('no-game').style.display = 'none';
+    document.getElementById('resync-btn').style.display = '';
+
+    // Manual re-check, independent of socket events — covers a missed
+    // game:active/game:ended broadcast (e.g. a dropped connection, or the
+    // API server having been down when the status actually changed).
+    window.resyncActiveGame = function() {
+      fetch(API_BASE + '/schedule/active-game')
+        .then(function(r) { return r.ok ? r.json() : null; })
+        .then(function(d) {
+          if (d && d.game) {
+            enterLive(d.game.scheduleID, d.game.homeTeam, d.game.awayTeam, d.game.type);
+          } else if (autoState !== 'waiting') {
+            enterWaiting();
+          }
+        })
+        .catch(function() {});
+    };
 
     var socket = io('<cfoutput>#isDefined("application.apiBase") ? application.apiBase : "https://round-league-api.onrender.com"#</cfoutput>');
 
     socket.on('connect', function() {
       socket.emit('join-lobby');
-      if (autoState === 'live' && activeGameID) socket.emit('join', activeGameID);
+      if (autoState === 'live' && activeGameID) socket.emit('join', { scheduleID: activeGameID, type: gameType });
     });
 
     function enterWaiting() {
       autoState    = 'waiting';
       activeGameID = null;
       scheduleID   = null;
+      setCurrentGameStatus(null);
       clearInterval(clockTicker); clockTicker = null;
       clearInterval(shotTicker);  shotTicker  = null;
       waitingOverlay.style.display  = 'flex';
@@ -510,17 +575,18 @@
       pollActiveGame();
     }
 
-    function enterLive(id, homeTeam, awayTeam) {
-      if (autoState === 'live' && activeGameID === String(id)) return;
+    function enterLive(id, homeTeam, awayTeam, type) {
+      if (autoState === 'live' && activeGameID === String(id) && gameType === (type || 'schedule')) return;
       autoState    = 'live';
       activeGameID = String(id);
       scheduleID   = String(id);
+      gameType     = type || 'schedule';
       clockRemaining = 25 * 60; clockRunning = false; clockPeriod = 1; gameBuzzed = false;
       shotRemaining  = 30;      shotRunning  = false; shotBuzzed  = false;
       clearInterval(clockTicker); clockTicker = null;
       clearInterval(shotTicker);  shotTicker  = null;
       renderClock(); renderShotClock();
-      socket.emit('join', activeGameID);
+      socket.emit('join', { scheduleID: activeGameID, type: gameType });
       waitingOverlay.style.display  = 'none';
       gameoverOverlay.style.display = 'none';
       boardEl.style.display         = 'flex';
@@ -545,16 +611,18 @@
         .then(function(r) { return r.ok ? r.json() : null; })
         .then(function(d) {
           if (d && d.game && autoState === 'waiting')
-            enterLive(d.game.scheduleID, d.game.homeTeam, d.game.awayTeam);
+            enterLive(d.game.scheduleID, d.game.homeTeam, d.game.awayTeam, d.game.type);
         })
         .catch(function() {});
     }
 
     socket.on('game:active', function(data) {
-      if (autoState === 'waiting') enterLive(data.scheduleID, data.homeTeam, data.awayTeam);
+      if (autoState === 'waiting') enterLive(data.scheduleID, data.homeTeam, data.awayTeam, data.type);
     });
     socket.on('game:ended', function(data) {
-      if (autoState === 'live' && String(data.scheduleID) === activeGameID) enterGameOver();
+      // Match on type too — scheduleID alone can collide between a regular-season
+      // game and a playoff game that happen to share the same numeric ID.
+      if (autoState === 'live' && String(data.scheduleID) === activeGameID && (data.type || 'schedule') === gameType) enterGameOver();
     });
     socket.on('clock:update', function(data) {
       if (autoState === 'live') applyClockState(data);
@@ -567,7 +635,9 @@
         var badge = document.getElementById('status-badge');
         badge.textContent = data.status.toUpperCase();
         badge.className   = data.status === 'live' ? 'live' : '';
+        setCurrentGameStatus(data.status);
         if (data.status === 'final') enterGameOver();
+        else if (data.status === 'scheduled') enterWaiting();
       }
     });
     socket.on('fouls:update', function(data) { if (autoState === 'live') applyFoulData(data); });

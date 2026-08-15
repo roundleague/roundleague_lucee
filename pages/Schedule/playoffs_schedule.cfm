@@ -16,8 +16,9 @@
 <cfparam name="form.bracketID" default="#getBrackets.BracketID#">
 
 <cfquery name="getSchedule" datasource="roundleague">
-  SELECT s.Playoffs_ScheduleID, a.teamName AS Home, b.teamName AS Away, 
-  s.startTime, s.date, s.homeTeamID, s.awayTeamID, s.seasonID, s.homeScore, s.awayScore, s.BracketGameID, s.BracketRoundID, pb.Name as BracketName, s.week
+  SELECT s.Playoffs_ScheduleID, a.teamName AS Home, b.teamName AS Away,
+  s.startTime, s.date, s.homeTeamID, s.awayTeamID, s.seasonID, s.homeScore, s.awayScore, s.BracketGameID, s.BracketRoundID, pb.Name as BracketName, s.week,
+  pb.BracketFormat, s.GameLabel
   FROM playoffs_schedule s
   JOIN playoffs_bracket pb ON pb.Playoffs_bracketID = s.Playoffs_BracketID
   LEFT JOIN teams as a ON s.hometeamID = a.teamID
@@ -69,10 +70,18 @@
                     <cfset awayBoldClass = ''>
                   </cfif>
 
-                  <cfif currentWeek NEQ getSchedule.week OR getSchedule.currentRow EQ 1>
-                    <cfset currentWeek = getSchedule.week>
+                  <!--- Double-elim brackets group by BracketGameID (every game gets its own header,
+                        since a round-1 date span can hold many games all sharing the same Week) —
+                        single-elim brackets keep grouping by Week, unchanged. --->
+                  <cfset currentGroupValue = (getSchedule.BracketFormat EQ 'double_elim_7') ? getSchedule.BracketGameID : getSchedule.week>
+                  <cfif currentWeek NEQ currentGroupValue OR getSchedule.currentRow EQ 1>
+                    <cfset currentWeek = currentGroupValue>
                     <tr class="weekRow" id="week_#BracketRoundID#">
-                      <td colspan="4">Round #BracketRoundID#</td>
+                      <cfif getSchedule.BracketFormat EQ 'double_elim_7'>
+                        <td colspan="4">Game #getSchedule.BracketGameID#</td>
+                      <cfelse>
+                        <td colspan="4">Round #BracketRoundID#</td>
+                      </cfif>
                     </tr>
                   </cfif>
                     <tr>
@@ -96,10 +105,15 @@
                               <td data-label="Away">-</td>
                             </cfif>
                       </cfif>
-                      
+
                       <td data-label="Date">#DateFormat(getSchedule.Date, "mm/dd/yyyy")#</td>
                       <td data-label="Time">#DateTimeFormat(getSchedule.startTime, "h:nn tt")#</td>
                     </tr>
+                    <cfif getSchedule.BracketFormat EQ 'double_elim_7' AND len(trim(getSchedule.GameLabel))>
+                      <tr class="gameLabelRow">
+                        <td colspan="4" style="font-style:italic; font-size:12px; color:##777; padding-top:0;">#getSchedule.GameLabel#</td>
+                      </tr>
+                    </cfif>
                 </cfloop>
             </tbody>
         </table>

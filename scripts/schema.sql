@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS app_events (
 CREATE TABLE IF NOT EXISTS game_plays (
   playID                  INT AUTO_INCREMENT PRIMARY KEY,
   scheduleID              INT NOT NULL,
+  isPlayoff               TINYINT(1) NOT NULL DEFAULT 0,
   playerID                INT NOT NULL,
   teamID                  INT NOT NULL,
   stat_type               VARCHAR(20) NOT NULL,
@@ -23,9 +24,9 @@ CREATE TABLE IF NOT EXISTS game_plays (
   local_play_id           VARCHAR(60) NOT NULL,
   is_removed              TINYINT(1) DEFAULT 0,
   created_at              TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE KEY uq_local_play (scheduleID, local_play_id),
-  INDEX idx_schedule      (scheduleID),
-  INDEX idx_scoring       (scheduleID, points_scored, is_removed)
+  UNIQUE KEY uq_local_play (scheduleID, isPlayoff, local_play_id),
+  INDEX idx_schedule      (scheduleID, isPlayoff),
+  INDEX idx_scoring       (scheduleID, isPlayoff, points_scored, is_removed)
 );
 
 CREATE TABLE IF NOT EXISTS awards (
@@ -229,7 +230,8 @@ CREATE TABLE IF NOT EXISTS playoffs_bracket (
   Name               VARCHAR(50) NOT NULL DEFAULT '',
   SeasonID           INT DEFAULT NULL,
   SortOrder          INT DEFAULT NULL,
-  MaxTeamSize        INT DEFAULT NULL
+  MaxTeamSize        INT DEFAULT NULL,
+  BracketFormat      VARCHAR(20) NOT NULL DEFAULT 'single'
 );
 
 CREATE TABLE IF NOT EXISTS playoffs_playergamelog (
@@ -270,7 +272,26 @@ CREATE TABLE IF NOT EXISTS playoffs_schedule (
   BracketRoundID      INT DEFAULT NULL,
   HomeSeed            INT DEFAULT NULL,
   AwaySeed            INT DEFAULT NULL,
-  Location            VARCHAR(250) DEFAULT NULL
+  Location            VARCHAR(250) DEFAULT NULL,
+  WinnerAdvancesTo    INT DEFAULT NULL,
+  LoserAdvancesTo     INT DEFAULT NULL,
+  GameLabel           VARCHAR(60) DEFAULT NULL,
+  status                  ENUM('scheduled','live','final') NOT NULL DEFAULT 'scheduled',
+  clock_status            ENUM('stopped','running','paused') NOT NULL DEFAULT 'stopped',
+  clock_remaining_seconds INT NOT NULL DEFAULT 1500,
+  clock_updated_at        DATETIME DEFAULT NULL,
+  clock_period            TINYINT NOT NULL DEFAULT 1,
+  shot_clock_remaining    TINYINT NOT NULL DEFAULT 30,
+  shot_clock_status       ENUM('stopped','running') NOT NULL DEFAULT 'stopped',
+  shot_clock_updated_at   DATETIME DEFAULT NULL,
+  home_fouls_h1           INT NOT NULL DEFAULT 0,
+  home_fouls_h2           INT NOT NULL DEFAULT 0,
+  away_fouls_h1           INT NOT NULL DEFAULT 0,
+  away_fouls_h2           INT NOT NULL DEFAULT 0,
+  home_timeouts_h1        INT NOT NULL DEFAULT 2,
+  home_timeouts_h2        INT NOT NULL DEFAULT 2,
+  away_timeouts_h1        INT NOT NULL DEFAULT 2,
+  away_timeouts_h2        INT NOT NULL DEFAULT 2
 );
 
 CREATE TABLE IF NOT EXISTS push_tokens (

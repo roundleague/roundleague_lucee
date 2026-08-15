@@ -100,7 +100,6 @@
         <button type="button" class="pure-button sub-button" id="subButton">Sub</button>
     </div>
 
-    <cfif url.isPlayoffs NEQ 1>
     <div id="clockPanel" style="display:flex;align-items:center;gap:14px;padding:10px 0 6px 6px;flex-wrap:wrap;">
         <span id="clockDisplay" style="font-size:2rem;font-weight:bold;font-variant-numeric:tabular-nums;min-width:90px;cursor:pointer;" title="Click to edit time">25:00</span>
         <input id="clockEditInput" type="text" maxlength="5" placeholder="MM:SS"
@@ -123,7 +122,6 @@
         <button type="button" class="pure-button" id="clockSync" style="margin-left:4px;background:##6c757d;color:##fff;">Sync Board</button>
         <span style="font-size:0.75rem;color:##999;margin-left:12px;">Space = Start/Pause &middot; R = Reset Shot (30) &middot; F = Toggle SC On/Off &middot; T = Start/Stop Shot &middot; E = Edit Shot Clock</span>
     </div>
-    </cfif>
 
     <form name="gameLogForm" method="POST">
 
@@ -349,23 +347,24 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" crossorigin="anonymous"></script>
     <script src="https://kit.fontawesome.com/356f7c17e2.js" crossorigin="anonymous"></script>
 
-    <cfif url.isPlayoffs NEQ 1>
     <script>
     var LIVE_SCORE_CONFIG = {
       scheduleID: '#url.scheduleID#',
       adminKey: '#application.adminApiKey#',
       isHome: #(url.teamID EQ getTeamsPlaying.homeTeamID ? 'true' : 'false')#,
-      apiBase: '#isDefined("application.apiBase") ? application.apiBase : "https://round-league-api.onrender.com"#'
+      apiBase: '#isDefined("application.apiBase") ? application.apiBase : "https://round-league-api.onrender.com"#',
+      apiPath: '<cfif url.isPlayoffs EQ 1>/playoffs/schedule<cfelse>/schedule</cfif>',
+      gameType: '<cfif url.isPlayoffs EQ 1>playoff<cfelse>schedule</cfif>'
     };
     window.gameSocket = io('#isDefined("application.apiBase") ? application.apiBase : "https://round-league-api.onrender.com"#');
-    window.gameSocket.emit('join', LIVE_SCORE_CONFIG.scheduleID);
+    window.gameSocket.emit('join', { scheduleID: LIVE_SCORE_CONFIG.scheduleID, type: LIVE_SCORE_CONFIG.gameType });
     </script>
-    </cfif>
 
     <script>
     window.RL_LOG_CONFIG = {
       scheduleID: '#url.scheduleID#',
-      teamID: '#url.teamID#'
+      teamID: '#url.teamID#',
+      isPlayoff: <cfif url.isPlayoffs EQ 1>1<cfelse>0</cfif>
     };
     </script>
     <script src="StatsApp-Clock.js?v=#GetFileInfo(ExpandPath('StatsApp-Clock.js')).lastModified.getTime()#"></script>

@@ -63,7 +63,16 @@
         </div>
         <div class="card-body">
           <div class="form-group">
-            <label>Paste Rich's playoff schedule</label>
+            <label>Paste Rich's playoff schedule, or upload a flyer image:</label>
+            <div style="margin-bottom: 10px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+              <input type="file" id="playoffImageInput" accept="image/*" style="display:none;">
+              <button type="button" class="btn btn-outline-secondary btn-sm" id="uploadPlayoffImageBtn">
+                <i class="fa fa-image"></i> Upload Flyer Image
+              </button>
+              <input type="text" id="uploadBracketName" class="form-control" style="max-width:220px; display:inline-block;" placeholder="Bracket for this schedule (optional)">
+              <span id="imageParseStatus" style="font-size:13px; color:##666;"></span>
+            </div>
+            <p class="text-muted small" style="margin-bottom:8px;">Fill in "Bracket for this schedule" before parsing/uploading to auto-assign every game below to that bracket instead of leaving them unassigned.</p>
             <textarea id="pasteArea" class="form-control" rows="14" placeholder="Paste the full playoff schedule here...
 
 Example:
@@ -74,9 +83,24 @@ Sunday, April 12th (Semi-Finals)
 Monday, April 13th (Championships)
 6:30PM - East Division Championship"></textarea>
           </div>
-          <button type="button" class="btn btn-outline-primary" onclick="parseSchedule()">
+          <button type="button" class="btn btn-outline-primary" onclick="parseScheduleAndAssignBracket()">
             Parse &amp; Preview
           </button>
+        </div>
+      </div>
+
+      <!--- Brackets --->
+      <div class="card">
+        <div class="card-header">
+          <h5>Brackets</h5>
+        </div>
+        <div class="card-body">
+          <p class="text-muted small">Brackets are auto-detected from the pasted/extracted text, but you can add one manually here &mdash; before pasting, or for a bracket the parser doesn't pick up.</p>
+          <div class="form-group" style="display:flex; gap:8px; align-items:center; max-width:420px;">
+            <input type="text" id="newBracketNameInput" class="form-control" placeholder="e.g. Premiere Tier 1">
+            <button type="button" class="btn btn-outline-primary btn-sm" id="addBracketBtn" style="white-space:nowrap;">Add Bracket</button>
+          </div>
+          <div id="manualBracketsList" style="margin-top:10px;"></div>
         </div>
       </div>
 

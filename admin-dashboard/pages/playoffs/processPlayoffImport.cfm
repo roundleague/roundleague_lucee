@@ -20,26 +20,43 @@
   <cfset bracketCount++>
   <cfset games = bracket.games>
 
-  <!--- Count unique teams for MaxTeamSize --->
-  <cfset teamSet = {}>
-  <cfloop array="#games#" index="g">
-    <cfif isNumeric(g.homeTeamID) AND g.homeTeamID GT 0>
-      <cfset teamSet[g.homeTeamID] = 1>
+  <!--- Format: default 'single' for payload back-compat --->
+  <cfset bracketFormat = 'single'>
+  <cfif structKeyExists(bracket, "format") AND len(trim(bracket.format))>
+    <cfset bracketFormat = bracket.format>
+  </cfif>
+
+  <cfif bracketFormat EQ 'double_elim_7'>
+    <!--- Server-side backstop behind the client-side 12-game check --->
+    <cfif arrayLen(games) NEQ 12>
+      <cfthrow message="Double-Elim (7-Team) bracket '#bracket.name#' must have exactly 12 games, got #arrayLen(games)#.">
     </cfif>
-    <cfif isNumeric(g.awayTeamID) AND g.awayTeamID GT 0>
-      <cfset teamSet[g.awayTeamID] = 1>
-    </cfif>
-  </cfloop>
-  <cfset maxTeamSize = structCount(teamSet)>
-  <cfif maxTeamSize LT 2><cfset maxTeamSize = arrayLen(games)></cfif>
+    <cfset maxTeamSize = 7>
+    <cfset doubleElimObj = createObject("component", "library.playoffsDoubleElim")>
+    <cfset doubleElimTemplate = doubleElimObj.getDoubleElim7Template()>
+  <cfelse>
+    <!--- Count unique teams for MaxTeamSize --->
+    <cfset teamSet = {}>
+    <cfloop array="#games#" index="g">
+      <cfif isNumeric(g.homeTeamID) AND g.homeTeamID GT 0>
+        <cfset teamSet[g.homeTeamID] = 1>
+      </cfif>
+      <cfif isNumeric(g.awayTeamID) AND g.awayTeamID GT 0>
+        <cfset teamSet[g.awayTeamID] = 1>
+      </cfif>
+    </cfloop>
+    <cfset maxTeamSize = structCount(teamSet)>
+    <cfif maxTeamSize LT 2><cfset maxTeamSize = arrayLen(games)></cfif>
+  </cfif>
 
   <cfquery name="insertBracket" datasource="roundleague">
-    INSERT INTO playoffs_bracket (Name, SeasonID, SortOrder, MaxTeamSize)
+    INSERT INTO playoffs_bracket (Name, SeasonID, SortOrder, MaxTeamSize, BracketFormat)
     VALUES (
       <cfqueryparam value="#bracket.name#" cfsqltype="cf_sql_varchar">,
       <cfqueryparam value="#seasonID#" cfsqltype="cf_sql_integer">,
       <cfqueryparam value="#bracketCount#" cfsqltype="cf_sql_integer">,
-      <cfqueryparam value="#maxTeamSize#" cfsqltype="cf_sql_integer">
+      <cfqueryparam value="#maxTeamSize#" cfsqltype="cf_sql_integer">,
+      <cfqueryparam value="#bracketFormat#" cfsqltype="cf_sql_varchar">
     )
   </cfquery>
 
@@ -87,10 +104,22 @@
       <cfset startTime = g.startTime>
     </cfif>
 
+    <!--- Double-elim advancement columns: from the fixed template, keyed by ordinal position (= gameID) --->
+    <cfset winnerAdvancesTo = "">
+    <cfset loserAdvancesTo = "">
+    <cfset gameLabel = "">
+    <cfif bracketFormat EQ 'double_elim_7'>
+      <cfset templateRow = doubleElimTemplate[gameID]>
+      <cfif templateRow.winnerTo GT 0><cfset winnerAdvancesTo = templateRow.winnerTo></cfif>
+      <cfif templateRow.loserTo GT 0><cfset loserAdvancesTo = templateRow.loserTo></cfif>
+      <cfif len(trim(templateRow.label))><cfset gameLabel = templateRow.label></cfif>
+    </cfif>
+
     <cfquery datasource="roundleague">
       INSERT INTO playoffs_schedule (
         playoffs_bracketID, seasonID, bracketGameID, bracketRoundID, week,
-        homeSeed, awaySeed, homeTeamID, awayTeamID, date, startTime
+        homeSeed, awaySeed, homeTeamID, awayTeamID, date, startTime,
+        WinnerAdvancesTo, LoserAdvancesTo, GameLabel
       ) VALUES (
         <cfqueryparam value="#bracketID#" cfsqltype="cf_sql_integer">,
         <cfqueryparam value="#seasonID#" cfsqltype="cf_sql_integer">,
@@ -123,7 +152,22 @@
           NULL,
         </cfif>
         <cfif len(startTime)>
-          <cfqueryparam value="#startTime#" cfsqltype="cf_sql_varchar">
+          <cfqueryparam value="#startTime#" cfsqltype="cf_sql_varchar">,
+        <cfelse>
+          NULL,
+        </cfif>
+        <cfif len(winnerAdvancesTo)>
+          <cfqueryparam value="#winnerAdvancesTo#" cfsqltype="cf_sql_integer">,
+        <cfelse>
+          NULL,
+        </cfif>
+        <cfif len(loserAdvancesTo)>
+          <cfqueryparam value="#loserAdvancesTo#" cfsqltype="cf_sql_integer">,
+        <cfelse>
+          NULL,
+        </cfif>
+        <cfif len(gameLabel)>
+          <cfqueryparam value="#gameLabel#" cfsqltype="cf_sql_varchar">
         <cfelse>
           NULL
         </cfif>

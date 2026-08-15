@@ -106,13 +106,36 @@
         <cfelse>
             <cfreturn 0>
         </cfif>
-            
+
+     </cffunction>
+
+     <cffunction name="fillDoubleElimSlot"
+        hint="Double-elim only: find the destination playoffs_schedule row by BracketGameID and fill whichever team slot (Home/Away) is empty" returntype="void">
+        <cfargument name="bracketID" default="" required="yes" type="numeric">
+        <cfargument name="destGameID" default="" required="yes" type="numeric">
+        <cfargument name="teamID" default="" required="yes" type="numeric">
+
+        <cfquery name="destRow" datasource="roundleague">
+            SELECT Playoffs_scheduleID, HomeTeamID, AwayTeamID
+            FROM Playoffs_Schedule
+            WHERE Playoffs_BracketID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#arguments.bracketID#">
+            AND BracketGameID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#arguments.destGameID#">
+        </cfquery>
+
+        <cfif destRow.recordCount NEQ 0>
+            <cfset destUpdateCol = (destRow.homeTeamID EQ '') ? 'HomeTeamID' : 'AwayTeamID'>
+            <cfquery name="fillSlot" datasource="roundleague">
+                UPDATE Playoffs_Schedule
+                SET #destUpdateCol# = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#arguments.teamID#">
+                WHERE Playoffs_scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#destRow.Playoffs_scheduleID#">
+            </cfquery>
+        </cfif>
      </cffunction>
 
     <cftry>
     <!--- Get the max rounds for current bracket --->
     <cfquery name="getMaxTeams" datasource="roundleague">
-        SELECT MaxTeamSize
+        SELECT MaxTeamSize, BracketFormat
         FROM playoffs_bracket
         WHERE Playoffs_BracketID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.Playoffs_BracketID#">
     </cfquery>
@@ -182,24 +205,72 @@
     </cfloop>
 
     <cfquery name="scoresExist" datasource="roundleague">
-        SELECT homeScore
+        SELECT status
         From Playoffs_Schedule
-        WHERE Playoffs_scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#"> 
+        WHERE Playoffs_scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">
     </cfquery>
 
-    <!--- Scores / Standings have already been updated --->
-    <cfif scoresExist.homeScore EQ ''>
+    <!--- Guard against double-submission by finalized status, not by homeScore being
+          non-empty — live-score sync now writes homeScore/awayScore continuously
+          during play, well before this Save button is ever clicked. --->
+    <cfif scoresExist.status NEQ 'final'>
 
         <cfquery name="updateScheduleScore" datasource="roundleague">
-            UPDATE Playoffs_Schedule 
-            SET 
-                    homeScore = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.homeScore#">, 
-                    awayScore = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.awayScore#">
+            UPDATE Playoffs_Schedule
+            SET
+                    homeScore = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.homeScore#">,
+                    awayScore = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#form.awayScore#">,
+                    status = 'final'
             WHERE Playoffs_scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">
         </cfquery>
 
+        <!--- Notify live scoreboard that game is final --->
+        <cfhttp method="PATCH"
+                url="#isDefined("application.apiBase") ? application.apiBase : "https://round-league-api.onrender.com"#/api/playoffs/schedule/#url.scheduleID#/score"
+                result="patchFinalResult">
+            <cfhttpparam type="header" name="Content-Type" value="application/json">
+            <cfhttpparam type="header" name="x-admin-key" value="#application.adminApiKey#">
+            <cfhttpparam type="body" value='{"status":"final"}'>
+        </cfhttp>
 
         <!--- Advance Winning Team --->
+        <cfif getMaxTeams.BracketFormat EQ 'double_elim_7'>
+            <!--- Double-Elim (7-Team) advancement — reads WinnerAdvancesTo/LoserAdvancesTo off this game's own row --->
+            <cfset winnerTeamID = (form.homeScore GT form.awayScore) ? getTeamsPlaying.homeTeamID : getTeamsPlaying.awayTeamID>
+            <cfset loserTeamID = (form.homeScore GT form.awayScore) ? getTeamsPlaying.awayTeamID : getTeamsPlaying.homeTeamID>
+
+            <cfquery name="getCurrentGameAdvancement" datasource="roundleague">
+                SELECT WinnerAdvancesTo, LoserAdvancesTo
+                FROM Playoffs_Schedule
+                WHERE Playoffs_scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">
+            </cfquery>
+
+            <cfif getCurrentGameAdvancement.WinnerAdvancesTo EQ '' OR getCurrentGameAdvancement.WinnerAdvancesTo EQ 0>
+                <!--- Championship Game - insert winner into champions table --->
+                <cfquery name="dupChampionCheck" datasource="roundleague">
+                    SELECT championsID FROM champions
+                    WHERE teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#winnerTeamID#">
+                    AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getActiveSeasonID.seasonID#">
+                </cfquery>
+                <cfif dupChampionCheck.recordCount EQ 0>
+                    <cfquery name="insertChampion" datasource="roundleague">
+                        INSERT INTO champions (teamID, seasonID)
+                        VALUES (
+                            <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#winnerTeamID#">,
+                            <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getActiveSeasonID.seasonID#">
+                        )
+                    </cfquery>
+                </cfif>
+            <cfelse>
+                <cfset fillDoubleElimSlot(url.Playoffs_BracketID, getCurrentGameAdvancement.WinnerAdvancesTo, winnerTeamID)>
+            </cfif>
+
+            <cfif getCurrentGameAdvancement.LoserAdvancesTo NEQ '' AND getCurrentGameAdvancement.LoserAdvancesTo NEQ 0>
+                <cfset fillDoubleElimSlot(url.Playoffs_BracketID, getCurrentGameAdvancement.LoserAdvancesTo, loserTeamID)>
+            </cfif>
+            <!--- else: loser is eliminated, no further write --->
+
+        <cfelse>
         <cfset nextGameId = getAdvanceToGameId(url.bracketGameID, getMaxTeams.MaxTeamSize)>
         <cfquery name="advanceSchedule" datasource="roundleague">
             SELECT Playoffs_scheduleID, HomeTeamID, AwayTeamID
@@ -248,6 +319,7 @@
                     )
                 </cfquery>
             </cfif>
+        </cfif>
         </cfif>
     </cfif>
 

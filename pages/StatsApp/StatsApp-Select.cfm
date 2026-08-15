@@ -90,14 +90,30 @@
         <cfif isDefined("form.teamID")>
           <label for="seasonID">Select Week: </label>
           <select name="scheduleID" id="Schedule" class="scheduleSelect">
+              <optgroup label="Upcoming">
               <cfloop query="getTeamMatchups">
-                  <cfif form.teamID EQ getTeamMatchups.hometeamID>
-                    <cfset opponentTeam = getTeamMatchups.away>
-                  <cfelse>
-                    <cfset opponentTeam = getTeamMatchups.home>
+                  <cfif getTeamMatchups.status NEQ 'final'>
+                    <cfif form.teamID EQ getTeamMatchups.hometeamID>
+                      <cfset opponentTeam = getTeamMatchups.away>
+                    <cfelse>
+                      <cfset opponentTeam = getTeamMatchups.home>
+                    </cfif>
+                    <option data-bracketid="#getTeamMatchups.Playoffs_BracketID#" data-bracketroundid="#getTeamMatchups.bracketRoundID#" data-bracketgameid="#getTeamMatchups.BracketGameID#" data-playoffs="#getTeamMatchups.isPlayoffs#" value="#getTeamMatchups.scheduleID#"<cfif form.scheduleID EQ getTeamMatchups.scheduleID>selected</cfif>><cfif getTeamMatchups.isPlayoffs>Round<cfelse>Week</cfif> #getTeamMatchups.Week# VS #opponentTeam#<cfif getTeamMatchups.isPlayoffs> (Playoffs)</cfif></option>
                   </cfif>
-                  <option <cfif getTeamMatchups.status EQ 'final'>disabled</cfif> data-bracketid="#getTeamMatchups.Playoffs_BracketID#" data-bracketroundid="#getTeamMatchups.bracketRoundID#" data-bracketgameid="#getTeamMatchups.BracketGameID#" data-playoffs="#getTeamMatchups.isPlayoffs#" value="#getTeamMatchups.scheduleID#"<cfif form.scheduleID EQ getTeamMatchups.scheduleID>selected</cfif>>Week #getTeamMatchups.Week# VS #opponentTeam#<cfif getTeamMatchups.isPlayoffs> (Playoffs)</cfif><cfif getTeamMatchups.status EQ 'final'> (Already Played)</cfif></option>
               </cfloop>
+              </optgroup>
+              <optgroup label="Already Played">
+              <cfloop query="getTeamMatchups">
+                  <cfif getTeamMatchups.status EQ 'final'>
+                    <cfif form.teamID EQ getTeamMatchups.hometeamID>
+                      <cfset opponentTeam = getTeamMatchups.away>
+                    <cfelse>
+                      <cfset opponentTeam = getTeamMatchups.home>
+                    </cfif>
+                    <option disabled data-bracketid="#getTeamMatchups.Playoffs_BracketID#" data-bracketroundid="#getTeamMatchups.bracketRoundID#" data-bracketgameid="#getTeamMatchups.BracketGameID#" data-playoffs="#getTeamMatchups.isPlayoffs#" value="#getTeamMatchups.scheduleID#"<cfif form.scheduleID EQ getTeamMatchups.scheduleID>selected</cfif>><cfif getTeamMatchups.isPlayoffs>Round<cfelse>Week</cfif> #getTeamMatchups.Week# VS #opponentTeam#<cfif getTeamMatchups.isPlayoffs> (Playoffs)</cfif> (Already Played)</option>
+                  </cfif>
+              </cfloop>
+              </optgroup>
           </select>
         </cfif>
         <br>

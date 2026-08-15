@@ -307,7 +307,7 @@ $(document).ready(function () {
     var playerName = row.find(".playerName").text().trim();
     var jersey = row.find(".jerseyNumber").val();
     var gamePoints = parseInt(row.find("#PTS").val(), 10) || 0;
-    fetch(cfg.apiBase + '/api/schedule/' + cfg.scheduleID + '/basket-scored', {
+    fetch(cfg.apiBase + '/api' + (cfg.apiPath || '/schedule') + '/' + cfg.scheduleID + '/basket-scored', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-admin-key': cfg.adminKey },
       body: JSON.stringify({ playerName: playerName, jersey: jersey, points: gamePoints })
@@ -320,7 +320,7 @@ $(document).ready(function () {
     var key = (cfg.isHome ? 'home' : 'away') + '_fouls_h' + half;
     var body = {};
     body[key] = parseInt($('.Fouls_Half_' + half).html()) || 0;
-    fetch(cfg.apiBase + '/api/schedule/' + cfg.scheduleID + '/fouls', {
+    fetch(cfg.apiBase + '/api' + (cfg.apiPath || '/schedule') + '/' + cfg.scheduleID + '/fouls', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json', 'x-admin-key': cfg.adminKey },
       body: JSON.stringify(body)
@@ -451,7 +451,7 @@ $(document).ready(function () {
     var key = (cfg.isHome ? 'home' : 'away') + '_timeouts_h' + half;
     var body = {};
     body[key] = parseInt($('.Timeouts_Half_' + half).html()) || 0;
-    fetch(cfg.apiBase + '/api/schedule/' + cfg.scheduleID + '/timeouts', {
+    fetch(cfg.apiBase + '/api' + (cfg.apiPath || '/schedule') + '/' + cfg.scheduleID + '/timeouts', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json', 'x-admin-key': cfg.adminKey },
       body: JSON.stringify(body)
@@ -533,6 +533,7 @@ $(document).ready(function () {
       body: new URLSearchParams({
         action: 'add',
         scheduleID: cfg.scheduleID,
+        isPlayoff: cfg.isPlayoff ? 1 : 0,
         teamID: cfg.teamID,
         playerID: numericPlayerID,
         stat_type: entry.stat || '',
@@ -555,6 +556,7 @@ $(document).ready(function () {
       body: new URLSearchParams({
         action: 'remove',
         scheduleID: cfg.scheduleID,
+        isPlayoff: cfg.isPlayoff ? 1 : 0,
         local_play_id: localPlayID
       })
     }).catch(function() {});
@@ -972,9 +974,9 @@ document.addEventListener("click", function (e) {
  *      Whenever it changes, the current team's score is sent.
  *      isHome determines whether to send homeScore or awayScore.
  *
- * Config is injected by StatsApp.cfm as LIVE_SCORE_CONFIG.
- * The block is skipped entirely for playoff games (config absent).
- * Status is set to 'final' by StatsApp-Save.cfm on form submit.
+ * Config is injected by StatsApp.cfm as LIVE_SCORE_CONFIG, for both regular
+ * season and playoff games — cfg.apiPath picks the right API route/table.
+ * Status is set to 'final' by StatsApp-Save.cfm / StatsApp-Save-Playoffs.cfm on submit.
  * ============================================================ */
 (function () {
   console.log(
@@ -985,9 +987,10 @@ document.addEventListener("click", function (e) {
 
   var cfg = LIVE_SCORE_CONFIG;
   var API_BASE = cfg.apiBase + "/api";
+  var API_PATH = cfg.apiPath || "/schedule";
 
   function patchScore(body) {
-    fetch(API_BASE + "/schedule/" + cfg.scheduleID + "/score", {
+    fetch(API_BASE + API_PATH + "/" + cfg.scheduleID + "/score", {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -1010,7 +1013,7 @@ document.addEventListener("click", function (e) {
   // for a late join, a mid-game reload, or a missed socket event (currentScores
   // otherwise starts at {0,0} and only updates once the opponent scores again).
   function fetchScore() {
-    fetch(API_BASE + "/schedule/" + cfg.scheduleID)
+    fetch(API_BASE + API_PATH + "/" + cfg.scheduleID)
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (d) {
         if (!d) return;

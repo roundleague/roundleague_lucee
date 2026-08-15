@@ -1,5 +1,21 @@
 <cfinclude template="/header.cfm">
 
+<!--- LOCAL ONLY: Reset playoff game data for re-testing --->
+<cfif (CGI.HTTP_HOST CONTAINS "localhost" OR CGI.HTTP_HOST CONTAINS "127.0.0.1") AND isDefined("form.resetGame") AND isDefined("url.scheduleID")>
+    <cfquery datasource="roundleague">
+        DELETE FROM Playoffs_PlayerGameLog WHERE Playoffs_ScheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">
+    </cfquery>
+    <cfquery datasource="roundleague">
+        DELETE FROM game_plays WHERE scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#"> AND isPlayoff = 1
+    </cfquery>
+    <cfquery datasource="roundleague">
+        UPDATE Playoffs_Schedule
+        SET homeScore = NULL, awayScore = NULL, status = 'scheduled'
+        WHERE Playoffs_scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">
+    </cfquery>
+    <cflocation url="playoffs_boxscore.cfm?scheduleID=#url.scheduleID#" addtoken="false">
+</cfif>
+
 <!--- Page Specific CSS/JS Here --->
 <link href="../boxscore/boxscore.css" rel="stylesheet">
 
@@ -153,6 +169,16 @@
                 </cfif>
         	</cfloop>
         </table>
+
+        <cfif CGI.HTTP_HOST CONTAINS "localhost" OR CGI.HTTP_HOST CONTAINS "127.0.0.1">
+        <div style="margin:24px auto;max-width:500px;padding:16px;background:##fff3cd;border:1px solid ##ffc107;border-radius:6px;text-align:center;">
+            <form method="POST" action="playoffs_boxscore.cfm?scheduleID=#url.scheduleID#" onsubmit="return confirm('Reset all data for Playoffs_ScheduleID #url.scheduleID#? This deletes Playoffs_PlayerGameLog and game_plays, and sets score + status back to scheduled. Bracket advancement already applied to later games is NOT undone.')">
+                <input type="hidden" name="resetGame" value="1">
+                <button type="submit" style="background:##dc3545;color:white;border:none;padding:8px 20px;border-radius:4px;font-weight:bold;cursor:pointer;font-size:14px;">&##x26A0; Reset Game Data</button>
+                <div style="font-size:11px;color:##856404;margin-top:6px;">Deletes Playoffs_PlayerGameLog &bull; game_plays &bull; Resets score + status &mdash; LOCAL ONLY</div>
+            </form>
+        </div>
+        </cfif>
 
       </div>
     </div>

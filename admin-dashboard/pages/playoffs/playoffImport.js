@@ -10,6 +10,8 @@ var parsedGames = [];
 var bracketColorMap = {};
 var bracketColorIdx = 0;
 var teamNameMap = {}; // rawName.toLowerCase() → { teamID, teamName } (manual overrides)
+var bracketFormatMap = {}; // bracket name → 'single' | 'double_elim_7', default 'single'
+var manualBrackets = []; // bracket names declared via the "Add Bracket" field, merged into allBrackets at render time
 
 // ── Fuzzy Matching ────────────────────────────────────────────────────────────
 
@@ -99,6 +101,7 @@ function parseSchedule() {
   parsedGames = [];
   bracketColorMap = {};
   bracketColorIdx = 0;
+  bracketFormatMap = {};
 
   var lines = text.split(/\r?\n/);
   var currentDate = '';
@@ -193,9 +196,9 @@ function parseSchedule() {
         }
       }
 
-      // Team lookup
-      game.homeTeamID = lookupTeam(game.homeTeamRaw);
-      game.awayTeamID = lookupTeam(game.awayTeamRaw);
+      // Team lookup — skip placeholder sides (e.g. "Winner Game 1", "Loser Game 2")
+      game.homeTeamID = game.homeIsPlaceholder ? null : lookupTeam(game.homeTeamRaw);
+      game.awayTeamID = game.awayIsPlaceholder ? null : lookupTeam(game.awayTeamRaw);
 
       parsedGames.push(game);
     }
@@ -207,6 +210,26 @@ function parseSchedule() {
   }
 
   renderPreview(detectedBrackets);
+}
+
+// Wraps parseSchedule() to also auto-assign every parsed game to the
+// "Bracket for this schedule" field, when filled in — used by both the
+// Parse & Preview button and the image-upload handler.
+function parseScheduleAndAssignBracket() {
+  parseSchedule();
+  var bracketField = document.getElementById('uploadBracketName');
+  var bracketName = bracketField ? bracketField.value.trim() : '';
+  if (bracketName) applyBracketToAllParsedGames(bracketName);
+}
+
+function applyBracketToAllParsedGames(bracketName) {
+  if (!bracketName || !parsedGames.length) return;
+  addManualBracket(bracketName);
+  parsedGames.forEach(function(g) { g._bracket = bracketName; });
+  document.querySelectorAll('select.bracket-select').forEach(function(sel) {
+    sel.value = bracketName;
+  });
+  buildImportSummary();
 }
 
 function isDateLine(line) {
@@ -271,14 +294,18 @@ function parseGameLine(line) {
     awayTeamRaw: '',
     homeTeamID: null,
     awayTeamID: null,
-    isPlaceholder: false
+    isPlaceholder: false,      // true only when BOTH sides are placeholders (or no "vs" at all)
+    homeIsPlaceholder: false,
+    awayIsPlaceholder: false
   };
 
   // Check for "vs" — actual matchup
   var vsIdx = rest.search(/\bvs\.?\b/i);
   if (vsIdx === -1) {
-    // Placeholder (e.g. "East Division Championship", "Winner (2/7) vs Winner (3/6)" shouldn't hit this)
+    // Whole-line placeholder (e.g. "East Division Championship")
     game.isPlaceholder = true;
+    game.homeIsPlaceholder = true;
+    game.awayIsPlaceholder = true;
     game.homeTeamRaw = rest;
     return game;
   }
@@ -294,21 +321,31 @@ function parseGameLine(line) {
   game.awaySeed = awayParsed.seed;
   game.awayTeamRaw = awayParsed.name;
 
-  // If both sides are "Winner (x/y)" style, treat as placeholder
-  if (/^winner\s*\(/i.test(homeParsed.name) && /^winner\s*\(/i.test(awayParsed.name)) {
-    game.isPlaceholder = true;
-  }
+  // Per-side placeholder detection — handles mixed lines like "#1 3 DRIBBLES vs WINNER GAME 1"
+  // as well as pure-placeholder lines like "LOSER GAME 1 vs LOSER GAME 2"
+  game.homeIsPlaceholder = isPlaceholderText(homeParsed.name);
+  game.awayIsPlaceholder = isPlaceholderText(awayParsed.name);
+  game.isPlaceholder = game.homeIsPlaceholder && game.awayIsPlaceholder;
 
   return game;
 }
 
+// Matches "Winner (2/7)", "Winner Game 1", "Loser Game 2", and bare "Game 8"
+// (the WINNER/LOSER prefix is sometimes dropped by OCR) — case-insensitive
+function isPlaceholderText(str) {
+  if (!str) return false;
+  str = str.trim();
+  return /^(winner|loser)\s*\(/i.test(str) ||
+         /^(?:winner|loser)?\s*game\s*\d+$/i.test(str);
+}
+
 function parseTeamPart(str) {
-  // Extract leading seed: (N)
-  var seedMatch = str.match(/^\((\d+)\)\s*/);
+  // Extract leading seed: (N) or #N
+  var seedMatch = str.match(/^(?:\((\d+)\)|#(\d+))\s*/);
   var seed = null;
   var name = str;
   if (seedMatch) {
-    seed = parseInt(seedMatch[1]);
+    seed = parseInt(seedMatch[1] || seedMatch[2]);
     name = str.substring(seedMatch[0].length).trim();
   }
   return { seed: seed, name: name };
@@ -384,24 +421,25 @@ function renderPreview(detectedBrackets) {
       allBrackets.push(g.suggestedBracket);
     }
   });
+  manualBrackets.forEach(function(name) {
+    if (allBrackets.indexOf(name) === -1) allBrackets.push(name);
+  });
 
   var unknownTeams = {};
 
   parsedGames.forEach(function(g, idx) {
     var tr = document.createElement('tr');
-    if (!g.homeTeamID && !g.isPlaceholder) tr.classList.add('warning-row');
+    if ((!g.homeTeamID && !g.homeIsPlaceholder) || (!g.awayTeamID && !g.awayIsPlaceholder)) tr.classList.add('warning-row');
 
     // Assigned bracket for this game (mutable)
     g._bracket = g.suggestedBracket || '';
 
     // Home cell
-    var homeCell = renderTeamCell(g.homeTeamRaw, g.homeTeamID, g.homeSeed, g.isPlaceholder);
-    var awayCell = renderTeamCell(g.awayTeamRaw, g.awayTeamID, g.awaySeed, g.isPlaceholder);
+    var homeCell = renderTeamCell(g.homeTeamRaw, g.homeTeamID, g.homeSeed, g.homeIsPlaceholder);
+    var awayCell = renderTeamCell(g.awayTeamRaw, g.awayTeamID, g.awaySeed, g.awayIsPlaceholder);
 
-    if (!g.isPlaceholder) {
-      if (!g.homeTeamID && g.homeTeamRaw) unknownTeams[g.homeTeamRaw] = true;
-      if (!g.awayTeamID && g.awayTeamRaw) unknownTeams[g.awayTeamRaw] = true;
-    }
+    if (!g.homeIsPlaceholder && !g.homeTeamID && g.homeTeamRaw) unknownTeams[g.homeTeamRaw] = true;
+    if (!g.awayIsPlaceholder && !g.awayTeamID && g.awayTeamRaw) unknownTeams[g.awayTeamRaw] = true;
 
     // Bracket dropdown
     var bracketSelect = buildBracketSelect(allBrackets, g._bracket, idx);
@@ -504,6 +542,68 @@ function buildBracketSelect(allBrackets, current, gameIdx) {
   return sel;
 }
 
+// ── Persistence (localStorage, scoped per season — mirrors scheduleImport.js's
+// sync-summary pattern; nothing here touches the DB until actual Import) ──────
+
+function getPlayoffStorageKey() {
+  return 'playoffImport_season_' + currentSeasonID;
+}
+
+function savePlayoffImportState() {
+  try {
+    var bracketField = document.getElementById('uploadBracketName');
+    localStorage.setItem(getPlayoffStorageKey(), JSON.stringify({
+      manualBrackets: manualBrackets,
+      lastBracketField: bracketField ? bracketField.value : ''
+    }));
+  } catch (e) { /* localStorage unavailable — degrade silently */ }
+}
+
+function loadPlayoffImportState() {
+  try {
+    var raw = localStorage.getItem(getPlayoffStorageKey());
+    if (!raw) return;
+    var data = JSON.parse(raw);
+    if (data.manualBrackets && data.manualBrackets.length) {
+      manualBrackets = data.manualBrackets;
+      manualBrackets.forEach(function(name) {
+        if (!(name in bracketFormatMap)) bracketFormatMap[name] = 'single';
+      });
+      renderManualBracketsList();
+    }
+    if (data.lastBracketField) {
+      var bracketField = document.getElementById('uploadBracketName');
+      if (bracketField) bracketField.value = data.lastBracketField;
+    }
+  } catch (e) { /* corrupt/unavailable storage — start fresh */ }
+}
+
+function addManualBracket(name) {
+  name = (name || '').trim();
+  if (!name) return;
+  if (manualBrackets.indexOf(name) === -1) manualBrackets.push(name);
+  if (!(name in bracketFormatMap)) bracketFormatMap[name] = 'single';
+  addBracketOptionToAll(name);
+  renderManualBracketsList();
+  savePlayoffImportState();
+}
+
+function renderManualBracketsList() {
+  var container = document.getElementById('manualBracketsList');
+  if (!container) return;
+  container.innerHTML = '';
+  manualBrackets.forEach(function(name) {
+    var badge = document.createElement('span');
+    badge.className = 'bracket-badge';
+    badge.style.background = getBracketColor(name);
+    badge.style.marginRight = '6px';
+    badge.style.marginBottom = '6px';
+    badge.style.display = 'inline-block';
+    badge.textContent = name;
+    container.appendChild(badge);
+  });
+}
+
 function addBracketOptionToAll(name) {
   var selects = document.querySelectorAll('select.bracket-select');
   selects.forEach(function(sel) {
@@ -525,10 +625,8 @@ function addBracketOptionToAll(name) {
 function updateMatchSummary() {
   var matched = 0, total = 0;
   parsedGames.forEach(function(g) {
-    if (!g.isPlaceholder) {
-      if (g.homeTeamRaw) { total++; if (g.homeTeamID) matched++; }
-      if (g.awayTeamRaw) { total++; if (g.awayTeamID) matched++; }
-    }
+    if (!g.homeIsPlaceholder && g.homeTeamRaw) { total++; if (g.homeTeamID) matched++; }
+    if (!g.awayIsPlaceholder && g.awayTeamRaw) { total++; if (g.awayTeamID) matched++; }
   });
   document.getElementById('matchSummary').textContent = matched + '/' + total + ' teams matched';
 }
@@ -546,11 +644,25 @@ function buildImportSummary() {
   });
 
   var keys = Object.keys(bracketGroups);
-  var html = '<ul style="margin:0; padding-left:18px;">';
+  var formatMismatch = false;
+  var html = '<ul style="margin:0; padding-left:18px; list-style:none;">';
   keys.forEach(function(b) {
     var color = getBracketColor(b);
-    html += '<li><span class="bracket-badge" style="background:' + color + '">' + escHtml(b) + '</span> ' +
-      bracketGroups[b].length + ' game(s)</li>';
+    if (!(b in bracketFormatMap)) bracketFormatMap[b] = 'single';
+    var count = bracketGroups[b].length;
+    var isDouble = bracketFormatMap[b] === 'double_elim_7';
+    html += '<li style="margin-bottom:4px;">' +
+      '<span class="bracket-badge" style="background:' + color + '">' + escHtml(b) + '</span> ' +
+      count + ' game(s) ' +
+      '<select class="form-control bracket-format-select" data-bracket="' + escHtml(b) + '" style="width:auto; display:inline-block; font-size:12px; margin-left:6px;">' +
+        '<option value="single"' + (isDouble ? '' : ' selected') + '>Single-Elim</option>' +
+        '<option value="double_elim_7"' + (isDouble ? ' selected' : '') + '>Double-Elim (7-Team)</option>' +
+      '</select>';
+    if (isDouble && count !== 12) {
+      formatMismatch = true;
+      html += ' <span class="text-danger" style="font-size:12px;">&mdash; needs exactly 12 games (has ' + count + ')</span>';
+    }
+    html += '</li>';
   });
   html += '</ul>';
 
@@ -560,13 +672,24 @@ function buildImportSummary() {
 
   document.getElementById('importSummary').innerHTML = html;
 
+  document.querySelectorAll('.bracket-format-select').forEach(function(sel) {
+    sel.addEventListener('change', function() {
+      bracketFormatMap[this.dataset.bracket] = this.value;
+      buildImportSummary();
+    });
+  });
+
   var importBtn = document.getElementById('importBtn');
-  importBtn.disabled = unassigned > 0 || keys.length === 0;
+  importBtn.disabled = unassigned > 0 || keys.length === 0 || formatMismatch;
 }
 
 // ── Form Submission ───────────────────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', function() {
+  loadPlayoffImportState();
+
+  document.getElementById('uploadBracketName').addEventListener('change', savePlayoffImportState);
+
   document.getElementById('importForm').addEventListener('submit', function(e) {
     e.preventDefault();
     if (!confirm('This will delete ALL existing playoff data for this season and replace it. Continue?')) return;
@@ -574,6 +697,73 @@ document.addEventListener('DOMContentLoaded', function() {
     var payload = buildPayload();
     document.getElementById('formImportData').value = JSON.stringify(payload);
     this.submit();
+  });
+
+  document.getElementById('addBracketBtn').addEventListener('click', function() {
+    var input = document.getElementById('newBracketNameInput');
+    addManualBracket(input.value);
+    input.value = '';
+    input.focus();
+  });
+
+  document.getElementById('newBracketNameInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      document.getElementById('addBracketBtn').click();
+    }
+  });
+
+  document.getElementById('uploadPlayoffImageBtn').addEventListener('click', function() {
+    document.getElementById('playoffImageInput').click();
+  });
+
+  document.getElementById('playoffImageInput').addEventListener('change', function() {
+    var file = this.files[0];
+    if (!file) return;
+
+    var status = document.getElementById('imageParseStatus');
+    status.textContent = 'Extracting schedule...';
+
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var base64 = e.target.result.split(',')[1];
+
+      fetch('/admin-dashboard/pages/playoffs/parsePlayoffImage.cfm', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: base64 })
+      })
+      .then(function(res) {
+        return res.text().then(function(text) {
+          var start = text.indexOf('{');
+          var end = text.lastIndexOf('}');
+          if (start === -1 || end === -1) throw new Error('No JSON found in response: ' + text.substring(0, 300));
+          try {
+            return JSON.parse(text.substring(start, end + 1));
+          } catch (e) {
+            throw new Error('JSON parse failed: ' + e.message);
+          }
+        });
+      })
+      .then(function(data) {
+        if (data.text) {
+          document.getElementById('pasteArea').value = data.text;
+          parseScheduleAndAssignBracket();
+          var bracketField = document.getElementById('uploadBracketName');
+          status.textContent = (bracketField && bracketField.value.trim())
+            ? 'Extracted and assigned to "' + bracketField.value.trim() + '".'
+            : 'Extracted — review before parsing.';
+        } else {
+          status.textContent = 'Error: ' + (data.error || 'Unknown error');
+          console.error('parsePlayoffImage API error:', data);
+        }
+      })
+      .catch(function(err) {
+        status.textContent = 'Request failed: ' + err;
+        console.error('parsePlayoffImage error:', err);
+      });
+    };
+    reader.readAsDataURL(file);
   });
 });
 
@@ -623,7 +813,7 @@ function buildPayload() {
       return fg;
     });
 
-    return { name: name, games: formattedGames };
+    return { name: name, games: formattedGames, format: bracketFormatMap[name] || 'single' };
   });
 
   return { brackets: brackets };
@@ -654,10 +844,14 @@ function useSuggestedTeam(rawName, teamID, teamName) {
     }
   });
   renderPreview(detectedBrackets);
-  // Restore bracket selections
+  // Restore bracket selections — both the visible dropdown AND the underlying
+  // model, which renderPreview() just reset to suggestedBracket-or-blank
   document.querySelectorAll('select.bracket-select').forEach(function(sel) {
     var saved = savedBrackets[sel.dataset.gameIdx];
-    if (saved) sel.value = saved;
+    if (saved) {
+      sel.value = saved;
+      parsedGames[sel.dataset.gameIdx]._bracket = saved;
+    }
   });
   buildImportSummary();
 }
@@ -671,6 +865,7 @@ function resetImport() {
   bracketColorMap = {};
   bracketColorIdx = 0;
   teamNameMap = {};
+  bracketFormatMap = {};
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
