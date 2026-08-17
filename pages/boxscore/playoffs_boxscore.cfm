@@ -17,10 +17,15 @@
 </cfif>
 
 <!--- Page Specific CSS/JS Here --->
-<link href="../boxscore/boxscore.css" rel="stylesheet">
+<cfset _v = getFileInfo(expandPath("/pages/boxscore/boxscore.css")).lastModified.getTime()>
+<link href="/pages/boxscore/boxscore.css?v=<cfoutput>#_v#</cfoutput>" rel="stylesheet">
+<!--- POG-style fonts for player stats modal --->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
 
 <cfquery name="getPlayerLogs" datasource="roundleague">
-	SELECT DISTINCT pgl.PlayerID, p.firstName, p.lastName, FGM, FGA, 3FGM, 3FGA, FTM, FTA, Points, Rebounds, Assists, Steals, Blocks, Turnovers, pgl.teamID, t.teamName, pgl.Fouls, p.PermissionToShare, r.jersey
+	SELECT DISTINCT pgl.PlayerID, p.firstName, p.lastName, FGM, FGA, 3FGM, 3FGA, FTM, FTA, Points, Rebounds, Assists, Steals, Blocks, Turnovers, pgl.teamID, t.teamName, pgl.Fouls, r.jersey, p.PermissionToShare
 	FROM Playoffs_PlayerGameLog pgl
 	JOIN Players p on p.playerID = pgl.playerID
     JOIN Teams t on t.teamID = pgl.teamID
@@ -30,7 +35,7 @@
 </cfquery>
 
 <cfquery name="getTeamsPlaying" datasource="roundleague">
-    SELECT Playoffs_scheduleID, WEEK, a.teamName AS Home, b.teamName AS Away, s.startTime, Date_FORMAT(s.date, "%M %d, %Y") AS Date, s.homeScore, s.awayscore, a.teamID as HomeTeamID, b.teamID as AwayTeamID
+    SELECT Playoffs_scheduleID, WEEK, a.teamName AS Home, b.teamName AS Away, s.startTime, Date_FORMAT(s.date, "%M %d, %Y") AS Date, s.homeScore, s.awayscore, s.status, a.teamID as HomeTeamID, b.teamID as AwayTeamID
     FROM Playoffs_schedule s
     LEFT JOIN teams as a ON s.hometeamID = a.teamID
     LEFT JOIN teams as b ON s.awayTeamID = b.teamID
@@ -38,23 +43,86 @@
     ORDER BY WEEK, startTime
 </cfquery>
 
+<cfquery name="getWinsAndLossesHomeTeam" datasource="roundleague">
+    SELECT Wins,Losses
+    FROM standings
+    WHERE teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.HomeTeamID#">
+    AND SeasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.CurrentSeasonID#">
+</cfquery>
+
+<cfquery name="getWinsAndLossesAwayTeam" datasource="roundleague">
+    SELECT Wins,Losses
+    FROM standings
+    WHERE teamID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.AwayTeamID# ">
+    AND seasonID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#session.currentSeasonID#">
+</cfquery>
+
+<cfquery name="getPlayByPlay" datasource="roundleague">
+    SELECT gp.playID, gp.stat_type, gp.points_scored,
+           gp.home_score, gp.away_score, gp.period,
+           gp.clock_remaining_seconds,
+           p.firstName, p.lastName, t.teamName
+    FROM game_plays gp
+    JOIN Players p ON p.playerID = gp.playerID
+    JOIN Teams t   ON t.teamID   = gp.teamID
+    WHERE gp.scheduleID   = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">
+      AND gp.isPlayoff    = 1
+      AND gp.points_scored > 0
+      AND gp.is_removed    = 0
+    ORDER BY
+        <cfif getTeamsPlaying.status EQ 'final'>gp.period ASC, gp.playID ASC<cfelse>gp.period DESC, gp.playID DESC</cfif>
+</cfquery>
+
 <cfoutput>
 <div class="main" style="background-color: white; margin-top: 25px;">
     <div class="section text-center">
       <div class="container">
-
         <div class="score-card">
-          <h4 class="gameTitle">
-              <a class="playerLink" href="/pages/teams/team-profile-page.cfm?teamID=#getTeamsPlaying.HomeTeamID#">
-                  #getTeamsPlaying.Home# #getTeamsPlaying.HomeScore#
-              </a> |
-              <a class="playerLink" href="/pages/teams/team-profile-page.cfm?teamID=#getTeamsPlaying.AwayTeamID#">
-                  #getTeamsPlaying.Away# #getTeamsPlaying.AwayScore#
-              </a>
-          </h4>
-          <h5 class="game-date">#getTeamsPlaying.Date#</h5>
+            <h4 class="gameTitle desktop"> <a class="playerLink" href="/pages/teams/team-profile-page.cfm?teamID=#getTeamsPlaying.HomeTeamID#"> #getTeamsPlaying.Home# #getTeamsPlaying.HomeScore# </a>(#getWinsAndLossesHomeTeam.Wins#-#getWinsAndLossesHomeTeam.Losses#) vs <a class="playerLink" href="/pages/teams/team-profile-page.cfm?teamID=#getTeamsPlaying.AwayTeamID#"> #getTeamsPlaying.Away# #getTeamsPlaying.AwayScore# </a> (#getWinsAndLossesAwayTeam.Wins#-#getWinsAndLossesAwayTeam.Losses#)</h4>
+            <h5 class="game-date">#getTeamsPlaying.Date#</h5>
         </div>
 
+        <!--- Mobile score section --->
+        <div class="finalScoreSection mobile">
+            <!--- First Div Section is Home Team Info --->
+            <div class="teamInfoContainer">
+                <div class="teamInfo">
+                  <div class="teamInfo_teamName"><b>#getTeamsPlaying.Home#</b></div>
+                  <div class="teamInfo_record">#getWinsAndLossesHomeTeam.Wins#-#getWinsAndLossesHomeTeam.Losses#</div>
+                </div>
+            </div>
+
+            <!--- Second will be 'FINAL' --->
+            <div class="scoresContainer">
+                <cfset homeBolderScore = (getTeamsPlaying.HomeScore GT getTeamsPlaying.AwayScore) ? 'homeBolderScore' : ''>
+                <div class="homeTeamContainer #homeBolderScore#">#getTeamsPlaying.HomeScore#</div>
+                <div class="finalTextDiv">FINAL</div>
+                <cfset awayBolderScore = (getTeamsPlaying.AwayScore GT getTeamsPlaying.HomeScore) ? 'awayBolderScore' : ''>
+                <div class="awayTeamContainer #awayBolderScore#">#getTeamsPlaying.AwayScore#</div>
+            </div>
+
+            <!--- Third will be Away Team Info --->
+            <div class="teamInfoContainer">
+                <div class="teamInfo">
+                  <div class="teamInfo_teamName"><b>#getTeamsPlaying.Away#</b></div>
+                  <div class="teamInfo_record">#getWinsAndLossesAwayTeam.Wins#-#getWinsAndLossesAwayTeam.Losses#</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="rotateTip">Rotate your device to see the full box score</div>
+
+        <cfset defaultTab = (getPlayerLogs.recordCount EQ 0) ? "playbyplay" : "boxscore">
+
+        <ul class="nav nav-tabs" id="gameTab">
+            <li class="<cfif defaultTab EQ 'boxscore'>active</cfif>"><a href="##boxscore-tab">Box Score</a></li>
+            <li class="<cfif defaultTab EQ 'playbyplay'>active</cfif>"><a href="##playbyplay-tab">Play-By-Play</a></li>
+        </ul>
+
+        <div class="tab-content">
+
+        <!--- Box Score Tab --->
+        <div class="tab-pane <cfif defaultTab EQ 'boxscore'>active</cfif>" id="boxscore-tab">
         <table class="bolder smallFont">
             <cfset currentTeamID = ''>
 
@@ -126,11 +194,13 @@
     			<tr>
     				<td data-label="Player" colspan="2">
                         <cfif getPlayerlogs.PermissionToShare EQ 'Yes'>
-                            <a class="playerLink" href="/pages/teams/Player_Profiles/player-profile-2.cfm?playerID=#playerID#">
-                                #getPlayerLogs.firstName# #getPlayerLogs.LastName# ###getPlayerlogs.jersey#
-                            </a>
-                        <cfelse> 
-                             #getPlayerLogs.firstName# #getPlayerLogs.LastName# ###getPlayerlogs.jersey#
+                        <a class="playerLink" href="/pages/teams/Player_Profiles/player-profile-2.cfm?playerID=#playerID#">#getPlayerLogs.firstName# #getPlayerLogs.LastName# ###getPlayerlogs.jersey#</a>
+                        <cfelse>
+                            #getPlayerLogs.firstName# #getPlayerLogs.LastName# ###getPlayerlogs.jersey#
+                        </cfif>
+                        <cfif listFind("536,1001", getPlayerLogs.playerID)>
+                        <i class="fa-solid fa-chart-bar mobileStatsIcon"
+                           onclick="openPlayerStatsModal('#JSStringFormat(getPlayerLogs.firstName)#', '#JSStringFormat(getPlayerLogs.lastName)#', '###getPlayerlogs.jersey#', '#JSStringFormat(GetPlayerLogs.teamName)#', '#getPlayerLogs.FGM#', '#getPlayerLogs.FGA#', '#getPlayerLogs.3FGM#', '#getPlayerLogs.3FGA#', '#getPlayerLogs.FTM#', '#getPlayerLogs.FTA#', '#getPlayerLogs.Points#', '#getPlayerLogs.Rebounds#', '#getPlayerLogs.Assists#', '#getPlayerLogs.Steals#', '#getPlayerLogs.Blocks#', '#getPlayerLogs.Turnovers#', '#val(getPlayerLogs.Fouls)#', '#getPlayerLogs.playerID#')"></i>
                         </cfif>
                     </td>
     				<td data-label="FG">#getPlayerLogs.FGM# - #getPlayerLogs.FGA#</td>
@@ -153,22 +223,88 @@
 
                 <!--- Total Scores --->
                 <cfif getPlayerlogs.recordCount EQ getPlayerLogs.currentRow OR currentTeamID NEQ nextTeamID>
-                        <tr class="smallFont">
-                            <td colspan="2" style="text-align: center; font-weight: bold;">TOTALS</td>
-                            <td data-label="FG"><b>#TotalFGM# - #TotalFGA#</b></td> 
-                            <td data-label="3FG"><b>#Total3FGM# - #Total3FGA#</b></td>
-                            <td data-label="FT"><b>#TotalFTM# - #TotalFTA#</b></td>
-                            <td data-label="REBS"><b>#TotalREB#</b></td>
-                            <td data-label="ASTS"><b>#TotalAST#</b></td>
-                            <td data-label="STLS"><b>#TotalSTL#</b></td>
-                            <td data-label="BLKS"><b>#TotalBLK#</b></td>
-                            <td data-label="TO"><b>#TotalTO#</b></td>
-                            <td data-label="FLS"><b>#TotalFLS#</b></td>
-                            <td data-label="PTS"><b>#TotalPTS#</b></td>
-                        </tr>
+                    <tr class="smallFont">
+                        <td colspan="2" style="text-align: center; font-weight: bold;">TOTALS</td>
+                        <td data-label="FG"><b>#TotalFGM# - #TotalFGA#</b></td>
+                        <td data-label="3FG"><b>#Total3FGM# - #Total3FGA#</b></td>
+                        <td data-label="FT"><b>#TotalFTM# - #TotalFTA#</b></td>
+                        <td data-label="REBS"><b>#TotalREB#</b></td>
+                        <td data-label="ASTS"><b>#TotalAST#</b></td>
+                        <td data-label="STLS"><b>#TotalSTL#</b></td>
+                        <td data-label="BLKS"><b>#TotalBLK#</b></td>
+                        <td data-label="TO"><b>#TotalTO#</b></td>
+                        <td data-label="FLS"><b>#TotalFLS#</b></td>
+                        <td data-label="PTS"><b>#TotalPTS#</b></td>
+                    </tr>
+                    <!--- Spacer row between the two teams --->
+                    <cfif currentTeamID NEQ nextTeamID>
+                        <tr class="bolder-spacer"><td colspan="12"></td></tr>
+                    </cfif>
                 </cfif>
         	</cfloop>
         </table>
+
+        </div><!--- end #boxscore-tab --->
+
+        <!--- Play-By-Play Tab --->
+        <div class="tab-pane <cfif defaultTab EQ 'playbyplay'>active</cfif>" id="playbyplay-tab">
+            <cfif getPlayByPlay.recordCount EQ 0>
+                <p style="color:##888;text-align:center;padding:40px 0;font-size:14px;">No scoring plays recorded yet.</p>
+            <cfelse>
+                <cfset pbpCurrentPeriod = "">
+                <cfset pbpOpenBody = false>
+                <table class="pbp-table">
+                    <thead>
+                        <tr>
+                            <th>TEAM</th>
+                            <th>PLAYER</th>
+                            <th>PLAY</th>
+                            <th style="text-align:right;">CLOCK</th>
+                            <th style="text-align:right;">SCORE</th>
+                        </tr>
+                    </thead>
+                    <cfloop query="getPlayByPlay">
+                        <cfif period NEQ pbpCurrentPeriod>
+                            <cfif pbpOpenBody></tbody></cfif>
+                            <cfset pbpCurrentPeriod = period>
+                            <cfset pbpOpenBody = true>
+                            <tbody class="pbp-half-body">
+                            <tr class="pbp-half-header pbp-half-toggle">
+                                <td colspan="5">
+                                    <cfif period EQ 1>1st Half<cfelseif period EQ 2>2nd Half<cfelse>OT<cfif period GT 3> #period - 2#</cfif></cfif>
+                                    <span class="pbp-toggle-icon">&##9660;</span>
+                                </td>
+                            </tr>
+                        </cfif>
+                        <cfif stat_type EQ "FGM">
+                            <cfset badgeClass = "pbp-badge-2pt">
+                            <cfset badgeText = "2PT">
+                        <cfelseif stat_type EQ "3FGM">
+                            <cfset badgeClass = "pbp-badge-3pt">
+                            <cfset badgeText = "3PT">
+                        <cfelseif stat_type EQ "FTM">
+                            <cfset badgeClass = "pbp-badge-ft">
+                            <cfset badgeText = "FT">
+                        <cfelse>
+                            <cfset badgeClass = "">
+                            <cfset badgeText = stat_type>
+                        </cfif>
+                        <tr>
+                            <td class="pbp-team">#teamName#</td>
+                            <td class="pbp-player">#firstName# #lastName#</td>
+                            <td><span class="pbp-badge #badgeClass#">#badgeText#</span></td>
+                            <td class="pbp-clock" style="text-align:right;"><cfif len(clock_remaining_seconds)>#numberFormat(int(clock_remaining_seconds/60),'00')#:#numberFormat(clock_remaining_seconds mod 60,'00')#<cfelse>&mdash;</cfif></td>
+                            <td class="pbp-score">#home_score# &ndash; #away_score#</td>
+                        </tr>
+                    </cfloop>
+                    <cfif pbpOpenBody></tbody></cfif>
+                </table>
+                <p class="pbp-legend">#getTeamsPlaying.Home# (home) &bull; #getTeamsPlaying.Away# (away)</p>
+            </cfif>
+        </div><!--- end ##playbyplay-tab --->
+
+        </div><!--- end .tab-content --->
+        <br>
 
         <cfif CGI.HTTP_HOST CONTAINS "localhost" OR CGI.HTTP_HOST CONTAINS "127.0.0.1">
         <div style="margin:24px auto;max-width:500px;padding:16px;background:##fff3cd;border:1px solid ##ffc107;border-radius:6px;text-align:center;">
@@ -183,6 +319,105 @@
       </div>
     </div>
 </div>
-</cfoutput>
-<cfinclude template="/footer.cfm">
 
+</cfoutput>
+
+<!--- Player Stats Modal (Mobile) --->
+<div class="modal fade" id="playerStatsModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content" style="background: #0d0d0d; border: none; border-radius: 12px; overflow: hidden;">
+      <div class="pogModal-topBar"></div>
+      <div class="modal-body" style="padding: 0;">
+        <button type="button" class="close pogModal-closeBtn" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <div id="pogModalCapture">
+        <div class="pogModal-topBarInner"></div>
+        <div class="pogModal-photoSection">
+          <img id="modalPlayerPhoto" class="pogModal-playerPhoto" src="/assets/img/PlayerProfiles/default.JPG" alt="Player Photo">
+          <div class="pogModal-photoOverlay"></div>
+        </div>
+        <div class="pogModal-header">
+          <img class="pogModal-logo" src="/assets/img/Logos/4_trimmed.png" alt="Round League">
+          <span class="pogModal-badge">PLAYER STATS</span>
+        </div>
+        <div class="pogModal-nameSection">
+          <div class="pogModal-firstName" id="modalFirstName"></div>
+          <div class="pogModal-lastName" id="modalLastName"></div>
+          <div class="pogModal-teamName" id="modalTeamName"></div>
+        </div>
+        <div class="pogModal-primaryStats">
+          <div class="pogModal-statItem">
+            <div class="pogModal-statValue" id="modalPTS"></div>
+            <div class="pogModal-statLabel">PTS</div>
+          </div>
+          <div class="pogModal-statDivider"></div>
+          <div class="pogModal-statItem">
+            <div class="pogModal-statValue" id="modalREB"></div>
+            <div class="pogModal-statLabel">REB</div>
+          </div>
+          <div class="pogModal-statDivider"></div>
+          <div class="pogModal-statItem">
+            <div class="pogModal-statValue" id="modalAST"></div>
+            <div class="pogModal-statLabel">AST</div>
+          </div>
+        </div>
+        <div class="pogModal-secondaryStats">
+          <div class="pogModal-secStatRow">
+            <div class="pogModal-secStat"><span class="pogModal-secLabel">FG</span><span class="pogModal-secValue" id="modalFG"></span></div>
+            <div class="pogModal-secStat"><span class="pogModal-secLabel">3PT</span><span class="pogModal-secValue" id="modal3PT"></span></div>
+            <div class="pogModal-secStat"><span class="pogModal-secLabel">FT</span><span class="pogModal-secValue" id="modalFT"></span></div>
+          </div>
+          <div class="pogModal-secStatRow">
+            <div class="pogModal-secStat"><span class="pogModal-secLabel">STL</span><span class="pogModal-secValue" id="modalSTL"></span></div>
+            <div class="pogModal-secStat"><span class="pogModal-secLabel">BLK</span><span class="pogModal-secValue" id="modalBLK"></span></div>
+            <div class="pogModal-secStat"><span class="pogModal-secLabel">TO</span><span class="pogModal-secValue" id="modalTO"></span></div>
+          </div>
+          <div class="pogModal-secStatRow">
+            <div class="pogModal-secStat"><span class="pogModal-secLabel">FLS</span><span class="pogModal-secValue" id="modalFLS"></span></div>
+          </div>
+        </div>
+        <div class="pogModal-bottomBar"></div>
+        </div><!--- end pogModalCapture --->
+        <div class="pogModal-downloadHint"><i class="fa-solid fa-hand-pointer"></i> Hold to save image</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="../boxscore/playerStatsModal.js?v=1.0"></script>
+
+<script>
+(function() {
+    // Tab switching
+    var navLinks = document.querySelectorAll('#gameTab a');
+    var panes    = document.querySelectorAll('.tab-content .tab-pane');
+    navLinks.forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            var targetId = this.getAttribute('href').replace('#', '');
+            navLinks.forEach(function(l) { l.parentElement.classList.remove('active'); });
+            this.parentElement.classList.add('active');
+            panes.forEach(function(p) { p.classList.remove('active'); });
+            document.getElementById(targetId).classList.add('active');
+        });
+    });
+
+    // Play-by-play half section toggle
+    document.querySelectorAll('.pbp-half-toggle').forEach(function(header) {
+        header.addEventListener('click', function() {
+            var tbody = this.closest('tbody');
+            var rows = Array.from(tbody.querySelectorAll('tr')).filter(function(r) {
+                return !r.classList.contains('pbp-half-header');
+            });
+            var collapsing = !this.classList.contains('collapsed');
+            rows.forEach(function(r) { r.style.display = collapsing ? 'none' : ''; });
+            this.classList.toggle('collapsed', collapsing);
+            var icon = this.querySelector('.pbp-toggle-icon');
+            if (icon) icon.innerHTML = collapsing ? '&#9654;' : '&#9660;';
+        });
+    });
+})();
+</script>
+<cfinclude template="/footer.cfm">
