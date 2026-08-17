@@ -50,7 +50,7 @@
         <div class="rules-section">
           <h2>1. General Information</h2>
           <ul>
-            <li>Team Fee: $1,600 per team (recommended 7&ndash;8 players per roster)</li>
+            <li>Team Fee: $1,600 per team (recommended 7-8 players per roster)</li>
             <li>Jerseys: $20 per jersey (required)</li>
             <li>Season Format: 12 guaranteed regular season games with playoff eligibility</li>
             <li>Eligibility: All players must be 18 years of age or older</li>
