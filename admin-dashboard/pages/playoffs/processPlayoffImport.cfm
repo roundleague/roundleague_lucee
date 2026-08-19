@@ -57,20 +57,6 @@
     <cfset maxTeamSize = 7>
     <cfset doubleElimObj = createObject("component", "library.playoffsDoubleElim")>
     <cfset doubleElimTemplate = doubleElimObj.getDoubleElim7Template()>
-
-    <!--- One-off, bracket-specific override for the current season's "Premiere Tier 1"
-          bracket only (requested by Rich). Swaps the losers-bracket routing so that:
-            G4 = Loser(G3) vs Loser(G2)   (default template: Loser(G1) vs Loser(G2))
-            G7 = Winner(G4) vs Loser(G1)  (default template: Winner(G4) vs Loser(G3))
-          Expressed as a minimal 2-value swap of LoserAdvancesTo for G1 and G3 only.
-          getDoubleElim7Template() itself is untouched, so every other double_elim_7
-          bracket (Open Tier 1, Open Tier 2, Premiere Tier 2, future brackets) keeps
-          the default wiring. Keyed by bracket Name only, since playoffs_bracket has
-          no separate tier/type column — delete this block once no longer needed. --->
-    <cfset loserAdvanceOverrides = {}>
-    <cfif trim(bracket.name) EQ "Premiere Tier 1">
-      <cfset loserAdvanceOverrides = { "1": 7, "3": 4 }>
-    </cfif>
   <cfelse>
     <!--- Count unique teams for MaxTeamSize --->
     <cfset teamSet = {}>
@@ -147,12 +133,8 @@
     <cfset gameLabel = "">
     <cfif bracketFormat EQ 'double_elim_7'>
       <cfset templateRow = doubleElimTemplate[gameID]>
-      <cfset effectiveLoserTo = templateRow.loserTo>
-      <cfif structKeyExists(loserAdvanceOverrides, gameID)>
-        <cfset effectiveLoserTo = loserAdvanceOverrides[gameID]>
-      </cfif>
       <cfif templateRow.winnerTo GT 0><cfset winnerAdvancesTo = templateRow.winnerTo></cfif>
-      <cfif effectiveLoserTo GT 0><cfset loserAdvancesTo = effectiveLoserTo></cfif>
+      <cfif templateRow.loserTo GT 0><cfset loserAdvancesTo = templateRow.loserTo></cfif>
       <cfif len(trim(templateRow.label))><cfset gameLabel = templateRow.label></cfif>
     </cfif>
 
