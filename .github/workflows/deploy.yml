@@ -23,7 +23,13 @@ jobs:
       # need to run in CI. If you ever move to uncommitted SCSS-only, add an
       # npm install + gulp compile-scss step here before deployment.
 
-      # Step 3: Upload changed files to Hostek via FTPS.
+      # Step 3: Stamp this deploy with the commit SHA + timestamp so the running
+      # app can report which build is live (read by Application.cfc at runtime).
+      - name: Generate deploy version file
+        run: |
+          echo "$(git rev-parse --short HEAD) @ $(date -u +'%Y-%m-%d %H:%M:%S UTC')" > version.txt
+
+      # Step 4: Upload changed files to Hostek via FTPS.
       # FTP-Deploy-Action v4 maintains a .ftp-deploy-sync-state.json file on the
       # server to track what has already been uploaded — only modified or new files
       # are transferred on each run, keeping deploys fast.

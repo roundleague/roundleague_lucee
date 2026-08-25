@@ -432,10 +432,28 @@ CREATE TABLE IF NOT EXISTS contact_messages (
 );
 
 CREATE TABLE IF NOT EXISTS bug_reports (
-  bugID        INT AUTO_INCREMENT PRIMARY KEY,
-  errorType    VARCHAR(200) NOT NULL DEFAULT '',
-  errorMessage TEXT NOT NULL,
-  pageURL      VARCHAR(500) NOT NULL DEFAULT '',
-  createdAt    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  resolved     TINYINT NOT NULL DEFAULT 0
+  bugID           INT AUTO_INCREMENT PRIMARY KEY,
+  fingerprintHash CHAR(32)      NOT NULL,
+  errorType       VARCHAR(200)  NOT NULL DEFAULT '',
+  errorFile       VARCHAR(500)  NOT NULL DEFAULT '',
+  errorLine       INT           NOT NULL DEFAULT 0,
+  errorMessage    TEXT          NOT NULL,
+  pageURL         VARCHAR(500)  NOT NULL DEFAULT '',
+  occurrenceCount INT           NOT NULL DEFAULT 1,
+  firstSeenAt     DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  lastSeenAt      DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  resolved        TINYINT       NOT NULL DEFAULT 0,
+  UNIQUE KEY uq_fingerprint (fingerprintHash),
+  INDEX idx_resolved  (resolved),
+  INDEX idx_lastSeen  (lastSeenAt)
+);
+
+CREATE TABLE IF NOT EXISTS bug_occurrences (
+  occurrenceID  INT AUTO_INCREMENT PRIMARY KEY,
+  bugID         INT           NOT NULL,
+  occurredAt    DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  userName      VARCHAR(100)  DEFAULT NULL,
+  deployVersion VARCHAR(100)  DEFAULT NULL,
+  pageURL       VARCHAR(500)  NOT NULL DEFAULT '',
+  INDEX idx_bugID_occurredAt (bugID, occurredAt)
 );

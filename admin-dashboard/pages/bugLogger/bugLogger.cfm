@@ -1,15 +1,23 @@
 <cfquery name="getUnresolvedBugs" datasource="roundleague">
-    SELECT bugID, errorType, DATE_FORMAT(createdAt, '%b %d') AS shortDate
-    FROM bug_reports
-    WHERE resolved = 0
-    ORDER BY createdAt DESC
+    SELECT br.bugID, br.errorType, br.errorFile, br.errorLine, br.occurrenceCount,
+           DATE_FORMAT(br.firstSeenAt, '%b %d') AS firstSeenShort,
+           DATE_FORMAT(br.lastSeenAt,  '%b %d') AS lastSeenShort,
+           (SELECT COUNT(DISTINCT userName) FROM bug_occurrences bo
+             WHERE bo.bugID = br.bugID AND bo.userName IS NOT NULL AND bo.userName <> '') AS uniqueUsers
+    FROM bug_reports br
+    WHERE br.resolved = 0
+    ORDER BY br.lastSeenAt DESC
 </cfquery>
 
 <cfquery name="getResolvedBugs" datasource="roundleague">
-    SELECT bugID, errorType, DATE_FORMAT(createdAt, '%b %d') AS shortDate
-    FROM bug_reports
-    WHERE resolved = 1
-    ORDER BY createdAt DESC
+    SELECT br.bugID, br.errorType, br.errorFile, br.errorLine, br.occurrenceCount,
+           DATE_FORMAT(br.firstSeenAt, '%b %d') AS firstSeenShort,
+           DATE_FORMAT(br.lastSeenAt,  '%b %d') AS lastSeenShort,
+           (SELECT COUNT(DISTINCT userName) FROM bug_occurrences bo
+             WHERE bo.bugID = br.bugID AND bo.userName IS NOT NULL AND bo.userName <> '') AS uniqueUsers
+    FROM bug_reports br
+    WHERE br.resolved = 1
+    ORDER BY br.lastSeenAt DESC
 </cfquery>
 
 <cfinclude template="/admin-dashboard/admin_header.cfm">
@@ -43,8 +51,10 @@
                             <div class="bug-row" data-id="#bugID#" data-resolved="0" onclick="viewBug(#bugID#, event)">
                                 <div class="bug-status"><span class="bug-dot"></span></div>
                                 <div class="bug-type">#htmlEditFormat(errorType)#</div>
+                                <div class="bug-location">#htmlEditFormat(listLast(errorFile, "\/"))#:#errorLine#</div>
                                 <div class="bug-meta">
-                                    <span class="bug-date">#shortDate#</span>
+                                    <span class="bug-count">#occurrenceCount# occurrence<cfif occurrenceCount NEQ 1>s</cfif><cfif uniqueUsers GT 0> &middot; #uniqueUsers# user<cfif uniqueUsers NEQ 1>s</cfif></cfif></span>
+                                    <span class="bug-date">#firstSeenShort# &ndash; #lastSeenShort#</span>
                                 </div>
                                 <div class="bug-actions" onclick="event.stopPropagation()">
                                     <button class="btn btn-sm btn-outline-success" onclick="setResolved(#bugID#, true)">Resolve</button>
@@ -82,8 +92,10 @@
                             <div class="bug-row bug-row-resolved" data-id="#bugID#" data-resolved="1" onclick="viewBug(#bugID#, event)">
                                 <div class="bug-status"></div>
                                 <div class="bug-type">#htmlEditFormat(errorType)#</div>
+                                <div class="bug-location">#htmlEditFormat(listLast(errorFile, "\/"))#:#errorLine#</div>
                                 <div class="bug-meta">
-                                    <span class="bug-date">#shortDate#</span>
+                                    <span class="bug-count">#occurrenceCount# occurrence<cfif occurrenceCount NEQ 1>s</cfif><cfif uniqueUsers GT 0> &middot; #uniqueUsers# user<cfif uniqueUsers NEQ 1>s</cfif></cfif></span>
+                                    <span class="bug-date">#firstSeenShort# &ndash; #lastSeenShort#</span>
                                 </div>
                                 <div class="bug-actions" onclick="event.stopPropagation()">
                                     <button class="btn btn-sm btn-outline-secondary" onclick="setResolved(#bugID#, false)">Unresolve</button>
@@ -108,13 +120,17 @@
             <div class="modal-header">
                 <div style="flex:1; min-width:0;">
                     <h5 class="modal-title mb-0" id="modalErrorType"></h5>
-                    <small class="text-muted" id="modalPageURL"></small>
+                    <small class="text-muted" id="modalLocation"></small>
                 </div>
-                <span class="bug-modal-date ml-3 mr-3" id="modalDate"></span>
                 <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
             </div>
             <div class="modal-body">
+                <div class="bug-modal-stats" id="modalStats"></div>
                 <div id="modalMessage" class="bug-modal-body"></div>
+                <div class="bug-modal-occurrences">
+                    <h6>Recent Occurrences</h6>
+                    <div id="modalOccurrences"></div>
+                </div>
             </div>
             <div class="modal-footer justify-content-between">
                 <div>
@@ -148,9 +164,29 @@ function viewBug(id, evt) {
             currentResolved = (b.resolved == 1);
 
             document.getElementById('modalErrorType').textContent = b.errorType;
-            document.getElementById('modalPageURL').textContent = b.pageURL;
-            document.getElementById('modalDate').textContent = b.createdAt;
+            document.getElementById('modalLocation').textContent = b.errorFile + ':' + b.errorLine + ' (requested via ' + b.pageURL + ')';
             document.getElementById('modalMessage').textContent = b.errorMessage;
+
+            var statsParts = [
+                b.occurrenceCount + ' occurrence' + (b.occurrenceCount == 1 ? '' : 's'),
+                b.uniqueUsers > 0 ? (b.uniqueUsers + ' user' + (b.uniqueUsers == 1 ? '' : 's')) : null,
+                'First seen ' + b.firstSeenAt,
+                'Last seen ' + b.lastSeenAt
+            ].filter(Boolean);
+            document.getElementById('modalStats').textContent = statsParts.join(' · ');
+
+            var occContainer = document.getElementById('modalOccurrences');
+            occContainer.innerHTML = '';
+            if (!b.recentOccurrences || b.recentOccurrences.length === 0) {
+                occContainer.innerHTML = '<p class="text-muted mb-0">No occurrence details recorded.</p>';
+            } else {
+                b.recentOccurrences.forEach(function(occ) {
+                    var row = document.createElement('div');
+                    row.className = 'bug-occurrence-row';
+                    row.textContent = occ.occurredAt + ' — ' + occ.userName + ' — ' + occ.deployVersion + ' — ' + occ.pageURL;
+                    occContainer.appendChild(row);
+                });
+            }
 
             var resolveBtn = document.getElementById('modalResolveBtn');
             if (currentResolved) {
