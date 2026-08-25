@@ -7,6 +7,15 @@
     </cfcatch>
 </cftry>
 
+<cftry>
+    <cfquery name="bugUnresolved" datasource="roundleague">
+        SELECT COUNT(*) AS cnt FROM bug_reports WHERE resolved = 0
+    </cfquery>
+    <cfcatch type="any">
+        <cfset bugUnresolved = { cnt: 0 }>
+    </cfcatch>
+</cftry>
+
 <cfinclude template="/admin-dashboard/admin_header.cfm">
 
 <link href="/admin-dashboard/pages/moreTools/moreTools.css?v=1.1" rel="stylesheet">
@@ -75,7 +84,18 @@
                         </a>
                         </cfoutput>
 
-                        <div class="tool-card empty"></div>
+                        <cfoutput>
+                        <a href="/admin-dashboard/pages/bugLogger/bugLogger.cfm" class="tool-card">
+                            <span style="position:relative; display:inline-block;">
+                                <i class="fa fa-bug"></i>
+                                <cfif bugUnresolved.cnt GT 0>
+                                    <span class="tool-badge">#bugUnresolved.cnt#</span>
+                                </cfif>
+                            </span>
+                            <p>Bug Logger</p>
+                        </a>
+                        </cfoutput>
+
                         <div class="tool-card empty"></div>
                         <div class="tool-card empty"></div>
 
