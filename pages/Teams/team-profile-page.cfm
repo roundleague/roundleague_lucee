@@ -1,5 +1,9 @@
 <cfinclude template="/header.cfm">
 
+<cfif NOT structKeyExists(url, "teamID") OR NOT isValid("integer", url.teamID)>
+    <cflocation url="/pages/teams/teams-2.cfm" addtoken="false">
+</cfif>
+
 <!--- Page Specific CSS/JS Here --->
 <link rel="stylesheet" href="../Teams/team-profile-page.css?v=2.0">
 

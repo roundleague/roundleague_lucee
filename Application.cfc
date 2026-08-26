@@ -125,17 +125,20 @@ component {
 
         try {
             if (NOT (CGI.SERVER_NAME contains "localhost" OR CGI.SERVER_NAME contains "127.0.0.1")) {
-                cfmail(
-                    from = "mailadmin@theroundleague.com",
-                    to = "huynt553@gmail.com,rosasmoses9@gmail.com,evelyn.cooper.lhs@gmail.com",
-                    subject = "RoundLeague Error: " & errType,
-                    type = "text"
-                ) {
-                    writeOutput("An error occurred on The Round League site." & chr(10) & chr(10) &
-                        "Type: " & errType & chr(10) &
-                        "Page: " & pageURL & chr(10) &
-                        "Time: " & dateFormat(now(), "mmm d, yyyy") & " " & timeFormat(now(), "h:mm tt") & chr(10) & chr(10) &
-                        "Message:" & chr(10) & left(errMsg, 500));
+                var mailGate = createObject("component", "api.RateLimiter").check("bugmail_" & fingerprint, 1, 3600);
+                if (mailGate.allowed) {
+                    cfmail(
+                        from = "mailadmin@theroundleague.com",
+                        to = "huynt553@gmail.com,rosasmoses9@gmail.com,evelyn.cooper.lhs@gmail.com",
+                        subject = "RoundLeague Error: " & errType,
+                        type = "text"
+                    ) {
+                        writeOutput("An error occurred on The Round League site." & chr(10) & chr(10) &
+                            "Type: " & errType & chr(10) &
+                            "Page: " & pageURL & chr(10) &
+                            "Time: " & dateFormat(now(), "mmm d, yyyy") & " " & timeFormat(now(), "h:mm tt") & chr(10) & chr(10) &
+                            "Message:" & chr(10) & left(errMsg, 500));
+                    }
                 }
             }
         } catch (any e) {}
