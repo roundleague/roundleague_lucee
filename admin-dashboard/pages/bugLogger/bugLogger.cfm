@@ -173,7 +173,7 @@ function viewBug(id, evt) {
                 'First seen ' + b.firstSeenAt,
                 'Last seen ' + b.lastSeenAt
             ].filter(Boolean);
-            document.getElementById('modalStats').textContent = statsParts.join(' · ');
+            document.getElementById('modalStats').textContent = statsParts.join(' - ');
 
             var occContainer = document.getElementById('modalOccurrences');
             occContainer.innerHTML = '';
@@ -183,7 +183,7 @@ function viewBug(id, evt) {
                 b.recentOccurrences.forEach(function(occ) {
                     var row = document.createElement('div');
                     row.className = 'bug-occurrence-row';
-                    row.textContent = occ.occurredAt + ' — ' + occ.userName + ' — ' + occ.deployVersion + ' — ' + occ.pageURL;
+                    row.textContent = occ.occurredAt + ' - ' + occ.userName + ' - ' + occ.deployVersion + ' - URL: ' + occ.pageURL;
                     occContainer.appendChild(row);
                 });
             }

@@ -55,7 +55,7 @@ component {
     function onError(exception, eventName) {
         var errType = structKeyExists(exception, "type") ? left(exception.type, 200) : "Unknown";
         var errMsg  = structKeyExists(exception, "message") ? exception.message : "";
-        var pageURL = CGI.SCRIPT_NAME;
+        var pageURL = CGI.SCRIPT_NAME & (len(CGI.QUERY_STRING) ? "?" & CGI.QUERY_STRING : "");
 
         // Actual template/line the error was thrown from (may differ from pageURL
         // when the error is inside an included template).
