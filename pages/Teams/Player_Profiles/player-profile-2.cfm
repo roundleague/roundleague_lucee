@@ -1,5 +1,10 @@
 <cfinclude template="/header.cfm">
 
+<!--- Guard against direct/bare hits (bots, stale bookmarks) with no playerID in the URL --->
+<cfif NOT isDefined("url.playerID") OR NOT isNumeric(url.playerID)>
+    <cflocation url="/pages/Teams/teams-2.cfm" addtoken="false">
+</cfif>
+
 <!--- Page Specific CSS/JS Here --->
 <link href="/pages/Teams/Player_Profiles/player-profile-2.css?v=3.1" rel="stylesheet" />
 
