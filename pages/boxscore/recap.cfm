@@ -1,9 +1,12 @@
 <link href="../boxscore/recap.css?v=1.0" rel="stylesheet">
 
+<cfparam name="isPlayoffRecap" default="false">
+
 <cfquery name="getExistingRecap" datasource="roundleague">
 	SELECT recapText
 	FROM recaps
-	WHERE scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#getTeamsPlaying.scheduleID#">
+	WHERE scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">
+	AND isPlayoff = <cfqueryparam cfsqltype="CF_SQL_TINYINT" value="#isPlayoffRecap ? 1 : 0#">
 </cfquery>
 
 <cfif getExistingRecap.recordCount>

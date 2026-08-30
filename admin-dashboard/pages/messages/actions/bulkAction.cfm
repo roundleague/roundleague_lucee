@@ -3,9 +3,17 @@
     <cfparam name="form.action" default="">
     <cfparam name="form.ids" default="">
 
-    <cfset allowedActions = ["markRead", "markUnread", "delete"]>
+    <cfset allowedActions = ["markRead", "markUnread", "delete", "deleteAllSpam"]>
     <cfif NOT arrayFind(allowedActions, form.action)>
         <cfoutput>{"success":false,"message":"Invalid action."}</cfoutput>
+        <cfabort>
+    </cfif>
+
+    <cfif form.action EQ "deleteAllSpam">
+        <cfquery datasource="roundleague">
+            DELETE FROM contact_messages WHERE isSpam = 1
+        </cfquery>
+        <cfoutput>{"success":true}</cfoutput>
         <cfabort>
     </cfif>
 

@@ -5,6 +5,12 @@
             <h2 class="text-center">Keep in touch?</h2>
             <div id="contactAlert" class="alert" style="display:none;"></div>
             <form class="contact-form" id="homeContactForm">
+              <!--- Honeypot fields: real users never see or fill these; bot autofill scripts do. See pages/Contact/spamCheck.cfm --->
+              <input type="text" name="website" id="hcWebsite" value="" tabindex="-1" autocomplete="off"
+                     style="position:absolute; left:-9999px; top:-9999px; height:0; width:0; opacity:0;">
+              <input type="text" name="url" id="hcUrl" value="" tabindex="-1" autocomplete="off"
+                     style="position:absolute; left:-9999px; top:-9999px; height:0; width:0; opacity:0;">
+              <input type="hidden" name="fLoad" id="hcLoad" value="">
               <div class="row">
                 <div class="col-md-6">
                   <label>Name</label>
@@ -56,6 +62,11 @@
     </div>
 
     <script>
+    (function() {
+      var el = document.getElementById('hcLoad');
+      if (el) el.value = Math.floor(Date.now() / 1000);
+    })();
+
     function submitHomeContact() {
       var name    = document.getElementById('hcName').value.trim();
       var email   = document.getElementById('hcEmail').value.trim();
@@ -74,10 +85,16 @@
       btn.textContent = 'Sending...';
 
       var consent = document.getElementById('hcConsent').checked ? '1' : '0';
+      var website = document.getElementById('hcWebsite').value;
+      var urlHp   = document.getElementById('hcUrl').value;
+      var fLoad   = document.getElementById('hcLoad').value;
       var params = 'contactName=' + encodeURIComponent(name) +
                    '&contactEmail=' + encodeURIComponent(email) +
                    '&contactMessage=' + encodeURIComponent(message) +
-                   '&consentToContact=' + consent;
+                   '&consentToContact=' + consent +
+                   '&website=' + encodeURIComponent(website) +
+                   '&url=' + encodeURIComponent(urlHp) +
+                   '&fLoad=' + encodeURIComponent(fLoad);
 
       fetch('/pages/Contact/submitContact.cfm', {
         method: 'POST',

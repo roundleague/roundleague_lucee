@@ -12,23 +12,30 @@
     <cfset contactMessage = trim(left(form.contactMessage, 5000))>
     <cfset contactConsent = (isDefined("form.consentToContact") AND form.consentToContact EQ "1") ? 1 : 0>
 
-    <cfif NOT len(contactEmail) OR NOT len(contactPhone) OR NOT len(contactSubject) OR NOT len(contactMessage)>
+    <cfinclude template="spamCheck.cfm">
+
+    <cfif request.spamResult.blocked AND NOT request.spamResult.silentDrop>
+        <cfset formError = request.spamResult.userMessage>
+    <cfelseif NOT len(contactEmail) OR NOT len(contactPhone) OR NOT len(contactSubject) OR NOT len(contactMessage)>
         <cfset formError = "All fields are required.">
     <cfelseif NOT isValid("email", contactEmail)>
         <cfset formError = "Please enter a valid email address.">
     <cfelse>
         <cftry>
             <cfquery datasource="roundleague">
-                INSERT INTO contact_messages (senderEmail, senderPhone, subject, messageBody, consentToContact)
+                INSERT INTO contact_messages (senderEmail, senderPhone, subject, messageBody, consentToContact, isSpam, isAnomalous, spamReason)
                 VALUES (
-                    <cfqueryparam value="#contactEmail#"   cfsqltype="cf_sql_varchar">,
-                    <cfqueryparam value="#contactPhone#"   cfsqltype="cf_sql_varchar">,
-                    <cfqueryparam value="#contactSubject#" cfsqltype="cf_sql_varchar">,
-                    <cfqueryparam value="#contactMessage#" cfsqltype="cf_sql_longvarchar">,
-                    <cfqueryparam value="#contactConsent#" cfsqltype="cf_sql_tinyint">
+                    <cfqueryparam value="#contactEmail#"                    cfsqltype="cf_sql_varchar">,
+                    <cfqueryparam value="#contactPhone#"                    cfsqltype="cf_sql_varchar">,
+                    <cfqueryparam value="#contactSubject#"                  cfsqltype="cf_sql_varchar">,
+                    <cfqueryparam value="#contactMessage#"                  cfsqltype="cf_sql_longvarchar">,
+                    <cfqueryparam value="#contactConsent#"                  cfsqltype="cf_sql_tinyint">,
+                    <cfqueryparam value="#request.spamResult.silentDrop ? 1 : 0#"  cfsqltype="cf_sql_tinyint">,
+                    <cfqueryparam value="#request.spamResult.anomalous  ? 1 : 0#"  cfsqltype="cf_sql_tinyint">,
+                    <cfqueryparam value="#request.spamResult.reason#"       cfsqltype="cf_sql_varchar" null="#NOT len(request.spamResult.reason)#">
                 )
             </cfquery>
-            <cfif NOT (CGI.SERVER_NAME contains "localhost" OR CGI.SERVER_NAME contains "127.0.0.1")>
+            <cfif NOT request.spamResult.silentDrop AND NOT (CGI.SERVER_NAME contains "localhost" OR CGI.SERVER_NAME contains "127.0.0.1")>
                 <cfmail
                     from="mailadmin@theroundleague.com"
                     to="theroundleague@gmail.com"
@@ -74,6 +81,13 @@ Message:
                         </cfif>
 
                         <form class="contact-form" method="POST">
+
+                            <!--- Honeypot fields: real users never see or fill these; bots that autofill named inputs get flagged in spamCheck.cfm --->
+                            <input type="text" name="website" value="" tabindex="-1" autocomplete="off"
+                                   style="position:absolute; left:-9999px; top:-9999px; height:0; width:0; opacity:0;">
+                            <input type="text" name="url" value="" tabindex="-1" autocomplete="off"
+                                   style="position:absolute; left:-9999px; top:-9999px; height:0; width:0; opacity:0;">
+                            <input type="hidden" name="fLoad" value="#int(getTickCount()/1000)#">
 
                             <div class="form-group">
                                 <label>Subject <span class="text-danger">*</span></label>

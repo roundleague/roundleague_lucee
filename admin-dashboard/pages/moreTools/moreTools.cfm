@@ -1,9 +1,18 @@
 <cftry>
     <cfquery name="msgUnread" datasource="roundleague">
-        SELECT COUNT(*) AS cnt FROM contact_messages WHERE isRead = 0
+        SELECT COUNT(*) AS cnt FROM contact_messages WHERE isRead = 0 AND isSpam = 0
     </cfquery>
     <cfcatch type="any">
         <cfset msgUnread = { cnt: 0 }>
+    </cfcatch>
+</cftry>
+
+<cftry>
+    <cfquery name="bugUnresolved" datasource="roundleague">
+        SELECT COUNT(*) AS cnt FROM bug_reports WHERE resolved = 0
+    </cfquery>
+    <cfcatch type="any">
+        <cfset bugUnresolved = { cnt: 0 }>
     </cfcatch>
 </cftry>
 
@@ -71,11 +80,22 @@
                                     <span class="tool-badge">#msgUnread.cnt#</span>
                                 </cfif>
                             </span>
-                            <p>Messages</p>
+                            <p>Contact Form Submissions</p>
                         </a>
                         </cfoutput>
 
-                        <div class="tool-card empty"></div>
+                        <cfoutput>
+                        <a href="/admin-dashboard/pages/bugLogger/bugLogger.cfm" class="tool-card">
+                            <span style="position:relative; display:inline-block;">
+                                <i class="fa fa-bug"></i>
+                                <cfif bugUnresolved.cnt GT 0>
+                                    <span class="tool-badge">#bugUnresolved.cnt#</span>
+                                </cfif>
+                            </span>
+                            <p>Bug Logger</p>
+                        </a>
+                        </cfoutput>
+
                         <div class="tool-card empty"></div>
                         <div class="tool-card empty"></div>
 
