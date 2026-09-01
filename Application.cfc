@@ -53,9 +53,10 @@ component {
     }
 
     function onError(exception, eventName) {
+        var isLocal = (CGI.SERVER_NAME contains "localhost" OR CGI.SERVER_NAME contains "127.0.0.1");
         var errType = structKeyExists(exception, "type") ? left(exception.type, 200) : "Unknown";
         var errMsg  = structKeyExists(exception, "message") ? exception.message : "";
-        var pageURL = CGI.SCRIPT_NAME;
+        var pageURL = CGI.SCRIPT_NAME & (len(CGI.QUERY_STRING) ? "?" & CGI.QUERY_STRING : "");
 
         // Actual template/line the error was thrown from (may differ from pageURL
         // when the error is inside an included template).
@@ -124,7 +125,7 @@ component {
         } catch (any e) {}
 
         try {
-            if (NOT (CGI.SERVER_NAME contains "localhost" OR CGI.SERVER_NAME contains "127.0.0.1")) {
+            if (NOT isLocal) {
                 var mailGate = createObject("component", "api.RateLimiter").check("bugmail_" & fingerprint, 1, 3600);
                 if (mailGate.allowed) {
                     cfmail(
@@ -142,6 +143,19 @@ component {
                 }
             }
         } catch (any e) {}
+
+        if (isLocal) {
+            writeOutput("<!DOCTYPE html><html><head><title>Lucee Error (local)</title></head><body style=""font-family:sans-serif;padding:20px;"">");
+            writeOutput("<h1 style=""color:##b00020;"">" & errType & "</h1>");
+            writeOutput("<p><strong>Message:</strong> " & encodeForHTML(errMsg) & "</p>");
+            if (structKeyExists(exception, "detail") AND len(exception.detail)) {
+                writeOutput("<p><strong>Detail:</strong> " & encodeForHTML(exception.detail) & "</p>");
+            }
+            writeOutput("<p><strong>Page:</strong> " & encodeForHTML(pageURL) & " (line " & errLine & ")</p>");
+            writeDump(var: exception, label: "Full Exception");
+            writeOutput("</body></html>");
+            return;
+        }
 
         var errorCard = "<div style=""font-family:sans-serif;text-align:center;padding:80px 20px;"">" &
             "<img src=""/assets/img/Logos/4_trimmed.png"" alt=""The Round League"" style=""max-width:220px;width:100%;height:auto;margin-bottom:28px;"">" &

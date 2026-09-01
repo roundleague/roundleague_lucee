@@ -128,6 +128,7 @@
         <div class="tab-pane <cfif defaultTab EQ 'boxscore'>active</cfif>" id="boxscore-tab">
         <table class="bolder smallFont">
             <cfset currentTeamID = ''>
+            <cfset nextTeamID = ''>
 
             <!--- Keep Track of Totals --->
             <cfset totalFGM = 0>
