@@ -343,8 +343,9 @@ function submitJiraTicket() {
         btn.disabled = false;
         btn.textContent = 'Create Ticket';
         if (data.success) {
-            document.getElementById('jiraSuccess').textContent = 'Ticket created: ' + data.ticketKey;
-            document.getElementById('jiraSuccess').style.display = 'block';
+            var successEl = document.getElementById('jiraSuccess');
+            successEl.innerHTML = 'Ticket created: <a href="' + data.ticketURL + '" target="_blank" style="font-weight:600;text-decoration:underline;">' + data.ticketKey + '</a>';
+            successEl.style.display = 'block';
 
             var row = document.querySelector('.msg-row[data-id="' + currentMessageID + '"]');
             if (row) {
@@ -354,8 +355,6 @@ function submitJiraTicket() {
                             '<i class="nc-icon nc-badge"></i> ' + data.ticketKey + '</a>';
                 dateSpan.insertAdjacentHTML('beforebegin', badge);
             }
-
-            setTimeout(function() { $('##jiraModal').modal('hide'); }, 2200);
         } else {
             document.getElementById('jiraError').textContent = data.message || 'Failed to create ticket.';
             document.getElementById('jiraError').style.display = 'block';
