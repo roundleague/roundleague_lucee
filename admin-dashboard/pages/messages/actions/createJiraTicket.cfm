@@ -138,6 +138,7 @@
     </cfif>
 
     <cfcatch type="any">
+        <cfset createObject("component", "library.bugLogger").logBug(cfcatch)>
         <cfset result = { "success": false, "message": "Server error: " & cfcatch.message }>
         <cfoutput>#serializeJSON(result)#</cfoutput>
     </cfcatch>

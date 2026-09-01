@@ -16,6 +16,16 @@
     </cfcatch>
 </cftry>
 
+<cftry>
+    <cfquery name="securityRecent" datasource="roundleague">
+        SELECT COUNT(*) AS cnt FROM security_events
+        WHERE anomalous = 1 AND occurredAt >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+    </cfquery>
+    <cfcatch type="any">
+        <cfset securityRecent = { cnt: 0 }>
+    </cfcatch>
+</cftry>
+
 <cfinclude template="/admin-dashboard/admin_header.cfm">
 
 <link href="/admin-dashboard/pages/moreTools/moreTools.css?v=1.1" rel="stylesheet">
@@ -96,7 +106,18 @@
                         </a>
                         </cfoutput>
 
-                        <div class="tool-card empty"></div>
+                        <cfoutput>
+                        <a href="/admin-dashboard/pages/securityEvents/securityEvents.cfm" class="tool-card">
+                            <span style="position:relative; display:inline-block;">
+                                <i class="fa fa-shield"></i>
+                                <cfif securityRecent.cnt GT 0>
+                                    <span class="tool-badge">#securityRecent.cnt#</span>
+                                </cfif>
+                            </span>
+                            <p>Security Events</p>
+                        </a>
+                        </cfoutput>
+
                         <div class="tool-card empty"></div>
 
                     </div>

@@ -482,3 +482,16 @@ CREATE TABLE IF NOT EXISTS bug_occurrences (
   pageURL       VARCHAR(500)  NOT NULL DEFAULT '',
   INDEX idx_bugID_occurredAt (bugID, occurredAt)
 );
+
+CREATE TABLE IF NOT EXISTS security_events (
+  eventID     INT AUTO_INCREMENT PRIMARY KEY,
+  eventType   VARCHAR(50)   NOT NULL,
+  clientIP    VARCHAR(45)   NOT NULL DEFAULT '',
+  subject     VARCHAR(255)  NOT NULL DEFAULT '',
+  reason      VARCHAR(255)  NOT NULL DEFAULT '',
+  anomalous   TINYINT       NOT NULL DEFAULT 0,
+  occurredAt  DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_occurredAt (occurredAt),
+  INDEX idx_eventType  (eventType),
+  INDEX idx_anomalous  (anomalous)
+);

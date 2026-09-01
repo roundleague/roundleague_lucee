@@ -60,6 +60,7 @@
     <cfoutput>{"success":true}</cfoutput>
 
     <cfcatch type="any">
+        <cfset createObject("component", "library.bugLogger").logBug(cfcatch)>
         <cfoutput>{"success":false,"message":"An error occurred."}</cfoutput>
     </cfcatch>
 </cftry>
