@@ -73,8 +73,8 @@
           <h2>3. League Structure</h2>
           <p>The Round League consists of two divisions:</p>
           <ul>
-            <li><strong>Premier Division</strong> &ndash; Highest level competition</li>
-            <li><strong>Open Division</strong> &ndash; Intermediate / Recreational</li>
+            <li><strong>Premier Division</strong> - Highest level competition</li>
+            <li><strong>Open Division</strong> - Intermediate / Recreational</li>
           </ul>
           <p>League administration reserves the right to adjust divisions for competitive balance.</p>
         </div>
@@ -104,7 +104,7 @@
         <!--- 5. Game Rules --->
         <div class="rules-section">
           <h2>5. Game Rules</h2>
-          <p>All divisions will follow the 2026&ndash;2027 NCAA Rulebook, except where modified below.</p>
+          <p>All divisions will follow the 2026-2027 NCAA Rulebook, except where modified below.</p>
 
           <h3>Game Format</h3>
           <ul>
