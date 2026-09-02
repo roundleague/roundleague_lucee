@@ -13,7 +13,6 @@ component {
 
         // ✅ Load API keys into application scope
         include "api-keys.cfm";
-        trackApiKeysFile();
 
         setApiBase();
         setDeployVersion();
@@ -25,28 +24,11 @@ component {
         // Self-heal if application scope was cleared (e.g. server restart without onApplicationStart firing)
         if (NOT isDefined("application.apiBase")) {
             include "api-keys.cfm";
-            trackApiKeysFile();
             setApiBase();
         }
         if (NOT isDefined("application.deployVersion")) {
             setDeployVersion();
         }
-
-        // Pick up api-keys.cfm edits (e.g. rotated secrets) without a manual app reload.
-        // Throttled so we're not stat()-ing the file on every single request.
-        if (NOT isDefined("application.apiKeysCheckedAt") OR dateDiff("s", application.apiKeysCheckedAt, now()) GT 30) {
-            application.apiKeysCheckedAt = now();
-            var currentMTime = getFileInfo(expandPath("/api-keys.cfm")).dateLastModified;
-            if (NOT isDefined("application.apiKeysMTime") OR currentMTime NEQ application.apiKeysMTime) {
-                include "api-keys.cfm";
-                application.apiKeysMTime = currentMTime;
-            }
-        }
-    }
-
-    private function trackApiKeysFile() {
-        application.apiKeysMTime = getFileInfo(expandPath("/api-keys.cfm")).dateLastModified;
-        application.apiKeysCheckedAt = now();
     }
 
     private function setApiBase() {
