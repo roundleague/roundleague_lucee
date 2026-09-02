@@ -12,6 +12,7 @@ component {
         session.LoggedIn = false;
 
         // ✅ Load API keys into application scope
+        // Note: CFML secrets live in api-keys.cfm (Stripe, Jira, admin API key); .env is only for docker-compose / MySQL creds. Consolidate to .env once we have a working CFML env-loader.
         include "api-keys.cfm";
 
         setApiBase();

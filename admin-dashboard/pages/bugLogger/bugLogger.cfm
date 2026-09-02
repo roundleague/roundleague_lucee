@@ -1,5 +1,6 @@
 <cfquery name="getUnresolvedBugs" datasource="roundleague">
     SELECT br.bugID, br.errorType, br.errorFile, br.errorLine, br.occurrenceCount,
+           br.jiraKey, br.jiraURL,
            DATE_FORMAT(br.firstSeenAt, '%b %d') AS firstSeenShort,
            DATE_FORMAT(br.lastSeenAt,  '%b %d') AS lastSeenShort,
            (SELECT COUNT(DISTINCT userName) FROM bug_occurrences bo
@@ -11,6 +12,7 @@
 
 <cfquery name="getResolvedBugs" datasource="roundleague">
     SELECT br.bugID, br.errorType, br.errorFile, br.errorLine, br.occurrenceCount,
+           br.jiraKey, br.jiraURL,
            DATE_FORMAT(br.firstSeenAt, '%b %d') AS firstSeenShort,
            DATE_FORMAT(br.lastSeenAt,  '%b %d') AS lastSeenShort,
            (SELECT COUNT(DISTINCT userName) FROM bug_occurrences bo
@@ -58,9 +60,15 @@
                                 </div>
                                 <div class="bug-actions" onclick="event.stopPropagation()">
                                     <button class="btn btn-sm btn-outline-success" onclick="setResolved(#bugID#, true)">Resolve</button>
-                                    <button class="btn btn-sm btn-primary" onclick="createJiraPlaceholder(event)">
-                                        <i class="fa fa-bug"></i> Create Jira Ticket
-                                    </button>
+                                    <cfif len(trim(jiraKey))>
+                                        <a href="#jiraURL#" target="_blank" class="msg-jira-badge" style="padding:6px 12px;">
+                                            <i class="nc-icon nc-badge"></i> #jiraKey#
+                                        </a>
+                                    <cfelse>
+                                        <button class="btn btn-sm btn-primary" onclick="openJiraModal(#bugID#)">
+                                            <i class="fa fa-bug"></i> Create Jira Ticket
+                                        </button>
+                                    </cfif>
                                 </div>
                             </div>
                             </cfoutput>
@@ -99,9 +107,15 @@
                                 </div>
                                 <div class="bug-actions" onclick="event.stopPropagation()">
                                     <button class="btn btn-sm btn-outline-secondary" onclick="setResolved(#bugID#, false)">Unresolve</button>
-                                    <button class="btn btn-sm btn-primary" onclick="createJiraPlaceholder(event)">
-                                        <i class="fa fa-bug"></i> Create Jira Ticket
-                                    </button>
+                                    <cfif len(trim(jiraKey))>
+                                        <a href="#jiraURL#" target="_blank" class="msg-jira-badge" style="padding:6px 12px;">
+                                            <i class="nc-icon nc-badge"></i> #jiraKey#
+                                        </a>
+                                    <cfelse>
+                                        <button class="btn btn-sm btn-primary" onclick="openJiraModal(#bugID#)">
+                                            <i class="fa fa-bug"></i> Create Jira Ticket
+                                        </button>
+                                    </cfif>
                                 </div>
                             </div>
                             </cfoutput>
@@ -137,7 +151,7 @@
                     <button class="btn btn-sm" id="modalResolveBtn" onclick="modalToggleResolved()"></button>
                 </div>
                 <div>
-                    <button class="btn btn-sm btn-primary" onclick="createJiraPlaceholder(event)">
+                    <button class="btn btn-sm btn-primary" id="modalJiraBtn" onclick="openJiraModal(currentBugID)">
                         <i class="fa fa-bug"></i> Create Jira Ticket
                     </button>
                     <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
@@ -147,9 +161,40 @@
     </div>
 </div>
 
+<!-- Jira Ticket Modal -->
+<div class="modal fade" id="jiraModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="nc-icon nc-badge"></i> Create Jira Ticket</h5>
+                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Summary</label>
+                    <input type="text" class="form-control" id="jiraSummary">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea class="form-control" id="jiraDescription" rows="10"></textarea>
+                </div>
+                <div id="jiraError" class="alert alert-danger mt-2" style="display:none;"></div>
+                <div id="jiraSuccess" class="alert alert-success mt-2" style="display:none;"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-secondary" id="jiraCancelBtn" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-sm btn-primary" id="jiraSubmitBtn" onclick="submitJiraTicket()">
+                    Create Ticket
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
 var currentBugID = null;
 var currentResolved = false;
+var currentBugCache = null;
 
 function viewBug(id, evt) {
     if (evt && evt.target.closest('.bug-actions')) return;
@@ -160,6 +205,7 @@ function viewBug(id, evt) {
         .then(function(data) {
             if (!data.success) { alert('Could not load bug.'); return; }
             var b = data.bug;
+            currentBugCache = b;
 
             currentResolved = (b.resolved == 1);
 
@@ -197,8 +243,21 @@ function viewBug(id, evt) {
                 resolveBtn.className = 'btn btn-sm btn-outline-success';
             }
 
+            updateModalJiraBtn(b.jiraKey, b.jiraURL);
+
             $('#bugModal').modal('show');
         });
+}
+
+function updateModalJiraBtn(jiraKey, jiraURL) {
+    var btn = document.getElementById('modalJiraBtn');
+    if (jiraKey && jiraKey.length > 0) {
+        btn.innerHTML = '<i class="nc-icon nc-badge"></i> View: ' + jiraKey;
+        btn.onclick = function() { window.open(jiraURL, '_blank'); };
+    } else {
+        btn.innerHTML = '<i class="fa fa-bug"></i> Create Jira Ticket';
+        btn.onclick = function() { openJiraModal(currentBugID); };
+    }
 }
 
 function modalToggleResolved() {
@@ -267,9 +326,126 @@ function refreshCounts() {
     document.querySelectorAll('.card-header .badge')[1].textContent = resolvedCount;
 }
 
-function createJiraPlaceholder(evt) {
-    if (evt) evt.stopPropagation();
-    alert('Jira integration coming soon.');
+function openJiraModal(bugID) {
+    if (!bugID) return;
+    currentBugID = bugID;
+
+    // Reset modal state
+    document.getElementById('jiraError').style.display = 'none';
+    document.getElementById('jiraSuccess').style.display = 'none';
+    var submitBtn = document.getElementById('jiraSubmitBtn');
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Create Ticket';
+    submitBtn.className = 'btn btn-sm btn-primary';
+    submitBtn.onclick = submitJiraTicket;
+    document.getElementById('jiraCancelBtn').textContent = 'Cancel';
+
+    // If bug detail modal is open, hide it first to avoid stacking
+    $('#bugModal').modal('hide');
+
+    var openWithBug = function(b) {
+        var fileShort = (b.errorFile || '').split(/[\\\/]/).pop();
+        document.getElementById('jiraSummary').value = 'Bug: ' + b.errorType + ' at ' + fileShort + ':' + b.errorLine;
+        document.getElementById('jiraDescription').value =
+            'Error: ' + (b.errorMessage || '') + '\n' +
+            'File: ' + b.errorFile + ':' + b.errorLine + '\n' +
+            'Requested URL: ' + b.pageURL + '\n' +
+            'Occurrences: ' + b.occurrenceCount +
+            (b.uniqueUsers > 0 ? ' across ' + b.uniqueUsers + ' user(s)' : '') + '\n' +
+            'First seen: ' + b.firstSeenAt + '\n' +
+            'Last seen: ' + b.lastSeenAt;
+        setTimeout(function() { $('#jiraModal').modal('show'); }, 350);
+    };
+
+    if (currentBugCache && currentBugCache.bugID == bugID) {
+        openWithBug(currentBugCache);
+    } else {
+        fetch('/admin-dashboard/pages/bugLogger/actions/getBug.cfm?bugID=' + bugID)
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (!data.success) { alert('Could not load bug.'); return; }
+                currentBugCache = data.bug;
+                openWithBug(data.bug);
+            });
+    }
+}
+
+function submitJiraTicket() {
+    var summary = document.getElementById('jiraSummary').value.trim();
+    var description = document.getElementById('jiraDescription').value.trim();
+
+    if (!summary) {
+        document.getElementById('jiraError').textContent = 'Summary is required.';
+        document.getElementById('jiraError').style.display = 'block';
+        return;
+    }
+
+    var btn = document.getElementById('jiraSubmitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Creating...';
+    document.getElementById('jiraError').style.display = 'none';
+
+    var params = 'bugID=' + encodeURIComponent(currentBugID) +
+                 '&summary=' + encodeURIComponent(summary) +
+                 '&description=' + encodeURIComponent(description);
+
+    fetch('/admin-dashboard/pages/bugLogger/actions/createJiraTicket.cfm', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: params
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+        if (data.success) {
+            var successEl = document.getElementById('jiraSuccess');
+            successEl.innerHTML = 'Ticket created: <a href="' + data.ticketURL + '" target="_blank" style="font-weight:600;text-decoration:underline;">' + data.ticketKey + '</a>';
+            successEl.style.display = 'block';
+
+            // Turn the "Create" button into an "Open Jira Ticket" button so the user
+            // can click the same confirm to jump straight to the new ticket.
+            btn.disabled = false;
+            btn.innerHTML = '<i class="nc-icon nc-badge"></i> Open Jira Ticket &rarr;';
+            btn.className = 'btn btn-sm btn-success';
+            btn.onclick = function() { window.open(data.ticketURL, '_blank'); };
+            document.getElementById('jiraCancelBtn').textContent = 'Close';
+
+            // Update the row and cached bug so subsequent opens show the ticket.
+            updateRowWithJira(currentBugID, data.ticketKey, data.ticketURL);
+            if (currentBugCache && currentBugCache.bugID == currentBugID) {
+                currentBugCache.jiraKey = data.ticketKey;
+                currentBugCache.jiraURL = data.ticketURL;
+            }
+            updateModalJiraBtn(data.ticketKey, data.ticketURL);
+        } else {
+            btn.disabled = false;
+            btn.textContent = 'Create Ticket';
+            document.getElementById('jiraError').textContent = data.message || 'Failed to create ticket.';
+            document.getElementById('jiraError').style.display = 'block';
+        }
+    })
+    .catch(function() {
+        btn.disabled = false;
+        btn.textContent = 'Create Ticket';
+        document.getElementById('jiraError').textContent = 'Network error. Please try again.';
+        document.getElementById('jiraError').style.display = 'block';
+    });
+}
+
+function updateRowWithJira(bugID, jiraKey, jiraURL) {
+    var row = document.querySelector('.bug-row[data-id="' + bugID + '"]');
+    if (!row) return;
+    var actions = row.querySelector('.bug-actions');
+    if (!actions) return;
+    var createBtn = actions.querySelector('button.btn-primary');
+    if (createBtn) {
+        var badge = document.createElement('a');
+        badge.href = jiraURL;
+        badge.target = '_blank';
+        badge.className = 'msg-jira-badge';
+        badge.style.padding = '6px 12px';
+        badge.innerHTML = '<i class="nc-icon nc-badge"></i> ' + jiraKey;
+        createBtn.replaceWith(badge);
+    }
 }
 </script>
 

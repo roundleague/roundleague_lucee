@@ -7,7 +7,7 @@
                occurrenceCount,
                DATE_FORMAT(firstSeenAt, '%b %d, %Y %h:%i %p') AS formattedFirstSeen,
                DATE_FORMAT(lastSeenAt,  '%b %d, %Y %h:%i %p') AS formattedLastSeen,
-               resolved
+               resolved, jiraKey, jiraURL
         FROM bug_reports
         WHERE bugID = <cfqueryparam value="#url.bugID#" cfsqltype="cf_sql_integer">
     </cfquery>
@@ -57,6 +57,8 @@
             "firstSeenAt":       bug.formattedFirstSeen,
             "lastSeenAt":        bug.formattedLastSeen,
             "resolved":          bug.resolved,
+            "jiraKey":           bug.jiraKey,
+            "jiraURL":           bug.jiraURL,
             "recentOccurrences": recentArr
         }
     }>
