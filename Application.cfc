@@ -57,15 +57,10 @@ component {
         var errType = structKeyExists(exception, "type") ? left(exception.type, 200) : "Unknown";
         var errMsg  = structKeyExists(exception, "message") ? exception.message : "";
         var pageURL = CGI.SCRIPT_NAME & (len(CGI.QUERY_STRING) ? "?" & CGI.QUERY_STRING : "");
-
-        // Actual template/line the error was thrown from (may differ from pageURL
-        // when the error is inside an included template).
-        var errFile = pageURL;
         var errLine = 0;
         if (structKeyExists(exception, "tagContext") AND isArray(exception.tagContext) AND arrayLen(exception.tagContext)) {
             var topContext = exception.tagContext[1];
-            if (structKeyExists(topContext, "template")) errFile = left(topContext.template, 500);
-            if (structKeyExists(topContext, "line"))     errLine = topContext.line;
+            if (structKeyExists(topContext, "line")) errLine = topContext.line;
         }
 
         // Try to reuse the real site header (nav bar) for a consistent look. Falls back
@@ -82,47 +77,7 @@ component {
             headerRendered = false;
         }
 
-        try {
-            var fingerprint   = hash(errType & "|" & errFile & "|" & errLine, "MD5");
-            var userName      = (isDefined("session.userName") AND len(trim(session.userName))) ? session.userName : "";
-            var deployVersion = isDefined("application.deployVersion") ? application.deployVersion : "unknown";
-            var upsertResult  = "";
-
-            queryExecute(
-                "INSERT INTO bug_reports
-                    (fingerprintHash, errorType, errorFile, errorLine, errorMessage, pageURL, occurrenceCount, firstSeenAt, lastSeenAt, resolved)
-                 VALUES
-                    (:fingerprintHash, :errorType, :errorFile, :errorLine, :errorMessage, :pageURL, 1, NOW(), NOW(), 0)
-                 ON DUPLICATE KEY UPDATE
-                    bugID = LAST_INSERT_ID(bugID),
-                    occurrenceCount = occurrenceCount + 1,
-                    lastSeenAt = NOW(),
-                    resolved = 0",
-                {
-                    fingerprintHash: { value: fingerprint, cfsqltype: "cf_sql_varchar" },
-                    errorType:       { value: errType,     cfsqltype: "cf_sql_varchar" },
-                    errorFile:       { value: errFile,     cfsqltype: "cf_sql_varchar" },
-                    errorLine:       { value: errLine,     cfsqltype: "cf_sql_integer" },
-                    errorMessage:    { value: errMsg,      cfsqltype: "cf_sql_longvarchar" },
-                    pageURL:         { value: pageURL,     cfsqltype: "cf_sql_varchar" }
-                },
-                { datasource: "roundleague", result: "upsertResult" }
-            );
-
-            var bugID = upsertResult.generatedKey;
-
-            queryExecute(
-                "INSERT INTO bug_occurrences (bugID, occurredAt, userName, deployVersion, pageURL)
-                 VALUES (:bugID, NOW(), :userName, :deployVersion, :pageURL)",
-                {
-                    bugID:         { value: bugID,         cfsqltype: "cf_sql_integer" },
-                    userName:      { value: userName,      cfsqltype: "cf_sql_varchar", null: (len(userName) EQ 0) },
-                    deployVersion: { value: deployVersion, cfsqltype: "cf_sql_varchar" },
-                    pageURL:       { value: pageURL,       cfsqltype: "cf_sql_varchar" }
-                },
-                { datasource: "roundleague" }
-            );
-        } catch (any e) {}
+        var fingerprint = createObject("component", "library.bugLogger").logBug(exception, pageURL);
 
         try {
             if (NOT isLocal) {

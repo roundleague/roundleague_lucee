@@ -1,6 +1,6 @@
 <cftry>
     <cfquery name="msgUnread" datasource="roundleague">
-        SELECT COUNT(*) AS cnt FROM contact_messages WHERE isRead = 0
+        SELECT COUNT(*) AS cnt FROM contact_messages WHERE isRead = 0 AND isSpam = 0
     </cfquery>
     <cfcatch type="any">
         <cfset msgUnread = { cnt: 0 }>
@@ -13,6 +13,16 @@
     </cfquery>
     <cfcatch type="any">
         <cfset bugUnresolved = { cnt: 0 }>
+    </cfcatch>
+</cftry>
+
+<cftry>
+    <cfquery name="securityRecent" datasource="roundleague">
+        SELECT COUNT(*) AS cnt FROM security_events
+        WHERE anomalous = 1 AND occurredAt >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+    </cfquery>
+    <cfcatch type="any">
+        <cfset securityRecent = { cnt: 0 }>
     </cfcatch>
 </cftry>
 
@@ -80,7 +90,7 @@
                                     <span class="tool-badge">#msgUnread.cnt#</span>
                                 </cfif>
                             </span>
-                            <p>Messages</p>
+                            <p>Contact Form Submissions</p>
                         </a>
                         </cfoutput>
 
@@ -96,7 +106,18 @@
                         </a>
                         </cfoutput>
 
-                        <div class="tool-card empty"></div>
+                        <cfoutput>
+                        <a href="/admin-dashboard/pages/securityEvents/securityEvents.cfm" class="tool-card">
+                            <span style="position:relative; display:inline-block;">
+                                <i class="fa fa-shield"></i>
+                                <cfif securityRecent.cnt GT 0>
+                                    <span class="tool-badge">#securityRecent.cnt#</span>
+                                </cfif>
+                            </span>
+                            <p>Security Events</p>
+                        </a>
+                        </cfoutput>
+
                         <div class="tool-card empty"></div>
 
                     </div>

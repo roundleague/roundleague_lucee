@@ -448,6 +448,9 @@ CREATE TABLE IF NOT EXISTS contact_messages (
   messageBody      TEXT NOT NULL,
   consentToContact TINYINT NOT NULL DEFAULT 0,
   isRead           TINYINT NOT NULL DEFAULT 0,
+  isSpam           TINYINT NOT NULL DEFAULT 0,
+  isAnomalous      TINYINT NOT NULL DEFAULT 0,
+  spamReason       VARCHAR(50) DEFAULT NULL,
   createdAt        DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   jiraKey          VARCHAR(50) DEFAULT NULL,
   jiraURL          VARCHAR(500) DEFAULT NULL
@@ -478,4 +481,17 @@ CREATE TABLE IF NOT EXISTS bug_occurrences (
   deployVersion VARCHAR(100)  DEFAULT NULL,
   pageURL       VARCHAR(500)  NOT NULL DEFAULT '',
   INDEX idx_bugID_occurredAt (bugID, occurredAt)
+);
+
+CREATE TABLE IF NOT EXISTS security_events (
+  eventID     INT AUTO_INCREMENT PRIMARY KEY,
+  eventType   VARCHAR(50)   NOT NULL,
+  clientIP    VARCHAR(45)   NOT NULL DEFAULT '',
+  subject     VARCHAR(255)  NOT NULL DEFAULT '',
+  reason      VARCHAR(255)  NOT NULL DEFAULT '',
+  anomalous   TINYINT       NOT NULL DEFAULT 0,
+  occurredAt  DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_occurredAt (occurredAt),
+  INDEX idx_eventType  (eventType),
+  INDEX idx_anomalous  (anomalous)
 );

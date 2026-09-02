@@ -12,6 +12,13 @@
     <cfset message = trim(left(form.contactMessage, 5000))>
     <cfset consent = (form.consentToContact EQ "1") ? 1 : 0>
 
+    <cfinclude template="spamCheck.cfm">
+
+    <cfif request.spamResult.blocked AND NOT request.spamResult.silentDrop>
+        <cfoutput>{"success":false,"message":"#jsStringFormat(request.spamResult.userMessage)#"}</cfoutput>
+        <cfabort>
+    </cfif>
+
     <cfif NOT len(email) OR NOT len(phone) OR NOT len(subject) OR NOT len(message)>
         <cfoutput>{"success":false,"message":"All fields are required."}</cfoutput>
         <cfabort>
@@ -23,13 +30,16 @@
     </cfif>
 
     <cfquery datasource="roundleague">
-        INSERT INTO contact_messages (senderEmail, senderPhone, subject, messageBody, consentToContact)
+        INSERT INTO contact_messages (senderEmail, senderPhone, subject, messageBody, consentToContact, isSpam, isAnomalous, spamReason)
         VALUES (
-            <cfqueryparam value="#email#"   cfsqltype="cf_sql_varchar">,
-            <cfqueryparam value="#phone#"   cfsqltype="cf_sql_varchar">,
-            <cfqueryparam value="#subject#" cfsqltype="cf_sql_varchar">,
-            <cfqueryparam value="#message#" cfsqltype="cf_sql_longvarchar">,
-            <cfqueryparam value="#consent#" cfsqltype="cf_sql_tinyint">
+            <cfqueryparam value="#email#"                                 cfsqltype="cf_sql_varchar">,
+            <cfqueryparam value="#phone#"                                 cfsqltype="cf_sql_varchar">,
+            <cfqueryparam value="#subject#"                               cfsqltype="cf_sql_varchar">,
+            <cfqueryparam value="#message#"                               cfsqltype="cf_sql_longvarchar">,
+            <cfqueryparam value="#consent#"                               cfsqltype="cf_sql_tinyint">,
+            <cfqueryparam value="#request.spamResult.silentDrop ? 1 : 0#" cfsqltype="cf_sql_tinyint">,
+            <cfqueryparam value="#request.spamResult.anomalous  ? 1 : 0#" cfsqltype="cf_sql_tinyint">,
+            <cfqueryparam value="#request.spamResult.reason#"             cfsqltype="cf_sql_varchar" null="#NOT len(request.spamResult.reason)#">
         )
     </cfquery>
 
