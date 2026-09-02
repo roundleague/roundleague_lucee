@@ -9,6 +9,9 @@
         DELETE FROM game_plays WHERE scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#"> AND isPlayoff = 1
     </cfquery>
     <cfquery datasource="roundleague">
+        DELETE FROM recaps WHERE scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#"> AND isPlayoff = 1
+    </cfquery>
+    <cfquery datasource="roundleague">
         UPDATE Playoffs_Schedule
         SET homeScore = NULL, awayScore = NULL, status = 'scheduled'
         WHERE Playoffs_scheduleID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#url.scheduleID#">
@@ -125,6 +128,7 @@
         <div class="tab-pane <cfif defaultTab EQ 'boxscore'>active</cfif>" id="boxscore-tab">
         <table class="bolder smallFont">
             <cfset currentTeamID = ''>
+            <cfset nextTeamID = ''>
 
             <!--- Keep Track of Totals --->
             <cfset totalFGM = 0>
@@ -305,13 +309,15 @@
 
         </div><!--- end .tab-content --->
         <br>
+        <cfset isPlayoffRecap = true>
+        <cfinclude template="recap.cfm">
 
         <cfif CGI.HTTP_HOST CONTAINS "localhost" OR CGI.HTTP_HOST CONTAINS "127.0.0.1">
         <div style="margin:24px auto;max-width:500px;padding:16px;background:##fff3cd;border:1px solid ##ffc107;border-radius:6px;text-align:center;">
-            <form method="POST" action="playoffs_boxscore.cfm?scheduleID=#url.scheduleID#" onsubmit="return confirm('Reset all data for Playoffs_ScheduleID #url.scheduleID#? This deletes Playoffs_PlayerGameLog and game_plays, and sets score + status back to scheduled. Bracket advancement already applied to later games is NOT undone.')">
+            <form method="POST" action="playoffs_boxscore.cfm?scheduleID=#url.scheduleID#" onsubmit="return confirm('Reset all data for Playoffs_ScheduleID #url.scheduleID#? This deletes Playoffs_PlayerGameLog, game_plays and the recap, and sets score + status back to scheduled. Bracket advancement already applied to later games is NOT undone.')">
                 <input type="hidden" name="resetGame" value="1">
                 <button type="submit" style="background:##dc3545;color:white;border:none;padding:8px 20px;border-radius:4px;font-weight:bold;cursor:pointer;font-size:14px;">&##x26A0; Reset Game Data</button>
-                <div style="font-size:11px;color:##856404;margin-top:6px;">Deletes Playoffs_PlayerGameLog &bull; game_plays &bull; Resets score + status &mdash; LOCAL ONLY</div>
+                <div style="font-size:11px;color:##856404;margin-top:6px;">Deletes Playoffs_PlayerGameLog &bull; game_plays &bull; recap &bull; Resets score + status &mdash; LOCAL ONLY</div>
             </form>
         </div>
         </cfif>
@@ -421,3 +427,4 @@
 })();
 </script>
 <cfinclude template="/footer.cfm">
+<script src="../boxscore/recap.js?v=1.1"></script>
