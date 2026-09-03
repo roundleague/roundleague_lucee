@@ -31,6 +31,17 @@
     FROM Awards
     JOIN Seasons ON awards.SeasonID = Seasons.SeasonID
     WHERE PlayerID = <cfqueryparam cfsqltype="INTEGER" value="#url.playerID#">
+
+    UNION ALL
+
+    <!--- Player was on the roster of a team that won the championship that season --->
+    SELECT 'Champion' AS AwardName, c.seasonID, s.SeasonName
+    FROM Roster r
+    JOIN champions c ON c.teamID = r.teamID AND c.seasonID = r.seasonID
+    JOIN Seasons s ON s.seasonID = c.seasonID
+    WHERE r.playerID = <cfqueryparam cfsqltype="INTEGER" value="#url.playerID#">
+
+    ORDER BY seasonID DESC
 </cfquery>
 
 <cfquery name="getSeasons" datasource="roundleague">
