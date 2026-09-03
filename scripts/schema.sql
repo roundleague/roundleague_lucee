@@ -468,6 +468,8 @@ CREATE TABLE IF NOT EXISTS bug_reports (
   firstSeenAt     DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
   lastSeenAt      DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
   resolved        TINYINT       NOT NULL DEFAULT 0,
+  jiraKey         VARCHAR(50)   DEFAULT NULL,
+  jiraURL         VARCHAR(500)  DEFAULT NULL,
   UNIQUE KEY uq_fingerprint (fingerprintHash),
   INDEX idx_resolved  (resolved),
   INDEX idx_lastSeen  (lastSeenAt)

@@ -1,26 +1,26 @@
 <cfheader name="Content-Type" value="application/json">
 <cftry>
-    <cfparam name="form.messageID"    default="">
-    <cfparam name="form.summary"      default="">
-    <cfparam name="form.description"  default="">
+    <cfparam name="form.bugID"       default="">
+    <cfparam name="form.summary"     default="">
+    <cfparam name="form.description" default="">
 
-    <cfif NOT isNumeric(form.messageID) OR NOT len(trim(form.summary))>
+    <cfif NOT isNumeric(form.bugID) OR NOT len(trim(form.summary))>
         <cfoutput>{"success":false,"message":"Invalid parameters."}</cfoutput>
         <cfabort>
     </cfif>
 
-    <cfquery name="checkMsg" datasource="roundleague">
-        SELECT messageID, jiraKey FROM contact_messages
-        WHERE messageID = <cfqueryparam value="#int(form.messageID)#" cfsqltype="cf_sql_integer">
+    <cfquery name="checkBug" datasource="roundleague">
+        SELECT bugID, jiraKey FROM bug_reports
+        WHERE bugID = <cfqueryparam value="#int(form.bugID)#" cfsqltype="cf_sql_integer">
     </cfquery>
 
-    <cfif checkMsg.recordCount EQ 0>
-        <cfoutput>{"success":false,"message":"Message not found."}</cfoutput>
+    <cfif checkBug.recordCount EQ 0>
+        <cfoutput>{"success":false,"message":"Bug not found."}</cfoutput>
         <cfabort>
     </cfif>
 
-    <cfif len(trim(checkMsg.jiraKey))>
-        <cfoutput>{"success":false,"message":"A Jira ticket already exists for this message: #checkMsg.jiraKey#"}</cfoutput>
+    <cfif len(trim(checkBug.jiraKey))>
+        <cfoutput>{"success":false,"message":"A Jira ticket already exists for this bug: #checkBug.jiraKey#"}</cfoutput>
         <cfabort>
     </cfif>
 
@@ -28,10 +28,10 @@
 
     <cfif jiraResult.success>
         <cfquery datasource="roundleague">
-            UPDATE contact_messages
+            UPDATE bug_reports
             SET jiraKey = <cfqueryparam value="#jiraResult.ticketKey#" cfsqltype="cf_sql_varchar">,
                 jiraURL = <cfqueryparam value="#jiraResult.ticketURL#" cfsqltype="cf_sql_varchar">
-            WHERE messageID = <cfqueryparam value="#int(form.messageID)#" cfsqltype="cf_sql_integer">
+            WHERE bugID = <cfqueryparam value="#int(form.bugID)#" cfsqltype="cf_sql_integer">
         </cfquery>
     </cfif>
 
