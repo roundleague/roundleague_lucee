@@ -9,10 +9,10 @@
 <cfif NOT reFind("^[^\s@]{1,64}@[^\s@]{1,255}\.[^\s@]{2,}$", local.cleanEmail) OR len(local.cleanEmail) GT 254>
   <cflog file="register_security" type="warning"
          text="Invalid email rejected: #htmlEditFormat(form.email)# from #cgi.remote_addr#" />
-  <cfthrow message="Invalid email address." />
+  <cfthrow type="Validation" message="Invalid email address." />
 </cfif>
 <cfif len(trim(form.firstName)) GT 50 OR len(trim(form.lastName)) GT 50>
-  <cfthrow message="Name fields exceed maximum length." />
+  <cfthrow type="Validation" message="Name fields exceed maximum length." />
 </cfif>
 <cfset local.suspiciousPattern = "(?i)(pg_sleep|waitfor\s+delay|dbms_pipe|union\s+select|sleep\s*\()" />
 <cfif reFind(local.suspiciousPattern, form.email)
@@ -20,12 +20,12 @@
       OR reFind(local.suspiciousPattern, form.lastName)>
   <cflog file="register_security" type="warning"
          text="Suspicious payload rejected from #cgi.remote_addr# email=#htmlEditFormat(form.email)#" />
-  <cfthrow message="Invalid characters in submitted fields." />
+  <cfthrow type="Validation" message="Invalid characters in submitted fields." />
 </cfif>
 
 <!--- Guardian acknowledgment required for under-18 registrations --->
 <cfif NOT isDefined("form.over18") AND NOT isDefined("form.guardianAck")>
-  <cfthrow message="Guardian acknowledgment is required for players under 18." />
+  <cfthrow type="Validation" message="Guardian acknowledgment is required for players under 18." />
 </cfif>
 
 <cfset teamObject = createObject("component", "library.teams") />
@@ -256,7 +256,9 @@
 			<cfset toastMessage &= ". You are now the captain of #teamName#.">
 		</cfif>
 	<cfcatch>
-		<cfdump var="#cfcatch#" /><cfabort />
+		<!--- Hand off to Application.onError (logs + alerts + safe error page)
+		      instead of dumping exception/SQL details to the visitor. --->
+		<cfrethrow />
 	</cfcatch>
 	</cftry>
 </cfif>

@@ -57,11 +57,16 @@ component {
         var isLocal = (CGI.SERVER_NAME contains "localhost" OR CGI.SERVER_NAME contains "127.0.0.1");
         var errType = structKeyExists(exception, "type") ? left(exception.type, 200) : "Unknown";
         var errMsg  = structKeyExists(exception, "message") ? exception.message : "";
+        var errDetail = (structKeyExists(exception, "detail") AND isSimpleValue(exception.detail)) ? exception.detail : "";
+        // Rejected user input (cfthrow type="Validation"), not a bug: log it, but don't email admins.
+        var isValidation = (errType EQ "Validation");
+        var errFile = "";
         var pageURL = CGI.SCRIPT_NAME & (len(CGI.QUERY_STRING) ? "?" & CGI.QUERY_STRING : "");
         var errLine = 0;
         if (structKeyExists(exception, "tagContext") AND isArray(exception.tagContext) AND arrayLen(exception.tagContext)) {
             var topContext = exception.tagContext[1];
             if (structKeyExists(topContext, "line")) errLine = topContext.line;
+            if (structKeyExists(topContext, "template")) errFile = topContext.template;
         }
 
         // Try to reuse the real site header (nav bar) for a consistent look. Falls back
@@ -81,7 +86,7 @@ component {
         var fingerprint = createObject("component", "library.bugLogger").logBug(exception, pageURL);
 
         try {
-            if (NOT isLocal) {
+            if (NOT isLocal AND NOT isValidation) {
                 var mailGate = createObject("component", "api.RateLimiter").check("bugmail_" & fingerprint, 1, 3600);
                 if (mailGate.allowed) {
                     cfmail(
@@ -93,8 +98,10 @@ component {
                         writeOutput("An error occurred on The Round League site." & chr(10) & chr(10) &
                             "Type: " & errType & chr(10) &
                             "Page: " & pageURL & chr(10) &
+                            "Where: " & errFile & " (line " & errLine & ")" & chr(10) &
                             "Time: " & dateFormat(now(), "mmm d, yyyy") & " " & timeFormat(now(), "h:mm tt") & chr(10) & chr(10) &
-                            "Message:" & chr(10) & left(errMsg, 500));
+                            "Message:" & chr(10) & left(errMsg, 500) & chr(10) & chr(10) &
+                            "Detail:" & chr(10) & left(errDetail, 1000));
                     }
                 }
             }
@@ -117,6 +124,13 @@ component {
             "<img src=""/assets/img/Logos/4_trimmed.png"" alt=""The Round League"" style=""max-width:220px;width:100%;height:auto;margin-bottom:28px;"">" &
             "<h1>Something went wrong</h1><p>Our team has been notified and is looking into it.</p>" &
             "<p><a href=""/"">Return to homepage</a></p></div>";
+        if (isValidation) {
+            // Validation messages are fixed strings written in our own code, so they're safe to show the user.
+            errorCard = "<div style=""font-family:sans-serif;text-align:center;padding:80px 20px;"">" &
+                "<img src=""/assets/img/Logos/4_trimmed.png"" alt=""The Round League"" style=""max-width:220px;width:100%;height:auto;margin-bottom:28px;"">" &
+                "<h1>Please check your registration</h1><p>" & encodeForHTML(errMsg) & "</p>" &
+                "<p><a href=""javascript:history.back()"">Go back and fix it</a></p></div>";
+        }
 
         if (headerRendered) {
             writeOutput(headerHTML);

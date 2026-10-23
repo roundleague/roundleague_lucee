@@ -1,3 +1,8 @@
+<!--- Missing/non-numeric scheduleID (usually bots/scanners) -> back to the schedule instead of erroring --->
+<cfif NOT structKeyExists(url, "scheduleID") OR NOT isValid("integer", url.scheduleID)>
+    <cflocation url="/pages/schedule/schedule-2.cfm" addtoken="false">
+</cfif>
+
 <cfinclude template="/header.cfm">
 
 <!--- LOCAL ONLY: Reset game data for re-testing --->

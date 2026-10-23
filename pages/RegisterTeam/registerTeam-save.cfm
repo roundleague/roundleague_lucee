@@ -20,7 +20,7 @@
 <cfif len(trim(form.referralSource)) EQ 0><cfset arrayAppend(local.missingFields, "How you heard about us")></cfif>
 
 <cfif len(trim(form.teamName)) GT 200 OR len(trim(form.captainName)) GT 200>
-  <cfthrow message="Team name and captain name must be under 200 characters.">
+  <cfthrow type="Validation" message="Team name and captain name must be under 200 characters.">
 </cfif>
 
 <cfif arrayLen(local.missingFields)>
@@ -45,7 +45,7 @@
       OR reFind(local.suspiciousPattern, form.referralOther)>
   <cflog file="register_security" type="warning"
          text="Suspicious team registration payload rejected from #cgi.remote_addr# teamName=#htmlEditFormat(form.teamName)#">
-  <cfthrow message="Invalid characters in submitted fields.">
+  <cfthrow type="Validation" message="Invalid characters in submitted fields.">
 </cfif>
 
 <!--- Split captain name into first/last (first word / remainder) --->
