@@ -176,7 +176,7 @@
         		<h4 class="noTopSpace">
                     #getPointsLeaders.currentRow#.
                     <cfif PermissionToShare EQ 'YES'>
-                        <a href="../Teams/Player_Profiles/player-profile-2.cfm?playerID=#playerID#" style="font-weight: bold;">
+                        <a href="/pages/Teams/Player_Profiles/player-profile-2.cfm?playerID=#playerID#" style="font-weight: bold;">
                             #UCase(Left(getPointsLeaders.FirstName, 1))##LCase(Mid(getPointsLeaders.FirstName, 2))# #UCase(Left(getPointsLeaders.LastName, 1))##LCase(Mid(getPointsLeaders.LastName, 2))#
                         </a>
                     <cfelse>
@@ -204,7 +204,7 @@
         		<h4 class="noTopSpace">
                     #getReboundsLeaders.currentRow#.
                     <cfif PermissionToShare EQ 'YES'> 
-                        <a href="../Teams/Player_Profiles/player-profile-2.cfm?playerID=#playerID#" style="font-weight: bold;">
+                        <a href="/pages/Teams/Player_Profiles/player-profile-2.cfm?playerID=#playerID#" style="font-weight: bold;">
                             #getReboundsLeaders.FirstName# #getReboundsLeaders.LastName#
                         </a>
                     <cfelse>
@@ -232,7 +232,7 @@
         		<h4 class="noTopSpace">
                     #getAssistsLeaders.currentRow#.
                     <cfif PermissionToShare EQ 'YES'> 
-                        <a href="../Teams/Player_Profiles/player-profile-2.cfm?playerID=#playerID#" style="font-weight: bold;">
+                        <a href="/pages/Teams/Player_Profiles/player-profile-2.cfm?playerID=#playerID#" style="font-weight: bold;">
                             #getAssistsLeaders.FirstName# #getAssistsLeaders.LastName#
                         </a>
                     <cfelse>
@@ -259,7 +259,7 @@
                 <h4 class="noTopSpace">
                     #get3FGMLeaders.currentRow#.
                     <cfif PermissionToShare EQ 'YES'> 
-                        <a href="../Teams/Player_Profiles/player-profile-2.cfm?playerID=#playerID#" style="font-weight: bold;">
+                        <a href="/pages/Teams/Player_Profiles/player-profile-2.cfm?playerID=#playerID#" style="font-weight: bold;">
                             #get3FGMLeaders.FirstName# #get3FGMLeaders.LastName# 
                         </a>
                     <cfelse>
@@ -286,7 +286,7 @@
                 <h4 class="noTopSpace">
                     #getStealsLeaders.currentRow#. 
                     <cfif PermissionToShare EQ 'YES'>
-                        <a href="../Teams/Player_Profiles/player-profile-2.cfm?playerID=#playerID#" style="font-weight: bold;">
+                        <a href="/pages/Teams/Player_Profiles/player-profile-2.cfm?playerID=#playerID#" style="font-weight: bold;">
                             #getStealsLeaders.FirstName# #getStealsLeaders.LastName# 
                         </a>
                     <cfelse>
@@ -313,7 +313,7 @@
                 <h4 class="noTopSpace">
                     #getBlocksLeaders.currentRow#. 
                     <cfif PermissionToShare EQ 'YES'>
-                        <a href="../Teams/Player_Profiles/player-profile-2.cfm?playerID=#playerID#" style="font-weight: bold;">
+                        <a href="/pages/Teams/Player_Profiles/player-profile-2.cfm?playerID=#playerID#" style="font-weight: bold;">
                             #getBlocksLeaders.FirstName# #getBlocksLeaders.LastName# 
                         </a>
                     <cfelse>

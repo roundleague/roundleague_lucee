@@ -15,7 +15,9 @@
     <cftry>
       <cfset var errType = structKeyExists(arguments.exception, "type")    ? left(arguments.exception.type, 200) : "Unknown">
       <cfset var errMsg  = structKeyExists(arguments.exception, "message") ? arguments.exception.message         : "">
-      <cfset var errFile = arguments.pageURL>
+      <!--- Fall back to the path WITHOUT the query string: errors with no tagContext (e.g. missinginclude)
+           would otherwise get a new fingerprint per ?playerID=, defeating email dedup. --->
+      <cfset var errFile = reReplace(arguments.pageURL, "\?.*$", "")>
       <cfset var errLine = 0>
 
       <cfif structKeyExists(arguments.exception, "tagContext")

@@ -53,6 +53,31 @@ component {
         }
     }
 
+    // Requests for .cfm pages that don't exist. Without this, Lucee throws a missinginclude
+    // into onError(), which emails admins — a crawler hitting dead URLs floods the inbox.
+    function onMissingTemplate(targetPage) {
+        var qs = len(CGI.QUERY_STRING) ? "?" & CGI.QUERY_STRING : "";
+
+        // Mis-resolved player profile links (e.g. /Player_Profiles/player-profile-2.cfm at the
+        // site root): permanently redirect to the real page so crawlers update their index.
+        var m = reFindNoCase("/Player_Profiles/([A-Za-z0-9_\-]+\.cfm)$", arguments.targetPage, 1, true);
+        if (m.pos[1] GT 0) {
+            var fileName = mid(arguments.targetPage, m.pos[2], m.len[2]);
+            if (fileExists(expandPath("/pages/Teams/Player_Profiles/" & fileName))) {
+                location(url = "/pages/Teams/Player_Profiles/" & fileName & qs, addToken = false, statusCode = 301);
+                return true;
+            }
+        }
+
+        cfheader(statusCode = 404, statusText = "Not Found");
+        writeOutput("<!DOCTYPE html><html><head><title>Page not found</title></head><body>" &
+            "<div style=""font-family:sans-serif;text-align:center;padding:80px 20px;"">" &
+            "<img src=""/assets/img/Logos/4_trimmed.png"" alt=""The Round League"" style=""max-width:220px;width:100%;height:auto;margin-bottom:28px;"">" &
+            "<h1>Page not found</h1><p>That page doesn't exist.</p>" &
+            "<p><a href=""/"">Return to homepage</a></p></div></body></html>");
+        return true;
+    }
+
     function onError(exception, eventName) {
         var isLocal = (CGI.SERVER_NAME contains "localhost" OR CGI.SERVER_NAME contains "127.0.0.1");
         var errType = structKeyExists(exception, "type") ? left(exception.type, 200) : "Unknown";
