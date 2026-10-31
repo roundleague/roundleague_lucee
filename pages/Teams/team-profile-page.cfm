@@ -132,7 +132,7 @@
 	            <tr>
 	            	<td data-label="Name">
                   <cfif PermissionToShare EQ 'YES'>
-                    <a href="Player_Profiles/player-profile-2.cfm?playerID=#playerID#">
+                    <a href="/pages/Teams/Player_Profiles/player-profile-2.cfm?playerID=#playerID#">
                       #UCase(Left(firstName, 1))##LCase(Mid(firstName, 2))# #UCase(Left(lastName, 1))##LCase(Mid(lastName, 2))# <cfif getTeamData.captainPlayerID EQ getTeamData.playerID>(C)</cfif>
                     </a>
                   <cfelse>
@@ -175,7 +175,7 @@
               <tr>
                 <td data-label="Name">
                   <cfif PermissionToShare EQ 'YES'>
-                    <a href="Player_Profiles/player-profile-2.cfm?playerID=#playerID#">
+                    <a href="/pages/Teams/Player_Profiles/player-profile-2.cfm?playerID=#playerID#">
                       #firstName# #lastName# <cfif getTeamDataStats.captainPlayerID EQ getTeamDataStats.playerID>(C)</cfif>
                     </a>
                   <cfelse>
@@ -281,7 +281,7 @@
                   #playoffsFinishedText#
                 </td>
                 <td data-label="Leading Scorer">
-                    <a href="Player_Profiles/player-profile-2.cfm?playerID=#getPlayerIdBySeason.playerID#">
+                    <a href="/pages/Teams/Player_Profiles/player-profile-2.cfm?playerID=#getPlayerIdBySeason.playerID#">
                       #firstInitial#. #getPlayerIdBySeason.LastName#
                     </a>
                     (#formattedPoints#)
